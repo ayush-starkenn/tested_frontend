@@ -9,6 +9,7 @@ const CompletedTrips = () => {
   const handleListView = () => {
     setIsListView(true);
   };
+  console.log("sapnaS");
 
   const handleGridView = () => {
     setIsListView(false);
