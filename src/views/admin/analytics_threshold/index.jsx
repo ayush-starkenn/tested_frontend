@@ -58,11 +58,13 @@ const AnalyticsThreshold = () => {
       });
   };
 
-  //Delete api call
-  const handleDeleteAT = (customer_id) => {
+  // Delete api call
+  const handleDeleteAT = (threshold_uuid) => {
     axios
       .put(
-        `${process.env.REACT_APP_API_URL}/admin/analytics-threshold/delete-customers-at/${customer_id}`
+        `${process.env.REACT_APP_API_URL}/analytics-threshold/delete-analytic-threshold/${threshold_uuid}`,
+        { userUUID },
+        { headers: { authorization: `bearer ${token}` } }
       )
       .then((res) => {
         fetchAnalyticsThresholdData();

@@ -150,7 +150,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
   const DeleteDeviceDialog = ({ visible, onHide }) => {
     const handleConfirmDelete = async () => {
       try {
-        await onDelete(selectedAT?.user_uuid);
+        await onDelete(selectedAT?.threshold_uuid);
         onHide();
       } catch (error) {
         console.error(error);
