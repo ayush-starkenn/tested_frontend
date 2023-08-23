@@ -8,6 +8,7 @@ import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
 import { MdOnDeviceTraining } from "react-icons/md";
 import { Toast } from "primereact/toast";
+import Cookies from "js-cookie";
 
 const applyFilters = (filters, allData) => {
   let filteredData = allData;
@@ -37,6 +38,7 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     device_type: { value: null, matchMode: FilterMatchMode.IN },
   });
+  const [isFormValid, setIsFormValid] = useState(true);
   const [globalFilterValue, setGlobalFilterValue] = useState("");
   const [editedDevice, setEditedDevice] = useState(null);
   const [selectedDevice, setSelectedDevice] = useState(null);
@@ -45,7 +47,7 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
   const [listCustomers, setListCustomers] = useState([]);
   const totalItems = filteredData.length;
   const toastRef = useRef(null);
-
+  const token = Cookies.get("token");
   //dropdown options
   const devicesOptions = [
     { label: "ECU", value: "ECU" },
@@ -54,25 +56,27 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
   ];
 
   const stateOptions = [
-    { label: "Active", value: "true" },
-    { label: "Deactive", value: "false" },
+    { label: "Active", value: 1 },
+    { label: "Deactive", value: 2 },
   ];
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}/Admin/Devices/get-customers`)
+      .get(`${process.env.REACT_APP_API_URL}/devices/get-customerlist`, {
+        headers: { authorization: `bearer ${token}` },
+      })
       .then((res) => {
-        setListCustomers(res.data);
+        setListCustomers(res.data.users);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [token]);
 
   const Customersoptions = () => {
     return listCustomers?.map((el) => ({
       label: el.first_name + " " + el.last_name,
-      value: el.userId,
+      value: el.user_uuid,
     }));
   };
 
@@ -173,11 +177,11 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
                   </div>
                 </div>
                 <div className="flex justify-between font-semibold ">
-                  <div className="mr-16">
-                    <span>Customer ID</span>
+                  <div className="mr-6">
+                    <span>Customer</span>
                   </div>
                   <div>
-                    <span>{item.customer_id}</span>
+                    <span>{item.full_name}</span>
                   </div>
                 </div>
                 <div className="text-bold flex justify-between font-semibold ">
@@ -186,6 +190,16 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
                   </div>
                   <div>
                     <span>{item.sim_number}</span>
+                  </div>
+                </div>
+                <div className="text-bold flex justify-between font-semibold ">
+                  <div className="mr-16">
+                    <span>Status</span>
+                  </div>
+                  <div>
+                    <span>
+                      {item.device_status === 1 ? "Active" : "Deactive"}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -228,11 +242,20 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
   // Edit Dialog
 
   const EditDeviceDialog = ({ visible, onHide, device }) => {
-    const [editedDeviceData, setEditedDeviceData] = useState(device);
+    const [editedDeviceData, setEditedDeviceData] = useState(device || {});
 
     const onSave = async () => {
+      if (!isFormValid) {
+        toastRef.current.show({
+          severity: "warn",
+          summary: "Warning",
+          detail: "Please fill in all required fields.",
+          life: 3000,
+        });
+        return;
+      }
       try {
-        await onEditDevice(device.device_id, editedDeviceData);
+        await onEditDevice(device?.device_id, editedDeviceData);
 
         const updatedData = allData.map((item) =>
           item.device_id === device.device_id
@@ -261,13 +284,19 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
       }
     };
 
-    const handleInputChange = (e) => {
-      const { name, value } = e.target;
+    const handleInputChange = (e, name) => {
+      const value = e.target.value;
       setEditedDeviceData((prevState) => ({
         ...prevState,
         [name]: value,
       }));
+      setIsFormValid(
+        Object.values({ ...editedDeviceData, [name]: value }).every(
+          (val) => val !== ""
+        )
+      );
     };
+
     return (
       <Dialog
         visible={visible}
@@ -283,8 +312,11 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
             <InputText
               id="device_id"
               name="device_id"
-              onChange={handleInputChange}
+              onChange={(e) => handleInputChange(e, "device_id")}
               value={editedDeviceData?.device_id || ""}
+              className={
+                !editedDeviceData.device_id && !isFormValid ? "p-invalid" : ""
+              }
             />
             <label htmlFor="device_id">DeviceId</label>
           </span>
@@ -309,14 +341,14 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
         <div className="mx-auto mt-8 w-[34.5vw]">
           <span className="p-float-label">
             <Dropdown
-              id="customer_id"
-              name="customer_id"
+              id="user_uuid"
+              name="user_uuid"
               options={Customersoptions()}
               optionLabel="label"
               optionValue="value"
               className="p-dropdown"
-              value={editedDeviceData?.customer_id || ""}
-              onChange={handleInputChange}
+              value={editedDeviceData?.user_uuid || ""}
+              onChange={(e) => handleInputChange(e, "user_uuid")}
             />
 
             <label htmlFor="customer_id">Customer List</label>
@@ -326,14 +358,14 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
           <span className="p-float-label">
             <Dropdown
               id="status"
-              name="status"
+              name="device_status"
               options={stateOptions}
               optionLabel="label"
               optionValue="value"
               className="p-dropdown"
-              value={editedDeviceData?.status || ""}
-              placeholder={selectedDevice?.status}
-              onChange={handleInputChange}
+              value={editedDeviceData?.device_status || ""}
+              placeholder={selectedDevice?.device_status}
+              onChange={(e) => handleInputChange(e, "device_status")}
             />
             <label htmlFor="status">Status</label>
           </span>
@@ -346,7 +378,10 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
               keyfilter="pint"
               value={editedDeviceData?.sim_number || ""}
               placeholder={selectedDevice?.sim_number}
-              onChange={handleInputChange}
+              onChange={(e) => handleInputChange(e, "sim_number")}
+              className={
+                !editedDeviceData.sim_number && !isFormValid ? "p-invalid" : ""
+              }
             />
             <label htmlFor="sim_number">Sim Number</label>
           </span>

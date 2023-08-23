@@ -7,6 +7,7 @@ import { Toast } from "primereact/toast";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import Preloader from "./Preloader";
+import { InputText } from "primereact/inputtext";
 
 const SignIn = () => {
   const token = Cookies.get("token");
@@ -19,7 +20,7 @@ const SignIn = () => {
     } else if (token && usertype === 2) {
       navigate("/customer/dashboard");
     }
-  }, [token, usertype]);
+  }, [token, usertype, navigate]);
 
   const [showPassword, setShowPassword] = useState(false);
   const [data, setData] = useState({ email: "", password: "" });
@@ -121,32 +122,35 @@ const SignIn = () => {
               <div className="divide-y">
                 <div className="space-y-8 py-8 text-base leading-6 text-gray-700 sm:text-lg sm:leading-7">
                   <form onSubmit={handleSubmit}>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        id="email"
-                        name="email"
-                        onChange={handleChange}
-                        className="peer block w-full appearance-none rounded-t-lg border-0 border-b-2 border-gray-300 bg-gray-50 px-2.5 pb-2.5 pt-5 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:!bg-gray-800 dark:!text-white dark:focus:border-blue-500"
-                        placeholder=" "
-                      />
-                      <label className="absolute left-2.5 top-4 z-10 origin-[0] -translate-y-4 scale-75 transform text-base text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-gray-300 dark:!text-gray-400 peer-focus:dark:!text-gray-100">
-                        Username
-                      </label>
-                    </div>
                     <div className="relative my-4">
-                      <input
-                        autoComplete="off"
-                        id="password"
-                        name="password"
-                        onChange={handleChange}
-                        type={showPassword ? "text" : "password"}
-                        className="peer block w-full appearance-none rounded-t-lg border-0 border-b-2 border-gray-300 bg-gray-50 px-2.5 pb-2.5 pt-5 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:!bg-gray-800 dark:!text-white dark:focus:border-blue-500"
-                        placeholder=" "
-                      />
-                      <label className="absolute left-2.5 top-4 z-10 origin-[0] -translate-y-4 scale-75 transform text-base text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-gray-300 dark:!text-gray-400 peer-focus:dark:!text-gray-100">
-                        Password
-                      </label>
+                      <span className="p-float-label">
+                        <InputText
+                          id="email"
+                          type="email"
+                          name="email"
+                          onChange={handleChange}
+                          className="peer block w-full appearance-none rounded-t-lg border-0 border-b-2 border-gray-300 bg-gray-50 px-2.5 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:!bg-gray-800 dark:!text-white dark:focus:border-blue-500"
+                        />
+                        <label htmlFor="email" className="text-base">
+                          Username
+                        </label>
+                      </span>
+                    </div>
+                    <div className="relative my-8">
+                      <span className="p-float-label">
+                        <InputText
+                          autoComplete="off"
+                          id="password"
+                          name="password"
+                          onChange={handleChange}
+                          type={showPassword ? "text" : "password"}
+                          className="peer block w-full appearance-none rounded-t-lg border-0 border-b-2 border-gray-300 bg-gray-50 px-2.5 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:!bg-gray-800 dark:!text-white dark:focus:border-blue-500"
+                        />
+                        <label htmlFor="password" className="text-base">
+                          Password
+                        </label>
+                      </span>
+
                       <div className="absolute right-2.5 top-4">
                         {showPassword ? (
                           <FaEyeSlash

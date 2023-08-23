@@ -87,7 +87,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
       .catch((err) => {
         console.log(err);
       });
-  }, [editData]);
+  }, [token, editData]);
 
   //Searchbox
   const renderHeader = () => {
@@ -150,7 +150,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
   const DeleteDeviceDialog = ({ visible, onHide }) => {
     const handleConfirmDelete = async () => {
       try {
-        await onDelete(selectedAT?.user_uuid);
+        await onDelete(selectedAT?.threshold_uuid);
         onHide();
       } catch (error) {
         console.error(error);
@@ -325,17 +325,6 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
     }));
   };
 
-  //mapping customer names
-  const getCustomerNameMap = () => {
-    const customerNameMap = {};
-    listCustomers?.forEach((el) => {
-      const name = el.first_name + " " + el.last_name;
-      customerNameMap[el.user_uuid] = name;
-    });
-    return customerNameMap;
-  };
-  const customerNameMap = getCustomerNameMap();
-
   // Status body
   const getStatusSeverity = (option) => {
     switch (option) {
@@ -344,6 +333,9 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
 
       case 2:
         return "danger";
+
+      default:
+        return null;
     }
   };
 

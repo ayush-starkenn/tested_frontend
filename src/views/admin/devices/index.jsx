@@ -13,7 +13,7 @@ import Cookies from "js-cookie";
 const DevicesAdmin = () => {
   const token = Cookies.get("token");
   const userUUID = Cookies.get("user_uuid");
-
+  const [devices, setDevices] = useState(true);
   const [data, setData] = useState([]);
   const [isListView, setIsListView] = useState(true);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
@@ -42,11 +42,8 @@ const DevicesAdmin = () => {
   const toastRef = useRef(null);
 
   //Fetching all data
-  useEffect(() => {
-    fetchDevicesData();
-  }, []);
 
-  const fetchDevicesData = () => {
+  useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_API_URL}/devices/list-devices`, {
         headers: { authorization: `bearer ${token}` },
@@ -61,7 +58,7 @@ const DevicesAdmin = () => {
       .catch((err) => {
         console.log(err);
       });
-  };
+  }, [token, devices]);
 
   // Edit Devices
   const handleEditDevice = (deviceId, editedDevice) => {
@@ -75,7 +72,7 @@ const DevicesAdmin = () => {
       )
       .then((res) => {
         // console.log(res);
-        fetchDevicesData();
+        setDevices(editedDevice);
         toastRef.current.show({
           severity: "success",
           summary: "Success",
@@ -113,7 +110,7 @@ const DevicesAdmin = () => {
         { headers: { authorization: `bearer ${token}` } }
       )
       .then((res) => {
-        fetchDevicesData();
+        setDevices(data);
         toastRef.current.show({
           severity: "success",
           summary: "Success",
@@ -186,7 +183,7 @@ const DevicesAdmin = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [token]);
 
   const Customersoptions = () => {
     return listCustomers?.map((el) => ({
@@ -208,7 +205,7 @@ const DevicesAdmin = () => {
           }
         )
         .then((res) => {
-          fetchDevicesData();
+          setDevices(addData);
           toastRef.current.show({
             severity: "success",
             summary: "Success",
@@ -222,7 +219,7 @@ const DevicesAdmin = () => {
           toastRef.current.show({
             severity: "error",
             summary: "Error",
-            detail: "Something went wrong! Please try again later.",
+            detail: "Device Already exists.",
             life: 3000,
           });
         });
