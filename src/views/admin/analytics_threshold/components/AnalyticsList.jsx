@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FilterMatchMode } from "primereact/api";
 import { DataTable } from "primereact/datatable";
 import { Toast } from "primereact/toast";
@@ -10,19 +10,17 @@ import { Dropdown } from "primereact/dropdown";
 import axios from "axios";
 import { Tag } from "primereact/tag";
 import Cookies from "js-cookie";
+import { useRef } from "react";
 
 export default function AnalyticsList({ data, onEdit, onDelete }) {
   const token = Cookies.get("token");
-
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     device_type: { value: null, matchMode: FilterMatchMode.IN },
   });
   const [globalFilterValue, setGlobalFilterValue] = useState("");
-  const [invalidFields, setInvalidFields] = useState({});
   const [isDialogVisible, setIsDialogVisible] = useState(false);
-
-  // Initialize the state with an empty editData object
+  const [emptyFields, setEmptyFields] = useState([]);
   const [editData, setEditData] = useState({
     title: "",
     user_uuid: "",
@@ -48,34 +46,26 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
       duration: "",
     },
   });
-
   const [listCustomers, setListCustomers] = useState([]);
-  const titleInputRef = useRef(null);
-  const brakeInputRef = useRef(null);
-  const tailgatingInputRef = useRef(null);
   const [selectedAT, setSelectedAT] = useState(null);
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
   const toastRef = useRef(null);
 
-  // Global search logic
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
     let _filters = { ...filters };
-
     _filters["global"].value = value;
-
     setFilters(_filters);
     setGlobalFilterValue(value);
   };
 
   const clearSearch = () => {
-    setGlobalFilterValue(""); // Clear the search input value
+    setGlobalFilterValue("");
     const _filters = { ...filters };
-    _filters["global"].value = null; // Clear the global filter value
+    _filters["global"].value = null;
     setFilters(_filters);
   };
 
-  // Get list of customers
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_API_URL}/customers/get-all-customer`, {
@@ -89,7 +79,6 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
       });
   }, [token, editData]);
 
-  //Searchbox
   const renderHeader = () => {
     return (
       <div className="my-4 flex justify-end">
@@ -115,15 +104,13 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
     );
   };
 
-  //open delete dialog
   const openDeleteDialog = (rowData) => {
     setSelectedAT(rowData);
     setDeleteDialogVisible(true);
   };
-
   const actionBodyTemplate = (rowData) => {
     return (
-      <React.Fragment>
+      <>
         <Button
           icon="pi pi-pencil"
           rounded
@@ -140,7 +127,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
           severity="danger"
           onClick={() => openDeleteDialog(rowData)}
         />
-      </React.Fragment>
+      </>
     );
   };
 
@@ -237,39 +224,27 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
 
   const closeDialog = () => {
     setIsDialogVisible(false);
-    setInvalidFields(false);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Check for null values in the editData object
-    const hasNullValues = Object.values(editData).some(
-      (value) => value === null || value === ""
+    // Check if any field is null in the editData
+    const hasNullField = Object.values(editData).some(
+      (value) => value === null
     );
 
-    if (hasNullValues) {
-      // Set invalidFields state to highlight the fields with validation errors
-      const invalidFields = {};
-      Object.entries(editData).forEach(([key, value]) => {
-        if (value === null || value === "") {
-          invalidFields[key] = true;
-        }
+    if (hasNullField) {
+      toastRef.current.show({
+        severity: "warn",
+        summary: "Warning",
+        detail: "Please fill in all required fields.",
+        life: 5000,
       });
-      setInvalidFields(invalidFields);
-
-      // Find the first field with a validation error and focus on it
-      if (invalidFields.title) {
-        titleInputRef.current.focus();
-      } else if (invalidFields.brake) {
-        brakeInputRef.current.focus();
-      } else if (invalidFields.tailgating) {
-        tailgatingInputRef.current.focus();
-      }
-
-      return;
+      return; // Prevent form submission
     }
 
+    // Proceed with submitting the form if there are no null fields
     onEdit(editData?.threshold_uuid, editData);
     closeDialog();
   };
@@ -281,24 +256,6 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
     if (name === "user_uuid") {
       value = value.value;
     }
-
-    setInvalidFields((prevInvalidFields) => {
-      // Clone the previous invalidFields to avoid mutating the state directly
-      const clonedInvalidFields = { ...prevInvalidFields };
-
-      // If a nestedProperty is provided, update the nested property
-      if (nestedProperty) {
-        // Create the nested object if it doesn't exist
-        if (!clonedInvalidFields[name]) {
-          clonedInvalidFields[name] = {};
-        }
-        clonedInvalidFields[name][nestedProperty] = false;
-      } else {
-        clonedInvalidFields[name] = false;
-      }
-
-      return clonedInvalidFields;
-    });
 
     setEditData((prevEditData) => {
       // Clone the previous editData to avoid mutating the state directly
@@ -312,6 +269,21 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
         clonedData[name][nestedProperty] = value;
       } else {
         clonedData[name] = value;
+      }
+
+      // Check if the field is empty and update the emptyFields state
+      if (!value) {
+        setEmptyFields((prevEmptyFields) => {
+          if (!prevEmptyFields.includes(name)) {
+            return [...prevEmptyFields, name];
+          }
+          return prevEmptyFields;
+        });
+      } else {
+        // Remove the field from the emptyFields state if it's no longer empty
+        setEmptyFields((prevEmptyFields) =>
+          prevEmptyFields.filter((field) => field !== name)
+        );
       }
 
       return clonedData;
@@ -369,13 +341,13 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
           <div className="mx-auto mt-8">
             <span className="p-float-label">
               <InputText
-                ref={titleInputRef}
                 id="title"
                 name="title"
                 onChange={(e) => handleChange(e, "title")}
                 value={editData?.title || ""}
-                className={invalidFields.title ? "p-invalid" : ""}
+                className={emptyFields.includes("title") ? "p-invalid" : ""}
               />
+
               <label htmlFor="title">Title</label>
             </span>
           </div>
@@ -411,6 +383,11 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                   id="brake-input"
                   onChange={(e) => handleChange(e, "score", "brake")}
                   value={editData?.score.brake || ""}
+                  className={
+                    emptyFields.includes("score") && !editData?.score.brake
+                      ? "p-invalid"
+                      : ""
+                  }
                 />
                 <label
                   htmlFor="brake-input"
@@ -431,6 +408,11 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                   title="(1-1000)"
                   onChange={(e) => handleChange(e, "score", "tailgating")}
                   value={editData?.score.tailgating || ""}
+                  className={
+                    emptyFields.includes("score") && !editData?.score.tailgating
+                      ? "p-invalid"
+                      : ""
+                  }
                 />
                 <label
                   htmlFor="tailgating-input"
@@ -451,6 +433,12 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                   title="(1-1000)"
                   onChange={(e) => handleChange(e, "score", "rash_driving")}
                   value={editData?.score.rash_driving || ""}
+                  className={
+                    emptyFields.includes("score") &&
+                    !editData?.score.rash_driving
+                      ? "p-invalid"
+                      : ""
+                  }
                 />
                 <label
                   htmlFor="rash-driving-input"
@@ -471,6 +459,12 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                   title="(1-1000)"
                   onChange={(e) => handleChange(e, "score", "sleep_alert")}
                   value={editData?.score.sleep_alert || ""}
+                  className={
+                    emptyFields.includes("score") &&
+                    !editData?.score.sleep_alert
+                      ? "p-invalid"
+                      : ""
+                  }
                 />
                 <label
                   htmlFor="sleep-alert-input"
@@ -491,6 +485,11 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                   title="(1-1000)"
                   onChange={(e) => handleChange(e, "score", "over_speed")}
                   value={editData?.score.over_speed || ""}
+                  className={
+                    emptyFields.includes("score") && !editData?.score.over_speed
+                      ? "p-invalid"
+                      : ""
+                  }
                 />
                 <label
                   htmlFor="over-speed-input"
@@ -511,6 +510,11 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                   title="(1-1000)"
                   onChange={(e) => handleChange(e, "score", "green_zone")}
                   value={editData?.score.green_zone || ""}
+                  className={
+                    emptyFields.includes("score") && !editData?.score.green_zone
+                      ? "p-invalid"
+                      : ""
+                  }
                 />
                 <label
                   htmlFor="green-zone-input"
@@ -539,6 +543,12 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                       handleChange(e, "incentive", "minimum_distance")
                     }
                     value={editData?.incentive.minimum_distance || ""}
+                    className={
+                      emptyFields.includes("incentive") &&
+                      !editData?.incentive.minimum_distance
+                        ? "p-invalid"
+                        : ""
+                    }
                   />
                   <label
                     htmlFor="minimum-distance-input"
@@ -561,6 +571,12 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                       handleChange(e, "incentive", "minimum_driver_rating")
                     }
                     value={editData?.incentive.minimum_driver_rating || ""}
+                    className={
+                      emptyFields.includes("incentive") &&
+                      !editData?.incentive.minimum_driver_rating
+                        ? "p-invalid"
+                        : ""
+                    }
                   />
                   <label
                     htmlFor="minimum-driver-rating-input"
@@ -590,6 +606,12 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                       handleChange(e, "accident", "ttc_difference_percentage")
                     }
                     value={editData?.accident.ttc_difference_percentage || ""}
+                    className={
+                      emptyFields.includes("accident") &&
+                      !editData?.accident.ttc_difference_percentage
+                        ? "p-invalid"
+                        : ""
+                    }
                   />
                   <label
                     htmlFor="ttc-difference-percentage-input"
@@ -618,6 +640,12 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                     handleChange(e, "leadership_board", "total_distance")
                   }
                   value={editData?.leadership_board.total_distance || ""}
+                  className={
+                    emptyFields.includes("leadership_board") &&
+                    !editData?.leadership_board.total_distance
+                      ? "p-invalid"
+                      : ""
+                  }
                 />
                 <label
                   htmlFor="total-distance-input"
@@ -643,6 +671,11 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                   title="(1-1000)"
                   onChange={(e) => handleChange(e, "halt", "duration")}
                   value={editData?.halt.duration || ""}
+                  className={
+                    emptyFields.includes("halt") && !editData?.halt.duration
+                      ? "p-invalid"
+                      : ""
+                  }
                 />
                 <label
                   htmlFor="halt-duration-input"
@@ -697,6 +730,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
         value={data}
         removableSort
         paginator
+        dataKey="threshold_uuid"
         header={header}
         rows={5}
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"

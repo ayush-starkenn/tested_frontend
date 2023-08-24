@@ -128,7 +128,7 @@ const AnalyticsThreshold = () => {
 
   const closeDialog = () => {
     setIsDialogVisible(false);
-    setFormErrors(false);
+    setFormErrors(true);
     setSelectedCustomer(null);
   };
 
@@ -157,7 +157,6 @@ const AnalyticsThreshold = () => {
     setSelectedCustomer(null);
     const form = document.querySelector("form");
     form.reset();
-    formErrors(false);
   };
 
   // Add analytic threshold
@@ -200,29 +199,6 @@ const AnalyticsThreshold = () => {
       duration: formData.duration === "",
     });
 
-    const rangeValidations = {
-      brake: [1, 1000],
-      tailgating: [1, 1000],
-      rash_driving: [1, 1000],
-      sleep_alert: [1, 1000],
-      over_speed: [0, 1000],
-      green_zone: [1, 1000],
-      minimum_distance: [1, 1000],
-      minimum_driver_rating: [0, 5],
-      ttc_difference_percentage: [0, 100],
-      total_distance: [0, 10000],
-      duration: [1, 1000],
-    };
-
-    const invalidFields = {};
-    Object.entries(rangeValidations).forEach(([field, [min, max]]) => {
-      const value = parseFloat(formData[field]);
-      if (isNaN(value) || value < min || value > max) {
-        invalidFields[field] = true;
-      }
-    });
-
-    setFormErrors(invalidFields);
     const requiredFields = [
       "title",
       "customer_id",
@@ -298,7 +274,7 @@ const AnalyticsThreshold = () => {
       </div>
 
       <Button
-        label="Create"
+        label="Create New"
         icon="pi pi-plus"
         severity="primary"
         className="mt-2 h-10 px-3 py-0 text-left dark:hover:text-white"
