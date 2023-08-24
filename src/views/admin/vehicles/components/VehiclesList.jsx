@@ -122,7 +122,7 @@ export default function VehiclesList({ data }) {
           value={data}
           selection={selectedVehicles}
           onSelectionChange={(e) => setSelectedVehicles(e.value)}
-          dataKey="id"
+          dataKey="user_uuid"
           paginator
           rows={5}
           rowsPerPageOptions={[5, 10, 25]}
@@ -174,7 +174,7 @@ export default function VehiclesList({ data }) {
           ></Column>
           <Column
             key="iot"
-            field="iot"
+            field={`${data.iot === null ? "--" : "iot"}`}
             header="IoT"
             sortable
             className="border-none dark:bg-gray-900 dark:text-gray-200"

@@ -89,10 +89,10 @@ export default function CustomersGrid({ data, onDelete, onUpdate }) {
 
   const confirmDelete = async () => {
     try {
-      await onDelete(selectedCustomer.userId);
+      await onDelete(selectedCustomer.user_uuid);
 
       const updatedData = allData.filter(
-        (customer) => customer.userId !== selectedCustomer.userId
+        (customer) => customer.user_uuid !== selectedCustomer.user_uuid
       );
 
       setAllData(updatedData);
@@ -259,7 +259,10 @@ export default function CustomersGrid({ data, onDelete, onUpdate }) {
         return updatedData;
       });
     };
-
+    const handleUserStatusChange = (event) => {
+      const newValue = parseInt(event.target.value);
+      setEditedCustomerData({ ...editedCustomerData, user_status: newValue });
+    };
     const onSave = async () => {
       if (!isValidPhoneNumber(editedCustomerData.phone)) {
         toastRef.current.show({
@@ -291,10 +294,10 @@ export default function CustomersGrid({ data, onDelete, onUpdate }) {
       }
 
       try {
-        await onUpdate(customer.userId, editedCustomerData);
+        await onUpdate(customer.user_uuid, editedCustomerData);
 
         const updatedData = allData.map((item) =>
-          item.userId === customer.userId
+          item.user_uuid === customer.user_uuid
             ? { ...item, ...editedCustomerData }
             : item
         );
@@ -463,6 +466,28 @@ export default function CustomersGrid({ data, onDelete, onUpdate }) {
               />
               <label htmlFor="pincode">Pincode</label>
             </span>
+          </div>
+          <div className="my-4">
+            <input
+              type="radio"
+              className="inlinemx-2 mx-2"
+              name="user_status"
+              id="userActive"
+              value={1}
+              onChange={handleUserStatusChange}
+              checked={editedCustomerData.user_status === 1}
+            />
+            <label htmlFor="userActive">Active</label>
+            <input
+              type="radio"
+              className="mx-2 inline"
+              name="user_status"
+              id="userDeactive"
+              value={2}
+              onChange={handleUserStatusChange}
+              checked={editedCustomerData.user_status === 2}
+            />
+            <label htmlFor="userDeactive">Deactive</label>
           </div>
         </div>
       </Dialog>

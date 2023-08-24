@@ -11,7 +11,7 @@ import Cookies from "js-cookie";
 const AnalyticsThreshold = () => {
   const token = Cookies.get("token");
   const userUUID = Cookies.get("user_uuid");
-
+  const [at, setAt] = useState(true);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [data, setData] = useState([]);
   const toastRef = useRef(null);
@@ -35,11 +35,8 @@ const AnalyticsThreshold = () => {
   });
 
   //Fetching all data
-  useEffect(() => {
-    fetchAnalyticsThresholdData();
-  }, []);
 
-  const fetchAnalyticsThresholdData = () => {
+  useEffect(() => {
     axios
       .get(
         `${process.env.REACT_APP_API_URL}/analytics-threshold/get-analytics-threshold`,
@@ -53,19 +50,22 @@ const AnalyticsThreshold = () => {
         }));
         setData(formattedData);
       })
+
       .catch((err) => {
         console.log(err);
       });
-  };
+  }, [token, at]);
 
-  //Delete api call
-  const handleDeleteAT = (customer_id) => {
+  // Delete api call
+  const handleDeleteAT = (threshold_uuid) => {
     axios
       .put(
-        `${process.env.REACT_APP_API_URL}/admin/analytics-threshold/delete-customers-at/${customer_id}`
+        `${process.env.REACT_APP_API_URL}/analytics-threshold/delete-analytic-threshold/${threshold_uuid}`,
+        { userUUID },
+        { headers: { authorization: `bearer ${token}` } }
       )
       .then((res) => {
-        fetchAnalyticsThresholdData();
+        setAt(data);
         toastRef.current.show({
           severity: "success",
           summary: "Success",
@@ -93,7 +93,7 @@ const AnalyticsThreshold = () => {
         { headers: { authorization: `bearer ${token}` } }
       )
       .then((res) => {
-        fetchAnalyticsThresholdData();
+        setAt(editedData);
         toastRef.current.show({
           severity: "success",
           summary: "Success",
@@ -128,7 +128,7 @@ const AnalyticsThreshold = () => {
 
   const closeDialog = () => {
     setIsDialogVisible(false);
-    setFormErrors(false);
+    setFormErrors(true);
     setSelectedCustomer(null);
   };
 
@@ -145,7 +145,7 @@ const AnalyticsThreshold = () => {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  }, []);
+  }, [token]);
 
   const customerOptions = customers.map((customer) => ({
     label: `${customer.first_name}  ${customer.last_name}`,
@@ -199,29 +199,6 @@ const AnalyticsThreshold = () => {
       duration: formData.duration === "",
     });
 
-    const rangeValidations = {
-      brake: [1, 1000],
-      tailgating: [1, 1000],
-      rash_driving: [1, 1000],
-      sleep_alert: [1, 1000],
-      over_speed: [0, 1000],
-      green_zone: [1, 1000],
-      minimum_distance: [1, 1000],
-      minimum_driver_rating: [0, 5],
-      ttc_difference_percentage: [0, 100],
-      total_distance: [0, 10000],
-      duration: [1, 1000],
-    };
-
-    const invalidFields = {};
-    Object.entries(rangeValidations).forEach(([field, [min, max]]) => {
-      const value = parseFloat(formData[field]);
-      if (isNaN(value) || value < min || value > max) {
-        invalidFields[field] = true;
-      }
-    });
-
-    setFormErrors(invalidFields);
     const requiredFields = [
       "title",
       "customer_id",
@@ -261,7 +238,7 @@ const AnalyticsThreshold = () => {
       )
       .then((response) => {
         // Reset the form and provide feedback
-        fetchAnalyticsThresholdData();
+        setAt(formData);
         toastRef.current.show({
           severity: "success",
           summary: `${formData.title}`,
@@ -297,7 +274,7 @@ const AnalyticsThreshold = () => {
       </div>
 
       <Button
-        label="Create"
+        label="Create New"
         icon="pi pi-plus"
         severity="primary"
         className="mt-2 h-10 px-3 py-0 text-left dark:hover:text-white"

@@ -210,12 +210,11 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
       })
       .then((res) => {
         setListCustomers(res.data.users);
-        // console.log(res.data);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [deviceData]);
+  }, [token, deviceData]);
 
   const Customersoptions = () => {
     return listCustomers?.map((el) => ({
@@ -226,8 +225,26 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onEditDevice(rowId?.device_id, editData);
-    closeDialog();
+    // Check if any required field is empty
+    const requiredFields = [
+      "device_id",
+      "device_type",
+      "user_uuid",
+      "device_status",
+      "sim_number",
+    ];
+    const isAnyFieldEmpty = requiredFields.some((field) => !editData[field]);
+
+    if (isAnyFieldEmpty) {
+      toastRef.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Please fill in all required fields.",
+      });
+    } else {
+      onEditDevice(rowId?.device_id, editData);
+      closeDialog();
+    }
   };
 
   const handleChange = (e, name) => {
@@ -260,6 +277,9 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
 
       case 2:
         return "danger";
+
+      default:
+        return null;
     }
   };
 
@@ -292,6 +312,7 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
                 name="device_id"
                 onChange={(e) => handleChange(e, "device_id")}
                 value={editData?.device_id || ""}
+                className={!editData?.device_id ? "p-invalid" : ""}
               />
               <label htmlFor="device_id">DeviceId</label>
             </span>
@@ -355,6 +376,7 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
                 value={editData?.sim_number || ""}
                 placeholder={deviceData?.sim_number}
                 onChange={(e) => handleChange(e, "sim_number")}
+                className={!editData?.sim_number ? "p-invalid" : ""}
               />
               <label htmlFor="sim_number">Sim Number</label>
             </span>

@@ -19,12 +19,8 @@ const VehiclesAdmin = () => {
     setIsListView(false);
   };
 
-  useEffect(() => {
-    fetchVehicleData();
-  }, []);
-
   // Fetching all data
-  const fetchVehicleData = () => {
+  useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_API_URL}/vehicles/get-all-vehicles`, {
         headers: { authorization: `bearer ${token}` },
@@ -40,7 +36,7 @@ const VehiclesAdmin = () => {
       .catch((err) => {
         console.log(err);
       });
-  };
+  }, [token]);
 
   return (
     <>
