@@ -6,9 +6,7 @@ import "./index.css";
 import App from "./App";
 import { AppContextProvider } from "context/AppContext";
 
-const rootElement = document.getElementById("root");
-const root = ReactDOM.createRoot(rootElement);
-
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <AppContextProvider>
     <BrowserRouter>
