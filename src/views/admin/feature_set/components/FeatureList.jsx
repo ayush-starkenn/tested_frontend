@@ -8,25 +8,30 @@ import { FilterMatchMode } from "primereact/api";
 import { InputText } from "primereact/inputtext";
 import axios from "axios";
 import EditFeatureset from "./EditFeatureset";
+import Cookies from "js-cookie";
 import { useContext } from "react";
 import { AppContext } from "context/AppContext";
 import AssignCustomer from "./AssignCustomer";
 import UnAssignCustomer from "./UnAssignCustomer";
 import { Toast } from "primereact/toast";
+import { Tag } from "primereact/tag";
 
 const FeatureList = () => {
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [isDialogVisible1, setIsDialogVisible1] = useState(false);
   const [isDialogVisible2, setIsDialogVisible2] = useState(false);
   const [isDialogVisible3, setIsDialogVisible3] = useState(false);
+  const [listCustomers, setListCustomers] = useState([]);
   const [isDeleteDialogVisible, setIsDeleteDialogVisible] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState(null);
   const [myData, setMyData] = useState();
+  const [fs, setFs] = useState();
   const [globalFilterValue, setGlobalFilterValue] = useState("");
   const [data, setData] = useState([]);
   const toastRef = useRef(null);
   const toastErr = useRef(null);
-
+  const token = Cookies.get("token");
+  const user_uuid = Cookies.get("user_uuid");
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
@@ -34,23 +39,25 @@ const FeatureList = () => {
   const { updateData, resetState } = useContext(AppContext);
 
   //get list of featureset
-  useEffect(() => {
-    getListData();
-    console.log(updateData);
-  }, [updateData]);
 
-  const getListData = () => {
+  useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}/featureset/featureset-list`)
+      .get(
+        `${process.env.REACT_APP_API_URL}/featuresets/get-all-featureset`,
+
+        {
+          headers: { authorization: `bearer ${token}` },
+        }
+      )
       .then((res) => {
-        const formattedData = res.data.map((item, index) => ({
+        const formattedData = res.data.results.map((item, index) => ({
           ...item,
           serialNo: index + 1,
         }));
         setData(formattedData);
       })
       .catch((err) => console.log(err));
-  };
+  }, [token, fs]);
 
   //opens delete dialog
   const openDeleteDialog = (rowData) => {
@@ -60,28 +67,84 @@ const FeatureList = () => {
 
   //closes delete dialog
   const closeDeleteDialog = () => {
-    setSelectedFeature(null);
+    setFs(updateData);
     setIsDeleteDialogVisible(false);
   };
 
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/api/customers/get-all-customer", {
+        headers: { authorization: `bearer ${token}` },
+      })
+      .then((res) => {
+        setListCustomers(res.data.customers);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [token]);
+
+  const usersBodyTemplate = (rowData) => {
+    try {
+      let assignedusers = JSON.parse(rowData.featureset_users);
+
+      let currentUsers = assignedusers.map((el) => el.user_uuid);
+
+      let filterUsers = listCustomers?.filter(
+        (el) => currentUsers.includes(el.user_uuid) && el.user_type === 2
+      );
+
+      let mapUsers = filterUsers.map((el, ind) => (
+        <Tag
+          key={ind}
+          className="my-1 mr-2 bg-gray-200 text-gray-800"
+          icon="pi pi-user"
+          value={el.first_name + " " + el.last_name}
+        ></Tag>
+      ));
+
+      return <div className="tag-container">{mapUsers}</div>;
+    } catch (error) {
+      console.error("Error parsing JSON:", error);
+      return null;
+    }
+  };
+
+  const statusBodyTemplate = (rowData) => {
+    return rowData.featureset_status === 1 ? (
+      <Tag
+        value={"Active"}
+        severity={"success"}
+        style={{ width: "75px" }}
+      ></Tag>
+    ) : (
+      <Tag
+        value={"Deactive"}
+        severity={"danger"}
+        style={{ width: "75px" }}
+      ></Tag>
+    );
+  };
   //delete api call
   const handleDeleteConfirmation = async () => {
     if (selectedFeature) {
       try {
-        const response = await axios.put(
-          `${process.env.REACT_APP_API_URL}/featureset/featureset-delete/${selectedFeature?.featureSetId}`
+        await axios.put(
+          `${process.env.REACT_APP_API_URL}/featuresets/delete-featureset/${selectedFeature?.featureset_uuid}`,
+          { user_uuid },
+          {
+            headers: { authorization: `bearer ${token}` },
+          }
         );
-        const { featureSetName } = response.data;
-        console.log("Delete success:", response.data);
 
-        getListData(); // Fetch the updated list of featuresets after the delete operation
+        setFs(myData); // Fetch the updated list of featuresets after the delete operation
 
         closeDeleteDialog();
 
         toastRef.current.show({
           severity: "success",
           summary: "Success",
-          detail: `Feature set '${featureSetName}' deleted successfully`,
+          detail: `Feature set deleted successfully`,
           life: 3000,
         });
       } catch (error) {
@@ -127,6 +190,7 @@ const FeatureList = () => {
       detail: "Feature Set Added successfully",
       life: 3000,
     });
+    setFs(updateData); // Fetch the updated list of featuresets
   };
   //assign FS success toast
   const handleAssignSuccess = () => {
@@ -137,6 +201,7 @@ const FeatureList = () => {
       detail: "Feature Set Assigned successfully",
       life: 3000,
     });
+    setFs(myData);
   };
   //unassign FS success toast
   const handleUnAssignSuccess = () => {
@@ -147,6 +212,7 @@ const FeatureList = () => {
       detail: "Feature Set unassigned successfully",
       life: 3000,
     });
+    setFs(myData);
   };
   //edit FS success toast
   const handleEditSuccess = () => {
@@ -157,6 +223,7 @@ const FeatureList = () => {
       detail: "Feature Set updated successfully",
       life: 3000,
     });
+    setFs(myData);
   };
   //open add dialog
   const openDialog = () => {
@@ -222,7 +289,7 @@ const FeatureList = () => {
         <InputText
           value={globalFilterValue}
           onChange={onGlobalFilterChange}
-          placeholder="Keyword Search"
+          placeholder="Search by Featureset Name"
           className="searchbox w-[25vw] cursor-pointer rounded-full dark:bg-gray-950 dark:text-gray-50"
         />
         {globalFilterValue && (
@@ -295,7 +362,7 @@ const FeatureList = () => {
         className="p-fluid dark:bg-gray-900"
       >
         <AssignCustomer
-          parameters={{ propValue: myData?.featureSetId }}
+          parameters={{ propValue: myData }}
           onSuccess={handleAssignSuccess}
         />
       </Dialog>
@@ -310,7 +377,7 @@ const FeatureList = () => {
         className="p-fluid dark:bg-gray-900"
       >
         <UnAssignCustomer
-          parameters={{ propValue: myData?.featureSetId }}
+          parameters={{ propValue: myData }}
           onSuccess={handleUnAssignSuccess}
         />
       </Dialog>
@@ -325,7 +392,7 @@ const FeatureList = () => {
         className="p-fluid dark:bg-gray-900"
       >
         <EditFeatureset
-          parameters={{ propValue: myData?.featureSetId }}
+          parameters={{ propValue: myData }}
           onSuccess={handleEditSuccess}
         />
       </Dialog>
@@ -339,6 +406,9 @@ const FeatureList = () => {
         modal
         className="p-fluid dark:bg-gray-900"
       >
+        <p className="text-right text-sm text-red-400">
+          All Fields Are Required<span className="text-red-500">**</span>
+        </p>
         <AddFeatureSet onSuccess={handleAddSuccess} />
       </Dialog>
 
@@ -374,7 +444,7 @@ const FeatureList = () => {
       <DataTable
         removableSort
         value={data}
-        dataKey="id"
+        dataKey="user_uuid"
         paginator
         rows={5}
         rowsPerPageOptions={[5, 10, 25]}
@@ -382,25 +452,34 @@ const FeatureList = () => {
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
         filterDisplay="menu"
         filters={filters}
-        globalFilterFields={["featureSetId", "featureSetName"]}
-        emptyMessage="No customers found."
+        globalFilterFields={["featureset_name", "featureset_users"]}
+        emptyMessage="No featureset found."
         header={header}
       >
         <Column
           field="serialNo"
+          style={{ minWidth: "3rem" }}
           className="border-none dark:bg-gray-900 dark:text-gray-200"
-          style={{ minWidth: "7rem", textAlign: "center" }}
         />
         <Column
-          field="featureSetId"
-          header="ID"
+          field="featureset_name"
+          header="Featureset Name"
+          style={{ minWidth: "12rem" }}
+          className="border-none dark:bg-gray-900 dark:text-gray-200"
+        />
+        <Column
+          field="featureset_users"
+          header="Featureset Users"
+          body={usersBodyTemplate}
           style={{ minWidth: "16rem" }}
           className="border-none dark:bg-gray-900 dark:text-gray-200"
         />
         <Column
-          field="featureSetName"
-          header="Name"
-          style={{ minWidth: "26rem" }}
+          field="featureset_status"
+          header="Featureset Status"
+          body={statusBodyTemplate}
+          sortable
+          style={{ minWidth: "8rem" }}
           className="border-none dark:bg-gray-900 dark:text-gray-200"
         />
         <Column

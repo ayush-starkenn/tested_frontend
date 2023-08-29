@@ -3,8 +3,8 @@ import "../../assets/css/preloader.css";
 
 const Preloader = () => {
   return (
-    <div class="flex items-center justify-center">
-      <div class="custom-loader"></div>
+    <div className="flex items-center justify-center">
+      <div className="custom-loader"></div>
     </div>
   );
 };

@@ -24,6 +24,7 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
   });
   const menuRight = useRef(null);
 
+  //For getting serial no. column
   useEffect(() => {
     setCustomerData(
       data.map((customer, index) => ({
@@ -313,6 +314,7 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
           .map((customer, index) => ({
             ...customer,
             serialNo: index + 1,
+            key: customer.user_uuid,
           }));
 
         console.log(updatedData);
@@ -486,6 +488,9 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
 
       case 2:
         return "danger";
+
+      default:
+        return null;
     }
   };
 
@@ -508,7 +513,7 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
         value={customerData}
         selection={selectedCustomer}
         onSelectionChange={(e) => setSelectedCustomer(e.value)}
-        dataKey="id"
+        dataKey="user_uuid"
         paginator
         rows={5}
         rowsPerPageOptions={[5, 10, 25]}
@@ -527,17 +532,20 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
         header={header}
       >
         <Column
+          key="user_uuid"
           field="serialNo"
           className="border-none dark:bg-gray-900 dark:text-gray-200"
           style={{ minWidth: "4rem", textAlign: "center" }}
         />
         <Column
+          key="user_uuid"
           field="full_name"
           header="Name"
           style={{ minWidth: "8rem" }}
           className="border-none dark:bg-gray-900 dark:text-gray-200"
         />
         <Column
+          key="user_uuid"
           field="email"
           header="Email"
           style={{ minWidth: "8rem" }}
@@ -550,18 +558,21 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
           style={{ width: "12rem", minWidth: "20rem" }}
         /> */}
         <Column
+          key="user_uuid"
           field="company_name"
           header="Company Name"
           className="border-none dark:bg-gray-900 dark:text-gray-200"
           style={{ minWidth: "6rem" }}
         />
         <Column
+          key="user_uuid"
           field="phone"
           header="Contact No."
           className="border-none dark:bg-gray-900 dark:text-gray-200"
           style={{ minWidth: "5rem" }}
         />
         <Column
+          key="user_uuiduser_uuiduser_uuiduser_uuid"
           field="user_status"
           header="Status"
           body={statusBodyTemplate}
@@ -569,6 +580,7 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
           style={{ minWidth: "5rem" }}
         />
         <Column
+          key="user_uuid"
           header="Action"
           headerStyle={{ width: "11rem", textAlign: "left" }}
           bodyStyle={{ textAlign: "left", overflow: "visible" }}
