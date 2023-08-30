@@ -41,7 +41,7 @@ const UnAssignCustomer = ({ parameters, onSuccess }) => {
         headers: { authorization: `bearer ${token}` },
       })
       .then((res) => {
-        setListCustomers(res.data.customers);
+        setListCustomers(res.data.customerData);
       })
       .catch((err) => {
         console.log(err);
