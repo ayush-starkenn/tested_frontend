@@ -103,7 +103,7 @@ export default function CustomersGrid({ data, onDelete, onUpdate }) {
       toastRef.current.show({
         severity: "success",
         summary: "Customer Deleted",
-        detail: "Customer has been deleted successfully.",
+        detail: `Customer ${selectedCustomer?.first_name} deleted successfully`,
       });
     } catch (error) {
       console.error("Delete error:", error);
@@ -233,6 +233,7 @@ export default function CustomersGrid({ data, onDelete, onUpdate }) {
     const [editedCustomerData, setEditedCustomerData] = useState(
       customer || {}
     );
+    const [isUpdating, setIsUpdating] = useState(false);
     const isValidPhoneNumber = (phoneNumber) => {
       // Regular expression to check for exactly 10 digits
       const phonePattern = /^\d{10}$/;
@@ -294,26 +295,14 @@ export default function CustomersGrid({ data, onDelete, onUpdate }) {
       }
 
       try {
+        setIsUpdating(true);
         await onUpdate(customer.user_uuid, editedCustomerData);
 
-        const updatedData = allData.map((item) =>
-          item.user_uuid === customer.user_uuid
-            ? { ...item, ...editedCustomerData }
-            : item
-        );
-
-        setAllData(updatedData);
-        const filteredData = applyFilters(filters, updatedData);
+        setAllData(allData);
+        const filteredData = applyFilters(filters, allData);
         setFilteredData(filteredData);
         setEditedCustomer(null);
         setIsEditDialogVisible(false);
-        toastRef.current.show({
-          severity: "success",
-          summary: "Customer Updated",
-          detail: `${
-            editedCustomerData.first_name + " " + editedCustomerData.last_name
-          }'s data has been updated successfully.`,
-        });
       } catch (error) {
         console.error("Save error:", error);
         toastErr.current.show({
@@ -322,6 +311,8 @@ export default function CustomersGrid({ data, onDelete, onUpdate }) {
           detail: "Error while saving",
           life: 3000,
         });
+      } finally {
+        setIsUpdating(false); // Complete the update process
       }
     };
 
@@ -334,9 +325,10 @@ export default function CustomersGrid({ data, onDelete, onUpdate }) {
         footer={
           <div>
             <Button
-              label="Update"
-              icon="pi pi-check"
+              label={isUpdating ? "Updating..." : "Update"}
+              icon={isUpdating ? "pi pi-spin pi-spinner" : "pi pi-check"}
               className="p-button-primary px-3 py-2 hover:bg-none dark:hover:bg-gray-50"
+              disabled={isUpdating}
               onClick={onSave}
             />
           </div>

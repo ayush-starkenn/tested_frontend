@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import WeeklyRevenue from "views/admin/default/components/WeeklyRevenue";
 import TotalSpent from "views/admin/default/components/TotalSpent";
-import { MdWebhook } from "react-icons/md";
+import { HiOutlineUsers } from "react-icons/hi";
 import { BsTruck, BsFillCpuFill } from "react-icons/bs";
 import Widget from "components/widget/Widget";
 import Cookies from "js-cookie";
@@ -68,7 +68,7 @@ const Dashboard = () => {
 
       <div className="mt-3 flex flex-wrap justify-center gap-12">
         <Widget
-          icon={<BsTruck className="h-7 w-7" />}
+          icon={<HiOutlineUsers className="h-7 w-7" />}
           title={"Customers"}
           subtitle={customersCount}
           cardhref={"/admin/customers"}
@@ -80,7 +80,7 @@ const Dashboard = () => {
           cardhref={"/admin/devices"}
         />
         <Widget
-          icon={<MdWebhook className="h-7 w-7" />}
+          icon={<BsTruck className="h-7 w-7" />}
           title={"Vehicles"}
           subtitle={vehiclesCount}
           cardhref={"/admin/vehicles"}
