@@ -18,7 +18,7 @@ const Drivers = () => {
   const toastRef = useRef(null);
   const token = Cookies.get("token");
   const userUUID = Cookies.get("user_uuid");
-  //   const [drivers, setDrivers] = useState(true);
+  const [drivers, setDrivers] = useState(true);
   const [selectedGender, setSelectedGender] = useState(null);
   const [data, setData] = useState([]);
 
