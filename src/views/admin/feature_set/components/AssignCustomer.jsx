@@ -40,7 +40,7 @@ const AssignCustomer = ({ parameters, onSuccess }) => {
         headers: { authorization: `bearer ${token}` },
       })
       .then((res) => {
-        setListCustomers(res.data.customers);
+        setListCustomers(res.data.customerData);
       })
       .catch((err) => {
         console.log(err);
@@ -49,9 +49,9 @@ const AssignCustomer = ({ parameters, onSuccess }) => {
 
   useEffect(() => {
     if (currentUsers) {
-      let mapCurrentUsers = currentUsers.map((el) => el.user_uuid);
+      let mapCurrentUsers = currentUsers?.map((el) => el.user_uuid);
 
-      let usersList = listCustomers.filter((el) =>
+      let usersList = listCustomers?.filter((el) =>
         mapCurrentUsers.includes(el.user_uuid)
       );
       setFeaturesetUsers(usersList);
