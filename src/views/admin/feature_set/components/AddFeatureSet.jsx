@@ -16,7 +16,7 @@ const AddFeatureSet = ({ onSuccess }) => {
   const [customers, setCustomers] = useState([]);
   const [listCustomers, setListCustomers] = useState([]);
   const { updateFunc } = useContext(AppContext);
-  const [selectedValue, setSelectedValue] = useState("");
+  const [selectedValue, setSelectedValue] = useState([]);
   const [invalidFields, setInvalidFields] = useState([]);
   const token = Cookies.get("token");
   const user_uuid = Cookies.get("user_uuid");
@@ -288,8 +288,8 @@ const AddFeatureSet = ({ onSuccess }) => {
       return el.user_uuid.includes(customers[0]?.user_uuid);
     });
 
-    if (k.length > 0) {
-      setSelectedValue(k[0].first_name + " " + k[0].last_name);
+    if (k?.length > 0) {
+      setSelectedValue(k[0]?.first_name + " " + k[0]?.last_name);
     }
   }, [listCustomers, customers]);
 

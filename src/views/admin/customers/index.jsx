@@ -430,11 +430,6 @@ const Customers = () => {
                 />
                 <label htmlFor="f_name">First Name</label>
               </span>
-              {formErrors.f_name && (
-                <p className="p-error  animated-error">
-                  First Name is required
-                </p>
-              )}
             </div>
             <div className="card justify-content-center ml-1 mt-5 flex-auto">
               <span className="p-float-label">

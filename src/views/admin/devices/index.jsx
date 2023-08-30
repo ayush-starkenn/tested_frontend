@@ -82,7 +82,6 @@ const DevicesAdmin = () => {
       })
       .catch((err) => {
         if (err.response.data === 404) {
-          // console.log(err.response.data.error);
           toastRef.current.show({
             severity: "warn",
             summary: "Warning",
@@ -147,19 +146,19 @@ const DevicesAdmin = () => {
     setIsListView(false);
   };
 
-  //add device dialog open
+  //Add device dialog open
   const openDialog = () => {
     resetFormData();
     setIsDialogVisible(true);
   };
 
-  //add device dialog close
+  //Add device dialog close
   const closeDialog = () => {
     resetFormData();
     setIsDialogVisible(false);
   };
 
-  //dropdown options
+  //Dropdown options
   const devicesOptions = [
     { label: "ECU", value: "ECU" },
     { label: "IoT", value: "IoT" },
