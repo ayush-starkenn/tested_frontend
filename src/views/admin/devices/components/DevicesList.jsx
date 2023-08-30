@@ -30,7 +30,7 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
   const toastRef = useRef(null);
 
-  //global search logic
+  //Global search logic
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
     let _filters = { ...filters };
@@ -48,13 +48,13 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
     setFilters(_filters);
   };
 
-  //opens delete dialog
+  //Opens delete dialog
   const openDeleteDialog = (rowData) => {
     setSelectedDevice(rowData);
     setDeleteDialogVisible(true);
   };
 
-  //searchbox
+  //Searchbox
   const renderHeader = () => {
     return (
       <div className="my-4 flex justify-end">
@@ -116,7 +116,7 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
 
   const actionBodyTemplate = (rowData) => {
     return (
-      <React.Fragment>
+      <>
         <Button
           icon="pi pi-pencil"
           rounded
@@ -133,7 +133,7 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
           severity="danger"
           onClick={() => openDeleteDialog(rowData)}
         />
-      </React.Fragment>
+      </>
     );
   };
 
@@ -269,7 +269,7 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
       });
   };
 
-  // status body
+  // Status body
   const getStatusSeverity = (option) => {
     switch (option) {
       case 1:

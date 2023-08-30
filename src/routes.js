@@ -34,6 +34,7 @@ import { HiOutlineUsers } from "react-icons/hi";
 import AdminProtected from "authorization/AdminProteted";
 import CustomerProtected from "authorization/CustomerProtected";
 import { DiDatabase } from "react-icons/di";
+import Drivers from "views/customer/drivers";
 
 //routes for Admin panel
 export const routes_admin = [
@@ -147,7 +148,7 @@ export const routes_customer = [
     icon: <RiContactsLine className="h-7 w-7" />,
     component: (
       <CustomerProtected>
-        <RFIDs />
+        <Drivers />
       </CustomerProtected>
     ),
   },
