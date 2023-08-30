@@ -332,7 +332,7 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
               value={editedDeviceData?.device_type || ""}
               placeholder={selectedDevice?.device_type}
               className="p-dropdown"
-              onChange={handleInputChange}
+              onChange={(e) => handleInputChange(e, "device_type")}
             />
             <label htmlFor="device_type">Device_type</label>
           </span>

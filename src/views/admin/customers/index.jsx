@@ -14,13 +14,13 @@ import Cookies from "js-cookie";
 const Customers = () => {
   const token = Cookies.get("token");
   const userUUID = Cookies.get("user_uuid");
-
   const [isListView, setIsListView] = useState(true);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [data, setData] = useState([]);
   const [cust, setCust] = useState(true);
   const [userType, setUserType] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const toastRef = useRef(null);
   const toastErr = useRef(null);
 
@@ -98,21 +98,49 @@ const Customers = () => {
   // Edit api call
   const handleUpdateCustomer = async (customerId, updatedData) => {
     try {
-      await axios.put(
+      const response = await axios.put(
         `${process.env.REACT_APP_API_URL}/customers/update-customer/${customerId}`,
         { ...updatedData, userUUID: userUUID },
         { headers: { authorization: `bearer ${token}` } }
       );
       // Update the customer data in the state
-      setData((prevData) =>
-        prevData.map((customer) =>
-          customer.user_uuid === customerId
-            ? { ...customer, ...updatedData }
-            : customer
-        )
-      );
+      if (response.status === 201) {
+        setData((prevData) =>
+          prevData.map((customer) =>
+            customer.user_uuid === customerId
+              ? { ...customer, ...updatedData }
+              : customer
+          )
+        );
+        toastRef.current.show({
+          severity: "success",
+          summary: "Success",
+          detail: `User  ${updatedData?.first_name} updated successfully`,
+          life: 3000,
+        });
+      }
     } catch (error) {
-      console.error("Error updating customer:", error);
+      if (error.response) {
+        const { status } = error.response;
+
+        if (status === 401) {
+          console.log("Unauthorized: Please authenticate.");
+          toastRef.current.show({
+            severity: "warn",
+            summary: "Unauthorized",
+            detail: "Please authenticate.",
+            life: 3000,
+          });
+        } else {
+          console.log("Error:", error.response.data.message);
+          toastRef.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: `${error.response.data.message}`,
+            life: 3000,
+          });
+        }
+      }
     }
   };
 
@@ -127,18 +155,21 @@ const Customers = () => {
   //open add customer dialog
   const openDialog = () => {
     setIsDialogVisible(true);
+    setUserType(null);
   };
 
   //close add customer dialog
   const closeDialog = () => {
     setIsDialogVisible(false);
     setFormErrors(false);
+    setIsSubmitting(false);
     setUserType(null);
   };
 
   // Add Customer api call
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setIsSubmitting(true);
 
     const form = event.target;
     const formData = new FormData(form);
@@ -206,6 +237,7 @@ const Customers = () => {
         detail: "Please fill in all the required details.",
         life: 3000,
       });
+      setIsSubmitting(false);
       return;
     }
     // Validate the phone number
@@ -216,6 +248,7 @@ const Customers = () => {
         detail: "Please enter a 10-digit valid phone number.",
         life: 3000,
       });
+      setIsSubmitting(false);
       return;
     }
 
@@ -226,6 +259,7 @@ const Customers = () => {
         detail: "Password and Confirm Password do not match.",
         life: 3000,
       });
+      setIsSubmitting(false);
       return;
     }
 
@@ -262,6 +296,7 @@ const Customers = () => {
           detail: `${response.data.message}`,
           life: 3000,
         });
+        setIsSubmitting(false);
       }
     } catch (error) {
       if (error.response) {
@@ -283,6 +318,7 @@ const Customers = () => {
             detail: message,
             life: 3000,
           });
+          setIsSubmitting(false);
         } else if (status === 402) {
           console.log("Passwords MisMatched.");
           toastRef.current.show({
@@ -291,26 +327,7 @@ const Customers = () => {
             detail: "Passwords do not match.",
             life: 3000,
           });
-        } else if (
-          status === 409 &&
-          data.message === "This email ID is already taken "
-        ) {
-          toastRef.current.show({
-            severity: "error",
-            summary: "Use another email ID",
-            detail: "This email ID is already in use.",
-            life: 3000,
-          });
-        } else if (
-          status === 409 &&
-          data.message === "This phone number  already taken"
-        ) {
-          toastRef.current.show({
-            severity: "error",
-            summary: "Use different Phone Number",
-            detail: "The phone number is already in use.",
-            life: 3000,
-          });
+          setIsSubmitting(false);
         } else {
           console.log("Error:", error.response.data.message);
           toastRef.current.show({
@@ -319,8 +336,12 @@ const Customers = () => {
             detail: `${error.response.data.message}`,
             life: 3000,
           });
+          setIsDialogVisible(true);
+          setIsSubmitting(false);
         }
       }
+    } finally {
+      setIsSubmitting(false); // Reset submission status
     }
   };
 
@@ -403,13 +424,17 @@ const Customers = () => {
                   name="f_name"
                   className={
                     formErrors.f_name
-                      ? "p-invalid"
+                      ? "p-invalid p-error"
                       : (data.f_name = "" ? "p-filled" : "")
                   }
-                  floatingLabel
                 />
                 <label htmlFor="f_name">First Name</label>
               </span>
+              {formErrors.f_name && (
+                <p className="p-error  animated-error">
+                  First Name is required
+                </p>
+              )}
             </div>
             <div className="card justify-content-center ml-1 mt-5 flex-auto">
               <span className="p-float-label">
@@ -421,7 +446,6 @@ const Customers = () => {
                       ? "p-invalid"
                       : (data.l_name = "" ? "p-filled" : "")
                   }
-                  floatingLabel
                 />
                 <label htmlFor="l_name">Last Name</label>
               </span>
@@ -438,7 +462,6 @@ const Customers = () => {
                     ? "p-invalid"
                     : (data.email = "" ? "p-filled" : "")
                 }
-                floatingLabel
               />
               <label htmlFor="email">Email</label>
             </span>
@@ -456,7 +479,6 @@ const Customers = () => {
                     ? ""
                     : "p-filled"
                 }
-                floatingLabel
               />
               <label htmlFor="password">Password</label>
               <div className="absolute right-2.5 top-4">
@@ -482,10 +504,9 @@ const Customers = () => {
                 name="confirmPassword"
                 className={
                   formErrors.confirmPassword
-                    ? "p-filled p-invalid"
+                    ? "p-invalid"
                     : (data.confirmPassword = "" ? "p-invalid p-filled" : "")
                 }
-                floatingLabel
               />
               <label htmlFor="confirmPassword">Confirm Password</label>
             </span>
@@ -520,7 +541,6 @@ const Customers = () => {
                     ? "p-invalid"
                     : (data.company_name = "" ? "p-filled" : "")
                 }
-                floatingLabel
               />
               <label htmlFor="company_name">Company Name</label>
             </span>
@@ -534,9 +554,8 @@ const Customers = () => {
                 className={
                   formErrors.phone
                     ? "p-invalid"
-                    : (data.phone = "" ? "p-filled" : "p-filled")
+                    : (data.phone = "" ? "p-filled" : "")
                 }
-                floatingLabel
               />
               <label htmlFor="phone">Contact Number</label>
             </span>
@@ -555,7 +574,6 @@ const Customers = () => {
                     ? "p-invalid"
                     : (data.address = "" ? "p-filled" : "")
                 }
-                floatingLabel
               />
               <label htmlFor="address">Flat No./ Plot No., Area/Society</label>
             </span>
@@ -571,7 +589,6 @@ const Customers = () => {
                     ? "p-invalid"
                     : (data.city = "" ? "p-filled" : "")
                 }
-                floatingLabel
               />
               <label htmlFor="city">City</label>
             </span>
@@ -587,7 +604,6 @@ const Customers = () => {
                     ? "p-invalid"
                     : (data.state = "" ? "p-filled" : "")
                 }
-                floatingLabel
               />
               <label htmlFor="state">State</label>
             </span>
@@ -604,7 +620,6 @@ const Customers = () => {
                     ? "p-invalid"
                     : (data.pincode = "" ? "p-filled" : "")
                 }
-                floatingLabel
                 onChange={(e) => {
                   const value = e.target.value;
                   const formattedValue = value.replace(/\D/g, "").slice(0, 6); // Remove non-digits and limit to 6 characters
@@ -622,6 +637,7 @@ const Customers = () => {
               name="user_status"
               id="userActive"
               value={1}
+              defaultChecked={true}
             />
             <label htmlFor="userActive">Active</label>
             <input
@@ -635,12 +651,41 @@ const Customers = () => {
           </div>
 
           <div className="mt-6 flex justify-center">
-            <button
-              type="submit"
-              className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
-            >
-              Add Customer
-            </button>
+            {isSubmitting ? (
+              <div className="flex items-center">
+                <span className="mr-2 animate-spin">
+                  {/* You can use a suitable loading spinner here */}
+                  <svg
+                    className="h-5 w-5 animate-spin text-blue-600"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.84 3 7.95l3-2.658z"
+                    ></path>
+                  </svg>
+                </span>
+                Submitting...
+              </div>
+            ) : (
+              <button
+                type="submit"
+                className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
+              >
+                Add Customer
+              </button>
+            )}
           </div>
         </form>
       </Dialog>

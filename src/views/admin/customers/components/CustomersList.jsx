@@ -44,6 +44,7 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
     const [editedCustomerData, setEditedCustomerData] = useState(
       customer || {}
     );
+    const [isUpdating, setIsUpdating] = useState(false);
 
     const onSave = async () => {
       if (!isValidPhoneNumber(editedCustomerData.phone)) {
@@ -76,34 +77,23 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
       }
 
       try {
+        setIsUpdating(true);
         await onUpdate(customer.user_uuid, editedCustomerData);
 
-        const updatedData = customerData.map((customer) => {
-          if (customer.user_uuid === editedCustomerData.user_uuid) {
-            return {
-              ...customer,
-              ...editedCustomerData,
-            };
-          }
-          return customer;
-        });
-
-        setCustomerData(updatedData);
+        // const updatedData = customerData.map((customer) => {
+        //   if (customer.user_uuid === editedCustomerData.user_uuid) {
+        //     return {
+        //       ...customer,
+        //       ...editedCustomerData,
+        //     };
+        //   }
+        //   return customer;
+        // });
+        setIsUpdating(false);
         onHide();
-        toastRef.current.show({
-          severity: "success",
-          summary: "Success",
-          detail: `User  ${editedCustomerData?.first_name} updated successfully`,
-          life: 3000,
-        });
       } catch (error) {
-        onHide();
-        toastErr.current.show({
-          severity: "danger",
-          summary: "Error",
-          detail: "Error while saving",
-          life: 3000,
-        });
+        setIsUpdating(false);
+        console.log(error);
       }
     };
 
@@ -141,9 +131,10 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
         footer={
           <div>
             <Button
-              label="Update"
-              icon="pi pi-check"
+              label={isUpdating ? "Updating..." : "Update"}
+              icon={isUpdating ? "pi pi-spin pi-spinner" : "pi pi-check"}
               className="p-button-primary px-3 py-2 hover:bg-none dark:hover:bg-gray-50"
+              disabled={isUpdating}
               onClick={onSave}
             />
           </div>
@@ -523,10 +514,10 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
         filters={filters}
         globalFilterFields={[
           "full_name",
-          "address",
           "email",
           "company_name",
           "phone",
+          "user_status",
         ]}
         emptyMessage="No customers found."
         header={header}
@@ -551,12 +542,6 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
           style={{ minWidth: "8rem" }}
           className="border-none dark:bg-gray-900 dark:text-gray-200"
         />
-        {/* <Column
-          field="full_address"
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
-          header="Address"
-          style={{ width: "12rem", minWidth: "20rem" }}
-        /> */}
         <Column
           key="user_uuid"
           field="company_name"
@@ -572,7 +557,7 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
           style={{ minWidth: "5rem" }}
         />
         <Column
-          key="user_uuiduser_uuiduser_uuiduser_uuid"
+          key="user_uuid"
           field="user_status"
           header="Status"
           body={statusBodyTemplate}
