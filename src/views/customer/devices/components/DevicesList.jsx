@@ -9,6 +9,7 @@ import { MultiSelect } from "primereact/multiselect";
 import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
 import axios from "axios";
+import { Tag } from "primereact/tag";
 
 export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
   const [filters, setFilters] = useState({
@@ -233,6 +234,13 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
     }));
   };
 
+  const renderStatusCell = (rowData) => {
+    const tagValue = rowData?.device_status === 1 ? "Active" : "Deactive";
+    const tagSeverity = rowData?.device_status === 1 ? "success" : "danger";
+
+    return <Tag value={tagValue} severity={tagSeverity} />;
+  };
+
   return (
     <div className="card">
       <Dialog
@@ -376,19 +384,21 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
           className="dark:bg-gray-900 dark:text-gray-200"
           style={{ minWidth: "10rem" }}
         ></Column>
-        <Column
-          field="customer_id"
-          header="Customer ID"
-          sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
-          style={{ minWidth: "12rem" }}
-        ></Column>
+
         <Column
           field="sim_number"
           header="Sim Number"
           sortable
           className="dark:bg-gray-900 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
+        ></Column>
+        <Column
+          field="vehicle_status"
+          header="Status"
+          sortable
+          className="dark:bg-gray-900 dark:text-gray-200"
+          style={{ minWidth: "6rem" }}
+          body={renderStatusCell}
         ></Column>
 
         <Column
