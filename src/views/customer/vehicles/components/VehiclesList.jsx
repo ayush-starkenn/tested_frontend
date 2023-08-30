@@ -1,254 +1,77 @@
-import React, { useState, useEffect, useRef } from "react";
-import { classNames } from "primereact/utils";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import { Vehicles } from "../variables/Vehicles";
-import { Toast } from "primereact/toast";
+import Cookies from "js-cookie";
+import { FilterMatchMode } from "primereact/api";
 import { Button } from "primereact/button";
-import { Toolbar } from "primereact/toolbar";
+import { Column } from "primereact/column";
+import { DataTable } from "primereact/datatable";
 import { Dialog } from "primereact/dialog";
-import { InputText } from "primereact/inputtext";
-import { Tag } from "primereact/tag";
 import { Dropdown } from "primereact/dropdown";
+import { Tag } from "primereact/tag";
+import { InputText } from "primereact/inputtext";
+import React, { useState } from "react";
+import { TabPanel, TabView } from "primereact/tabview";
+import VehicleTrips from "./VehicleTrips";
+import FeatureSet from "./FeatureSet";
 
-export default function VehiclesList() {
-  let emptyProduct = {
-    id: null,
-    name: "",
-    image: null,
-    description: "",
-    category: null,
-    reg: 0,
-    quantity: 0,
-    rating: 0,
-    inventoryStatus: "ACTIVE",
+export default function VehiclesList({
+  vehiData,
+  editvehicle,
+  deleteVehicle,
+  ecuData,
+  iotData,
+  dmsData,
+  feauresetData,
+}) {
+  const token = Cookies.get("token");
+  const [filters, setFilters] = useState({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  });
+  const [globalFilterValue, setGlobalFilterValue] = useState("");
+  const [editDialog, setEditDialog] = useState(false);
+  const [deleteDialog, setDeleteDialog] = useState(false);
+  const [viewDialog, setViewDialog] = useState(false);
+  const [editData, setEditData] = useState({});
+  const [editId, setEditId] = useState("");
+  const [deleteId, setDeleteId] = useState("");
+
+  const onGlobalFilterChange = (e) => {
+    const value = e.target.value;
+    let _filters = { ...filters };
+
+    _filters["global"].value = value;
+
+    setFilters(_filters);
+    setGlobalFilterValue(value);
   };
 
-  const [products, setProducts] = useState(null);
-  const [productDialog, setProductDialog] = useState(false);
-  const [deleteProductDialog, setDeleteProductDialog] = useState(false);
-  const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
-  const [product, setProduct] = useState(emptyProduct);
-  const [selectedProducts, setSelectedProducts] = useState(null);
-  const [submitted, setSubmitted] = useState(false);
-  const [globalFilter, setGlobalFilter] = useState(null);
-  const toast = useRef(null);
-  const dt = useRef(null);
-  const [selectedEcu, setSelectedEcu] = useState(null);
-  const ECU = [
-    { name: "1", code: "one" },
-    { name: "2", code: "two" },
-    { name: "3", code: "three" },
-  ];
-  const [selectedStatus, setSelectedStatus] = useState(null);
-  const status = [
-    { name: "Active", code: "1" },
-    { name: "Deactive", code: "2" },
-  ];
-  useEffect(() => {
-    Vehicles.getProducts().then((data) => setProducts(data));
-  }, []);
-
-  // const formatCurrency = (value) => {
-  //   return value.toLocaleString("en-US", {
-  //     style: "currency",
-  //     currency: "USD",
-  //   });
-  // };
-
-  const openNew = () => {
-    setProduct(emptyProduct);
-    setSubmitted(false);
-    setProductDialog(true);
+  const clearSearch = () => {
+    setGlobalFilterValue(""); // Clear the search input value
+    const _filters = { ...filters };
+    _filters["global"].value = null; // Clear the global filter value
+    setFilters(_filters);
   };
 
-  const hideDialog = () => {
-    setSubmitted(false);
-    setProductDialog(false);
-  };
-
-  const hideDeleteProductDialog = () => {
-    setDeleteProductDialog(false);
-  };
-
-  const hideDeleteProductsDialog = () => {
-    setDeleteProductsDialog(false);
-  };
-
-  const saveProduct = () => {
-    setSubmitted(true);
-
-    if (product.name.trim()) {
-      let _products = [...products];
-      let _product = { ...product };
-
-      if (product.id) {
-        const index = findIndexById(product.id);
-
-        _products[index] = _product;
-        toast.current.show({
-          severity: "success",
-          summary: "Successful",
-          detail: "Product Updated",
-          life: 3000,
-        });
-      } else {
-        _product.id = createId();
-        _product.image = "product-placeholder.svg";
-        _products.push(_product);
-        toast.current.show({
-          severity: "success",
-          summary: "Successful",
-          detail: "Product Created",
-          life: 3000,
-        });
-      }
-
-      setProducts(_products);
-      setProductDialog(false);
-      setProduct(emptyProduct);
-    }
-  };
-
-  const editProduct = (product) => {
-    setProduct({ ...product });
-    setProductDialog(true);
-  };
-
-  const confirmDeleteProduct = (product) => {
-    setProduct(product);
-    setDeleteProductDialog(true);
-  };
-
-  const deleteProduct = () => {
-    let _products = products.filter((val) => val.id !== product.id);
-
-    setProducts(_products);
-    setDeleteProductDialog(false);
-    setProduct(emptyProduct);
-    toast.current.show({
-      severity: "success",
-      summary: "Successful",
-      detail: "Product Deleted",
-      life: 3000,
-    });
-  };
-
-  const findIndexById = (id) => {
-    let index = -1;
-
-    for (let i = 0; i < products.length; i++) {
-      if (products[i].id === id) {
-        index = i;
-        break;
-      }
-    }
-
-    return index;
-  };
-
-  const createId = () => {
-    let id = "";
-    let chars =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    for (let i = 0; i < 5; i++) {
-      id += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-
-    return id;
-  };
-
-  const exportCSV = () => {
-    dt.current.exportCSV();
-  };
-
-  const confirmDeleteSelected = () => {
-    setDeleteProductsDialog(true);
-  };
-
-  const deleteSelectedProducts = () => {
-    let _products = products.filter((val) => !selectedProducts.includes(val));
-
-    setProducts(_products);
-    setDeleteProductsDialog(false);
-    setSelectedProducts(null);
-    toast.current.show({
-      severity: "success",
-      summary: "Successful",
-      detail: "Products Deleted",
-      life: 3000,
-    });
-  };
-
-  const onInputChange = (e, name) => {
-    const val = (e.target && e.target.value) || "";
-    let _product = { ...product };
-
-    _product[`${name}`] = val;
-
-    setProduct(_product);
-  };
-
-  const leftToolbarTemplate = () => {
+  const renderHeader = () => {
     return (
-      <div className="flex flex-wrap gap-2">
-        <Button
-          label="Add Vehicle"
-          icon="pi pi-plus"
-          severity="Primary"
-          className="h-10 px-5 py-0"
-          onClick={openNew}
-        />
-        <Button
-          label="Delete"
-          icon="pi pi-trash"
-          className="h-10 px-5 py-0"
-          severity="danger"
-          title="Select to delete"
-          onClick={confirmDeleteSelected}
-          disabled={!selectedProducts || !selectedProducts.length}
-        />
+      <div className="my-4 flex justify-end">
+        <div className="justify-content-between align-items-center flex flex-wrap gap-2">
+          <span className="p-input-icon-left">
+            <i className="pi pi-search" />
+            <InputText
+              value={globalFilterValue}
+              onChange={onGlobalFilterChange}
+              placeholder="Keyword Search"
+              className="searchbox w-[25vw] cursor-pointer rounded-full dark:bg-gray-950 dark:text-gray-50"
+            />
+            {globalFilterValue && (
+              <Button
+                icon="pi pi-times"
+                className="p-button-rounded p-button-text"
+                onClick={clearSearch}
+              />
+            )}
+          </span>
+        </div>
       </div>
-    );
-  };
-
-  const rightToolbarTemplate = () => {
-    return (
-      <Button
-        label="Export"
-        icon="pi pi-download"
-        className="h-10 border-none bg-gray-600 px-5 py-0"
-        onClick={exportCSV}
-      />
-    );
-  };
-
-  // const imageBodyTemplate = (rowData) => {
-  //   return (
-  //     <img
-  //       src={`https://primefaces.org/cdn/primereact/images/product/${rowData.image}`}
-  //       alt={rowData.image}
-  //       className="shadow-2 border-round"
-  //       style={{ width: "64px" }}
-  //     />
-  //   );
-  // };
-
-  // const priceBodyTemplate = (rowData) => {
-  //   return formatCurrency(rowData.reg);
-  // };
-
-  // const ratingBodyTemplate = (rowData) => {
-  //   return <Rating value={rowData.rating} readOnly cancel={false} />;
-  // };
-
-  const statusBodyTemplate = (rowData) => {
-    return (
-      <Tag
-        value={rowData.inventoryStatus}
-        severity={getSeverity(rowData)}
-      ></Tag>
     );
   };
 
@@ -260,330 +83,362 @@ export default function VehiclesList() {
           rounded
           outlined
           className="mr-2"
-          onClick={() => editProduct(rowData)}
+          style={{ width: "2rem", height: "2rem" }}
+          onClick={() => openEditDialog(rowData)}
         />
         <Button
           icon="pi pi-trash"
           rounded
           outlined
+          style={{ width: "2rem", height: "2rem" }}
           severity="danger"
-          onClick={() => confirmDeleteProduct(rowData)}
+          className="mr-2"
+          onClick={() => DeleteDialog(rowData)}
+        />
+        <Button
+          icon="pi pi-eye"
+          rounded
+          outlined
+          className="text-red-500 dark:text-blue-500"
+          style={{ width: "2rem", height: "2rem" }}
+          onClick={() => ViewDialog(rowData)}
         />
       </React.Fragment>
     );
   };
 
-  const getSeverity = (product) => {
-    switch (product.inventoryStatus) {
-      case "ACTIVE":
-        return "success";
+  const openEditDialog = (rowData) => {
+    setEditDialog(true);
+    setEditData(rowData);
+    setEditId(rowData?.vehicle_uuid);
+  };
 
-      case "DEACTIVE":
-        return "danger";
+  const closeEditDialog = () => {
+    setEditDialog(false);
+    setEditData({});
+    setEditId("");
+  };
 
-      default:
-        return null;
+  const DeleteDialog = (rowData) => {
+    setDeleteDialog(!deleteDialog);
+    setDeleteId(rowData?.vehicle_uuid);
+  };
+
+  const ViewDialog = (rowData) => {
+    setViewDialog(true);
+  };
+  const closeViewDialog = () => {
+    setViewDialog(false);
+  };
+
+  const handleDelete = () => {
+    if (deleteId !== "") {
+      deleteVehicle(deleteId, token);
+      DeleteDialog();
     }
   };
 
-  const header = (
-    <div className="align-items-center flex flex-wrap justify-end gap-2 py-3 dark:bg-gray-950">
-      {/* <h4 className="m-0">Manage Products</h4> */}
-      <span className="p-input-icon-left">
-        <i className="pi pi-search" />
-        <InputText
-          type="search"
-          onInput={(e) => setGlobalFilter(e.target.value)}
-          placeholder="Search..."
-          className="w-[25vw] rounded-full dark:bg-gray-950 dark:text-gray-50"
-        />
-      </span>
-    </div>
-  );
-  const productDialogFooter = (
-    <React.Fragment>
-      <Button
-        label="Cancel"
-        icon="pi pi-times"
-        outlined
-        className="h-9 px-2 py-0"
-        style={{ backgroundColor: "transparent" }}
-        onClick={hideDialog}
-      />
-      <Button
-        label="Save"
-        className="h-9 border-none px-2 py-0"
-        style={{ backgroundColor: "#422AFB" }}
-        icon="pi pi-check"
-        onClick={saveProduct}
-      />
-    </React.Fragment>
-  );
-  const deleteProductDialogFooter = (
-    <React.Fragment>
-      <Button
-        label="No"
-        icon="pi pi-times"
-        outlined
-        onClick={hideDeleteProductDialog}
-      />
-      <Button
-        label="Yes"
-        icon="pi pi-check"
-        severity="danger"
-        outlined
-        onClick={deleteProduct}
-      />
-    </React.Fragment>
-  );
-  const deleteProductsDialogFooter = (
-    <React.Fragment>
-      <Button
-        label="No"
-        icon="pi pi-times"
-        outlined
-        onClick={hideDeleteProductsDialog}
-      />
-      <Button
-        label="Yes"
-        icon="pi pi-check"
-        severity="danger"
-        onClick={deleteSelectedProducts}
-      />
-    </React.Fragment>
-  );
+  const header = renderHeader();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setEditData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  //onSubmit function
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (editId && editData) {
+      editvehicle(editId, editData);
+      closeEditDialog();
+    }
+  };
+
+  //dropdown options
+
+  const ecuOptions = () => {
+    return ecuData?.map((el) => ({
+      label: el.device_id,
+      value: el.device_id,
+    }));
+  };
+
+  const iotOptions = () => {
+    return iotData?.map((el) => ({
+      label: el.device_id,
+      value: el.device_id,
+    }));
+  };
+  const dmsOptions = () => {
+    return dmsData?.map((el) => ({
+      label: el.device_id,
+      value: el.device_id,
+    }));
+  };
+
+  const featuresetOptions = () => {
+    return feauresetData?.map((el) => ({
+      label: el.featureset_name,
+      value: el.featureset_uuid,
+    }));
+  };
+
+  const statusOptions = [
+    {
+      label: "Active",
+      value: 1,
+    },
+    {
+      label: "Deactive",
+      value: 2,
+    },
+  ];
+
+  const renderStatusCell = (rowData) => {
+    const tagValue = rowData?.vehicle_status === 1 ? "Active" : "Deactive";
+    const tagSeverity = rowData?.vehicle_status === 1 ? "success" : "danger";
+
+    return <Tag value={tagValue} severity={tagSeverity} />;
+  };
+
+  const renderCellWithNA = (data) => {
+    return data ? data : "--";
+  };
 
   return (
     <div>
-      <Toast ref={toast} />
-      <div className="card rounded-lg bg-none dark:bg-gray-950">
-        <Toolbar
-          className="rounded-lg border-none dark:bg-gray-950"
-          start={leftToolbarTemplate}
-          end={rightToolbarTemplate}
-        >
-          {leftToolbarTemplate}
-        </Toolbar>
-
-        <DataTable
-          ref={dt}
-          removableSort
-          value={products}
-          selection={selectedProducts}
-          onSelectionChange={(e) => setSelectedProducts(e.value)}
-          dataKey="id"
-          paginator
-          rows={10}
-          rowsPerPageOptions={[5, 10, 25]}
-          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
-          globalFilter={globalFilter}
-          header={header}
-        >
-          <Column
-            selectionMode="multiple"
-            className=" dark:bg-gray-900 dark:text-gray-200"
-            exportable={false}
-          ></Column>
-          <Column
-            field="id"
-            header="ID"
-            sortable
-            className=" dark:bg-gray-900 dark:text-gray-200"
-            style={{ minWidth: "12rem" }}
-          ></Column>
-          <Column
-            field="name"
-            header="Vehicle Name"
-            sortable
-            className="border-none dark:bg-gray-900 dark:text-gray-200"
-            style={{ minWidth: "12rem", border: "none !important" }}
-          ></Column>
-
-          <Column
-            field="reg"
-            header="Registration No."
-            sortable
-            className="border-none dark:bg-gray-900 dark:text-gray-200"
-            style={{ minWidth: "14rem" }}
-          ></Column>
-          <Column
-            field="category"
-            header="ECU"
-            sortable
-            className="border-none dark:bg-gray-900 dark:text-gray-200"
-            style={{ minWidth: "10rem" }}
-          ></Column>
-          <Column
-            field="quantity"
-            header="IoT"
-            // body={ratingBodyTemplate}
-            sortable
-            className="border-none dark:bg-gray-900 dark:text-gray-200"
-            style={{ minWidth: "12rem" }}
-          ></Column>
-          <Column
-            field="code"
-            header="DMS"
-            sortable
-            className="border-none dark:bg-gray-900 dark:text-gray-200"
-            style={{ minWidth: "12rem" }}
-          ></Column>
-          <Column
-            field="inventoryStatus"
-            header="Status"
-            body={statusBodyTemplate}
-            sortable
-            className="border-none dark:bg-gray-900 dark:text-gray-200"
-            style={{ minWidth: "12rem" }}
-          ></Column>
-          <Column
-            body={actionBodyTemplate}
-            header="Action"
-            exportable={false}
-            className="border-none dark:bg-gray-900"
-            style={{ minWidth: "10rem" }}
-          ></Column>
-        </DataTable>
-      </div>
-      {/* Add New Vehicle Form */}
-      <Dialog
-        visible={productDialog}
-        style={{ width: "32rem" }}
-        breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-        header="Product Details"
-        modal
-        className="p-fluid"
-        footer={productDialogFooter}
-        onHide={hideDialog}
+      <DataTable
+        value={vehiData}
+        paginator
+        header={header}
+        rows={5}
+        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+        rowsPerPageOptions={[5, 10, 25]}
+        filters={filters}
+        filterDisplay="menu"
+        globalFilterFields={[
+          "vehicle_name",
+          "vehicle_registration",
+          "ecu",
+          "iot",
+          "dms",
+        ]}
+        emptyMessage="No devices found."
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
       >
-        <div className="field">
-          <label htmlFor="name" className="mb-2 font-bold">
-            Vehicle Name
-          </label>
-          <InputText
-            id="name"
-            value={product.name}
-            onChange={(e) => onInputChange(e, "name")}
-            required
-            autoFocus
-            className={classNames({ "p-invalid": submitted && !product.name })}
-            style={{ marginTop: "0.5rem" }}
-          />
-          {submitted && !product.name && (
-            <small className="p-error">Name is required.</small>
-          )}
-        </div>
-        <div className="field mt-2">
-          <label htmlFor="description" className="font-bold">
-            Registration Number
-          </label>
-          <InputText
-            id="description"
-            className="mt-2"
-            value={product.description}
-            onChange={(e) => onInputChange(e, "description")}
-            required
-          />
-        </div>
-
-        <div className="field mt-2">
-          <label htmlFor="" className="font-bold">
-            Select ECU
-          </label>
-          <Dropdown
-            value={selectedEcu}
-            onChange={(e) => setSelectedEcu(e.value)}
-            options={ECU}
-            optionLabel="name"
-            placeholder="Tap to select"
-            className="md:w-14rem mt-2 w-full"
-          />
-        </div>
-
-        <div className="field mt-2">
-          <label htmlFor="" className="font-bold">
-            Select IoT
-          </label>
-          <Dropdown
-            value={selectedEcu}
-            onChange={(e) => setSelectedEcu(e.value)}
-            options={ECU}
-            optionLabel="name"
-            placeholder="Tap to select"
-            className="md:w-14rem mt-2 w-full"
-          />
-        </div>
-
-        <div className="field mt-2">
-          <label htmlFor="" className="font-bold">
-            Select DMS
-          </label>
-          <Dropdown
-            value={selectedEcu}
-            onChange={(e) => setSelectedEcu(e.value)}
-            options={ECU}
-            optionLabel="name"
-            placeholder="Tap to select"
-            className="md:w-14rem mt-2 w-full"
-          />
-        </div>
-
-        <div className="field mt-2">
-          <label htmlFor="" className="font-bold">
-            Select Status
-          </label>
-          <Dropdown
-            value={selectedStatus}
-            onChange={(e) => setSelectedStatus(e.value)}
-            options={status}
-            optionLabel="name"
-            placeholder="Tap to select"
-            className="md:w-14rem mt-2 w-full"
-          />
-        </div>
-      </Dialog>
-
+        <Column
+          field="serialNo"
+          header="SR.NO"
+          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          style={{ minWidth: "4rem", textAlign: "center" }}
+        ></Column>
+        <Column
+          field="vehicle_name"
+          header="vehicle_name"
+          sortable
+          className="dark:bg-gray-900 dark:text-gray-200"
+          style={{ minWidth: "8rem" }}
+        ></Column>
+        <Column
+          field="vehicle_registration"
+          header="vehicle_registration"
+          sortable
+          className="dark:bg-gray-900 dark:text-gray-200"
+          style={{ minWidth: "8rem" }}
+        ></Column>
+        <Column
+          field="ecu"
+          header="ECU"
+          sortable
+          className="dark:bg-gray-900 dark:text-gray-200"
+          style={{ minWidth: "5rem" }}
+          body={(rowData) => renderCellWithNA(rowData.ecu)}
+        ></Column>
+        <Column
+          field="iot"
+          header="IoT"
+          sortable
+          className="dark:bg-gray-900 dark:text-gray-200"
+          style={{ minWidth: "5rem" }}
+          body={(rowData) => renderCellWithNA(rowData.iot)}
+        ></Column>
+        <Column
+          field="dms"
+          header="DMS"
+          sortable
+          className="dark:bg-gray-900 dark:text-gray-200"
+          style={{ minWidth: "5rem" }}
+          body={(rowData) => renderCellWithNA(rowData.dms)}
+        ></Column>
+        <Column
+          field="vehicle_status"
+          header="Status"
+          sortable
+          className="dark:bg-gray-900 dark:text-gray-200"
+          style={{ minWidth: "6rem" }}
+          body={renderStatusCell}
+        ></Column>
+        <Column
+          body={actionBodyTemplate}
+          header="Action"
+          className="dark:bg-gray-900 dark:text-gray-200"
+          style={{ minWidth: "6rem" }}
+        ></Column>
+      </DataTable>
+      {/* Edit vehicle Data */}
       <Dialog
-        visible={deleteProductDialog}
-        style={{ width: "32rem" }}
+        visible={editDialog}
+        onHide={closeEditDialog}
+        style={{ width: "45rem" }}
         breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-        header="Confirm"
+        header="Edit the Device"
         modal
-        footer={deleteProductDialogFooter}
-        onHide={hideDeleteProductDialog}
+        className="p-fluid dark:bg-gray-900"
       >
-        <div className="confirmation-content">
-          <i
-            className="pi pi-exclamation-triangle mr-3"
-            style={{ fontSize: "2rem" }}
-          />
-          {product && (
-            <span>
-              Are you sure you want to delete <b>{product.name}</b>?
+        <form onSubmit={handleSubmit} className="flex flex-wrap">
+          <div className="mx-auto mt-8 w-[34.5vw]">
+            <span className="p-float-label">
+              <InputText
+                id="vehicle_name"
+                name="vehicle_name"
+                onChange={handleChange}
+                value={editData?.vehicle_name}
+              />
+              <label htmlFor="vehicle_name">Vehicle Name</label>
             </span>
-          )}
-        </div>
+          </div>
+          <div className="mx-auto mt-8 w-[34.5vw]">
+            <span className="p-float-label">
+              <InputText
+                id="vehicle_registration"
+                name="vehicle_registration"
+                onChange={handleChange}
+                value={editData?.vehicle_registration}
+              />
+              <label htmlFor="vehicle_registration">Vehicle Registration</label>
+            </span>
+          </div>
+          <div className="mx-auto mt-8 w-[34.5vw]">
+            <span className="p-float-label">
+              <Dropdown
+                id="ecu"
+                name="ecu"
+                optionLabel="label"
+                optionValue="value"
+                options={ecuOptions()}
+                onChange={handleChange}
+                value={editData?.ecu}
+              />
+              <label htmlFor="ecu">Select ECU</label>
+            </span>
+          </div>
+          <div className="mx-auto mt-8 w-[34.5vw]">
+            <span className="p-float-label">
+              <Dropdown
+                id="iot"
+                name="iot"
+                optionLabel="label"
+                optionValue="value"
+                options={iotOptions()}
+                onChange={handleChange}
+                value={editData?.iot}
+              />
+              <label htmlFor="iot">Select IoT</label>
+            </span>
+          </div>
+          <div className="mx-auto mt-8 w-[34.5vw]">
+            <span className="p-float-label">
+              <Dropdown
+                id="dms"
+                name="dms"
+                optionLabel="label"
+                optionValue="value"
+                options={dmsOptions()}
+                onChange={handleChange}
+                value={editData?.dms || ""}
+              />
+              <label htmlFor="dms">Select DMS</label>
+            </span>
+          </div>
+          <div className="mx-auto mt-8 w-[34.5vw]">
+            <span className="p-float-label">
+              <Dropdown
+                id="featureset"
+                name="featureset_uuid"
+                optionLabel="label"
+                optionValue="value"
+                options={featuresetOptions()}
+                onChange={handleChange}
+                value={editData?.featureset_uuid}
+              />
+              <label htmlFor="status">Select Featureset</label>
+            </span>
+          </div>
+          <div className="mx-auto mt-8 w-[34.5vw]">
+            <span className="p-float-label">
+              <Dropdown
+                id="vehicle_status"
+                name="vehicle_status"
+                optionLabel="label"
+                optionValue="value"
+                options={statusOptions}
+                onChange={handleChange}
+                value={editData?.vehicle_status}
+              />
+              <label htmlFor="status">Select Status</label>
+            </span>
+          </div>
+          <div className="p-field p-col-12 flex justify-center">
+            <button
+              type="submit"
+              className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
+            >
+              Edit Vehicle
+            </button>
+          </div>
+        </form>
+      </Dialog>
+      {/* Delete vehicle Data */}
+      <Dialog
+        visible={deleteDialog}
+        onHide={DeleteDialog}
+        header="Confirm Delete"
+        footer={
+          <div>
+            <Button
+              label="Delete"
+              icon="pi pi-times"
+              className="p-button-danger mr-2 px-3 hover:bg-none dark:hover:bg-gray-50"
+              onClick={handleDelete}
+            />
+            <Button
+              label="Cancel"
+              icon="pi pi-check"
+              className="p-button-secondary px-3 py-2 hover:bg-none dark:hover:bg-gray-50"
+              onClick={DeleteDialog}
+            />
+          </div>
+        }
+      >
+        <div>Are you sure you want to delete ?</div>
       </Dialog>
 
+      {/* ViewDialog */}
       <Dialog
-        visible={deleteProductsDialog}
-        style={{ width: "32rem" }}
-        breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-        header="Confirm"
-        modal
-        footer={deleteProductsDialogFooter}
-        onHide={hideDeleteProductsDialog}
+        visible={viewDialog}
+        onHide={closeViewDialog}
+        header="View Page"
+        style={{ width: "70vw" }}
       >
-        <div className="confirmation-content">
-          <i
-            className="pi pi-exclamation-triangle mr-3"
-            style={{ fontSize: "2rem" }}
-          />
-          {product && (
-            <span>Are you sure you want to delete the selected products?</span>
-          )}
-        </div>
+        <TabView>
+          <TabPanel header="Vehicle's Trips" leftIcon="pi pi-truck mr-2">
+            <VehicleTrips />
+          </TabPanel>
+          <TabPanel header="Feature Set" leftIcon="pi pi-cog mr-2">
+            <FeatureSet />
+          </TabPanel>
+        </TabView>
       </Dialog>
     </div>
   );
