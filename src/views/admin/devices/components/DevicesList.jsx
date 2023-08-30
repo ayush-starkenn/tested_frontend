@@ -91,7 +91,7 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
   //device type filter
   const representativeFilterTemplate = (options) => {
     return (
-      <React.Fragment>
+      <>
         <div className="mb-3 font-bold dark:text-white">Device Type</div>
         <MultiSelect
           value={options.value}
@@ -101,7 +101,7 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
           placeholder="Any"
           className="p-column-filter"
         />
-      </React.Fragment>
+      </>
     );
   };
 
@@ -326,7 +326,6 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
                 optionLabel="label"
                 optionValue="value"
                 value={editData?.device_type || ""}
-                placeholder={deviceData?.device_type}
                 className="p-dropdown"
                 onChange={(e) => handleChange(e, "device_type")}
               />

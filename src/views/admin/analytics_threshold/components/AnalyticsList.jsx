@@ -21,6 +21,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
   const [globalFilterValue, setGlobalFilterValue] = useState("");
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [emptyFields, setEmptyFields] = useState([]);
+
   const [editData, setEditData] = useState({
     title: "",
     user_uuid: "",
@@ -226,27 +227,33 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
     setIsDialogVisible(false);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Check if any field is null in the editData
-    const hasNullField = Object.values(editData).some(
-      (value) => value === null
+    const emptyFieldNames = Object.keys(editData).filter(
+      (fieldName) =>
+        !editData[fieldName] ||
+        (typeof editData[fieldName] === "object" &&
+          Object.values(editData[fieldName]).some((val) => val === ""))
     );
 
-    if (hasNullField) {
+    if (emptyFieldNames.length > 0) {
       toastRef.current.show({
         severity: "warn",
-        summary: "Warning",
-        detail: "Please fill in all required fields.",
-        life: 5000,
+        summary: "Missing field",
+        detail: "Field cannot be empty",
+        life: 3000,
       });
-      return; // Prevent form submission
+      return;
     }
-
     // Proceed with submitting the form if there are no null fields
-    onEdit(editData?.threshold_uuid, editData);
-    closeDialog();
+    try {
+      await onEdit(editData?.threshold_uuid, editData);
+      closeDialog();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleChange = (e, name, nestedProperty = null) => {
