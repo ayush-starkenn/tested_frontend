@@ -77,7 +77,7 @@ const FeatureList = () => {
         headers: { authorization: `bearer ${token}` },
       })
       .then((res) => {
-        setListCustomers(res.data.customers);
+        setListCustomers(res.data.customerData);
       })
       .catch((err) => {
         console.log(err);
@@ -94,7 +94,7 @@ const FeatureList = () => {
         (el) => currentUsers.includes(el.user_uuid) && el.user_type === 2
       );
 
-      let mapUsers = filterUsers.map((el, ind) => (
+      let mapUsers = filterUsers?.map((el, ind) => (
         <Tag
           key={ind}
           className="my-1 mr-2 bg-gray-200 text-gray-800"

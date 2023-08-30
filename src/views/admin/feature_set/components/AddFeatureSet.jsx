@@ -288,7 +288,7 @@ const AddFeatureSet = ({ onSuccess }) => {
       return el.user_uuid.includes(customers[0]?.user_uuid);
     });
 
-    if (k.length > 0) {
+    if (k?.length > 0) {
       setSelectedValue(k[0].first_name + " " + k[0].last_name);
     }
   }, [listCustomers, customers]);
