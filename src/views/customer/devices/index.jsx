@@ -8,8 +8,12 @@ import { Toast } from "primereact/toast";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
+import Cookies from "js-cookie";
 
 const Devices = () => {
+  const user_uuid = Cookies.get("user_uuid");
+  const token = Cookies.get("token");
+
   const [data, setData] = useState([]);
   const [isListView, setIsListView] = useState(true);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
@@ -39,18 +43,21 @@ const Devices = () => {
 
   useEffect(() => {
     fetchDevicesData();
-  }, []);
+  }, [token]);
 
   //Fetching all data
   const fetchDevicesData = () => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}/admin/devices/get-all-devices`)
+      .get(
+        `http://localhost:8080/api/devices/get-user-devices-list/${user_uuid}`,
+        { headers: { authorization: `bearer ${token}` } }
+      )
       .then((res) => {
-        const formattedData = res.data.data.device.map((item, index) => ({
+        console.log(res);
+        const formattedData = res.data.results.map((item, index) => ({
           ...item,
           serialNo: index + 1,
         }));
-        console.log(formattedData);
         setData(formattedData);
       })
       .catch((err) => {
