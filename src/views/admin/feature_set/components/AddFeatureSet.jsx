@@ -16,7 +16,7 @@ const AddFeatureSet = ({ onSuccess }) => {
   const [customers, setCustomers] = useState([]);
   const [listCustomers, setListCustomers] = useState([]);
   const { updateFunc } = useContext(AppContext);
-  const [selectedValue, setSelectedValue] = useState([]);
+  const [selectedValue, setSelectedValue] = useState("");
   const [invalidFields, setInvalidFields] = useState([]);
   const token = Cookies.get("token");
   const user_uuid = Cookies.get("user_uuid");
@@ -28,7 +28,7 @@ const AddFeatureSet = ({ onSuccess }) => {
         headers: { authorization: `bearer ${token}` },
       })
       .then((res) => {
-        setListCustomers(res.data.customers);
+        setListCustomers(res.data.customerData);
       })
       .catch((err) => {
         console.log(err);
@@ -289,10 +289,10 @@ const AddFeatureSet = ({ onSuccess }) => {
     });
 
     if (k?.length > 0) {
-      setSelectedValue(k[0]?.first_name + " " + k[0]?.last_name);
+      setSelectedValue(k[0].first_name + " " + k[0].last_name);
     }
   }, [listCustomers, customers]);
-  //Test
+
   //add FS dialog
   return (
     <>
