@@ -186,10 +186,10 @@ const Drivers = () => {
   };
 
   //Edit driver API call
-  const handleEditDevice = (deviceId, editedDriver) => {
+  const handleEditDriver = (driver_uuid, editedDriver) => {
     axios
       .put(
-        `${process.env.REACT_APP_API_URL}/devices/edit-device/${deviceId}`,
+        `${process.env.REACT_APP_API_URL}/drivers/edit-driver/${driver_uuid}`,
         { ...editedDriver, userUUID },
         { headers: { authorization: `bearer ${token}` } }
       )
@@ -199,16 +199,43 @@ const Drivers = () => {
         toastRef.current.show({
           severity: "success",
           summary: "Success",
-          detail: `Device ${deviceId} updated successfully`,
+          detail: `Driver ${editedDriver.driver_first_name} updated successfully`,
           life: 3000,
         });
       })
       .catch((err) => {
-        console.log(err);
         toastRef.current.show({
-          severity: "danger",
+          severity: "error",
           summary: "Error",
-          detail: "Failed to update device",
+          detail: `${err.response.data.message || err.message}`,
+          life: 3000,
+        });
+      });
+  };
+
+  // Delete api call
+  const handleDeleteDriver = (driver_uuid) => {
+    axios
+      .put(
+        `${process.env.REACT_APP_API_URL}/drivers/delete-driver/${driver_uuid}`,
+        { user_uuid: userUUID },
+        { headers: { authorization: `bearer ${token}` } }
+      )
+      .then((res) => {
+        setDrivers(data);
+        toastRef.current.show({
+          severity: "success",
+          summary: "Success",
+          detail: `Device ${addData.driver_first_name} deleted successfully`,
+          life: 3000,
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+        toastRef.current.show({
+          severity: "error",
+          summary: "Error",
+          detail: "Failed to delete device. Please try again later.",
           life: 3000,
         });
       });
@@ -420,8 +447,8 @@ const Drivers = () => {
         <div className="opacity-100 transition-opacity duration-500">
           <DriversList
             data={data}
-            // onEditDevice={handleEditDevice}
-            // onDeleteDevice={handleDeleteDevice}
+            onEditDriver={handleEditDriver}
+            onDeleteDriver={handleDeleteDriver}
           />
         </div>
       )}
