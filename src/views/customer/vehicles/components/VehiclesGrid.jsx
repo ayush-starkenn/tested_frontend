@@ -6,7 +6,7 @@ import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
 import { Tag } from "primereact/tag";
 import { InputText } from "primereact/inputtext";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DataView } from "primereact/dataview";
 import { GiMineTruck } from "react-icons/gi";
 import { TabPanel, TabView } from "primereact/tabview";
@@ -33,6 +33,9 @@ export default function VehiclesGrid({
   const [editId, setEditId] = useState("");
   const [deleteId, setDeleteId] = useState("");
   const [viewDialog, setViewDialog] = useState(false);
+  const [localEcuData, setLocalEcuData] = useState([]);
+  const [localIoTData, setLocalIoTData] = useState([]);
+  const [localDMSData, setLocalDMSData] = useState([]);
 
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
@@ -50,6 +53,18 @@ export default function VehiclesGrid({
     _filters["global"].value = null; // Clear the global filter value
     setFilters(_filters);
   };
+
+  useEffect(() => {
+    if (ecuData) {
+      setLocalEcuData(ecuData);
+    }
+    if (iotData) {
+      setLocalIoTData(iotData);
+    }
+    if (dmsData) {
+      setLocalDMSData(dmsData);
+    }
+  }, [ecuData, iotData, dmsData]);
 
   const renderHeader = () => {
     return (
@@ -102,6 +117,18 @@ export default function VehiclesGrid({
   const openEditDialog = (rowData) => {
     setEditDialog(true);
     setEditData(rowData);
+    setLocalEcuData((prevData) => [
+      ...prevData,
+      { device_id: rowData.ecu, device_type: "ecu" },
+    ]);
+    setLocalIoTData((prevData) => [
+      ...prevData,
+      { device_id: rowData.iot, device_type: "iot" },
+    ]);
+    setLocalDMSData((prevData) => [
+      ...prevData,
+      { device_id: rowData.dms, device_type: "dms" },
+    ]);
     setEditId(rowData?.vehicle_uuid);
   };
 
@@ -148,26 +175,6 @@ export default function VehiclesGrid({
   };
 
   //dropdown options
-
-  const ecuOptions = () => {
-    return ecuData?.map((el) => ({
-      label: el.device_id,
-      value: el.device_id,
-    }));
-  };
-
-  const iotOptions = () => {
-    return iotData?.map((el) => ({
-      label: el.device_id,
-      value: el.device_id,
-    }));
-  };
-  const dmsOptions = () => {
-    return dmsData?.map((el) => ({
-      label: el.device_id,
-      value: el.device_id,
-    }));
-  };
 
   const featuresetOptions = () => {
     return feauresetData?.map((el) => ({
@@ -338,9 +345,9 @@ export default function VehiclesGrid({
               <Dropdown
                 id="ecu"
                 name="ecu"
-                optionLabel="label"
-                optionValue="value"
-                options={ecuOptions()}
+                optionLabel="device_id"
+                optionValue="device_id"
+                options={localEcuData}
                 onChange={handleChange}
                 value={editData?.ecu}
               />
@@ -352,9 +359,9 @@ export default function VehiclesGrid({
               <Dropdown
                 id="iot"
                 name="iot"
-                optionLabel="label"
-                optionValue="value"
-                options={iotOptions()}
+                optionLabel="device_id"
+                optionValue="device_id"
+                options={localIoTData}
                 onChange={handleChange}
                 value={editData?.iot}
               />
@@ -366,9 +373,9 @@ export default function VehiclesGrid({
               <Dropdown
                 id="dms"
                 name="dms"
-                optionLabel="label"
-                optionValue="value"
-                options={dmsOptions()}
+                optionLabel="device_id"
+                optionValue="device_id"
+                options={localDMSData}
                 onChange={handleChange}
                 value={editData?.dms || ""}
               />
