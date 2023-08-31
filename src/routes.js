@@ -144,7 +144,7 @@ export const routes_customer = [
     name: "",
     title: "Drivers",
     layout: "/customer",
-    path: "Drivers",
+    path: "drivers",
     icon: <RiContactsLine className="h-7 w-7" />,
     component: (
       <CustomerProtected>
