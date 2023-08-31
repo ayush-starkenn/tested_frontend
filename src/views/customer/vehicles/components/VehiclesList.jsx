@@ -7,7 +7,7 @@ import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
 import { Tag } from "primereact/tag";
 import { InputText } from "primereact/inputtext";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TabPanel, TabView } from "primereact/tabview";
 import VehicleTrips from "./VehicleTrips";
 import FeatureSet from "./FeatureSet";
@@ -22,6 +22,7 @@ export default function VehiclesList({
   feauresetData,
 }) {
   const token = Cookies.get("token");
+  const user_uuid = Cookies.get("user_uuid");
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
@@ -32,6 +33,9 @@ export default function VehiclesList({
   const [editData, setEditData] = useState({});
   const [editId, setEditId] = useState("");
   const [deleteId, setDeleteId] = useState("");
+  const [localEcuData, setLocalEcuData] = useState([]);
+  const [localIoTData, setLocalIoTData] = useState([]);
+  const [localDMSData, setLocalDMSData] = useState([]);
 
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
@@ -49,6 +53,18 @@ export default function VehiclesList({
     _filters["global"].value = null; // Clear the global filter value
     setFilters(_filters);
   };
+
+  useEffect(() => {
+    if (ecuData) {
+      setLocalEcuData(ecuData);
+    }
+    if (iotData) {
+      setLocalIoTData(iotData);
+    }
+    if (dmsData) {
+      setLocalDMSData(dmsData);
+    }
+  }, [ecuData, iotData, dmsData]);
 
   const renderHeader = () => {
     return (
@@ -110,6 +126,18 @@ export default function VehiclesList({
   const openEditDialog = (rowData) => {
     setEditDialog(true);
     setEditData(rowData);
+    setLocalEcuData((prevData) => [
+      ...prevData,
+      { device_id: rowData.ecu, device_type: "ecu" },
+    ]);
+    setLocalIoTData((prevData) => [
+      ...prevData,
+      { device_id: rowData.iot, device_type: "iot" },
+    ]);
+    setLocalDMSData((prevData) => [
+      ...prevData,
+      { device_id: rowData.dms, device_type: "dms" },
+    ]);
     setEditId(rowData?.vehicle_uuid);
   };
 
@@ -124,7 +152,7 @@ export default function VehiclesList({
     setDeleteId(rowData?.vehicle_uuid);
   };
 
-  const ViewDialog = (rowData) => {
+  const ViewDialog = () => {
     setViewDialog(true);
   };
   const closeViewDialog = () => {
@@ -156,26 +184,6 @@ export default function VehiclesList({
   };
 
   //dropdown options
-
-  const ecuOptions = () => {
-    return ecuData?.map((el) => ({
-      label: el.device_id,
-      value: el.device_id,
-    }));
-  };
-
-  const iotOptions = () => {
-    return iotData?.map((el) => ({
-      label: el.device_id,
-      value: el.device_id,
-    }));
-  };
-  const dmsOptions = () => {
-    return dmsData?.map((el) => ({
-      label: el.device_id,
-      value: el.device_id,
-    }));
-  };
 
   const featuresetOptions = () => {
     return feauresetData?.map((el) => ({
@@ -211,6 +219,7 @@ export default function VehiclesList({
       <DataTable
         value={vehiData}
         paginator
+        dataKey="user_uuid"
         header={header}
         rows={5}
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
@@ -324,12 +333,13 @@ export default function VehiclesList({
               <Dropdown
                 id="ecu"
                 name="ecu"
-                optionLabel="label"
-                optionValue="value"
-                options={ecuOptions()}
+                optionLabel="device_id"
+                optionValue="device_id"
+                options={localEcuData}
                 onChange={handleChange}
-                value={editData?.ecu}
+                value={editData?.ecu || ""}
               />
+
               <label htmlFor="ecu">Select ECU</label>
             </span>
           </div>
@@ -338,11 +348,11 @@ export default function VehiclesList({
               <Dropdown
                 id="iot"
                 name="iot"
-                optionLabel="label"
-                optionValue="value"
-                options={iotOptions()}
+                optionLabel="device_id"
+                optionValue="device_id"
+                options={localIoTData}
                 onChange={handleChange}
-                value={editData?.iot}
+                value={editData?.iot || ""}
               />
               <label htmlFor="iot">Select IoT</label>
             </span>
@@ -352,9 +362,9 @@ export default function VehiclesList({
               <Dropdown
                 id="dms"
                 name="dms"
-                optionLabel="label"
-                optionValue="value"
-                options={dmsOptions()}
+                optionLabel="device_id"
+                optionValue="device_id"
+                options={localDMSData}
                 onChange={handleChange}
                 value={editData?.dms || ""}
               />
