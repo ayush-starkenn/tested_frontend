@@ -90,10 +90,22 @@ export default function VehiclesList({
       </div>
     );
   };
+  const header = renderHeader();
 
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
+        <Button
+          icon="pi pi-map-marker"
+          rounded
+          outlined
+          className="mr-2"
+          style={{
+            width: "2rem",
+            height: "2rem",
+          }}
+          severity="info"
+        />
         <Button
           icon="pi pi-pencil"
           rounded
@@ -165,8 +177,6 @@ export default function VehiclesList({
       DeleteDialog();
     }
   };
-
-  const header = renderHeader();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
