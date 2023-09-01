@@ -265,6 +265,11 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
     { label: "Male", value: "male" },
     { label: "Female", value: "female" },
   ];
+
+  const handleDriverStatusChange = (event) => {
+    const newValue = parseInt(event.target.value);
+    setEditData({ ...editData, driver_status: newValue });
+  };
   return (
     <>
       {/* Edit Dialog */}
@@ -426,6 +431,28 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
             {editData?.driver_license_no === "" && (
               <p className="p-error">License number is required</p>
             )}
+          </div>
+          <div className="mx-auto mt-8">
+            <input
+              type="radio"
+              className="inlinemx-2 mx-2"
+              name="driver_status"
+              id="userActive"
+              value={1}
+              onChange={handleDriverStatusChange}
+              checked={editData?.driver_status === 1}
+            />
+            <label htmlFor="userActive">Active</label>
+            <input
+              type="radio"
+              className="mx-2 inline"
+              name="driver_status"
+              id="userDeactive"
+              value={2}
+              onChange={handleDriverStatusChange}
+              checked={editData?.driver_status === 2}
+            />
+            <label htmlFor="userDeactive">Deactive</label>
           </div>
           <div className="mt-6 flex justify-center">
             <button
