@@ -70,6 +70,7 @@ const Marketplace = () => {
   const closeDialog1 = () => {
     setDialog1(false);
     setAddData({});
+    setFormErrors({});
   };
 
   //api call to get vehicle list
@@ -262,6 +263,13 @@ const Marketplace = () => {
             life: 3000,
           });
         });
+    } else {
+      toastRef.current.show({
+        severity: "warn",
+        summary: "Incomplete form",
+        detail: "Please fill in all the required details.",
+        life: 3000,
+      });
     }
   };
 

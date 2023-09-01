@@ -91,29 +91,6 @@ export default function VehiclesGrid({
     );
   };
 
-  const actionBodyTemplate = (rowData) => {
-    return (
-      <React.Fragment>
-        <Button
-          icon="pi pi-pencil"
-          rounded
-          outlined
-          className="mr-2"
-          style={{ width: "2rem", height: "2rem" }}
-          onClick={() => openEditDialog(rowData)}
-        />
-        <Button
-          icon="pi pi-trash"
-          rounded
-          outlined
-          style={{ width: "2rem", height: "2rem" }}
-          severity="danger"
-          onClick={() => DeleteDialog(rowData)}
-        />
-      </React.Fragment>
-    );
-  };
-
   const openEditDialog = (rowData) => {
     setEditDialog(true);
     setEditData(rowData);
@@ -228,7 +205,7 @@ export default function VehiclesGrid({
                     {item.iot && <p>{item.iot}</p>}
                     {item.dms && <p>{item.dms}</p>}
                     <Tag
-                      value={item.vehicle_status === 1 ? "Success" : "Danger"}
+                      value={item.vehicle_status === 1 ? "Active" : "Deactive"}
                       severity={
                         item.vehicle_status === 1 ? "success" : "danger"
                       }
