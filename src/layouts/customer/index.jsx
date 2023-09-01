@@ -60,7 +60,6 @@ export default function CustomerLayout(props) {
       }
     });
   };
-
   document.documentElement.dir = "ltr";
   return (
     <div className="flex h-full w-full">

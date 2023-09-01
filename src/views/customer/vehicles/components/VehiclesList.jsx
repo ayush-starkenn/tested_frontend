@@ -11,6 +11,7 @@ import React, { useEffect, useState } from "react";
 import { TabPanel, TabView } from "primereact/tabview";
 import VehicleTrips from "./VehicleTrips";
 import FeatureSet from "./FeatureSet";
+import { Link } from "react-router-dom";
 
 export default function VehiclesList({
   vehiData,
@@ -94,7 +95,7 @@ export default function VehiclesList({
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-        <a href={`customer/vehicles/ongoing-trip/${rowData.vehicle_uuid}`}>
+        <Link to={`ongoing-trip/${rowData.vehicle_uuid}`}>
           <Button
             icon="pi pi-map-marker"
             rounded
@@ -106,7 +107,7 @@ export default function VehiclesList({
             }}
             severity="info"
           />
-        </a>
+        </Link>
         <Button
           icon="pi pi-pencil"
           rounded
