@@ -51,7 +51,9 @@ export default function CustomerLayout(props) {
     return routes_customer.map((prop, key) => {
       if (prop.layout === "/customer") {
         return (
-          <Route path={`/${prop.path}`} element={prop.component} key={key} />
+          <>
+            <Route path={`/${prop.path}`} element={prop.component} key={key} />
+          </>
         );
       } else {
         return null;

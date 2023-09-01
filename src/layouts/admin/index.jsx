@@ -50,7 +50,9 @@ export default function Admin(props) {
     return routes.map((prop, key) => {
       if (prop.layout === "/admin") {
         return (
-          <Route path={`/${prop.path}`} element={prop.component} key={key} />
+          <>
+            <Route path={`/${prop.path}`} element={prop.component} key={key} />
+          </>
         );
       } else {
         return null;

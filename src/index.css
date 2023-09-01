@@ -448,4 +448,7 @@ body
   .searchbox {
     width: 50vw;
   }
+  .custom-tooltip {
+    display: none;
+  }
 }

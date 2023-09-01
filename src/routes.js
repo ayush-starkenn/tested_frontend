@@ -12,21 +12,17 @@ import MainDashboard from "views/customer/default";
 import Vehicles from "views/customer/vehicles";
 import RFIDs from "views/customer/rfids";
 import Devices from "views/customer/devices";
-import OngoingTrips from "views/customer/ongoing";
 import Triggers from "views/customer/alert-triggers";
 import Contacts from "views/customer/contacts";
-import CompletedTrips from "views/customer/completed";
 import Reports from "views/customer/reports";
 
 // Icon Imports
 import {
   MdOutlineDashboard,
-  MdWebhook,
   MdOutlineFeaturedPlayList,
   MdContactPhone,
 } from "react-icons/md";
 import { BsTruck, BsFillCpuFill } from "react-icons/bs";
-import { AiOutlineCheckSquare } from "react-icons/ai";
 import { RiAlertLine, RiContactsLine } from "react-icons/ri";
 import { TbReport, TbDeviceAnalytics } from "react-icons/tb";
 import { BiRfid } from "react-icons/bi";
@@ -35,6 +31,8 @@ import AdminProtected from "authorization/AdminProteted";
 import CustomerProtected from "authorization/CustomerProtected";
 import { DiDatabase } from "react-icons/di";
 import Drivers from "views/customer/drivers";
+import Banner1 from "views/customer/vehicles/components/Banner";
+import { Route, Routes } from "react-router-dom";
 
 //routes for Admin panel
 export const routes_admin = [
@@ -144,7 +142,7 @@ export const routes_customer = [
     name: "",
     title: "Drivers",
     layout: "/customer",
-    path: "Drivers",
+    path: "drivers",
     icon: <RiContactsLine className="h-7 w-7" />,
     component: (
       <CustomerProtected>
@@ -160,7 +158,13 @@ export const routes_customer = [
     icon: <BsTruck className="h-7 w-7" />,
     component: (
       <CustomerProtected>
-        <Vehicles />
+        <Routes>
+          <Route
+            index
+            element={<Vehicles />} // Default component for /customer/vehicles
+          />
+          <Route path="ongoing-trip" element={<Banner1 />} />
+        </Routes>
       </CustomerProtected>
     ),
     secondary: true,
@@ -174,30 +178,6 @@ export const routes_customer = [
     component: (
       <CustomerProtected>
         <RFIDs />
-      </CustomerProtected>
-    ),
-  },
-  {
-    name: "",
-    title: "Ongoing Trips",
-    layout: "/customer",
-    path: "ongoing-trips",
-    icon: <MdWebhook className="h-7 w-7" />,
-    component: (
-      <CustomerProtected>
-        <OngoingTrips />
-      </CustomerProtected>
-    ),
-  },
-  {
-    name: "",
-    title: "Completed Trips",
-    layout: "/customer",
-    path: "completed-trips",
-    icon: <AiOutlineCheckSquare className="h-7 w-7" />,
-    component: (
-      <CustomerProtected>
-        <CompletedTrips />
       </CustomerProtected>
     ),
   },

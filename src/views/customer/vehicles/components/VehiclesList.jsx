@@ -95,17 +95,19 @@ export default function VehiclesList({
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-        <Button
-          icon="pi pi-map-marker"
-          rounded
-          outlined
-          className="mr-2"
-          style={{
-            width: "2rem",
-            height: "2rem",
-          }}
-          severity="info"
-        />
+        <a href={`customer/vehicles/ongoing-trip/${rowData.vehicle_uuid}`}>
+          <Button
+            icon="pi pi-map-marker"
+            rounded
+            outlined
+            className="mr-2"
+            style={{
+              width: "2rem",
+              height: "2rem",
+            }}
+            severity="info"
+          />
+        </a>
         <Button
           icon="pi pi-pencil"
           rounded
