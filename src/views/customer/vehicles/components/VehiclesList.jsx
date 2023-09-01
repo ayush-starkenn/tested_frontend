@@ -22,7 +22,6 @@ export default function VehiclesList({
   feauresetData,
 }) {
   const token = Cookies.get("token");
-  const user_uuid = Cookies.get("user_uuid");
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
