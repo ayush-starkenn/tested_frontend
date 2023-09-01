@@ -31,6 +31,8 @@ import AdminProtected from "authorization/AdminProteted";
 import CustomerProtected from "authorization/CustomerProtected";
 import { DiDatabase } from "react-icons/di";
 import Drivers from "views/customer/drivers";
+import Banner1 from "views/customer/vehicles/components/Banner";
+import { Route, Routes } from "react-router-dom";
 
 //routes for Admin panel
 export const routes_admin = [
@@ -156,7 +158,13 @@ export const routes_customer = [
     icon: <BsTruck className="h-7 w-7" />,
     component: (
       <CustomerProtected>
-        <Vehicles />
+        <Routes>
+          <Route
+            index
+            element={<Vehicles />} // Default component for /customer/vehicles
+          />
+          <Route path="ongoing-trip" element={<Banner1 />} />
+        </Routes>
       </CustomerProtected>
     ),
     secondary: true,

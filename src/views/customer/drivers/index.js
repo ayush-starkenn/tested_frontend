@@ -117,8 +117,24 @@ const Drivers = () => {
     );
   };
 
+  const isValidPhoneNumber = (phoneNumber) => {
+    // Regular expression to check for exactly 10 digits
+    const phonePattern = /^\d{10}$/;
+    return phonePattern.test(phoneNumber);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!isValidPhoneNumber(addData.driver_mobile)) {
+      toastRef.current.show({
+        severity: "warn",
+        summary: "Invalid Phone Number",
+        detail: "Please enter a 10-digit valid phone number.",
+        life: 3000,
+      });
+      return;
+    }
+
     if (isFormValid()) {
       axios
         .post(
@@ -187,6 +203,16 @@ const Drivers = () => {
 
   //Edit driver API call
   const handleEditDriver = (driver_uuid, editedDriver) => {
+    if (!isValidPhoneNumber(editedDriver.driver_mobile)) {
+      console.log("sapna");
+      toastRef.current.show({
+        severity: "warn",
+        summary: "Invalid Phone Number",
+        detail: "Please enter a 10-digit valid phone number.",
+        life: 3000,
+      });
+      return;
+    }
     axios
       .put(
         `${process.env.REACT_APP_API_URL}/drivers/edit-driver/${driver_uuid}`,
@@ -204,6 +230,7 @@ const Drivers = () => {
         });
       })
       .catch((err) => {
+        console.log(err.response.data.message);
         toastRef.current.show({
           severity: "error",
           summary: "Error",
