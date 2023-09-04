@@ -7,10 +7,14 @@ const applyFilters = (filters, allData) => {
     filteredData = filteredData.filter((item) =>
       Object.entries(item).some(
         ([key, value]) =>
-          key !== "created_at" &&
-          key !== "updated_at" &&
-          key !== "_id" &&
-          key !== "status" &&
+          key !== "driver_auth_id" &&
+          key !== "driver_created_at" &&
+          key !== "driver_created_by" &&
+          key !== "driver_id" &&
+          key !== "driver_modified_at" &&
+          key !== "driver_modified_by" &&
+          key !== "driver_uuid" &&
+          key !== "user_uuid" &&
           String(value)
             .toLowerCase()
             .includes(filters.global.value.toLowerCase())
@@ -22,7 +26,7 @@ const applyFilters = (filters, allData) => {
 };
 
 const DriversGrid = ({ data, onDeleteDevice, onEditDevice }) => {
-  return <></>;
+  return <>justify</>;
 };
 
 export default DriversGrid;

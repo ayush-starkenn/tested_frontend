@@ -399,7 +399,7 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
     );
   };
 
-  //searchbox
+  //Searchbox
   return (
     <div>
       <div className="my-4 mr-7  flex justify-end">

@@ -471,6 +471,7 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
       <DataTable
         value={data}
         removableSort
+        dataKey="driver_uuid"
         paginator
         header={header}
         rows={5}
@@ -489,12 +490,14 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
       >
         <Column
+          key="serialNo"
           field="serialNo"
           header="Sr. No."
           className="border-none dark:bg-gray-900 dark:text-gray-200"
           style={{ minWidth: "5rem", textAlign: "center" }}
         ></Column>
         <Column
+          key="full_name"
           field="full_name"
           header="Driver Name"
           sortable
@@ -509,24 +512,28 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
           style={{ minWidth: "12rem" }}
         ></Column> */}
         <Column
+          key="driver_email"
           field="driver_email"
           header="Email"
           className="dark:bg-gray-900 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
         ></Column>
         <Column
+          key="driver_mobile"
           field="driver_mobile"
           header="Contact"
           className="dark:bg-gray-900 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
         ></Column>
         <Column
+          key="driver_license_no"
           field="driver_license_no"
           header="License Number"
           className="dark:bg-gray-900 dark:text-gray-200"
           style={{ minWidth: "14rem" }}
         ></Column>
         <Column
+          key="driver_status"
           field="driver_status"
           header="Status"
           body={statusBodyTemplate}
@@ -535,6 +542,7 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
           style={{ minWidth: "12rem" }}
         ></Column>
         <Column
+          key="driver_dob"
           field="driver_dob"
           header="DOB"
           sortable
@@ -543,6 +551,7 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
           style={{ minWidth: "12rem" }}
         ></Column>
         <Column
+          key="driver_gender"
           field="driver_gender"
           header="Gender"
           sortable
