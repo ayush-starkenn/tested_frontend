@@ -26,17 +26,20 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
   const toastRef = useRef(null);
   const [selectedDriverDob, setSelectedDriverDob] = useState(null);
   const convertToIST = (dateTimeString) => {
+    const dateStr = dateTimeString.toString();
+    // console.log(dateStr);
     // Parse the date-time string into a Date object
-    const parts = dateTimeString.split("T");
+    const parts = dateStr.split("T");
     const datePart = parts[0];
-    const timePart = parts[1];
+    // const timePart = parts[1];
     const [year, month, day] = datePart.split("-");
-    const [hours, minutes, seconds] = timePart.split(":");
+    // const [hours, minutes, seconds] = timePart.split(":");
 
-    const dateTime = new Date(year, month - 1, day, hours, minutes, seconds);
+    const dateTime = new Date(year, month - 1, day);
+    console.log("date: ", dateTime);
 
-    const IST_OFFSET = 5 * 60 + 30; // IST offset in minutes
-    dateTime.setMinutes(dateTime.getMinutes() + IST_OFFSET);
+    // const IST_OFFSET = 5 * 60 + 30; // IST offset in minutes
+    dateTime.setMinutes(dateTime.getMinutes());
     return dateTime.toLocaleString("en-IN", {
       year: "numeric",
       month: "2-digit",
