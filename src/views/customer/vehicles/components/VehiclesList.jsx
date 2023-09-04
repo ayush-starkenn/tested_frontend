@@ -231,7 +231,7 @@ export default function VehiclesList({
       <DataTable
         value={vehiData}
         paginator
-        dataKey="user_uuid"
+        dataKey="vehicle_uuid"
         header={header}
         rows={5}
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"

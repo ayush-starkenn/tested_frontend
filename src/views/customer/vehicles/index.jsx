@@ -148,7 +148,7 @@ const Marketplace = () => {
         }
       )
       .then((res) => {
-        console.log(res.data.results);
+        console.log(res.data);
         setFeaturesetData(res.data.results);
       })
       .catch((err) => {

@@ -425,6 +425,9 @@ body
 .dark-mode .radio-input {
   background: #422afb;
 }
+.route4 {
+  display: none;
+}
 
 @media (max-width: 767px) {
   /* CSS styles for screens up to 767px wide (mobile devices) */
@@ -451,12 +454,4 @@ body
   .custom-tooltip {
     display: none;
   }
-}
-#root
-  > div
-  > div
-  > div.sm\:flex.duration-175.linear.fixed.\!z-50.flex.min-h-full.flex-col.bg-white.pb-10.shadow-2xl.shadow-white\/5.transition-all.dark\:\!bg-navy-800.dark\:text-white.md\:\!z-50.lg\:\!z-50.xl\:\!z-0.translate-x-0
-  > ul
-  > a:nth-child(5) {
-  display: none;
 }
