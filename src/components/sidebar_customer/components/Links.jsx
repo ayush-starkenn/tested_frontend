@@ -4,8 +4,6 @@ import { Link, useLocation } from "react-router-dom";
 import DashIcon from "components/icons/DashIcon";
 import { Tooltip } from "primereact/tooltip";
 
-// chakra imports
-
 export function SidebarLinks(props) {
   // Chakra color mode
   let location = useLocation();
@@ -21,10 +19,14 @@ export function SidebarLinks(props) {
     return routes_customer.map((route, index) => {
       if (route.layout === "/admin" || route.layout === "/customer") {
         return (
-          <Link key={index} to={route.layout + "/" + route.path}>
+          <Link
+            key={index}
+            to={route.layout + "/" + route.path}
+            className={`${"route" + index}`}
+          >
             <div className="relative mb-5 flex">
               <li
-                className={`tooltip-button-${index} mx-auto my-auto flex items-center py-[1.4px]`}
+                className={`tooltip-button-${index} mx-auto my-auto flex items-center py-[5px]`}
                 key={index}
               >
                 <span
@@ -34,7 +36,7 @@ export function SidebarLinks(props) {
                       : "font-2xl text-gray-600"
                   }`}
                 >
-                  {route.icon ? route.icon : <DashIcon />}{" "}
+                  {route.icon ? route.icon : <DashIcon />}
                 </span>
                 <Tooltip
                   target={`.tooltip-button-${index}`}
@@ -43,18 +45,9 @@ export function SidebarLinks(props) {
                 >
                   {route.title}
                 </Tooltip>
-                {/* <p
-                  className={`leading-1 ml-4 flex ${
-                    activeRoute(route.path) === true
-                      ? "font-bold text-navy-700 dark:text-white"
-                      : "font-medium text-gray-600"
-                  }`}
-                >
-                  {route.name}
-                </p> */}
               </li>
               {activeRoute(route.path) ? (
-                <div className="absolute right-0 top-[2.4px] h-7 w-1 rounded-lg bg-brand-500 dark:bg-brand-400" />
+                <div className="absolute right-0 top-[5px] h-7 w-1 rounded-lg bg-brand-500 dark:bg-brand-400" />
               ) : null}
             </div>
           </Link>
@@ -62,7 +55,6 @@ export function SidebarLinks(props) {
       }
     });
   };
-  // BRAND
   return createLinks(routes);
 }
 

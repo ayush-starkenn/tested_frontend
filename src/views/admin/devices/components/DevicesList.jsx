@@ -139,7 +139,7 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
 
   const header = renderHeader();
 
-  //handle Delete
+  //Delete dialog
   const DeleteDeviceDialog = ({ visible, onHide }) => {
     const handleConfirmDelete = async () => {
       try {
@@ -186,7 +186,7 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
     setRowId(rowData);
   };
 
-  //closes edit dialog
+  //Closes edit dialog
   const closeDialog = () => {
     setIsDialogVisible(false);
   };
@@ -310,7 +310,6 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
               <InputText
                 id="device_id"
                 name="device_id"
-                onChange={(e) => handleChange(e, "device_id")}
                 value={editData?.device_id || ""}
                 className={!editData?.device_id ? "p-invalid" : ""}
               />

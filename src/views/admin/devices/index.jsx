@@ -62,8 +62,6 @@ const DevicesAdmin = () => {
 
   // Edit Devices
   const handleEditDevice = (deviceId, editedDevice) => {
-    // console.log(editedDevice);
-    // return false;
     axios
       .put(
         `${process.env.REACT_APP_API_URL}/devices/edit-device/${deviceId}`,
@@ -155,6 +153,7 @@ const DevicesAdmin = () => {
   //Add device dialog close
   const closeDialog = () => {
     resetFormData();
+    setValidationErrors(false);
     setIsDialogVisible(false);
   };
 
