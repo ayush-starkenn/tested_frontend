@@ -44,6 +44,7 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
     });
   };
 
+  console.log(data);
   //Global search logic
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
