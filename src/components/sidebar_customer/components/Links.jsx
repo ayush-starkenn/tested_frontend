@@ -4,8 +4,6 @@ import { Link, useLocation } from "react-router-dom";
 import DashIcon from "components/icons/DashIcon";
 import { Tooltip } from "primereact/tooltip";
 
-// chakra imports
-
 export function SidebarLinks(props) {
   // Chakra color mode
   let location = useLocation();
@@ -34,7 +32,7 @@ export function SidebarLinks(props) {
                       : "font-2xl text-gray-600"
                   }`}
                 >
-                  {route.icon ? route.icon : <DashIcon />}{" "}
+                  {route.icon ? route.icon : <DashIcon />}
                 </span>
                 <Tooltip
                   target={`.tooltip-button-${index}`}

@@ -32,7 +32,6 @@ import CustomerProtected from "authorization/CustomerProtected";
 import { DiDatabase } from "react-icons/di";
 import Drivers from "views/customer/drivers";
 import Banner1 from "views/customer/vehicles/components/Banner";
-import { Route, Routes } from "react-router-dom";
 
 //routes for Admin panel
 export const routes_admin = [
@@ -140,7 +139,7 @@ export const routes_customer = [
   },
   {
     name: "",
-    title: "Drivers",
+    title: "drivers",
     layout: "/customer",
     path: "drivers",
     icon: <RiContactsLine className="h-7 w-7" />,
@@ -154,21 +153,27 @@ export const routes_customer = [
     name: "",
     title: "Vehicles",
     layout: "/customer",
-    path: "vehicles",
+    path: "vehicles/*", // Use a wildcard path to match any subroute of "vehicles"
     icon: <BsTruck className="h-7 w-7" />,
     component: (
       <CustomerProtected>
-        <Routes>
-          <Route
-            index
-            element={<Vehicles />} // Default component for /customer/vehicles
-          />
-          <Route path="ongoing-trip" element={<Banner1 />} />
-        </Routes>
+        <Vehicles />
       </CustomerProtected>
     ),
-    secondary: true,
   },
+  {
+    name: "",
+    title: "Vehicles",
+    layout: "/customer",
+    path: "vehicles/ongoing-trip/:vehicle_uuid",
+    icon: <BsTruck className="h-7 w-7" />,
+    component: (
+      <CustomerProtected>
+        <Banner1 />
+      </CustomerProtected>
+    ),
+  },
+
   {
     name: "",
     title: "Vehicle Logs",

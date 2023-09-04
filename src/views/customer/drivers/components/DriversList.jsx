@@ -206,6 +206,7 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
       });
     } else {
       onEditDriver(rowId?.driver_uuid, editData);
+      closeDialog();
     }
   };
 
