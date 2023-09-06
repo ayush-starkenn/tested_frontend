@@ -137,7 +137,7 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
       <DataTable
         value={contactsData}
         paginator
-        dataKey="user_uuid"
+        dataKey="contact_uuid"
         header={header}
         rows={5}
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"

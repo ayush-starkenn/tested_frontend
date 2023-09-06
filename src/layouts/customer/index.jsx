@@ -47,20 +47,17 @@ export default function CustomerLayout(props) {
     }
     return activeNavbar;
   };
-  const getRoutes = (routes_customer) => {
-    return routes_customer.map((prop, key) => {
-      if (prop.layout === "/customer") {
-        return (
-          <>
-            <Route path={`/${prop.path}`} element={prop.component} key={key} />
-          </>
-        );
-      } else {
-        return null;
-      }
-    });
-  };
-  console.log(routes_customer);
+  const getRoutes = (routes_customer) =>
+    routes_customer
+      .filter((prop) => prop.layout === "/customer")
+      .map((prop) => (
+        <Route
+          path={`/${prop.path}`}
+          element={prop.component}
+          key={prop.path}
+        />
+      ));
+
   document.documentElement.dir = "ltr";
   return (
     <div className="flex h-full w-full">

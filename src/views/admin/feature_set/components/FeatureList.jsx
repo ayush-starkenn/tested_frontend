@@ -444,7 +444,7 @@ const FeatureList = () => {
       <DataTable
         removableSort
         value={data}
-        dataKey="user_uuid"
+        dataKey="featureset_uuid"
         paginator
         rows={5}
         rowsPerPageOptions={[5, 10, 25]}
