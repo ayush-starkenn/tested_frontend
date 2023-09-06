@@ -92,6 +92,7 @@ const UnAssignCustomer = ({ parameters, onSuccess }) => {
     return featuresetUsers
       .filter((el) => el.user_type === 2)
       .map((el) => ({
+        key: el.user_uuid,
         label: el.first_name + " " + el.last_name,
         value: {
           user_uuid: el.user_uuid,

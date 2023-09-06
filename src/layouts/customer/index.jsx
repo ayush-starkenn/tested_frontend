@@ -60,7 +60,6 @@ export default function CustomerLayout(props) {
       }
     });
   };
-  console.log(routes_customer);
   document.documentElement.dir = "ltr";
   return (
     <div className="flex h-full w-full">

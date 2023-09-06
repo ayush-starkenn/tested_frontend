@@ -11,7 +11,7 @@ export default function Admin(props) {
   const { ...rest } = props;
   const location = useLocation();
   const [open, setOpen] = useState(true);
-  const [currentRoute, setCurrentRoute] = React.useState("Main Dashboard");
+  const [currentRoute, setCurrentRoute] = useState("Main Dashboard");
 
   useEffect(() => {
     window.addEventListener("resize", () =>
@@ -47,11 +47,15 @@ export default function Admin(props) {
     return activeNavbar;
   };
   const getRoutes = (routes) => {
-    return routes.map((prop, key) => {
+    return routes.map((prop, index) => {
       if (prop.layout === "/admin") {
         return (
           <>
-            <Route path={`/${prop.path}`} element={prop.component} key={key} />
+            <Route
+              path={`/${prop.path}`}
+              element={prop.component}
+              key={index}
+            />
           </>
         );
       } else {
@@ -83,6 +87,7 @@ export default function Admin(props) {
               <Routes>
                 {getRoutes(routes_admin)}
                 <Route
+                  key="default"
                   path="/"
                   element={<Navigate to="/admin/default" replace />}
                 />

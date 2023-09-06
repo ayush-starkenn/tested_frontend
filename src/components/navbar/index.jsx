@@ -9,6 +9,7 @@ import Sidebar from "components/sidebar_admin";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { HiOutlineUserCircle } from "react-icons/hi";
+import { TbLogout } from "react-icons/tb";
 
 const Navbar = ({ onOpenSidenav }) => {
   const [darkmode, setDarkmode] = useState(false);
@@ -16,6 +17,8 @@ const Navbar = ({ onOpenSidenav }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const name = Cookies.get("first_name");
+  const user_type = Cookies.get("user_type");
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -130,39 +133,50 @@ const Navbar = ({ onOpenSidenav }) => {
           )}
         </div>
         {/* Profile & Dropdown */}
-        <Dropdown
-          button={
-            <HiOutlineUserCircle className="pi pi-user h-6 w-6 cursor-pointer text-gray-400 dark:text-white" />
-          }
-          children={
-            <div className="flex w-56 flex-col justify-start rounded-[20px] bg-white bg-cover bg-no-repeat shadow-xl shadow-shadow-500 dark:!bg-navy-700 dark:text-white dark:shadow-none">
-              <div className="p-4">
-                <div className="flex items-center gap-2">
-                  <p className="text-sm font-bold text-navy-700 dark:text-white">
-                    👋 Hey, {name}
-                  </p>
+        {user_type !== "1" ? (
+          <Dropdown
+            button={
+              <HiOutlineUserCircle className="pi pi-user h-6 w-6 cursor-pointer text-gray-400 dark:text-white" />
+            }
+            children={
+              <div className="flex w-56 flex-col justify-start rounded-[20px] bg-white bg-cover bg-no-repeat shadow-xl shadow-shadow-500 dark:!bg-navy-700 dark:text-white dark:shadow-none">
+                <div className="p-4">
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-bold text-navy-700 dark:text-white">
+                      👋 Hey, {name}
+                    </p>
+                  </div>
+                </div>
+                <div className="h-px w-full bg-gray-200 dark:bg-white/20 " />
+
+                <div className="flex flex-col p-4">
+                  <a
+                    href="/profile"
+                    className="text-sm text-gray-800 dark:text-white hover:dark:text-white"
+                  >
+                    Profile Settings
+                  </a>
+                  <button
+                    onClick={handleLogout}
+                    className="mt-3 text-start text-sm font-medium text-red-500 hover:text-red-500"
+                  >
+                    Log Out
+                  </button>
                 </div>
               </div>
-              <div className="h-px w-full bg-gray-200 dark:bg-white/20 " />
-
-              <div className="flex flex-col p-4">
-                <a
-                  href="/profile"
-                  className="text-sm text-gray-800 dark:text-white hover:dark:text-white"
-                >
-                  Profile Settings
-                </a>
-                <button
-                  onClick={handleLogout}
-                  className="mt-3 text-start text-sm font-medium text-red-500 hover:text-red-500"
-                >
-                  Log Out
-                </button>
-              </div>
-            </div>
-          }
-          classNames={"py-2 top-8 -left-[180px] w-max"}
-        />
+            }
+            classNames={"py-2 top-8 -left-[180px] w-max"}
+          />
+        ) : (
+          <div className="cursor-pointer text-gray-600">
+            <button
+              onClick={handleLogout}
+              className="mt-3 text-start text-sm font-medium text-red-500 hover:text-red-500"
+            >
+              <TbLogout className="h-5 w-5 text-gray-600 dark:text-white" />
+            </button>
+          </div>
+        )}
       </div>
       {isMobile && <Sidebar open={sidebarOpen} onClose={handleOpenSidenav} />}
     </nav>

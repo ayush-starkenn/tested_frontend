@@ -36,7 +36,7 @@ import Banner1 from "views/customer/vehicles/components/Banner";
 //routes for Admin panel
 export const routes_admin = [
   {
-    name: "",
+    name: "Dashboard",
     title: "Dashboard",
     layout: "/admin",
     path: "dashboard",
@@ -48,7 +48,7 @@ export const routes_admin = [
     ),
   },
   {
-    name: "",
+    name: "Customers",
     title: "Customers",
     layout: "/admin",
     path: "customers",
@@ -60,7 +60,7 @@ export const routes_admin = [
     ),
   },
   {
-    name: "",
+    name: "Devices",
     title: "Devices",
     layout: "/admin",
     icon: <BsFillCpuFill className="h-7 w-7" />,
@@ -72,7 +72,7 @@ export const routes_admin = [
     ),
   },
   {
-    name: "",
+    name: "Vehicles",
     title: "Vehicles",
     layout: "/admin",
     path: "vehicles",
@@ -86,7 +86,7 @@ export const routes_admin = [
   },
 
   {
-    name: "",
+    name: "Feature Set",
     title: "Feature Set",
     layout: "/admin",
     path: "feature-set",
@@ -98,7 +98,7 @@ export const routes_admin = [
     ),
   },
   {
-    name: "",
+    name: "Analytics",
     title: "Analytics Threshold",
     layout: "/admin",
     path: "analytics-threshold",
@@ -114,7 +114,7 @@ export const routes_admin = [
 //routes for Customer panel
 export const routes_customer = [
   {
-    name: "",
+    name: "Dashboard",
     title: "Dashboard",
     layout: "/customer",
     path: "dashboard",
@@ -126,7 +126,7 @@ export const routes_customer = [
     ),
   },
   {
-    name: "",
+    name: "Devices",
     title: "Devices",
     layout: "/customer",
     icon: <BsFillCpuFill className="h-7 w-7" />,
@@ -138,7 +138,7 @@ export const routes_customer = [
     ),
   },
   {
-    name: "",
+    name: "drivers",
     title: "drivers",
     layout: "/customer",
     path: "drivers",
@@ -150,7 +150,7 @@ export const routes_customer = [
     ),
   },
   {
-    name: "",
+    name: "Vehicles",
     title: "Vehicles",
     layout: "/customer",
     path: "vehicles/*", // Use a wildcard path to match any subroute of "vehicles"
@@ -162,7 +162,7 @@ export const routes_customer = [
     ),
   },
   {
-    name: "",
+    name: "Vehicles",
     title: "Vehicles",
     layout: "/customer",
     path: "vehicles/ongoing-trip/:vehicle_uuid",
@@ -175,7 +175,7 @@ export const routes_customer = [
   },
 
   {
-    name: "",
+    name: "Vehicle",
     title: "Vehicle Logs",
     layout: "/customer",
     path: "vehicle-logs",
@@ -187,7 +187,7 @@ export const routes_customer = [
     ),
   },
   {
-    name: "",
+    name: "Alert",
     title: "Alert Triggers",
     layout: "/customer",
     path: "alert-triggers",
@@ -199,7 +199,7 @@ export const routes_customer = [
     ),
   },
   {
-    name: "",
+    name: "RFIDs",
     title: "RFIDs",
     layout: "/customer",
     path: "RFIDs",
@@ -211,7 +211,7 @@ export const routes_customer = [
     ),
   },
   {
-    name: "",
+    name: "Reports",
     title: "Reports",
     layout: "/customer",
     path: "reports",
@@ -223,7 +223,7 @@ export const routes_customer = [
     ),
   },
   {
-    name: "",
+    name: "Contacts",
     title: "Contacts",
     layout: "/customer",
     path: "contacts",
