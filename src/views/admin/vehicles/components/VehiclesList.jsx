@@ -1,223 +1,232 @@
-import React, { useState, useRef } from "react";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import { Toast } from "primereact/toast";
-import { Button } from "primereact/button";
-import { Dialog } from "primereact/dialog";
-import { InputText } from "primereact/inputtext";
-import { Tag } from "primereact/tag";
+import React, { useState, useEffect } from "react";
 import { FilterMatchMode } from "primereact/api";
-import { TabView, TabPanel } from "primereact/tabview";
-import FeatureSet from "./FeatureSet";
+import { DataView } from "primereact/dataview";
+import { Tag } from "primereact/tag";
+import { Button } from "primereact/button";
+import { InputText } from "primereact/inputtext";
+import { GiMineTruck } from "react-icons/gi";
+import { Dialog } from "primereact/dialog";
+import { TabPanel, TabView } from "primereact/tabview";
 import VehicleTrips from "./VehicleTrips";
+import FeatureSet from "./FeatureSet";
+const applyFilters = (filters, allData) => {
+  let filteredData = allData;
+  //condition to exclude these fields for global search
+  if (filters.global.value) {
+    filteredData = filteredData.filter((item) =>
+      Object.entries(item).some(
+        ([key, value]) =>
+          key !== "created_at" &&
+          key !== "updated_at" &&
+          key !== "_id" &&
+          key !== "status" &&
+          String(value)
+            .toLowerCase()
+            .includes(filters.global.value.toLowerCase())
+      )
+    );
+  }
 
-export default function VehiclesList({ data }) {
-  const [selectedVehicles, setSelectedVehicles] = useState(null);
-  const [globalFilterValue, setGlobalFilterValue] = useState("");
-  const toast = useRef(null);
+  return filteredData;
+};
+export default function VehiclesGrid({ data }) {
   const [visible, setVisible] = useState(false);
+  const [allData, setAllData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const totalItems = filteredData.length;
   const [myData, setMyData] = useState();
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    device_type: { value: null, matchMode: FilterMatchMode.IN },
   });
-
-  //global search
-  const onGlobalFilterChange = (e) => {
-    const value = e.target.value;
-    let _filters = { ...filters };
-
-    _filters["global"].value = value;
-
-    setFilters(_filters);
-    setGlobalFilterValue(value);
-  };
-
-  const clearSearch = () => {
-    setGlobalFilterValue("");
-    const _filters = { ...filters };
-    _filters["global"].value = null;
-    setFilters(_filters);
-  };
-
-  const statusBodyTemplate = (rowData) => {
-    return (
-      <Tag
-        className="px-3"
-        value={
-          parseInt(rowData.vehicle_status) === 1
-            ? "Active"
-            : parseInt(rowData.vehicle_status) === 2
-            ? "Deactive"
-            : ""
-        }
-        severity={getSeverity(rowData)}
-      ></Tag>
-    );
-  };
-  //opens vehicle details dialog
-  const openDialog = (rowData) => {
-    setMyData(rowData);
-    setVisible(true);
-  };
-  //closes vehicle details dialog
-  const closeDialog = () => {
-    setVisible(false);
-  };
-
-  const actionBodyTemplate = (rowData) => {
-    return (
-      <React.Fragment>
-        <Button
-          icon="pi pi-eye"
-          rounded
-          outlined
-          className="text-red-500 dark:text-blue-500"
-          style={{ width: "2rem", height: "2rem" }}
-          onClick={() => openDialog(rowData)}
-        />
-      </React.Fragment>
-    );
-  };
+  const [globalFilterValue, setGlobalFilterValue] = useState("");
 
   const getSeverity = (data) => {
-    switch (data.vehicle_status) {
-      case 1:
+    switch (data.status) {
+      case "1":
         return "success";
-
-      case 2:
+      case "0":
         return "danger";
-
       default:
         return null;
     }
   };
 
-  const header = (
-    <div className="align-items-center flex flex-wrap justify-end gap-2 py-3 dark:bg-gray-950">
-      <span className="p-input-icon-left">
-        <i className="pi pi-search" />
-        <InputText
-          value={globalFilterValue}
-          onChange={onGlobalFilterChange}
-          placeholder="Keyword Search"
-          className="searchbox w-[25vw] cursor-pointer rounded-full dark:bg-gray-950 dark:text-gray-50"
-        />
-        {globalFilterValue && (
-          <Button
-            icon="pi pi-times"
-            className="p-button-rounded p-button-text"
-            onClick={clearSearch}
-          />
-        )}
-      </span>
-    </div>
-  );
+  useEffect(() => {
+    setAllData(data);
+    const filteredData = applyFilters(filters, data);
+    setFilteredData(filteredData);
+  }, [data, filters]);
+  //global search
+  const onGlobalFilterChange = (e) => {
+    const value = e.target.value;
+    setGlobalFilterValue(value);
+    const updatedFilters = {
+      ...filters,
+      global: { value, matchMode: FilterMatchMode.CONTAINS },
+    };
+    const filteredData = applyFilters(updatedFilters, allData);
+    setFilters(updatedFilters);
+    setFilteredData(filteredData);
+  };
+  const openDialog = (item) => {
+    setMyData(item);
+    setVisible(true);
+  };
+  const clearSearch = () => {
+    setGlobalFilterValue("");
+    const updatedFilters = {
+      ...filters,
+      global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    };
+    const filteredData = applyFilters(updatedFilters, allData);
+    setFilters(updatedFilters);
+    setFilteredData(filteredData);
+  };
 
+  //card
+  const itemTemplate = (item) => {
+    return (
+      <div className="p-col-12 vehicle-card mb-6 rounded bg-gray-50 dark:bg-gray-900 dark:text-gray-150">
+        <div className="card">
+          <div className="card-header">
+            <div className="flex items-center justify-end">
+              <div>
+                <Tag
+                  value={
+                    parseInt(item.status) === 1
+                      ? "Active"
+                      : parseInt(item.status) === 0
+                      ? "Deactive"
+                      : undefined
+                  }
+                  severity={getSeverity(item)}
+                ></Tag>
+              </div>
+            </div>
+          </div>
+          <div className="card-body">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="mt-4 flex justify-between font-semibold">
+                  <div className="mr-auto">
+                    <span>Vehicle Name</span>
+                  </div>
+                  <div>
+                    <span className="px-2 font-normal">
+                      {item.vehicle_name}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex justify-between font-semibold ">
+                  <div className="mr-auto">
+                    <span>Registration No.</span>
+                  </div>
+                  <div className=" text-end">
+                    <span className="px-2 font-normal">
+                      {item.vehicle_registration}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex justify-between font-semibold ">
+                  <div className="mr-auto">
+                    <span>DMS</span>
+                  </div>
+                  <div>
+                    <span className="px-2 font-normal">{item.dms}</span>
+                  </div>
+                </div>
+                <div className="text-bold flex justify-between font-semibold ">
+                  <div className="mr-auto">
+                    <span>IoT</span>
+                  </div>
+                  <div>
+                    <span className="px-2 font-normal">{item.iot}</span>
+                  </div>
+                </div>
+                <div className="text-bold flex justify-between font-semibold ">
+                  <div className="mr-auto">
+                    <span>ECU</span>
+                  </div>
+                  <div>
+                    <span className="px-2 font-normal">{item.ecu}</span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <GiMineTruck
+                  className="text-red-450 dark:text-red-550"
+                  style={{
+                    fontSize: "4rem",
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="card-actions">
+            <div>
+              <Button
+                icon="pi pi-eye"
+                rounded
+                outlined
+                className="text-red-500 dark:text-blue-500"
+                style={{ width: "2rem", height: "2rem" }}
+                onClick={() => openDialog(item)}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  //searchbox
   return (
     <div>
-      <Toast ref={toast} />
-      <div className="card mt-4 rounded-lg bg-none dark:bg-gray-950">
-        <DataTable
-          removableSort
-          value={data}
-          selection={selectedVehicles}
-          onSelectionChange={(e) => setSelectedVehicles(e.value)}
-          dataKey="user_uuid"
-          paginator
-          rows={5}
-          rowsPerPageOptions={[5, 10, 25]}
-          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
-          filterDisplay="menu"
-          filters={filters}
-          globalFilterFields={[
-            "vehicle_name",
-            "vehicle_registration",
-            "dms",
-            "iot",
-            "ecu",
-          ]}
-          emptyMessage="No vehicles found."
-          header={header}
-        >
-          <Column
-            key="serialNo"
-            field="serialNo"
-            header="Sr.No."
-            className="border-none dark:bg-gray-900 dark:text-gray-200"
-            style={{ minWidth: "4rem", textAlign: "center" }}
-          ></Column>
-          <Column
-            key="vehicle_name"
-            field="vehicle_name"
-            header="Vehicle Name"
-            sortable
-            className="border-none dark:bg-gray-900 dark:text-gray-200"
-            style={{ minWidth: "10rem", border: "none !important" }}
-          ></Column>
-
-          <Column
-            key="vehicle_registration"
-            field="vehicle_registration"
-            header="Registration No."
-            sortable
-            className="border-none dark:bg-gray-900 dark:text-gray-200"
-            style={{ minWidth: "12rem" }}
-          ></Column>
-          <Column
-            key="dms"
-            field="dms"
-            header="DMS"
-            sortable
-            className="border-none dark:bg-gray-900 dark:text-gray-200"
-            style={{ minWidth: "9rem" }}
-          ></Column>
-          <Column
-            key="iot"
-            field={`${data.iot === null ? "--" : "iot"}`}
-            header="IoT"
-            sortable
-            className="border-none dark:bg-gray-900 dark:text-gray-200"
-            style={{ minWidth: "9rem" }}
-          ></Column>
-          <Column
-            key="ecu"
-            field="ecu"
-            header="ECU"
-            sortable
-            className="border-none dark:bg-gray-900 dark:text-gray-200"
-            style={{ minWidth: "9rem" }}
-          ></Column>
-          <Column
-            key="vehicle_status"
-            field="vehicle_status"
-            header="Status"
-            body={statusBodyTemplate}
-            sortable
-            className="border-none dark:bg-gray-900 dark:text-gray-200"
-            style={{ minWidth: "7rem" }}
-          ></Column>
-          <Column
-            key="action"
-            body={actionBodyTemplate}
-            header="Action"
-            exportable={false}
-            className="border-none dark:bg-gray-900"
-            style={{ minWidth: "6rem" }}
-          ></Column>
-        </DataTable>
+      <div className="my-4 mr-7  flex justify-end">
+        <div className="justify-content-between align-items-center flex flex-wrap gap-2">
+          <span className="p-input-icon-left">
+            <i className="pi pi-search" />
+            <InputText
+              value={globalFilterValue}
+              onChange={onGlobalFilterChange}
+              placeholder="Keyword Search"
+              className="searchbox w-[25vw] cursor-pointer rounded-full dark:bg-gray-950 dark:text-gray-50"
+            />
+            {globalFilterValue && (
+              <Button
+                icon="pi pi-times"
+                className="p-button-rounded p-button-text"
+                onClick={clearSearch}
+              />
+            )}
+          </span>
+        </div>
       </div>
+      {/* Grid View */}
+      <DataView
+        value={filteredData}
+        layout="grid"
+        itemTemplate={itemTemplate}
+        paginator
+        rows={6}
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        emptyMessage="No vehicles found."
+      />
+      <p className="text-center text-gray-700">Total Items : {totalItems}</p>
 
       <Dialog
-        visible={visible}
-        onHide={closeDialog}
         header="Vehicle Details"
+        visible={visible}
         style={{ width: "70vw" }}
+        onHide={() => setVisible(false)}
       >
         <TabView>
+          {/* Vehicle Trips dialog */}
           <TabPanel header="Vehicle's Trips" leftIcon="pi pi-truck mr-2">
             <VehicleTrips />
           </TabPanel>
+          {/* Feature Set dialog */}
           <TabPanel header="Feature Set" leftIcon="pi pi-cog mr-2">
             <FeatureSet parameters={{ propValue: myData?._id }} />
           </TabPanel>
