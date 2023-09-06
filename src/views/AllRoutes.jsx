@@ -15,6 +15,7 @@ const AllRoutes = () => {
       <Route path="profile" element={<Profile />} />
       <Route path="admin/*" element={<AdminLayout />} />
       <Route path="customer/*" element={<CustomerLayout />} />
+
       <Route
         path="customer/report/"
         element={

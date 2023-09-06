@@ -73,6 +73,10 @@ export default function VehiclesGrid({ data }) {
     setMyData(item);
     setVisible(true);
   };
+
+  const closeDialog = () => {
+    setVisible(false);
+  };
   const clearSearch = () => {
     setGlobalFilterValue("");
     const updatedFilters = {
@@ -219,7 +223,7 @@ export default function VehiclesGrid({ data }) {
         header="Vehicle Details"
         visible={visible}
         style={{ width: "70vw" }}
-        onHide={() => setVisible(false)}
+        onHide={closeDialog}
       >
         <TabView>
           {/* Vehicle Trips dialog */}
@@ -228,7 +232,7 @@ export default function VehiclesGrid({ data }) {
           </TabPanel>
           {/* Feature Set dialog */}
           <TabPanel header="Feature Set" leftIcon="pi pi-cog mr-2">
-            <FeatureSet parameters={{ propValue: myData?._id }} />
+            <FeatureSet myData={myData} closeDialog={closeDialog} />
           </TabPanel>
         </TabView>
       </Dialog>

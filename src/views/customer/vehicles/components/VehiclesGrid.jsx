@@ -36,6 +36,7 @@ export default function VehiclesGrid({
   const [localEcuData, setLocalEcuData] = useState([]);
   const [localIoTData, setLocalIoTData] = useState([]);
   const [localDMSData, setLocalDMSData] = useState([]);
+  const [myData, setMyData] = useState();
 
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
@@ -128,6 +129,7 @@ export default function VehiclesGrid({
   };
 
   const ViewDialog = (rowData) => {
+    setMyData(rowData);
     setViewDialog(true);
   };
   const closeViewDialog = () => {
@@ -433,7 +435,7 @@ export default function VehiclesGrid({
             <VehicleTrips />
           </TabPanel>
           <TabPanel header="Feature Set" leftIcon="pi pi-cog mr-2">
-            <FeatureSet />
+            <FeatureSet myData={myData} closeDialog={closeViewDialog} />
           </TabPanel>
         </TabView>
       </Dialog>

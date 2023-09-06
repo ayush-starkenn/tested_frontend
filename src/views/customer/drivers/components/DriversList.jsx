@@ -27,18 +27,11 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
   const [selectedDriverDob, setSelectedDriverDob] = useState(null);
   const convertToIST = (dateTimeString) => {
     const dateStr = dateTimeString.toString();
-    // console.log(dateStr);
     // Parse the date-time string into a Date object
     const parts = dateStr.split("T");
     const datePart = parts[0];
-    // const timePart = parts[1];
     const [year, month, day] = datePart.split("-");
-    // const [hours, minutes, seconds] = timePart.split(":");
-
     const dateTime = new Date(year, month - 1, day);
-    console.log("date: ", dateTime);
-
-    // const IST_OFFSET = 5 * 60 + 30; // IST offset in minutes
     dateTime.setMinutes(dateTime.getMinutes());
     return dateTime.toLocaleString("en-IN", {
       year: "numeric",
@@ -474,6 +467,7 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
       <DataTable
         value={data}
         removableSort
+        dataKey="driver_uuid"
         paginator
         header={header}
         rows={5}
@@ -492,12 +486,14 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
       >
         <Column
+          key="serialNo"
           field="serialNo"
           header="Sr. No."
           className="border-none dark:bg-gray-900 dark:text-gray-200"
           style={{ minWidth: "5rem", textAlign: "center" }}
         ></Column>
         <Column
+          key="full_name"
           field="full_name"
           header="Driver Name"
           sortable
@@ -512,24 +508,28 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
           style={{ minWidth: "12rem" }}
         ></Column> */}
         <Column
+          key="driver_email"
           field="driver_email"
           header="Email"
           className="dark:bg-gray-900 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
         ></Column>
         <Column
+          key="driver_mobile"
           field="driver_mobile"
           header="Contact"
           className="dark:bg-gray-900 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
         ></Column>
         <Column
+          key="driver_license_no"
           field="driver_license_no"
           header="License Number"
           className="dark:bg-gray-900 dark:text-gray-200"
           style={{ minWidth: "14rem" }}
         ></Column>
         <Column
+          key="driver_status"
           field="driver_status"
           header="Status"
           body={statusBodyTemplate}
@@ -538,6 +538,7 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
           style={{ minWidth: "12rem" }}
         ></Column>
         <Column
+          key="driver_dob"
           field="driver_dob"
           header="DOB"
           sortable
@@ -546,6 +547,7 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
           style={{ minWidth: "12rem" }}
         ></Column>
         <Column
+          key="driver_gender"
           field="driver_gender"
           header="Gender"
           sortable

@@ -204,7 +204,6 @@ const Drivers = () => {
   //Edit driver API call
   const handleEditDriver = (driver_uuid, editedDriver) => {
     if (!isValidPhoneNumber(editedDriver.driver_mobile)) {
-      console.log("sapna");
       toastRef.current.show({
         severity: "warn",
         summary: "Invalid Phone Number",
@@ -465,9 +464,9 @@ const Drivers = () => {
       />
       {!isListView && (
         <DriversGrid
-        //   data={data}
-        //   onEditDevice={handleEditDevice}
-        //   onDeleteDevice={handleDeleteDevice}
+          data={data}
+          onEditDriver={handleEditDriver}
+          onDeleteDriver={handleDeleteDriver}
         />
       )}
       {isListView && (

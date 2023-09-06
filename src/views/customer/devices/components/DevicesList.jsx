@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { FilterMatchMode } from "primereact/api";
 import { DataTable } from "primereact/datatable";
 import { Toast } from "primereact/toast";
@@ -6,25 +6,14 @@ import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { MultiSelect } from "primereact/multiselect";
-import { Dialog } from "primereact/dialog";
-import { Dropdown } from "primereact/dropdown";
-import axios from "axios";
 import { Tag } from "primereact/tag";
 
-export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
+export default function DevicesList({ data }) {
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     device_type: { value: null, matchMode: FilterMatchMode.IN },
   });
   const [globalFilterValue, setGlobalFilterValue] = useState("");
-  const [isDialogVisible, setIsDialogVisible] = useState(false);
-  const [editData, setEditData] = useState();
-  const [listCustomers, setListCustomers] = useState([]);
-  const [deviceData, setDeviceData] = useState();
-  const [rowId, setRowId] = useState();
-
-  const [selectedDevice, setSelectedDevice] = useState(null);
-  const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
   const toastRef = useRef(null);
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
@@ -41,10 +30,6 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
     const _filters = { ...filters };
     _filters["global"].value = null; // Clear the global filter value
     setFilters(_filters);
-  };
-  const openDeleteDialog = (rowData) => {
-    setSelectedDevice(rowData);
-    setDeleteDialogVisible(true);
   };
   const renderHeader = () => {
     return (
@@ -103,136 +88,7 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
     );
   };
 
-  const actionBodyTemplate = (rowData) => {
-    return (
-      <React.Fragment>
-        <Button
-          icon="pi pi-pencil"
-          rounded
-          outlined
-          className="mr-2"
-          style={{ width: "2rem", height: "2rem" }}
-          onClick={() => openDialog(rowData)}
-        />
-        <Button
-          icon="pi pi-trash"
-          rounded
-          outlined
-          style={{ width: "2rem", height: "2rem" }}
-          severity="danger"
-          onClick={() => openDeleteDialog(rowData)}
-        />
-      </React.Fragment>
-    );
-  };
-
   const header = renderHeader();
-  //handle Delete
-  const DeleteDeviceDialog = ({ visible, onHide }) => {
-    const handleConfirmDelete = async () => {
-      try {
-        await onDeleteDevice(selectedDevice?.device_id);
-        onHide();
-      } catch (error) {
-        console.error(error);
-        onHide();
-      }
-    };
-
-    return (
-      <Dialog
-        visible={visible}
-        onHide={onHide}
-        header="Confirm Delete"
-        footer={
-          <div>
-            <Button
-              label="Delete"
-              icon="pi pi-times"
-              className="p-button-danger px-3 py-2 hover:bg-none dark:hover:bg-gray-50"
-              onClick={handleConfirmDelete}
-            />
-            <Button
-              label="Cancel"
-              icon="pi pi-check"
-              className="p-button-secondary px-3 py-2 hover:bg-none dark:hover:bg-gray-50"
-              onClick={onHide}
-            />
-          </div>
-        }
-      >
-        <div>Are you sure you want to delete {selectedDevice?.device_id}?</div>
-      </Dialog>
-    );
-  };
-
-  //edit device
-
-  const openDialog = (rowData) => {
-    setIsDialogVisible(true);
-    getDeviceData(rowData);
-    setEditData(rowData);
-    setRowId(rowData);
-  };
-
-  const closeDialog = () => {
-    setIsDialogVisible(false);
-  };
-
-  const devicesOptions = [
-    { label: "ECU", value: "ECU" },
-    { label: "IOT", value: "IOT" },
-    { label: "DMS", value: "DMS" },
-  ];
-
-  const stateOptions = [
-    { label: "Active", value: "true" },
-    { label: "Deactive", value: "false" },
-  ];
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onEditDevice(rowId?.device_id, editData);
-    closeDialog();
-  };
-
-  const handleChange = (e, name) => {
-    const value = e.target ? e.target.value : e.value;
-    setEditData((prevEditData) => ({
-      ...prevEditData,
-      [name]: value,
-    }));
-  };
-
-  useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_API_URL}/Admin/Devices/get-customers`)
-      .then((res) => {
-        setListCustomers(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [deviceData]);
-
-  const getDeviceData = (rowData) => {
-    axios
-      .get(
-        `${process.env.REACT_APP_API_URL}/Admin/Devices/get-Device/${rowData.device_id}`
-      )
-      .then((res) => {
-        setDeviceData(res.data.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const Customersoptions = () => {
-    return listCustomers?.map((el) => ({
-      label: el.first_name + " " + el.last_name,
-      value: el.userId,
-    }));
-  };
 
   const renderStatusCell = (rowData) => {
     const tagValue = rowData?.device_status === 1 ? "Active" : "Deactive";
@@ -243,104 +99,12 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
 
   return (
     <div className="card">
-      <Dialog
-        visible={isDialogVisible}
-        onHide={closeDialog}
-        style={{ width: "45rem" }}
-        breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-        header="Edit the Device"
-        modal
-        className="p-fluid dark:bg-gray-900"
-      >
-        <form onSubmit={handleSubmit} className="mx-auto">
-          <div className="mx-auto mt-8 w-[34.5vw]">
-            <span className="p-float-label">
-              <InputText
-                id="device_id"
-                name="device_id"
-                onChange={(e) => handleChange(e, "device_id")}
-                value={editData?.device_id || ""}
-              />
-              <label htmlFor="device_id">DeviceId</label>
-            </span>
-          </div>
-          <div className="mx-auto mt-8 w-[34.5vw]">
-            <span className="p-float-label">
-              <Dropdown
-                id="device_type"
-                name="device_type"
-                options={devicesOptions}
-                optionLabel="label"
-                optionValue="value"
-                value={editData?.device_type || ""}
-                placeholder={deviceData?.device.device_type}
-                className="p-dropdown"
-                onChange={(e) => handleChange(e, "device_type")}
-              />
-              <label htmlFor="device_type">Device_type</label>
-            </span>
-          </div>
-
-          <div className="mx-auto mt-8 w-[34.5vw]">
-            <span className="p-float-label">
-              <Dropdown
-                id="customer_id"
-                name="customer_id"
-                options={Customersoptions()}
-                optionLabel="label"
-                optionValue="value"
-                className="p-dropdown"
-                value={editData?.customer_id || ""}
-                onChange={(e) => handleChange(e, "customer_id")}
-              />
-
-              <label htmlFor="customer_id">Customer List</label>
-            </span>
-          </div>
-          <div className="mx-auto mt-8 w-[34.5vw]">
-            <span className="p-float-label">
-              <Dropdown
-                id="status"
-                name="status"
-                options={stateOptions}
-                optionLabel="label"
-                optionValue="value"
-                className="p-dropdown"
-                value={editData?.status || ""}
-                placeholder={deviceData?.device.status}
-                onChange={(e) => handleChange(e, "status")}
-              />
-              <label htmlFor="status">Status</label>
-            </span>
-          </div>
-          <div className="mx-auto mt-8 w-[34.5vw]">
-            <span className="p-float-label">
-              <InputText
-                id="sim_number"
-                name="sim_number"
-                keyfilter="pint"
-                value={editData?.sim_number || ""}
-                placeholder={deviceData?.device.sim_number}
-                onChange={(e) => handleChange(e, "sim_number")}
-              />
-              <label htmlFor="sim_number">Sim Number</label>
-            </span>
-          </div>
-          <div className="mt-6 flex justify-center">
-            <button
-              type="submit"
-              className="rounded bg-blue-600 px-4 py-2 font-semibold text-white  hover:bg-blue-600"
-            >
-              Edit Device
-            </button>
-          </div>
-        </form>
-      </Dialog>
       <Toast ref={toastRef} className="toast-custom" position="top-right" />
       <DataTable
         value={data}
         removableSort
         paginator
+        dataKey="id"
         header={header}
         rows={5}
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
@@ -400,18 +164,7 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
           style={{ minWidth: "6rem" }}
           body={renderStatusCell}
         ></Column>
-
-        <Column
-          body={actionBodyTemplate}
-          header="Action"
-          className="dark:bg-gray-900 dark:text-gray-200"
-          style={{ minWidth: "6rem" }}
-        ></Column>
       </DataTable>
-      <DeleteDeviceDialog
-        visible={deleteDialogVisible}
-        onHide={() => setDeleteDialogVisible(false)}
-      />
     </div>
   );
 }
