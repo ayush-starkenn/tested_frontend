@@ -1,75 +1,281 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
-import { useState } from "react";
 import axios from "axios";
+import Cookies from "js-cookie";
+import { Toast } from "primereact/toast";
 
-const FeatureSet = ({ parameters }) => {
+const FeatureSet = ({ myData, closeDialog }) => {
+  const token = Cookies.get("token");
+  const user_uuid = Cookies.get("user_uuid");
   const [featuresetDetails, setFeaturesetDetails] = useState({});
-  const [formData, setFormData] = useState({});
-  const [isEditable, setIsEditable] = useState(false);
-
-  const handleToggleEdit = () => {
-    setIsEditable(!isEditable);
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  const [featuresetData, setFeaturesetData] = useState({});
+  const [invalidFields, setInvalidFields] = useState([]);
+  const [checkFeatureset, setCheckFeatureset] = useState(false);
+  const [vehicleFeaturesetuuid, setVehicleFeaturesetuuid] = useState("");
+  const toastErr = useRef(null);
+  const toastRef = useRef(null);
 
   useEffect(() => {
-    setFormData(featuresetDetails);
-  }, [featuresetDetails]);
-
-  //edit and update feature set assigned to selected vehicle
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(formData);
-
     axios
-      .put(
-        `http://localhost:3001/api/featureset/featureset-edit-vehiclefeatureset/${parameters?.propValue}`,
-        formData
+      .get(
+        `http://localhost:8080/api/vehicle-featureset/get-vehiclefeatureset-vehicle/${myData.vehicle_uuid}`,
+        {
+          headers: { authorization: `bearer ${token}` },
+        }
       )
       .then((res) => {
-        if (res.request.status === 200) {
+        if (res.data.results.length > 0) {
+          setVehicleFeaturesetuuid(res.data.results[0].vehiclefeatureset_uuid);
+          let latestData = JSON.parse(res.data.results[0].featureset_data);
+          setFeaturesetDetails(latestData);
+          setFeaturesetData(latestData.featureset_data);
+          setCheckFeatureset(true);
+        } else {
+          axios
+            .get(
+              `http://localhost:8080/api/featuresets/get-featureset/${myData.featureset_uuid}`,
+              {
+                headers: { authorization: `bearer ${token}` },
+              }
+            )
+            .then((res) => {
+              setFeaturesetDetails(res.data.results[0]);
+              setFeaturesetData(
+                JSON.parse(res.data.results[0].featureset_data)
+              );
+            })
+            .catch((err) => {
+              console.log(err);
+            });
         }
       })
       .catch((err) => {
         console.log(err);
       });
+  }, [myData.vehicle_uuid, myData.featureset_uuid, token]);
+
+  //Handle Change Function
+
+  const handleDetails = (e) => {
+    const { name, value } = e.target;
+    setFeaturesetData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
   };
 
-  //fetch feature set details of selected vehicle
-  useEffect(() => {
-    axios
-      .get(
-        `http://localhost:3001/api/featureset/featureset-vehicleFeaturest-details/${parameters?.propValue}`
-      )
-      .then((res) => {
-        setFeaturesetDetails(res.data.vehicleData);
-      })
-      .catch((err) => {
-        console.log(err);
+  //handle Submit Function
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const invalidFieldsArray = [];
+
+    // Check for empty or unselected fields and add to the invalidFieldsArray
+    if (!featuresetDetails.featureset_name) {
+      invalidFieldsArray.push("featureset_name");
+    }
+
+    const requiredFields = [
+      "mode",
+      "activationSpeed",
+      "alarmThreshold",
+      "brakeThreshold",
+      "brakeSpeed",
+      "detectStationaryObject",
+      "allowCompleteBrake",
+      "detectOncomingObstacle",
+      "safetyMode",
+      "ttcThreshold",
+      "brakeOnDuration",
+      "brakeOffDuration",
+      "sleepAlertMode",
+      "preWarning",
+      "sleepAlertInterval",
+      "activationSpeed",
+      "startTime",
+      "stopTime",
+      "brakeActivateTime",
+      "braking",
+      "driverEvalMode",
+      "maxLaneChangeThreshold",
+      "minLaneChangeThreshold",
+      "maxHarshAccelerationThreshold",
+      "minHarshAccelerationThreshold",
+      "suddenBrakingThreshold",
+      "maxSpeedBumpThreshold",
+      "minSpeedBumpThreshold",
+      "GovernerMode",
+      "speedLimit",
+      "cruiseMode",
+      "cruiseactivationSpeed",
+      "vehicleType",
+      "obdMode",
+      "bluetoothConnAbsent",
+      "protocolType",
+      "tpmsMode",
+      "acceleratorType",
+      "brakeType",
+      "lazerMode",
+      "rfAngle",
+      "rfSensorMode",
+      "reserved1",
+      "reserved2",
+      "reserved3",
+      "speedSource",
+      "slope",
+      "offset",
+      "delay",
+      "rfNameMode",
+      "noAlarm",
+      "speed",
+      "accelerationBypass",
+      "rfSensorAbsent",
+      "gyroscopeAbsent",
+      "hmiAbsent",
+      "timeNotSet",
+      "accelerationError",
+      "iotAbsent",
+      "brakeError",
+      "tpmsError",
+      "simCardAbsent",
+      "lowBattery",
+      "tripNotStarted",
+      "obdAbsent",
+      "noAlarmSpeed",
+      "laserSensorAbsent",
+      "rfidAbsent",
+      "firmwareOtaUpdate",
+      "firewarereserver1",
+      "alcoholDetectionMode",
+      "alcoholreserved1",
+      "driverDrowsinessMode",
+      "driverreserved1",
+    ];
+
+    for (const field of requiredFields) {
+      if (!featuresetData[field]) {
+        invalidFieldsArray.push(field);
+      }
+    }
+    setInvalidFields(invalidFieldsArray);
+
+    // If there are invalid fields, show a toast and return
+    if (invalidFieldsArray.length > 0) {
+      toastErr.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Please fill in all required fields.",
+        life: 3000,
       });
-  }, [parameters]);
+      return;
+    }
+    if (checkFeatureset === false) {
+      const postData = {
+        user_uuid: user_uuid,
+        featureset_name: featuresetDetails?.featureset_name,
+        featureset_version: featuresetDetails?.featureset_version,
+        featureset_status: featuresetDetails?.featureset_status,
+        featureset_data: featuresetData,
+      };
+      console.log(postData.featureset_version, postData.featureset_status);
+      const strigifyData = JSON.stringify(postData);
+
+      const editData = {
+        user_uuid,
+        vehicle_uuid: myData.vehicle_uuid,
+        featureset_data: strigifyData,
+      };
+
+      axios
+        .post(
+          "http://localhost:8080/api/vehicle-featureset/add-vehiclefeatureset",
+          editData,
+          {
+            headers: { authorization: `bearer ${token}` },
+          }
+        )
+        .then((res) => {
+          toastRef.current.show({
+            severity: "success",
+            summary: "Success",
+            detail: `Vehicle Feature Set  added successfully`,
+            life: 3000,
+          });
+          setTimeout(() => {
+            closeDialog();
+          }, 3500);
+        })
+        .catch((err) => {
+          toastRef.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: "An error occurred. Please try again later.",
+            life: 3000,
+          });
+        });
+    } else {
+      //make the edit request
+
+      const postData = {
+        user_uuid: user_uuid,
+        featureset_name: featuresetDetails?.featureset_name,
+        featureset_version: featuresetDetails?.featureset_version,
+        featureset_status: featuresetDetails?.featureset_status,
+        featureset_data: featuresetData,
+      };
+      console.log(postData.featureset_version, postData.featureset_status);
+      const strigifyData = JSON.stringify(postData);
+
+      const editData = {
+        user_uuid,
+        vehicle_uuid: myData.vehicle_uuid,
+        featureset_data: strigifyData,
+      };
+      axios
+        .put(
+          `http://localhost:8080/api/vehicle-featureset/edit-vehiclefeatureset/${vehicleFeaturesetuuid}`,
+          editData,
+          {
+            headers: { authorization: `bearer ${token}` },
+          }
+        )
+        .then((res) => {
+          toastRef.current.show({
+            severity: "success",
+            summary: "Success",
+            detail: `Vehicle Feature Set  edited successfully`,
+            life: 3000,
+          });
+          setTimeout(() => {
+            closeDialog();
+          }, 3500);
+        })
+        .catch((err) => {
+          toastRef.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: "An error occurred. Please try again later.",
+            life: 3000,
+          });
+        });
+    }
+  };
 
   //dropdown options
   const StationaryObjectoptions = [
-    { label: "Yes", value: 0 },
-    { label: "No", value: 1 },
+    { label: "Yes", value: "1" },
+    { label: "No", value: "0" },
   ];
 
   const CompleteBrakeoptions = [
-    { label: "Yes", value: 1 },
-    { label: "No", value: 0 },
+    { label: "Yes", value: "1" },
+    { label: "No", value: "0" },
   ];
 
   const OncomingObstacleptions = [
-    { label: "Yes", value: 1 },
-    { label: "No", value: 0 },
+    { label: "Yes", value: "1" },
+    { label: "No", value: "0" },
   ];
 
   const SafetyModeoptions = [
@@ -82,8 +288,8 @@ const FeatureSet = ({ parameters }) => {
   ];
 
   const Brakingoptions = [
-    { label: "Yes", value: 1 },
-    { label: "No", value: 0 },
+    { label: "Yes", value: "1" },
+    { label: "No", value: "0" },
   ];
 
   const VehicleTypeoptions = [{ label: "12V Pedal", value: "12V Pedal" }];
@@ -126,47 +332,57 @@ const FeatureSet = ({ parameters }) => {
     { label: "GPS", value: "GPS" },
   ];
 
+  const activeOption = [
+    { label: "Active", value: "1" },
+    { label: "Deactive", value: "0" },
+  ];
+
   //edit dialog
   return (
     <>
+      <Toast ref={toastErr} className="bg-red-400" />
+      <Toast ref={toastRef} className="toast-custom" position="top-right" />
+
       <form onSubmit={handleSubmit}>
         <div className="card">
-          <div className="text-right">
-            <button onClick={handleToggleEdit}>
-              {isEditable ? (
-                <i className="pi pi-unlock rounded-full bg-gray-200 p-3 text-green-600" /> // Lock icon when editable
-              ) : (
-                <i className="pi pi-lock rounded-full bg-gray-200 p-3 text-red-400" /> // Unlock icon when non-editable
-              )}
-            </button>
-          </div>
-          <div className="flex" style={{ flexDirection: "column" }}>
-            <label htmlFor="username">Feature Set ID12345*</label>
-            <InputText
-              id="username"
-              value={featuresetDetails?.featureSetId}
-              le={{
-                width: "63vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
-              }}
-              name="featureSetId"
-              className="dark:bg-gray-900 dark:text-gray-150"
-              onChange={handleChange}
-            />
-            <small id="username-help">Unique id to identify feature set</small>
-          </div>
-
           <div className="mt-2 flex" style={{ flexDirection: "column" }}>
-            <label htmlFor="username">Feature Set Name*</label>
+            <label htmlFor="username">Feature Set Name</label>
             <InputText
               id="username"
-              le={{
+              style={{
                 width: "63vw",
+                borderRadius: "5px",
+              }}
+              name="featureset_name"
+              disabled
+              value={featuresetDetails?.featureset_name}
+            />
+            <small id="username-help">Unique id to identify feature set</small>
+          </div>
+          <div className="mt-2 flex" style={{ flexDirection: "column" }}>
+            <label htmlFor="username">Featureset Version</label>
+            <InputText
+              id="featuerset_version"
+              keyfilter="pint"
+              style={{
+                width: "63vw",
+                borderRadius: "5px",
+              }}
+              name="featuerset_version"
+              placeholder="Featureset Version"
+              disabled
+              value={featuresetDetails?.featureset_version}
+            />
+            <small id="username-help">Featureset version</small>
+          </div>
+
+          <div className="field my-3 w-[30vw]">
+            <label htmlFor="active">Select Status</label>
+            <Dropdown
+              name="featureset_status"
+              id="active"
+              style={{
+                width: "30vw",
                 borderBottom: "1px dashed #ced4da",
                 borderRadius: "0px",
                 padding: "0.30px",
@@ -174,172 +390,171 @@ const FeatureSet = ({ parameters }) => {
                 borderLeft: "none",
                 borderTop: "none",
               }}
-              value={featuresetDetails?.featureSetName}
-              name="featureSetName"
-              className="dark:bg-gray-900 dark:text-gray-150"
-              onChange={handleChange}
+              disabled
+              options={activeOption}
+              optionLabel="label"
+              optionValue="value"
+              className="md:w-14rem mt-2 w-full"
+              placeholder={
+                featuresetDetails?.featureset_status === 1
+                  ? "Active"
+                  : "Deactive"
+              }
+              value={featuresetDetails.featureset_status}
             />
-            <small id="username-help">Unique id to identify feature set</small>
           </div>
 
-          <p className="mt-4 font-bold dark:text-gray-300">System Type</p>
+          <p className="mt-4 font-bold ">System Type</p>
+          {invalidFields.includes("mode") && (
+            <span className="p-error">Please select any option.</span>
+          )}
           <div className="my-3 flex flex-wrap gap-3">
             <div className="align-items-center flex">
               <input
                 type="radio"
                 name="mode"
-                disabled={!isEditable}
-                onChange={handleChange}
-                value="Offline"
-                checked={formData?.mode === "Offline"}
+                value="Online"
+                checked={featuresetData?.mode === "Online"}
+                onChange={handleDetails}
               />
-              <label htmlFor="ingredient1" className="ml-2 dark:text-gray-400">
-                Offline Mode
+              <label htmlFor="ingredient2" className="ml-2">
+                Online Mode
               </label>
             </div>
             <div className="align-items-center flex">
               <input
                 type="radio"
-                disabled={!isEditable}
                 name="mode"
-                onChange={handleChange}
-                value="Online"
-                checked={formData?.mode === "Online"}
+                value="Offline"
+                onChange={handleDetails}
+                checked={featuresetData?.mode === "Offline"}
               />
-              <label htmlFor="ingredient2" className="ml-2 dark:text-gray-400">
-                Online Mode
+              <label htmlFor="ingredient1" className="ml-2">
+                Offline Mode
               </label>
             </div>
           </div>
         </div>
         <hr style={{ borderColor: "#333" }} />
-        <p className="mt-4 font-bold dark:text-gray-300">
-          Collision Avoidance System
-        </p>
+        <p className="mt-4 font-bold ">Collision Avoidance System</p>
+        {invalidFields.includes("mode") && (
+          <span className="p-error">Please select any option.</span>
+        )}
         <div className="card justify-content-center mt-5 flex gap-4">
           <div className="align-items-center flex">
             <input
               type="radio"
               name="CASMode"
-              value="Disable"
-              onChange={handleChange}
-              checked={formData?.CASMode === "Disable"}
-              disabled={!isEditable}
+              value="Enable"
+              onChange={handleDetails}
+              checked={featuresetData?.CASMode === "Enable"}
             />
-            <label htmlFor="ingredient1" className="ml-2">
-              Disable
+            <label htmlFor="ingredient2" className="ml-2">
+              Enable
             </label>
           </div>
           <div className="align-items-center flex">
             <input
               type="radio"
               name="CASMode"
-              value="Enable"
-              onChange={handleChange}
-              checked={formData?.CASMode === "Enable"}
-              disabled={!isEditable}
+              value="Disable"
+              onChange={handleDetails}
+              checked={featuresetData?.CASMode === "Disable"}
             />
-            <label htmlFor="ingredient2" className="ml-2">
-              Enable
+            <label htmlFor="ingredient1" className="ml-2">
+              Disable
             </label>
           </div>
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label>Activation Speed</label>
+            <label htmlFor="as">Activation Speed</label>
             <InputText
               keyfilter="pint"
-              disabled={!isEditable}
-              id="username"
+              id="as"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
-              value={formData?.activationSpeed || ""}
               placeholder={
-                formData.activationSpeed
-                  ? formData.activationSpeed
+                featuresetData?.activationSpeed
+                  ? featuresetData?.activationSpeed
                   : "Enter a value"
               }
+              value={featuresetData?.activationSpeed || ""}
               name="activationSpeed"
-              onChange={handleChange}
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("activationSpeed") ? "p-invalid" : ""
+              }`}
+              onChange={handleDetails}
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label>Alarm Threshold</label>
+            <label htmlFor="at">Alarm Threshold</label>
             <InputText
+              id="at"
               keyfilter="pint"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
               placeholder={
-                formData.alarmThreshold
-                  ? formData.alarmThreshold
+                featuresetData.alarmThreshold
+                  ? featuresetData.alarmThreshold
                   : "Enter a value"
               }
-              value={formData?.alarmThreshold || ""}
               name="alarmThreshold"
-              onChange={handleChange}
-              disabled={!isEditable}
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("alarmThreshold") ? "p-invalid" : ""
+              }`}
+              onChange={handleDetails}
+              value={featuresetData?.alarmThreshold || ""}
             />
           </div>
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label>Brake Threshold</label>
+            <label htmlFor="bt">Brake Threshold</label>
             <InputText
+              id="bt"
               keyfilter="pint"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
-              value={formData?.brakeThreshold || ""}
               placeholder={
-                formData.brakeThreshold
-                  ? formData.brakeThreshold
+                featuresetData.brakeThreshold
+                  ? featuresetData.brakeThreshold
                   : "Enter a value"
               }
+              value={featuresetData.brakeThreshold}
               name="brakeThreshold"
-              onChange={handleChange}
-              disabled={!isEditable}
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("brakeThreshold") ? "p-invalid" : ""
+              }`}
+              onChange={handleDetails}
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label>Brake Speed</label>
+            <label htmlFor="brake_speed">Brake Speed</label>
             <InputText
               keyfilter="pint"
+              id="brake_speed"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
-              value={formData?.brakeSpeed || ""}
               placeholder={
-                formData.brakeSpeed ? formData.brakeSpeed : "Enter a value"
+                featuresetData.brakeSpeed
+                  ? featuresetData.brakeSpeed
+                  : "Enter a value"
               }
+              value={featuresetData.brakeSpeed}
               name="brakeSpeed"
-              onChange={handleChange}
-              disabled={!isEditable}
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("brakeSpeed") ? "p-invalid" : ""
+              }`}
+              onChange={handleDetails}
             />
           </div>
         </div>
@@ -351,53 +566,47 @@ const FeatureSet = ({ parameters }) => {
               options={StationaryObjectoptions}
               optionLabel="label"
               optionValue="value"
-              value={formData.detectStationaryObject}
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
               placeholder={
-                formData.detectStationaryObject
-                  ? formData.detectStationaryObject
+                featuresetData.detectStationaryObject
+                  ? `Selected: ${featuresetData.detectStationaryObject}`
                   : "Select an option"
               }
               name="detectStationaryObject"
-              onChange={handleChange}
-              className="md:w-14rem mt-2 w-full"
-              disabled={!isEditable}
+              value={featuresetData.detectStationaryObject}
+              onChange={handleDetails}
+              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+                invalidFields.includes("detectStationaryObject")
+                  ? "p-invalid"
+                  : ""
+              }`}
             />
           </div>
           <div className="field my-3 w-[30vw]">
             <label htmlFor="combrake">Allow Complete Brake</label>
             <Dropdown
               name="allowCompleteBrake"
-              onChange={handleChange}
               id="combrake"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
+              onChange={handleDetails}
               options={CompleteBrakeoptions}
-              value={formData.allowCompleteBrake}
-              placeholder={
-                formData.allowCompleteBrake
-                  ? formData.allowCompleteBrake
-                  : "Select an option"
-              }
               optionLabel="label"
               optionValue="value"
-              className="md:w-14rem mt-2 w-full"
-              disabled={!isEditable}
+              placeholder={
+                featuresetData.allowCompleteBrake
+                  ? featuresetData.allowCompleteBrake
+                  : "Select an option"
+              }
+              value={featuresetData.allowCompleteBrake}
+              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+                invalidFields.includes("allowCompleteBrake") ? "p-invalid" : ""
+              }`}
             />
           </div>
         </div>
@@ -409,25 +618,23 @@ const FeatureSet = ({ parameters }) => {
               id="obstacle"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
-              options={OncomingObstacleptions}
-              value={formData.detectOncomingObstacles}
               placeholder={
-                formData.detectOncomingObstacles
-                  ? formData.detectOncomingObstacles
+                featuresetData.detectOncomingObstacles
+                  ? featuresetData.detectOncomingObstacles
                   : "Select an option"
               }
+              value={featuresetData.detectOncomingObstacle}
+              options={OncomingObstacleptions}
               optionLabel="label"
               optionValue="value"
-              onChange={handleChange}
-              className="md:w-14rem mt-2 w-full"
-              disabled={!isEditable}
+              onChange={handleDetails}
+              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+                invalidFields.includes("detectOncomingObstacle")
+                  ? "p-invalid"
+                  : ""
+              }`}
             />
           </div>
           <div className="field my-3 w-[30vw]">
@@ -437,272 +644,261 @@ const FeatureSet = ({ parameters }) => {
               id="safety"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
-              options={SafetyModeoptions}
-              value={formData.safetyMode}
               placeholder={
-                formData.safetyMode ? formData.safetyMode : "Select an option"
+                featuresetData.safetyMode
+                  ? featuresetData.safetyMode
+                  : "Select an option"
               }
-              onChange={handleChange}
+              value={featuresetData.safetyMode}
+              options={SafetyModeoptions}
+              onChange={handleDetails}
               optionLabel="label"
               optionValue="value"
-              className="md:w-14rem mt-2 w-full"
-              disabled={!isEditable}
+              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+                invalidFields.includes("safetyMode") ? "p-invalid" : ""
+              }`}
             />
           </div>
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label>TTC Threshold</label>
+            <label htmlFor="ttc_threshold">TTC Threshold</label>
             <InputText
+              id="ttc_threshold"
               keyfilter="pint"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
-              value={formData?.ttcThreshold || ""}
               placeholder={
-                formData.ttcThreshold ? formData.ttcThreshold : "Enter a value"
+                featuresetData.ttcThreshold
+                  ? featuresetData.ttcThreshold
+                  : "Enter a value"
               }
+              value={featuresetData.ttcThreshold}
               name="ttcThreshold"
-              onChange={handleChange}
-              disabled={!isEditable}
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("ttcThreshold") ? "p-invalid" : ""
+              }`}
+              onChange={handleDetails}
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label>Brake ON Duration</label>
+            <label htmlFor="brake_on">Brake ON Duration</label>
             <InputText
+              id="brake_on"
               keyfilter="pint"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
-              name="brakeOnDuration"
-              onChange={handleChange}
               placeholder={
-                formData.brakeOnDuration
-                  ? formData.brakeOnDuration
+                featuresetData.brakeOnDuration
+                  ? featuresetData.brakeOnDuration
                   : "Enter a value"
               }
-              value={formData?.brakeOnDuration || ""}
-              disabled={!isEditable}
+              value={featuresetData.brakeOnDuration}
+              name="brakeOnDuration"
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("brakeOnDuration") ? "p-invalid" : ""
+              }`}
+              onChange={handleDetails}
             />
           </div>
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label>Brake OFF Duration</label>
+            <label htmlFor="brake_off">Brake OFF Duration</label>
             <InputText
+              id="brake_off"
               keyfilter="pint"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
-              name="brakeOffDuration"
-              onChange={handleChange}
-              value={formData?.brakeOffDuration || ""}
               placeholder={
-                formData.brakeOffDuration
-                  ? formData.brakeOffDuration
+                featuresetData.brakeOffDuration
+                  ? featuresetData.brakeOffDuration
                   : "Enter a value"
               }
-              disabled={!isEditable}
+              value={featuresetData.brakeOffDuration}
+              name="brakeOffDuration"
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("brakeOffDuration") ? "p-invalid" : ""
+              }`}
+              onChange={handleDetails}
             />
           </div>
         </div>
 
         <hr style={{ borderColor: "#333" }} />
-        <p className="mt-4 font-bold dark:text-gray-300">Sleep Alert</p>
+        <p className="mt-4 font-bold ">Sleep Alert</p>
+        {invalidFields.includes("sleepAlertMode") && (
+          <span className="p-error">Please select any option.</span>
+        )}
         <div className="my-3 flex flex-wrap gap-3">
           <div className="align-items-center flex">
             <input
               type="radio"
+              id="op2"
               name="sleepAlertMode"
-              onChange={handleChange}
-              value="Offline"
-              checked={formData?.sleepAlertMode === "Offline"}
-              disabled={!isEditable}
+              onChange={handleDetails}
+              checked={featuresetData?.sleepAlertMode === "Online"}
+              value="Online"
             />
-            <label htmlFor="ingredient1" className="ml-2">
-              Disable
+            <label htmlFor="op2" className="ml-2">
+              Enable
             </label>
           </div>
           <div className="align-items-center flex">
             <input
               type="radio"
+              id="op1"
               name="sleepAlertMode"
-              onChange={handleChange}
-              value="Online"
-              checked={formData?.sleepAlertMode === "Online"}
-              disabled={!isEditable}
+              onChange={handleDetails}
+              checked={featuresetData?.sleepAlertMode === "Offline"}
+              value="Offline"
             />
-            <label htmlFor="ingredient2" className="ml-2">
-              Enable
+            <label htmlFor="op1" className="ml-2">
+              Disable
             </label>
           </div>
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label>Pre Warning</label>
+            <label htmlFor="pre_warning">Pre Warning</label>
             <InputText
               keyfilter="pint"
+              placeholder={
+                featuresetData.preWarning
+                  ? featuresetData.preWarning
+                  : "Enter a value"
+              }
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
-              value={formData?.preWarning || ""}
-              placeholder={
-                formData.preWarning ? formData.preWarning : "Enter a value"
-              }
+              value={featuresetData.preWarning}
               name="preWarning"
-              onChange={handleChange}
-              disabled={!isEditable}
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("preWarning") ? "p-invalid" : ""
+              }`}
+              onChange={handleDetails}
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label>Sleep Alert Interval</label>
+            <label htmlFor="sleep_interval">Sleep Alert Interval</label>
             <InputText
               keyfilter="pint"
+              value={featuresetData.sleepAlertInterval}
+              name="sleepAlertInterval"
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("sleepAlertInterval") ? "p-invalid" : ""
+              }`}
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
-              name="sleepAlertInterval"
-              onChange={handleChange}
+              onChange={handleDetails}
               placeholder={
-                formData.sleepAlertInterval
-                  ? formData.sleepAlertInterval
+                featuresetData.sleepAlertInterval
+                  ? featuresetData.sleepAlertInterval
                   : "Enter a value"
               }
-              value={formData?.sleepAlertInterval || ""}
-              disabled={!isEditable}
             />
           </div>
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label>Activation Speed</label>
+            <label htmlFor="act_speed">Activation Speed</label>
             <InputText
+              id="act_speed"
               keyfilter="pint"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
               name="activationSpeed"
-              onChange={handleChange}
-              value={formData?.activationSpeed || ""}
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("activationSpeed") ? "p-invalid" : ""
+              }`}
+              onChange={handleDetails}
               placeholder={
-                formData.activationSpeed
-                  ? formData.activationSpeed
+                featuresetData.activationSpeed
+                  ? featuresetData.activationSpeed
                   : "Enter a value"
               }
-              disabled={!isEditable}
+              value={featuresetData.activationSpeed}
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label>Start Time</label>
+            <label htmlFor="start_time">Start Time</label>
             <InputText
+              id="start_time"
               keyfilter="pint"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
               name="startTime"
-              onChange={handleChange}
-              value={formData?.startTime || ""}
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("startTime") ? "p-invalid" : ""
+              }`}
               placeholder={
-                formData.startTime ? formData.startTime : "Enter a value"
+                featuresetData.startTime
+                  ? featuresetData.startTime
+                  : "Enter a value"
               }
-              disabled={!isEditable}
+              value={featuresetData.startTime}
+              onChange={handleDetails}
             />
           </div>
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label>Stop Time</label>
+            <label htmlFor="stop_time">Stop Time</label>
             <InputText
+              id="stop_time"
               keyfilter="pint"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
               name="stopTime"
-              onChange={handleChange}
-              value={formData?.stopTime || ""}
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("stopTime") ? "p-invalid" : ""
+              }`}
+              value={featuresetData.stopTime}
+              onChange={handleDetails}
               placeholder={
-                formData.stopTime ? formData.stopTime : "Enter a value"
+                featuresetData.stopTime
+                  ? featuresetData.stopTime
+                  : "Enter a value"
               }
-              disabled={!isEditable}
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label>Brake Activate Time</label>
+            <label htmlFor="bat">Brake Activate Time</label>
             <InputText
+              id="bat"
               keyfilter="pint"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
+              value={featuresetData.brakeActivateTime}
               name="brakeActivateTime"
-              onChange={handleChange}
-              value={formData?.brakeActivateTime || ""}
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("brakeActivateTime") ? "p-invalid" : ""
+              }`}
               placeholder={
-                formData.brakeActivateTime
-                  ? formData.brakeActivateTime
+                featuresetData.brakeActivateTime
+                  ? featuresetData.brakeActivateTime
                   : "Enter a value"
               }
-              disabled={!isEditable}
+              onChange={handleDetails}
             />
           </div>
         </div>
@@ -711,341 +907,346 @@ const FeatureSet = ({ parameters }) => {
             <label htmlFor="braking">Braking</label>
             <Dropdown
               name="braking"
-              onChange={handleChange}
+              onChange={handleDetails}
               id="braking"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
-              options={Brakingoptions}
-              value={formData.braking}
               placeholder={
-                formData.braking ? formData.braking : "Select an option"
+                featuresetData.braking
+                  ? featuresetData.braking
+                  : "Select an option"
               }
+              value={featuresetData.braking}
+              options={Brakingoptions}
               optionLabel="label"
               optionValue="value"
-              className="md:w-14rem mt-2 w-full"
-              disabled={!isEditable}
+              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+                invalidFields.includes("braking") ? "p-invalid" : ""
+              }`}
             />
           </div>
         </div>
         <hr style={{ borderColor: "#333" }} />
-        <p className="mt-4 font-bold dark:text-gray-300">Driver Evaluation</p>
+        <p className="mt-4 font-bold ">Driver Evaluation</p>
+        {invalidFields.includes("driverEvalMode") && (
+          <span className="p-error">Please select any option.</span>
+        )}
         <div className="my-3 flex flex-wrap gap-3">
           <div className="align-items-center flex">
             <input
               type="radio"
               name="driverEvalMode"
-              value="Offline"
-              onChange={handleChange}
-              checked={formData?.driverEvalMode === "Offline"}
-              disabled={!isEditable}
-            />
-            <label htmlFor="ingredient1" className="ml-2">
-              Disable
-            </label>
-          </div>
-          <div className="align-items-center flex">
-            <input
-              type="radio"
-              name="driverEvalMode"
+              id="ingredient2"
               value="Online"
-              onChange={handleChange}
-              checked={formData?.driverEvalMode === "Online"}
-              disabled={!isEditable}
+              onChange={handleDetails}
+              checked={featuresetData?.driverEvalMode === "Online"}
             />
             <label htmlFor="ingredient2" className="ml-2">
               Enable
             </label>
           </div>
+          <div className="align-items-center flex">
+            <input
+              type="radio"
+              id="ingredient1"
+              name="driverEvalMode"
+              value="Offline"
+              onChange={handleDetails}
+              checked={featuresetData?.driverEvalMode === "Offline"}
+            />
+            <label htmlFor="ingredient1" className="ml-2">
+              Disable
+            </label>
+          </div>
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label>Max Lane Change Threshold</label>
+            <label htmlFor="maxlane">Max Lane Change Threshold</label>
             <InputText
+              id="maxlane"
               keyfilter="pint"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
               name="maxLaneChangeThreshold"
-              onChange={handleChange}
-              value={formData?.maxLaneChangeThreshold || ""}
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("maxLaneChangeThreshold")
+                  ? "p-invalid"
+                  : ""
+              }`}
+              onChange={handleDetails}
               placeholder={
-                formData.maxLaneChangeThreshold
-                  ? formData.maxLaneChangeThreshold
+                featuresetData.maxLaneChangeThreshold
+                  ? featuresetData.maxLaneChangeThreshold
                   : "Enter a value"
               }
-              disabled={!isEditable}
+              value={featuresetData.maxLaneChangeThreshold}
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label>Min Lane Change Threshold</label>
+            <label htmlFor="minlane">Min Lane Change Threshold</label>
             <InputText
+              id="minlane"
               keyfilter="pint"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
               name="minLaneChangeThreshold"
-              onChange={handleChange}
-              value={formData?.minLaneChangeThreshold || ""}
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("minLaneChangeThreshold")
+                  ? "p-invalid"
+                  : ""
+              }`}
+              onChange={handleDetails}
+              value={featuresetData.minLaneChangeThreshold}
               placeholder={
-                formData.minLaneChangeThreshold
-                  ? formData.minLaneChangeThreshold
+                featuresetData.minLaneChangeThreshold
+                  ? featuresetData.minLaneChangeThreshold
                   : "Enter a value"
               }
-              disabled={!isEditable}
             />
           </div>
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label>Max Harsh Acceleration Threshold</label>
+            <label htmlFor="maxharsh">Max Harsh Acceleration Threshold</label>
             <InputText
+              id="maxharsh"
               keyfilter="pint"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
               name="maxHarshAccelerationThreshold"
-              onChange={handleChange}
-              value={formData?.maxHarshAccelerationThreshold || ""}
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("maxHarshAccelerationThreshold")
+                  ? "p-invalid"
+                  : ""
+              }`}
+              onChange={handleDetails}
+              value={featuresetData.maxHarshAccelerationThreshold}
               placeholder={
-                formData.maxHarshAccelerationThreshold
-                  ? formData.maxHarshAccelerationThreshold
+                featuresetData.maxHarshAccelerationThreshold
+                  ? featuresetData.maxHarshAccelerationThreshold
                   : "Enter a value"
               }
-              disabled={!isEditable}
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label>Min Harsh Acceleration Threshold</label>
+            <label htmlFor="minharsh">Min Harsh Acceleration Threshold</label>
             <InputText
+              id="minharsh"
               keyfilter="pint"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
               name="minHarshAccelerationThreshold"
-              onChange={handleChange}
-              value={formData?.minHarshAccelerationThreshold || ""}
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("minHarshAccelerationThreshold")
+                  ? "p-invalid"
+                  : ""
+              }`}
+              onChange={handleDetails}
+              value={featuresetData.minHarshAccelerationThreshold}
               placeholder={
-                formData.minHarshAccelerationThreshold
-                  ? formData.minHarshAccelerationThreshold
+                featuresetData.minHarshAccelerationThreshold
+                  ? featuresetData.minHarshAccelerationThreshold
                   : "Enter a value"
               }
-              disabled={!isEditable}
             />
           </div>
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label>Sudden Braking Threshold</label>
+            <label htmlFor="sudden_brake">Sudden Braking Threshold</label>
             <InputText
+              id="sudden_brake"
               keyfilter="pint"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
               name="suddenBrakingThreshold"
-              onChange={handleChange}
-              value={formData?.suddenBrakingThreshold || ""}
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("suddenBrakingThreshold")
+                  ? "p-invalid"
+                  : ""
+              }`}
+              value={featuresetData.suddenBrakingThreshold}
+              onChange={handleDetails}
               placeholder={
-                formData.suddenBrakingThreshold
-                  ? formData.suddenBrakingThreshold
+                featuresetData.suddenBrakingThreshold
+                  ? featuresetData.suddenBrakingThreshold
                   : "Enter a value"
               }
-              disabled={!isEditable}
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label>Max Speed Bump Threshold</label>
+            <label htmlFor="maxspeed">Max Speed Bump Threshold</label>
             <InputText
+              id="maxspeed"
               keyfilter="pint"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
               name="maxSpeedBumpThreshold"
-              onChange={handleChange}
-              value={formData?.maxSpeedBumpThreshold || ""}
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("maxSpeedBumpThreshold")
+                  ? "p-invalid"
+                  : ""
+              }`}
+              value={featuresetData.maxSpeedBumpThreshold}
+              onChange={handleDetails}
               placeholder={
-                formData.maxSpeedBumpThreshold
-                  ? formData.maxSpeedBumpThreshold
+                featuresetData.maxSpeedBumpThreshold
+                  ? featuresetData.maxSpeedBumpThreshold
                   : "Enter a value"
               }
-              disabled={!isEditable}
             />
           </div>
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label>Min Speed Bump Threshold</label>
+            <label htmlFor="minspeed">Min Speed Bump Threshold</label>
             <InputText
+              id="minspeed"
               keyfilter="pint"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
               name="minSpeedBumpThreshold"
-              onChange={handleChange}
-              value={formData?.minSpeedBumpThreshold || ""}
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("minSpeedBumpThreshold")
+                  ? "p-invalid"
+                  : ""
+              }`}
+              onChange={handleDetails}
+              value={featuresetData.minSpeedBumpThreshold}
               placeholder={
-                formData.minSpeedBumpThreshold
-                  ? formData.minSpeedBumpThreshold
+                featuresetData.minSpeedBumpThreshold
+                  ? featuresetData.minSpeedBumpThreshold
                   : "Enter a value"
               }
-              disabled={!isEditable}
             />
           </div>
         </div>
         <hr style={{ borderColor: "#333" }} />
-        <p className="mt-4 font-bold dark:text-gray-300">Speed Governor</p>
+        <p className="mt-4 font-bold ">Speed Governor</p>
+        {invalidFields.includes("GovernerMode") && (
+          <span className="p-error">Please select any option.</span>
+        )}
         <div className="my-3 flex flex-wrap gap-3">
           <div className="align-items-center flex">
             <input
               type="radio"
+              id="on"
+              onChange={handleDetails}
               name="GovernerMode"
-              value="Offline"
-              onChange={handleChange}
-              checked={formData?.GovernerMode === "Offline"}
-              disabled={!isEditable}
+              value="Online"
+              checked={featuresetData?.GovernerMode === "Online"}
             />
-            <label htmlFor="ingredient1" className="ml-2">
-              Disable
+            <label htmlFor="on" className="ml-2">
+              Enable
             </label>
           </div>
           <div className="align-items-center flex">
             <input
               type="radio"
-              onChange={handleChange}
+              id="off"
               name="GovernerMode"
-              value="Online"
-              checked={formData?.GovernerMode === "Online"}
-              disabled={!isEditable}
+              value="Offline"
+              onChange={handleDetails}
+              checked={featuresetData?.GovernerMode === "Offline"}
             />
-            <label htmlFor="ingredient2" className="ml-2">
-              Enable
+            <label htmlFor="off" className="ml-2">
+              Disable
             </label>
           </div>
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label>Speed Limit</label>
+            <label htmlFor="speed_limit">Speed Limit</label>
             <InputText
+              id="speed_limit"
               keyfilter="pint"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
               name="speedLimit"
-              onChange={handleChange}
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("speedLimit") ? "p-invalid" : ""
+              }`}
+              onChange={handleDetails}
+              value={featuresetData.speedLimit}
               placeholder={
-                formData.speedLimit ? formData.speedLimit : "Enter a value"
+                featuresetData.speedLimit
+                  ? featuresetData.speedLimit
+                  : "Enter a value"
               }
-              value={formData?.speedLimit || ""}
-              disabled={!isEditable}
             />
           </div>
         </div>
         <hr style={{ borderColor: "#333" }} />
-        <p className="mt-4 font-bold dark:text-gray-300">Cruise</p>
+        <p className="mt-4 font-bold ">Cruise</p>
+        {invalidFields.includes("cruiseMode") && (
+          <span className="p-error">Please select any option.</span>
+        )}
         <div className="my-3 flex flex-wrap gap-3">
           <div className="align-items-center flex">
             <input
               type="radio"
-              onChange={handleChange}
+              id="mode2"
               name="cruiseMode"
-              value="Offline"
-              checked={formData?.cruiseMode === "Offline"}
-              disabled={!isEditable}
+              value="Online"
+              onChange={handleDetails}
+              checked={featuresetData?.cruiseMode === "Online"}
             />
-            <label htmlFor="ingredient1" className="ml-2">
-              Disable
+            <label htmlFor="mode2" className="ml-2">
+              Enable
             </label>
           </div>
           <div className="align-items-center flex">
             <input
               type="radio"
+              id="mode1"
+              onChange={handleDetails}
               name="cruiseMode"
-              value="Online"
-              onChange={handleChange}
-              checked={formData?.cruiseMode === "Online"}
-              disabled={!isEditable}
+              value="Offline"
+              checked={featuresetData?.cruiseMode === "Offline"}
             />
-            <label htmlFor="ingredient2" className="ml-2">
-              Enable
+            <label htmlFor="mode1" className="ml-2">
+              Disable
             </label>
           </div>
         </div>
         <div className="field my-3 w-[30vw]">
-          <label>Activation Speed</label>
+          <label htmlFor="cruise_as">Activation Speed</label>
           <InputText
+            id="cruise_as"
             keyfilter="pint"
             style={{
               width: "30vw",
-              borderBottom: "1px dashed #ced4da",
-              borderRadius: "0px",
-              padding: "0.30px",
-              borderRight: "none",
-              borderLeft: "none",
-              borderTop: "none",
+              borderRadius: "5px",
             }}
-            name="activationSpeed"
-            onChange={handleChange}
-            value={formData?.activationSpeed || ""}
+            name="cruiseactivationSpeed"
+            className={`dark:bg-gray-900 ${
+              invalidFields.includes("cruiseactivationSpeed") ? "p-invalid" : ""
+            }`}
+            onChange={handleDetails}
             placeholder={
-              formData.activationSpeed
-                ? formData.activationSpeed
+              featuresetData.activationSpeed
+                ? featuresetData.activationSpeed
                 : "Enter a value"
             }
-            disabled={!isEditable}
+            value={featuresetData.activationSpeed || ""}
           />
         </div>
         <div className="flex justify-between">
@@ -1055,54 +1256,55 @@ const FeatureSet = ({ parameters }) => {
               id="vehicle"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
               name="vehicleType"
-              onChange={handleChange}
+              onChange={handleDetails}
               options={VehicleTypeoptions}
-              value={formData.vehicleType}
-              placeholder={
-                formData.vehicleType ? formData.vehicleType : "Select an option"
-              }
               optionLabel="label"
               optionValue="value"
-              className="md:w-14rem mt-2 w-full"
-              disabled={!isEditable}
+              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+                invalidFields.includes("vehicleType") ? "p-invalid" : ""
+              }`}
+              placeholder={
+                featuresetData.vehicleType
+                  ? featuresetData.vehicleType
+                  : "Select an option"
+              }
+              value={featuresetData.vehicleType}
             />
           </div>
         </div>
         <hr style={{ borderColor: "#333" }} />
-        <p className="mt-4 font-bold dark:text-gray-300">OBD</p>
+        <p className="mt-4 font-bold ">OBD</p>
+        {invalidFields.includes("obdMode") && (
+          <span className="p-error">Please select any option.</span>
+        )}
         <div className="my-3 flex flex-wrap gap-3">
           <div className="align-items-center flex">
             <input
               type="radio"
+              id="enable"
               name="obdMode"
-              value="Offline"
-              onChange={handleChange}
-              checked={formData?.obdMode === "Offline"}
-              disabled={!isEditable}
+              value="Online"
+              onChange={handleDetails}
+              checked={featuresetData?.obdMode === "Online"}
             />
-            <label htmlFor="ingredient1" className="ml-2">
-              Disable
+            <label htmlFor="enable" className="ml-2">
+              Enable
             </label>
           </div>
           <div className="align-items-center flex">
             <input
               type="radio"
+              id="disable"
               name="obdMode"
-              value="Online"
-              onChange={handleChange}
-              disabled={!isEditable}
-              checked={formData?.obdMode === "Online"}
+              value="Offline"
+              onChange={handleDetails}
+              checked={featuresetData?.obdMode === "Offline"}
             />
-            <label htmlFor="ingredient2" className="ml-2">
-              Enable
+            <label htmlFor="disable" className="ml-2">
+              Disable
             </label>
           </div>
         </div>
@@ -1114,61 +1316,60 @@ const FeatureSet = ({ parameters }) => {
               id="protocol"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
-              name="protocolType"
-              onChange={handleChange}
-              options={ProtocolTypeoptions}
-              value={formData.protocolType}
               placeholder={
-                formData.protocolType
-                  ? formData.protocolType
+                featuresetData.protocolType
+                  ? featuresetData.protocolType
                   : "Select an option"
               }
+              value={featuresetData.protocolType}
+              name="protocolType"
+              onChange={handleDetails}
+              options={ProtocolTypeoptions}
               optionLabel="label"
               optionValue="value"
-              className="md:w-14rem mt-2 w-full"
-              disabled={!isEditable}
+              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+                invalidFields.includes("protocolType") ? "p-invalid" : ""
+              }`}
             />
           </div>
         </div>
         <hr style={{ borderColor: "#333" }} />
-        <p className="mt-4 font-bold dark:text-gray-300">TPMS</p>
+        <p className="mt-4 font-bold ">TPMS</p>
+        {invalidFields.includes("tpmsMode") && (
+          <span className="p-error">Please select any option.</span>
+        )}
         <div className="my-3 flex flex-wrap gap-3">
           <div className="align-items-center flex">
             <input
               type="radio"
+              id="online"
               name="tpmsMode"
-              value="Offline"
-              onChange={handleChange}
-              checked={formData?.tpmsMode === "Offline"}
-              disabled={!isEditable}
+              value="Online"
+              onChange={handleDetails}
+              checked={featuresetData?.tpmsMode === "Online"}
             />
-            <label htmlFor="ingredient1" className="ml-2">
-              Disable
+            <label htmlFor="online" className="ml-2">
+              Enable
             </label>
           </div>
           <div className="align-items-center flex">
             <input
               type="radio"
               name="tpmsMode"
-              value="Online"
-              onChange={handleChange}
-              checked={formData?.tpmsMode === "Online"}
-              disabled={!isEditable}
+              id="offline"
+              value="Offline"
+              onChange={handleDetails}
+              checked={featuresetData?.tpmsMode === "Offline"}
             />
-            <label htmlFor="ingredient2" className="ml-2">
-              Enable
+            <label htmlFor="offline" className="ml-2">
+              Disable
             </label>
           </div>
         </div>
         <hr style={{ borderColor: "#333" }} />
-        <p className="mt-4 font-bold dark:text-gray-300">Vehicle Settings</p>
+        <p className="mt-4 font-bold ">Vehicle Settings</p>
 
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
@@ -1177,26 +1378,22 @@ const FeatureSet = ({ parameters }) => {
               id="acc"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
-              value={formData.acceleratorType}
               placeholder={
-                formData.acceleratorType
-                  ? formData.acceleratorType
+                featuresetData.acceleratorType
+                  ? featuresetData.acceleratorType
                   : "Select an option"
               }
+              value={featuresetData.acceleratorType}
               optionLabel="label"
               optionValue="value"
               name="acceleratorType"
-              onChange={handleChange}
+              onChange={handleDetails}
               options={AcceleratorTypeoptions}
-              disabled={!isEditable}
-              className="md:w-14rem mt-2 w-full"
+              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+                invalidFields.includes("acceleratorType") ? "p-invalid" : ""
+              }`}
             />
           </div>
           <div className="field my-3 w-[30vw]">
@@ -1205,787 +1402,782 @@ const FeatureSet = ({ parameters }) => {
               id="brake"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
               placeholder={
-                formData.brakeType ? formData.brakeType : "Select an option"
+                featuresetData.brakeType
+                  ? featuresetData.brakeType
+                  : "Select an option"
               }
+              value={featuresetData.brakeType}
               optionLabel="label"
               optionValue="value"
               name="brakeType"
-              value={formData.brakeType}
-              onChange={handleChange}
+              onChange={handleDetails}
               options={BrakeTypeoptions}
-              className="md:w-14rem mt-2 w-full"
-              disabled={!isEditable}
+              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+                invalidFields.includes("brakeType") ? "p-invalid" : ""
+              }`}
             />
           </div>
         </div>
         <hr style={{ borderColor: "#333" }} />
-        <p className="mt-4 text-lg font-bold dark:text-gray-300">Sensor</p>
-        <p className="mt-4 font-bold dark:text-gray-300">Laser Sensor</p>
+        <p className="mt-4 font-bold ">Sensor</p>
+        <p className="mt-4 font-bold ">Laser Sensor</p>
+        {invalidFields.includes("lazerMode") && (
+          <span className="p-error">Please select any option.</span>
+        )}
         <div className="my-3 flex flex-wrap gap-3">
           <div className="align-items-center flex">
             <input
               type="radio"
+              id="lm_on"
               name="lazerMode"
-              value="Offline"
-              onChange={handleChange}
-              checked={formData?.lazerMode === "Offline"}
-              disabled={!isEditable}
+              value="Online"
+              onChange={handleDetails}
+              checked={featuresetData?.lazerMode === "Online"}
             />
-            <label htmlFor="ingredient1" className="ml-2">
-              Disable
+            <label htmlFor="lm_on" className="ml-2">
+              Enable
             </label>
           </div>
           <div className="align-items-center flex">
             <input
               type="radio"
+              id="lm_off"
               name="lazerMode"
-              value="Online"
-              onChange={handleChange}
-              checked={formData?.lazerMode === "Online"}
-              disabled={!isEditable}
+              value="Offline"
+              onChange={handleDetails}
+              checked={featuresetData?.lazerMode === "Offline"}
             />
-            <label htmlFor="ingredient2" className="ml-2">
-              Enable
+            <label htmlFor="lm_off" className="ml-2">
+              Disable
             </label>
           </div>
         </div>
-        <p className="mt-4 font-bold dark:text-gray-300">RF Sensor</p>
+        <p className="mt-4 font-bold ">RF Sensor</p>
+        {invalidFields.includes("rfSensorMode") && (
+          <span className="p-error">Please select any option.</span>
+        )}
         <div className="my-3 flex flex-wrap gap-3">
           <div className="align-items-center flex">
             <input
               type="radio"
+              id="rf_en"
               name="rfSensorMode"
-              value="Offline"
-              onChange={handleChange}
-              checked={formData?.rfSensorMode === "Offline"}
-              disabled={!isEditable}
+              value="Online"
+              onChange={handleDetails}
+              checked={featuresetData?.rfSensorMode === "Online"}
             />
-            <label htmlFor="ingredient1" className="ml-2">
-              Disable
+            <label htmlFor="rf_en" className="ml-2">
+              Enable
             </label>
           </div>
           <div className="align-items-center flex">
             <input
               type="radio"
+              id="rf_dis"
               name="rfSensorMode"
-              value="Online"
-              onChange={handleChange}
-              checked={formData?.rfSensorMode === "Online"}
-              disabled={!isEditable}
+              value="Offline"
+              onChange={handleDetails}
+              checked={featuresetData?.rfSensorMode === "Offline"}
             />
-            <label htmlFor="ingredient2" className="ml-2">
-              Enable
+            <label htmlFor="rf_dis" className="ml-2">
+              Disable
             </label>
           </div>
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label>RF Angle</label>
+            <label htmlFor="rf_angle">RF Angle</label>
             <InputText
+              id="rf_angle"
               keyfilter="pint"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
               name="rfAngle"
-              onChange={handleChange}
-              value={formData?.rfAngle || ""}
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("rfAngle") ? "p-invalid" : ""
+              }`}
+              onChange={handleDetails}
+              value={featuresetData.rfAngle}
               placeholder={
-                formData.rfAngle ? formData.rfAngle : "Enter a value"
+                featuresetData.rfAngle
+                  ? featuresetData.rfAngle
+                  : "Enter a value"
               }
-              disabled={!isEditable}
+            />
+          </div>
+          <div className="field my-3 w-[30vw]">
+            <label htmlFor="res1">Reserved 1</label>
+            <InputText
+              id="res1"
+              keyfilter="pint"
+              style={{
+                width: "30vw",
+                borderRadius: "5px",
+              }}
+              name="reserved1"
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("reserved1") ? "p-invalid" : ""
+              }`}
+              onChange={handleDetails}
+              value={featuresetData.reserved1}
+              placeholder={
+                featuresetData.reserved1
+                  ? featuresetData.reserved1
+                  : "Enter a value"
+              }
             />
           </div>
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label>Reserved 1</label>
+            <label htmlFor="res2">Reserved 2</label>
             <InputText
+              id="res2"
               keyfilter="pint"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
-              name="reserved1"
-              onChange={handleChange}
-              value={formData?.reserved1 || ""}
+              name="reserved2"
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("reserved2") ? "p-invalid" : ""
+              }`}
+              onChange={handleDetails}
+              value={featuresetData.reserved2}
               placeholder={
-                formData.reserved1 ? formData.reserved1 : "Enter a value"
+                featuresetData.reserved2
+                  ? featuresetData.reserved2
+                  : "Enter a value"
               }
-              disabled={!isEditable}
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label>Reserved 2</label>
+            <label htmlFor="res3">Reserved 3</label>
             <InputText
+              id="res3"
               keyfilter="pint"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
-              name="reserved2"
-              onChange={handleChange}
-              value={formData?.reserved2 || ""}
+              name="reserved3"
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("reserved3") ? "p-invalid" : ""
+              }`}
+              value={featuresetData.reserved3}
+              onChange={handleDetails}
               placeholder={
-                formData.reserved2 ? formData.reserved2 : "Enter a value"
+                featuresetData.reserved3
+                  ? featuresetData.reserved3
+                  : "Enter a value"
               }
-              disabled={!isEditable}
             />
           </div>
         </div>
-        <div className="field my-3 w-[30vw]">
-          <label>Reserved 3</label>
-          <InputText
-            keyfilter="pint"
-            style={{
-              width: "30vw",
-              borderBottom: "1px dashed #ced4da",
-              borderRadius: "0px",
-              padding: "0.30px",
-              borderRight: "none",
-              borderLeft: "none",
-              borderTop: "none",
-            }}
-            name="reserved3"
-            onChange={handleChange}
-            value={formData?.reserved3 || ""}
-            placeholder={
-              formData.reserved3 ? formData.reserved3 : "Enter a value"
-            }
-            disabled={!isEditable}
-          />
-        </div>
+
         <hr style={{ borderColor: "#333" }} />
-        <p className="mt-4 font-bold dark:text-gray-300">Speed Settings</p>
+        <p className="mt-4 font-bold ">Speed Settings</p>
 
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="speed">Speed Source</label>
+            <label htmlFor="speed_src">Speed Source</label>
             <Dropdown
-              id="speed"
+              id="speed_src"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
               name="speedSource"
-              value={formData.speedSource}
-              placeholder={
-                formData.speedSource ? formData.speedSource : "Select an option"
-              }
               options={SpeedSourceoptions}
               optionLabel="label"
               optionValue="value"
-              onChange={handleChange}
-              className="md:w-14rem mt-2 w-full"
-              disabled={!isEditable}
+              onChange={handleDetails}
+              value={featuresetData.speedSource}
+              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+                invalidFields.includes("speedSource") ? "p-invalid" : ""
+              }`}
+              placeholder={
+                featuresetData.speedSource
+                  ? featuresetData.speedSource
+                  : "Select an option"
+              }
             />
           </div>
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label>Slope</label>
+            <label htmlFor="slope">Slope</label>
             <InputText
+              id="slope"
               keyfilter="pint"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
               name="slope"
-              onChange={handleChange}
-              value={formData?.slope || ""}
-              placeholder={formData.slope ? formData.slope : "Enter a value"}
-              disabled={!isEditable}
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("slope") ? "p-invalid" : ""
+              }`}
+              value={featuresetData.slope}
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.slope ? featuresetData.slope : "Enter a value"
+              }
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label>Offset</label>
+            <label htmlFor="offset">Offset</label>
             <InputText
+              id="offset"
               keyfilter="pint"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
               name="offset"
-              onChange={handleChange}
-              value={formData?.offset || ""}
-              placeholder={formData.offset ? formData.offset : "Enter a value"}
-              disabled={!isEditable}
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("offset") ? "p-invalid" : ""
+              }`}
+              value={featuresetData.offset}
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.offset ? featuresetData.offset : "Enter a value"
+              }
             />
           </div>
         </div>
         <hr style={{ borderColor: "#333" }} />
-        <p className="mt-4 font-bold dark:text-gray-300">Shutdown Delay</p>
+        <p className="mt-4 font-bold ">Shutdown Delay</p>
         <div className="field my-3 w-[30vw]">
-          <label>Delay</label>
+          <label htmlFor="delay">Delay</label>
           <InputText
+            id="delay"
             keyfilter="pint"
             style={{
               width: "30vw",
-              borderBottom: "1px dashed #ced4da",
-              borderRadius: "0px",
-              padding: "0.30px",
-              borderRight: "none",
-              borderLeft: "none",
-              borderTop: "none",
+              borderRadius: "5px",
             }}
             name="delay"
-            onChange={handleChange}
-            value={formData?.delay || ""}
-            placeholder={formData.delay ? formData.delay : "Enter a value"}
-            disabled={!isEditable}
-          />
-        </div>
-        <hr style={{ borderColor: "#333" }} />
-        <p className="mt-4 font-bold dark:text-gray-300">RF Name</p>
-        <div className="my-3 flex flex-wrap gap-3">
-          <div className="align-items-center flex">
-            <input
-              type="radio"
-              name="rfNameMode"
-              value="Offline"
-              onChange={handleChange}
-              checked={formData?.rfNameMode === "Offline"}
-              disabled={!isEditable}
-            />
-            <label htmlFor="ingredient1" className="ml-2">
-              Disable
-            </label>
-          </div>
-          <div className="align-items-center flex">
-            <input
-              type="radio"
-              name="rfNameMode"
-              value="Online"
-              onChange={handleChange}
-              checked={formData?.rfNameMode === "Online"}
-              disabled={!isEditable}
-            />
-            <label htmlFor="ingredient2" className="ml-2">
-              Enable
-            </label>
-          </div>
-        </div>
-        <hr style={{ borderColor: "#333" }} />
-        <p className="mt-4 font-bold dark:text-gray-300">Time Based Errors</p>
-        <div className="flex justify-between">
-          <div className="field my-3 w-[30vw]">
-            <label>No Alarm</label>
-            <InputText
-              keyfilter="pint"
-              style={{
-                width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
-              }}
-              name="noAlarm"
-              onChange={handleChange}
-              disabled={!isEditable}
-              value={formData?.noAlarm || ""}
-              placeholder={
-                formData.noAlarm ? formData.noAlarm : "Enter a value"
-              }
-            />
-          </div>
-          <div className="field my-3 w-[30vw]">
-            <label>Speed</label>
-            <InputText
-              keyfilter="pint"
-              style={{
-                width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
-              }}
-              disabled={!isEditable}
-              name="speed"
-              onChange={handleChange}
-              value={formData?.speed || ""}
-              placeholder={formData.speed ? formData.speed : "Enter a value"}
-            />
-          </div>
-        </div>
-        <div className="flex justify-between">
-          <div className="field my-3 w-[30vw]">
-            <label>Acceleration Bypass</label>
-            <InputText
-              keyfilter="pint"
-              style={{
-                width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
-              }}
-              disabled={!isEditable}
-              value={formData?.accelerationBypass || ""}
-              placeholder={
-                formData.accelerationBypass
-                  ? formData.accelerationBypass
-                  : "Enter a value"
-              }
-              name="accelerationBypass"
-              onChange={handleChange}
-            />
-          </div>
-        </div>
-        <hr style={{ borderColor: "#333" }} />
-        <p className="mt-4 font-bold dark:text-gray-300">Speed Based Errors</p>
-        <div className="flex justify-between">
-          <div className="field my-3 w-[30vw]">
-            <label>RF Sensor Absent</label>
-            <InputText
-              keyfilter="pint"
-              style={{
-                width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
-              }}
-              name="rfSensorAbsent"
-              onChange={handleChange}
-              value={formData?.rfSensorAbsent || ""}
-              placeholder={
-                formData.rfSensorAbsent
-                  ? formData.rfSensorAbsent
-                  : "Enter a value"
-              }
-              disabled={!isEditable}
-            />
-          </div>
-          <div className="field my-3 w-[30vw]">
-            <label>Gyroscope Absent</label>
-            <InputText
-              keyfilter="pint"
-              style={{
-                width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
-              }}
-              disabled={!isEditable}
-              name="gyroscopeAbsent"
-              onChange={handleChange}
-              value={formData?.gyroscopeAbsent || ""}
-              placeholder={
-                formData.gyroscopeAbsent
-                  ? formData.gyroscopeAbsent
-                  : "Enter a value"
-              }
-            />
-          </div>
-        </div>
-        <div className="flex justify-between">
-          <div className="field my-3 w-[30vw]">
-            <label>HMI Absent</label>
-            <InputText
-              keyfilter="pint"
-              style={{
-                width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
-              }}
-              name="hmiAbsent"
-              disabled={!isEditable}
-              onChange={handleChange}
-              value={formData?.hmiAbsent || ""}
-              placeholder={
-                formData.hmiAbsent ? formData.hmiAbsent : "Enter a value"
-              }
-            />
-          </div>
-          <div className="field my-3 w-[30vw]">
-            <label>Time Not Set</label>
-            <InputText
-              keyfilter="pint"
-              style={{
-                width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
-              }}
-              name="timeNotSet"
-              onChange={handleChange}
-              disabled={!isEditable}
-              value={formData?.timeNotSet || ""}
-              placeholder={
-                formData.timeNotSet ? formData.timeNotSet : "Enter a value"
-              }
-            />
-          </div>
-        </div>
-        <div className="field my-3 w-[30vw]">
-          <label>Acceleration Error</label>
-          <InputText
-            keyfilter="pint"
-            style={{
-              width: "30vw",
-              borderBottom: "1px dashed #ced4da",
-              borderRadius: "0px",
-              padding: "0.30px",
-              borderRight: "none",
-              borderLeft: "none",
-              borderTop: "none",
-            }}
-            name="accelerationError"
-            disabled={!isEditable}
-            onChange={handleChange}
-            value={formData?.accelerationError || ""}
+            className={`dark:bg-gray-900 ${
+              invalidFields.includes("delay") ? "p-invalid" : ""
+            }`}
+            value={featuresetData.delay}
+            onChange={handleDetails}
             placeholder={
-              formData.accelerationError
-                ? formData.accelerationError
-                : "Enter a value"
+              featuresetData.delay ? featuresetData.delay : "Enter a value"
             }
           />
         </div>
-        <div className="flex justify-between">
-          <div className="field my-3 w-[30vw]">
-            <label>Brake Error</label>
-            <InputText
-              keyfilter="pint"
-              style={{
-                width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
-              }}
-              name="brakeError"
-              onChange={handleChange}
-              disabled={!isEditable}
-              value={formData?.brakeError || ""}
-              placeholder={
-                formData.brakeError ? formData.brakeError : "Enter a value"
-              }
+        <hr style={{ borderColor: "#333" }} />
+        <p className="mt-4 font-bold ">RF Name</p>
+        {invalidFields.includes("rfNameMode") && (
+          <span className="p-error">Please select any option.</span>
+        )}
+        <div className="my-3 flex flex-wrap gap-3">
+          <div className="align-items-center flex">
+            <input
+              type="radio"
+              name="rfNameMode"
+              id="rfname_en"
+              value="Online"
+              onChange={handleDetails}
+              checked={featuresetData?.rfNameMode === "Online"}
             />
+            <label htmlFor="rfname_en" className="ml-2">
+              Enable
+            </label>
           </div>
-          <div className="field my-3 w-[30vw]">
-            <label>TPMS Error</label>
-            <InputText
-              keyfilter="pint"
-              style={{
-                width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
-              }}
-              name="tpmsError"
-              disabled={!isEditable}
-              onChange={handleChange}
-              value={formData?.tpmsError || ""}
-              placeholder={
-                formData.tpmsError ? formData.tpmsError : "Enter a value"
-              }
+          <div className="align-items-center flex">
+            <input
+              type="radio"
+              name="rfNameMode"
+              id="rfname_dis"
+              value="Offline"
+              onChange={handleDetails}
+              checked={featuresetData?.rfNameMode === "Offline"}
             />
+            <label htmlFor="rfname_dis" className="ml-2">
+              Disable
+            </label>
           </div>
         </div>
+        <hr style={{ borderColor: "#333" }} />
+        <p className="mt-4 font-bold ">Time Based Errors</p>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label>OSIM Card Absent</label>
+            <label htmlFor="no_alarm">No Alarm</label>
             <InputText
+              id="no_alarm"
               keyfilter="pint"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
-              }}
-              name="simCardAbsent"
-              disabled={!isEditable}
-              onChange={handleChange}
-              value={formData?.simCardAbsent || ""}
-              placeholder={
-                formData.simCardAbsent
-                  ? formData.simCardAbsent
-                  : "Enter a value"
-              }
-            />
-          </div>
-          <div className="field my-3 w-[30vw]">
-            <label>Low battery</label>
-            <InputText
-              keyfilter="pint"
-              style={{
-                width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
-              }}
-              name="lowBattery"
-              onChange={handleChange}
-              disabled={!isEditable}
-              value={formData?.lowBattery || ""}
-              placeholder={
-                formData.lowBattery ? formData.lowBattery : "Enter a value"
-              }
-            />
-          </div>
-        </div>
-        <div className="flex justify-between">
-          <div className="field my-3 w-[30vw]">
-            <label>Trip Not Started</label>
-            <InputText
-              keyfilter="pint"
-              style={{
-                width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
-              }}
-              name="tripNotStarted"
-              onChange={handleChange}
-              disabled={!isEditable}
-              placeholder={
-                formData.tripNotStarted
-                  ? formData.tripNotStarted
-                  : "Enter a value"
-              }
-              value={formData?.tripNotStarted || ""}
-            />
-          </div>
-          <div className="field my-3 w-[30vw]">
-            <label>Bluetooth Conn Absent</label>
-            <InputText
-              keyfilter="pint"
-              style={{
-                width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
-              }}
-              name="bluetoothConnAbsent"
-              disabled={!isEditable}
-              onChange={handleChange}
-              value={formData?.bluetoothConnAbsent || ""}
-              placeholder={
-                formData.bluetoothConnAbsent
-                  ? formData.bluetoothConnAbsent
-                  : "Enter a value"
-              }
-            />
-          </div>
-        </div>
-        <div className="flex justify-between">
-          <div className="field my-3 w-[30vw]">
-            <label>OBD Absent</label>
-            <InputText
-              keyfilter="pint"
-              style={{
-                width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
-              }}
-              name="obdAbsent"
-              disabled={!isEditable}
-              onChange={handleChange}
-              value={formData?.obdAbsent || ""}
-              placeholder={
-                formData.obdAbsent ? formData.obdAbsent : "Enter a value"
-              }
-            />
-          </div>
-          <div className="field my-3 w-[30vw]">
-            <label>No Alarm</label>
-            <InputText
-              keyfilter="pint"
-              style={{
-                width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
               name="noAlarm"
-              onChange={handleChange}
-              disabled={!isEditable}
-              value={formData?.noAlarm || ""}
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("noAlarm") ? "p-invalid" : ""
+              }`}
+              value={featuresetData.noAlarm}
+              onChange={handleDetails}
               placeholder={
-                formData.noAlarm ? formData.noAlarm : "Enter a value"
-              }
-            />
-          </div>
-        </div>
-        <div className="flex justify-between">
-          <div className="field my-3 w-[30vw]">
-            <label>Laser SensorAbsent</label>
-            <InputText
-              keyfilter="pint"
-              style={{
-                width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
-              }}
-              disabled={!isEditable}
-              name="laserSensorAbsent"
-              onChange={handleChange}
-              value={formData?.laserSensorAbsent || ""}
-              placeholder={
-                formData.laserSensorAbsent
-                  ? formData.laserSensorAbsent
+                featuresetData.noAlarm
+                  ? featuresetData.noAlarm
                   : "Enter a value"
               }
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label>RFID Absent</label>
+            <label htmlFor="speed">Speed</label>
             <InputText
+              id="speed"
               keyfilter="pint"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
-              name="rfidAbsent"
-              disabled={!isEditable}
-              onChange={handleChange}
-              value={formData?.rfidAbsent || ""}
+              name="speed"
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("speed") ? "p-invalid" : ""
+              }`}
+              value={featuresetData.speed}
+              onChange={handleDetails}
               placeholder={
-                formData.rfidAbsent ? formData.rfidAbsent : "Enter a value"
+                featuresetData.speed ? featuresetData.speed : "Enter a value"
               }
             />
           </div>
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label>IoT Absent</label>
+            <label htmlFor="acc_bypass">Acceleration Bypass</label>
             <InputText
+              id="acc_bypass"
               keyfilter="pint"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
+              }}
+              name="accelerationBypass"
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("accelerationBypass") ? "p-invalid" : ""
+              }`}
+              onChange={handleDetails}
+              value={featuresetData.accelerationBypass}
+              placeholder={
+                featuresetData.accelerationBypass
+                  ? featuresetData.accelerationBypass
+                  : "Enter a value"
+              }
+            />
+          </div>
+        </div>
+        <hr style={{ borderColor: "#333" }} />
+        <p className="mt-4 font-bold ">Speed Based Errors</p>
+        <div className="flex justify-between">
+          <div className="field my-3 w-[30vw]">
+            <label htmlFor="rf">RF Sensor Absent</label>
+            <InputText
+              id="rf"
+              keyfilter="pint"
+              style={{
+                width: "30vw",
+                borderRadius: "5px",
+              }}
+              name="rfSensorAbsent"
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("rfSensorAbsent") ? "p-invalid" : ""
+              }`}
+              value={featuresetData.rfSensorAbsent}
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.rfSensorAbsent
+                  ? featuresetData.rfSensorAbsent
+                  : "Enter a value"
+              }
+            />
+          </div>
+          <div className="field my-3 w-[30vw]">
+            <label htmlFor="gyro">Gyroscope Absent</label>
+            <InputText
+              id="gyro"
+              keyfilter="pint"
+              style={{
+                width: "30vw",
+                borderRadius: "5px",
+              }}
+              name="gyroscopeAbsent"
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("gyroscopeAbsent") ? "p-invalid" : ""
+              }`}
+              value={featuresetData.gyroscopeAbsent}
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.gyroscopeAbsent
+                  ? featuresetData.gyroscopeAbsent
+                  : "Enter a value"
+              }
+            />
+          </div>
+        </div>
+        <div className="flex justify-between">
+          <div className="field my-3 w-[30vw]">
+            <label htmlFor="hmi">HMI Absent</label>
+            <InputText
+              id="hmi"
+              keyfilter="pint"
+              style={{
+                width: "30vw",
+                borderRadius: "5px",
+              }}
+              name="hmiAbsent"
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("hmiAbsent") ? "p-invalid" : ""
+              }`}
+              value={featuresetData.hmiAbsent}
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.hmiAbsent
+                  ? featuresetData.hmiAbsent
+                  : "Enter a value"
+              }
+            />
+          </div>
+          <div className="field my-3 w-[30vw]">
+            <label htmlFor="tns">Time Not Set</label>
+            <InputText
+              id="tns"
+              keyfilter="pint"
+              style={{
+                width: "30vw",
+                borderRadius: "5px",
+              }}
+              name="timeNotSet"
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("timeNotSet") ? "p-invalid" : ""
+              }`}
+              value={featuresetData.timeNotSet}
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.timeNotSet
+                  ? featuresetData.timeNotSet
+                  : "Enter a value"
+              }
+            />
+          </div>
+        </div>
+        <div className="flex justify-between">
+          <div className="field my-3 w-[30vw]">
+            <label htmlFor="acc_err">Acceleration Error</label>
+            <InputText
+              id="acc_err"
+              keyfilter="pint"
+              style={{
+                width: "30vw",
+                borderRadius: "5px",
+              }}
+              name="accelerationError"
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("accelerationError") ? "p-invalid" : ""
+              }`}
+              value={featuresetData.accelerationError}
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.accelerationError
+                  ? featuresetData.accelerationError
+                  : "Enter a value"
+              }
+            />
+          </div>
+
+          <div className="field my-3 w-[30vw]">
+            <label htmlFor="iot_ab">IoT Absent</label>
+            <InputText
+              id="iot_ab"
+              keyfilter="pint"
+              style={{
+                width: "30vw",
+                borderRadius: "5px",
               }}
               name="iotAbsent"
-              onChange={handleChange}
-              disabled={!isEditable}
-              value={formData?.iotAbsent || ""}
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("iotAbsent") ? "p-invalid" : ""
+              }`}
+              value={featuresetData.iotAbsent}
+              onChange={handleDetails}
               placeholder={
-                formData.iotAbsent ? formData.iotAbsent : "Enter a value"
+                featuresetData.iotAbsent
+                  ? featuresetData.iotAbsent
+                  : "Enter a value"
               }
             />
           </div>
         </div>
+        <div className="flex justify-between">
+          <div className="field my-3 w-[30vw]">
+            <label htmlFor="brake_err">Brake Error</label>
+            <InputText
+              id="brake_err"
+              keyfilter="pint"
+              style={{
+                width: "30vw",
+                borderRadius: "5px",
+              }}
+              name="brakeError"
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("brakeError") ? "p-invalid" : ""
+              }`}
+              value={featuresetData.brakeError}
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.brakeError
+                  ? featuresetData.brakeError
+                  : "Enter a value"
+              }
+            />
+          </div>
+          <div className="field my-3 w-[30vw]">
+            <label htmlFor="tpms_err">TPMS Error</label>
+            <InputText
+              id="tpms_err"
+              keyfilter="pint"
+              style={{
+                width: "30vw",
+                borderRadius: "5px",
+              }}
+              name="tpmsError"
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("tpmsError") ? "p-invalid" : ""
+              }`}
+              value={featuresetData.tpmsError}
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.tpmsError
+                  ? featuresetData.tpmsError
+                  : "Enter a value"
+              }
+            />
+          </div>
+        </div>
+        <div className="flex justify-between">
+          <div className="field my-3 w-[30vw]">
+            <label htmlFor="sim">OSIM Card Absent</label>
+            <InputText
+              id="sim"
+              keyfilter="pint"
+              style={{
+                width: "30vw",
+                borderRadius: "5px",
+              }}
+              name="simCardAbsent"
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("simCardAbsent") ? "p-invalid" : ""
+              }`}
+              value={featuresetData.simCardAbsent}
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.simCardAbsent
+                  ? featuresetData.simCardAbsent
+                  : "Enter a value"
+              }
+            />
+          </div>
+          <div className="field my-3 w-[30vw]">
+            <label htmlFor="battery">Low battery</label>
+            <InputText
+              id="battery"
+              keyfilter="pint"
+              style={{
+                width: "30vw",
+                borderRadius: "5px",
+              }}
+              name="lowBattery"
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("lowBattery") ? "p-invalid" : ""
+              }`}
+              onChange={handleDetails}
+              value={featuresetData.lowBattery}
+              placeholder={
+                featuresetData.lowBattery
+                  ? featuresetData.lowBattery
+                  : "Enter a value"
+              }
+            />
+          </div>
+        </div>
+        <div className="flex justify-between">
+          <div className="field my-3 w-[30vw]">
+            <label htmlFor="trip">Trip Not Started</label>
+            <InputText
+              id="trip"
+              keyfilter="pint"
+              style={{
+                width: "30vw",
+                borderRadius: "5px",
+              }}
+              name="tripNotStarted"
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("tripNotStarted") ? "p-invalid" : ""
+              }`}
+              value={featuresetData.tripNotStarted}
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.tripNotStarted
+                  ? featuresetData.tripNotStarted
+                  : "Enter a value"
+              }
+            />
+          </div>
+          <div className="field my-3 w-[30vw]">
+            <label htmlFor="bluetooth">Bluetooth Conn Absent</label>
+            <InputText
+              id="bluetooth"
+              keyfilter="pint"
+              style={{
+                width: "30vw",
+                borderRadius: "5px",
+              }}
+              name="bluetoothConnAbsent"
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("bluetoothConnAbsent") ? "p-invalid" : ""
+              }`}
+              value={featuresetData.bluetoothConnAbsent}
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.bluetoothConnAbsent
+                  ? featuresetData.bluetoothConnAbsent
+                  : "Enter a value"
+              }
+            />
+          </div>
+        </div>
+        <div className="flex justify-between">
+          <div className="field my-3 w-[30vw]">
+            <label htmlFor="obd">OBD Absent</label>
+            <InputText
+              id="obd"
+              keyfilter="pint"
+              style={{
+                width: "30vw",
+                borderRadius: "5px",
+              }}
+              name="obdAbsent"
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("obdAbsent") ? "p-invalid" : ""
+              }`}
+              onChange={handleDetails}
+              value={featuresetData.obdAbsent}
+              placeholder={
+                featuresetData.obdAbsent
+                  ? featuresetData.obdAbsent
+                  : "Enter a value"
+              }
+            />
+          </div>
+          <div className="field my-3 w-[30vw]">
+            <label htmlFor="no_alarm_sp">No Alarm</label>
+            <InputText
+              id="no_alarm_sp"
+              keyfilter="pint"
+              style={{
+                width: "30vw",
+                borderRadius: "5px",
+              }}
+              name="noAlarmSpeed"
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("noAlarmSpeed") ? "p-invalid" : ""
+              }`}
+              value={featuresetData.noAlarmSpeed}
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.noAlarmSpeed
+                  ? featuresetData.noAlarmSpeed
+                  : "Enter a value"
+              }
+            />
+          </div>
+        </div>
+        <div className="flex justify-between">
+          <div className="field my-3 w-[30vw]">
+            <label htmlFor="laser">Laser Sensor Absent</label>
+            <InputText
+              id="laser"
+              keyfilter="pint"
+              style={{
+                width: "30vw",
+                borderRadius: "5px",
+              }}
+              name="laserSensorAbsent"
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("laserSensorAbsent") ? "p-invalid" : ""
+              }`}
+              onChange={handleDetails}
+              value={featuresetData.laserSensorAbsent}
+              placeholder={
+                featuresetData.laserSensorAbsent
+                  ? featuresetData.laserSensorAbsent
+                  : "Enter a value"
+              }
+            />
+          </div>
+          <div className="field my-3 w-[30vw]">
+            <label htmlFor="rfid">RFID Absent</label>
+            <InputText
+              id="rfid"
+              keyfilter="pint"
+              style={{
+                width: "30vw",
+                borderRadius: "5px",
+              }}
+              name="rfidAbsent"
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("rfidAbsent") ? "p-invalid" : ""
+              }`}
+              value={featuresetData.rfidAbsent}
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.rfidAbsent
+                  ? featuresetData.rfidAbsent
+                  : "Enter a value"
+              }
+            />
+          </div>
+        </div>
+
         <hr style={{ borderColor: "#333" }} />
-        <p className="mt-4 font-bold dark:text-gray-300">Firmware OTA Update</p>
+        <p className="mt-4 font-bold ">Firmware OTA Update</p>
+        {invalidFields.includes("firmwareOtaUpdate") && (
+          <span className="p-error">Please select any option.</span>
+        )}
         <div className="my-3 flex flex-wrap gap-3">
           <div className="align-items-center flex">
             <input
               type="radio"
+              id="ota_av"
               name="firmwareOtaUpdate"
-              value="Offline"
-              disabled={!isEditable}
-              onChange={handleChange}
-              checked={formData?.firmwareOtaUpdate === "Offline"}
+              value="Online"
+              onChange={handleDetails}
+              checked={featuresetData?.firmwareOtaUpdate === "Online"}
             />
-            <label htmlFor="firmwareOtaUpdate1" className="ml-2">
-              Not Available
+            <label htmlFor="ota_av" className="ml-2">
+              Available
             </label>
           </div>
           <div className="align-items-center flex">
             <input
               type="radio"
+              id="ota_nav"
               name="firmwareOtaUpdate"
-              value="Online"
-              onChange={handleChange}
-              disabled={!isEditable}
-              checked={formData?.firmwareOtaUpdate === "Online"}
+              value="Offline"
+              onChange={handleDetails}
+              checked={featuresetData?.firmwareOtaUpdate === "Offline"}
             />
-            <label htmlFor="firmwareOtaUpdate2" className="ml-2">
-              Available
+            <label htmlFor="ota_nav" className="ml-2">
+              Not Available
             </label>
           </div>
         </div>
@@ -1996,132 +2188,131 @@ const FeatureSet = ({ parameters }) => {
               keyfilter="pint"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
-              disabled={!isEditable}
               name="firewarereserver1"
-              onChange={handleChange}
-              value={formData?.firewarereserver1 || ""}
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("firewarereserver1") ? "p-invalid" : ""
+              }`}
+              value={featuresetData.firewarereserver1}
+              onChange={handleDetails}
               placeholder={
-                formData.firewarereserver1
-                  ? formData.firewarereserver1
+                featuresetData.firewarereserver1
+                  ? featuresetData.firewarereserver1
                   : "Enter a value"
               }
             />
           </div>
         </div>
         <hr style={{ borderColor: "#333" }} />
-        <p className="mt-4 font-bold dark:text-gray-300">Alcohol Detection</p>
+        <p className="mt-4 font-bold ">Alcohol Detection</p>
+        {invalidFields.includes("alcoholDetectionMode") && (
+          <span className="p-error">Please select any option.</span>
+        )}
         <div className="my-3 flex flex-wrap gap-3">
           <div className="align-items-center flex">
             <input
               type="radio"
+              id="alc_on"
               name="alcoholDetectionMode"
-              value="Offline"
-              disabled={!isEditable}
-              onChange={handleChange}
-              checked={formData?.alcoholDetectionMode === "Offline"}
+              value="Online"
+              onChange={handleDetails}
+              checked={featuresetData?.alcoholDetectionMode === "Online"}
             />
-            <label htmlFor="ingredient1" className="ml-2">
-              Not Available
+            <label htmlFor="alc_on" className="ml-2">
+              Enable
             </label>
           </div>
           <div className="align-items-center flex">
             <input
               type="radio"
+              id="alc_off"
               name="alcoholDetectionMode"
-              value="Online"
-              disabled={!isEditable}
-              onChange={handleChange}
-              checked={formData?.alcoholDetectionMode === "Online"}
+              value="Offline"
+              onChange={handleDetails}
+              checked={featuresetData?.alcoholDetectionMode === "Offline"}
             />
-            <label htmlFor="ingredient2" className="ml-2">
-              Available
+            <label htmlFor="alc_off" className="ml-2">
+              Disable
             </label>
           </div>
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label>Reserved 1</label>
+            <label htmlFor="alcoholreserved1">Reserved 1</label>
             <InputText
+              id="alcoholreserved1"
               keyfilter="pint"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
               name="alcoholreserved1"
-              disabled={!isEditable}
-              onChange={handleChange}
-              value={formData?.alcoholreserved1 || ""}
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("alcoholreserved1") ? "p-invalid" : ""
+              }`}
+              value={featuresetData.alcoholreserved1}
+              onChange={handleDetails}
               placeholder={
-                formData.alcoholreserved1
-                  ? formData.alcoholreserved1
+                featuresetData.alcoholreserved1
+                  ? featuresetData.alcoholreserved1
                   : "Enter a value"
               }
             />
           </div>
         </div>
         <hr style={{ borderColor: "#333" }} />
-        <p className="mt-4 font-bold dark:text-gray-300">Driver Drowsiness</p>
+        <p className="mt-4 font-bold ">Driver Drowsiness</p>
+        {invalidFields.includes("driverDrowsinessMode") && (
+          <span className="p-error">Please select any option.</span>
+        )}
         <div className="my-3 flex flex-wrap gap-3">
           <div className="align-items-center flex">
             <input
               type="radio"
+              id="drowsi_on"
               name="driverDrowsinessMode"
-              value="Offline"
-              disabled={!isEditable}
-              onChange={handleChange}
-              checked={formData?.driverDrowsinessMode === "Offline"}
+              value="Online"
+              onChange={handleDetails}
+              checked={featuresetData?.driverDrowsinessMode === "Online"}
             />
-            <label htmlFor="ingredient1" className="ml-2">
-              Not Available
+            <label htmlFor="drowsi_on" className="ml-2">
+              Enable
             </label>
           </div>
           <div className="align-items-center flex">
             <input
               type="radio"
+              id="drowsi_off"
               name="driverDrowsinessMode"
-              value="Online"
-              disabled={!isEditable}
-              onChange={handleChange}
-              checked={formData?.driverDrowsinessMode === "Online"}
+              value="Offline"
+              onChange={handleDetails}
+              checked={featuresetData?.driverDrowsinessMode === "Offline"}
             />
-            <label htmlFor="ingredient2" className="ml-2">
-              Available
+            <label htmlFor="drowsi_off" className="ml-2">
+              Disable
             </label>
           </div>
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label>Reserved 1</label>
+            <label htmlFor="driverreserved1">Reserved 1</label>
             <InputText
+              id="driverreserved1"
               keyfilter="pint"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
               name="driverreserved1"
-              disabled={!isEditable}
-              onChange={handleChange}
-              value={formData?.driverreserved1 || ""}
+              className={`dark:bg-gray-900 ${
+                invalidFields.includes("driverreserved1") ? "p-invalid" : ""
+              }`}
+              onChange={handleDetails}
+              value={featuresetData.driverreserved1}
               placeholder={
-                formData.driverreserved1
-                  ? formData.driverreserved1
+                featuresetData.driverreserved1
+                  ? featuresetData.driverreserved1
                   : "Enter a value"
               }
             />

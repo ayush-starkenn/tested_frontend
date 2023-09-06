@@ -14,7 +14,6 @@ const Marketplace = () => {
   const [isListView, setIsListView] = useState(true);
   const [vehiData, setVehiData] = useState([]);
   const [dialog1, setDialog1] = useState(false);
-  const [data, setData] = useState([]);
   const [addData, setAddData] = useState({});
   const [ecuData, setEcuData] = useState([]);
   const [iotData, setIotData] = useState([]);
@@ -75,8 +74,11 @@ const Marketplace = () => {
   };
 
   //api call to get vehicle list
-
   useEffect(() => {
+    getData();
+  }, [token, user_uuid]);
+
+  const getData = () => {
     axios
       .get(
         `http://localhost:8080/api/vehicles/get-user-vehiclelist/${user_uuid}`,
@@ -92,7 +94,7 @@ const Marketplace = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [token, user_uuid, data]);
+  };
 
   // get ECUData
   useEffect(() => {
@@ -146,7 +148,6 @@ const Marketplace = () => {
         }
       )
       .then((res) => {
-        console.log(res.data);
         setFeaturesetData(res.data.results);
       })
       .catch((err) => {
@@ -166,8 +167,7 @@ const Marketplace = () => {
         }
       )
       .then((res) => {
-        console.log(res);
-        setData(data);
+        getData();
         closeDialog1();
         toastRef.current.show({
           severity: "success",
@@ -177,13 +177,21 @@ const Marketplace = () => {
         });
       })
       .catch((err) => {
-        console.log(err);
-        toastRef.current.show({
-          severity: "error",
-          summary: "Error",
-          detail: "Failed to add vehicle. Please try again.",
-          life: 3000,
-        });
+        if (err.response.request.status === 400) {
+          toastRef.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: "Vehicle Registration-Number already exists.",
+            life: 3000,
+          });
+        } else {
+          toastRef.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: "Failed to add vehicle. Please try again.",
+            life: 3000,
+          });
+        }
       });
   };
 
@@ -199,8 +207,7 @@ const Marketplace = () => {
         }
       )
       .then((res) => {
-        console.log(res);
-        setData();
+        getData();
         closeDialog1();
         toastRef.current.show({
           severity: "success",
@@ -244,7 +251,7 @@ const Marketplace = () => {
         )
         .then((res) => {
           console.log(res);
-          setData(addData);
+          getData();
           closeDialog1();
           toastRef.current.show({
             severity: "success",
@@ -254,13 +261,21 @@ const Marketplace = () => {
           });
         })
         .catch((err) => {
-          console.log(err);
-          toastRef.current.show({
-            severity: "error",
-            summary: "Error",
-            detail: "Failed to add vehicle. Please try again.",
-            life: 3000,
-          });
+          if (err.response.request.status === 400) {
+            toastRef.current.show({
+              severity: "error",
+              summary: "Error",
+              detail: "Vehicle Registration-Number already exists.",
+              life: 3000,
+            });
+          } else {
+            toastRef.current.show({
+              severity: "error",
+              summary: "Error",
+              detail: "Failed to add vehicle. Please try again.",
+              life: 3000,
+            });
+          }
         });
     } else {
       toastRef.current.show({
