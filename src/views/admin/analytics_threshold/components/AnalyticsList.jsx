@@ -298,7 +298,8 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
   };
 
   const Customersoptions = () => {
-    return listCustomers?.map((el) => ({
+    return listCustomers?.map((el, index) => ({
+      key: `customerOption_${index}`,
       label: el.first_name + " " + el.last_name,
       value: el.user_uuid,
     }));

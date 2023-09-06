@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { HiX } from "react-icons/hi";
-import Links from "./components/Links";
+// import Links from "./components/Links";
 import { routes_admin } from "routes.js";
+import SidebarLinks from "./components/Links";
 
 const Sidebar = ({ open, onClose }) => {
   const [isMobile, setIsMobile] = useState(false);
@@ -46,7 +47,7 @@ const Sidebar = ({ open, onClose }) => {
       {/* Nav item */}
 
       <ul className="mb-auto pt-7">
-        <Links routes={routes_admin} />
+        <SidebarLinks routes={routes_admin} />
       </ul>
 
       {/* Nav item end */}

@@ -53,6 +53,7 @@ const FeatureList = () => {
         const formattedData = res.data.results.map((item, index) => ({
           ...item,
           serialNo: index + 1,
+          key: index + 1,
         }));
         setData(formattedData);
       })

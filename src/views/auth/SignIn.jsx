@@ -30,19 +30,19 @@ const SignIn = () => {
     useState(false);
   const [showOTPInput, setShowOTPInput] = useState(false);
   const [showNewPasswordFields, setShowNewPasswordFields] = useState(false);
-  const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
-  const [emailforotp, setEmailForOTP] = useState(null);
-  const [otp, setOtp] = useState(null);
+  const [emailforotp, setEmailForOTP] = useState("");
+  const [otp, setOtp] = useState("");
+  const [changepassword, setChangePassword] = useState("");
   const [sendingOTP, setSendingOTP] = useState(false);
-
+  const [showError, setShowError] = useState(false);
+  const [otpError, setOtpError] = useState(false);
+  const [pwError, setPwError] = useState(false);
   const toastRef = useRef(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData({ ...data, [name]: value });
-    setEmailForOTP(value);
-    setOtp(value);
   };
 
   const handleSubmit = (e) => {
@@ -114,6 +114,10 @@ const SignIn = () => {
   };
   const handleForgotPasswordNext = async () => {
     try {
+      if (!emailforotp.trim()) {
+        setShowError(true);
+        return;
+      }
       setSendingOTP(true);
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/forgot-password-otp`,
@@ -121,15 +125,28 @@ const SignIn = () => {
       );
       if (response.status === 200) {
         setShowOTPInput(true);
-        console.log("OTP sent successfully");
+        toastRef.current.show({
+          severity: "success",
+          summary: "Success",
+          detail: "OTP sent successfully",
+          life: 3000,
+        });
         // You can add any additional logic or feedback to the user here
       } else {
-        console.error("Failed to send OTP");
-        // Handle the error or provide feedback to the user
+        toastRef.current.show({
+          severity: "warn",
+          summary: "Warning",
+          detail: "Failed to send OTP",
+          life: 3000,
+        });
       }
     } catch (error) {
-      console.error("Error sending OTP:", error);
-      // Handle the error or provide feedback to the user
+      toastRef.current.show({
+        severity: "warn",
+        summary: "Warning",
+        detail: error.response.data.message || "Error sending OTP",
+        life: 3000,
+      });
     } finally {
       setSendingOTP(false);
     }
@@ -137,42 +154,102 @@ const SignIn = () => {
 
   const handleOTPSubmit = async () => {
     try {
+      if (!otp.trim()) {
+        setOtpError(true);
+        return;
+      }
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/forgot-password-otp-verify`,
         { email: emailforotp, otp: otp }
       );
       if (response.status === 200) {
-        console.log("OTP verified successfully");
-        // You can add any additional logic or feedback to the user here
+        setOtp("");
+        setShowOTPInput(false);
+        setShowNewPasswordFields(true);
+        toastRef.current.show({
+          severity: "success",
+          summary: "Success",
+          detail: "OTP verified successfully",
+          life: 3000,
+        });
       } else {
-        console.error("Failed to send OTP");
-        // Handle the error or provide feedback to the user
+        toastRef.current.show({
+          severity: "warn",
+          summary: "Warning",
+          detail: "Failed to send OTP",
+          life: 3000,
+        });
       }
     } catch (error) {
-      console.error("Error sending OTP:", error);
-      // Handle the error or provide feedback to the user
-
-      // setShowOTPInput(false);
-      // setShowNewPasswordFields(true);
+      toastRef.current.show({
+        severity: "warn",
+        summary: "Warning",
+        detail: error.response.data.message || "Error sending OTP",
+        life: 3000,
+      });
     }
   };
 
-  const handleChangePassword = () => {
-    setShowForgotPasswordDialog(false);
-    setShowNewPasswordFields(false);
+  const handleChangePassword = async () => {
+    try {
+      if (!changepassword.trim() && !confirmNewPassword.trim()) {
+        setPwError(true);
+        return;
+      }
+      if (changepassword !== confirmNewPassword) {
+        toastRef.current.show({
+          severity: "warn",
+          summary: "Warning",
+          detail: "Passwords do not match",
+          life: 3000,
+        });
+        return;
+      }
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/forgot-password-change`,
+        { email: emailforotp, password: changepassword }
+      );
+      if (response.status === 200) {
+        setOtp("");
+        setShowOTPInput(false);
+        setEmailForOTP("");
+        setShowForgotPasswordDialog(false);
+        setShowNewPasswordFields(false);
+        toastRef.current.show({
+          severity: "success",
+          summary: "Success",
+          detail: "Password changed successfully",
+          life: 3000,
+        });
+      } else {
+        toastRef.current.show({
+          severity: "warn",
+          summary: "Warning",
+          detail: "Failed to change password",
+          life: 3000,
+        });
+      }
+    } catch (error) {
+      toastRef.current.show({
+        severity: "warn",
+        summary: "Warning",
+        detail: error.response.data.message || "Error in changing password",
+        life: 3000,
+      });
+    }
   };
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
   return (
-    <div className="flex min-h-screen flex-col justify-center bg-gray-100 py-6 dark:!bg-gray-850 sm:py-12">
+    <div className="flex min-h-screen flex-col justify-center bg-gray-100 py-6 dark:!bg-gray-800 sm:py-12">
       <Toast ref={toastRef} className="toast-custom" position="top-right" />
       {loading ? (
         <Preloader />
       ) : (
         <div className="relative py-3 sm:mx-auto sm:max-w-xl">
           <div className="absolute inset-0 -skew-y-6 transform bg-gradient-to-r from-blue-300 to-blueSecondary shadow-lg sm:-rotate-6 sm:skew-y-0 sm:rounded-3xl"></div>
-          <div className="relative bg-white px-4 py-10 shadow-lg dark:!bg-gray-750 sm:rounded-3xl sm:p-20">
+          <div className="relative bg-white px-4 py-10 shadow-lg  dark:!bg-gray-750 dark:shadow-2xl sm:rounded-3xl sm:p-20">
             <div className="mx-auto max-w-md">
               <div>
                 <h1 className="text-2xl opacity-70 dark:!text-white">
@@ -265,8 +342,13 @@ const SignIn = () => {
             onHide={() => {
               setShowForgotPasswordDialog(false);
               setShowOTPInput(false);
-              setEmailForOTP(null);
-              setOtp(null);
+              setEmailForOTP("");
+              setOtp("");
+              setOtpError(false);
+              setPwError(false);
+              setChangePassword("");
+              setShowError(false);
+              setConfirmNewPassword("");
               setShowNewPasswordFields(false);
             }}
             header={showOTPInput ? "Enter OTP" : "Forgot Password"}
@@ -280,13 +362,20 @@ const SignIn = () => {
                 <div className="mt-8">
                   <span className="p-float-label">
                     <InputText
-                      keyfilter="print"
+                      keyfilter="pint"
                       id="otp"
                       value={otp}
-                      onChange={(e) => setOtp(e.target.value)}
+                      className={otpError ? "p-invalid" : ""}
+                      onChange={(e) => {
+                        setOtp(e.target.value);
+                        setOtpError(false);
+                      }}
                     />
                     <label htmlFor="otp">OTP</label>
                   </span>
+                  {otpError && (
+                    <small className="p-error">OTP cannot be empty</small>
+                  )}
                 </div>
                 <div className="mt-4 text-center">
                   <button
@@ -305,18 +394,27 @@ const SignIn = () => {
                     <InputText
                       id="newPassword"
                       type="password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
+                      name="changepassword"
+                      className={pwError ? "p-invalid" : ""}
+                      value={changepassword}
+                      onChange={(e) => {
+                        setChangePassword(e.target.value);
+                        setPwError(false);
+                      }}
                     />
                     <label htmlFor="newPassword">New Password</label>
                   </span>
+                  {pwError && (
+                    <small className="p-error">Password cannot be empty</small>
+                  )}
                 </div>
                 {/* Confirm New Password input field */}
-                <div className="mt-4">
+                <div className="mt-8">
                   <span className="p-float-label">
                     <InputText
                       id="confirmNewPassword"
                       type="password"
+                      className={pwError ? "p-invalid" : ""}
                       value={confirmNewPassword}
                       onChange={(e) => setConfirmNewPassword(e.target.value)}
                     />
@@ -324,6 +422,11 @@ const SignIn = () => {
                       Confirm New Password
                     </label>
                   </span>
+                  {pwError && (
+                    <small className="p-error">
+                      Confirm password cannot be empty
+                    </small>
+                  )}
                 </div>
                 {/* Change Password button */}
                 <div className="mt-4 text-center">
@@ -343,10 +446,17 @@ const SignIn = () => {
                       id="username"
                       name="emailforotp"
                       value={emailforotp}
-                      onChange={(e) => setEmailForOTP(e.target.value)}
+                      className={showError ? "p-invalid" : ""}
+                      onChange={(e) => {
+                        setEmailForOTP(e.target.value);
+                        setShowError(false);
+                      }}
                     />
                     <label htmlFor="username">Email</label>
                   </span>
+                  {showError && (
+                    <small className="p-error">Please enter an email id.</small>
+                  )}
                 </div>
                 <div className="mt-4 text-center">
                   <button
@@ -360,7 +470,7 @@ const SignIn = () => {
                       {sendingOTP ? (
                         <div className="flex items-center">
                           Sending OTP
-                          <div className="ml-2 h-6 w-6 animate-spin rounded-full border-r-2 border-t-2 border-gray-50"></div>
+                          <div className="ml-2 h-6 w-6 animate-spin rounded-full border-r-2 border-t-2 border-gray-50 dark:border-gray-800"></div>
                         </div>
                       ) : (
                         "Send OTP"

@@ -75,6 +75,7 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
 
   const Customersoptions = () => {
     return listCustomers?.map((el) => ({
+      key: el.user_uuid,
       label: el.first_name + " " + el.last_name,
       value: el.user_uuid,
     }));

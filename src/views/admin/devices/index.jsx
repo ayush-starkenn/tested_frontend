@@ -52,6 +52,7 @@ const DevicesAdmin = () => {
         const formattedData = res.data.devices.map((item, index) => ({
           ...item,
           serialNo: index + 1,
+          key: index + 1,
         }));
         setData(formattedData);
       })
@@ -185,6 +186,7 @@ const DevicesAdmin = () => {
 
   const Customersoptions = () => {
     return listCustomers?.map((el) => ({
+      key: el.user_uuid,
       label: el.first_name + " " + el.last_name,
       value: el.user_uuid,
     }));

@@ -218,6 +218,7 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
 
   const Customersoptions = () => {
     return listCustomers?.map((el) => ({
+      key: el.user_uuid,
       label: el.first_name + " " + el.last_name,
       value: el.user_uuid,
     }));

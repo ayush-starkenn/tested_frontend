@@ -46,6 +46,7 @@ const AnalyticsThreshold = () => {
         const formattedData = res.data.analyticData.map((item, index) => ({
           ...item,
           serialNo: index + 1,
+          key: index + 1,
         }));
         setData(formattedData);
       })
@@ -153,7 +154,8 @@ const AnalyticsThreshold = () => {
       });
   }, [token]);
 
-  const customerOptions = customers.map((customer) => ({
+  const customerOptions = customers.map((customer, index) => ({
+    key: `customerOption_${index}`,
     label: `${customer.first_name}  ${customer.last_name}`,
     value: customer.user_uuid,
   }));

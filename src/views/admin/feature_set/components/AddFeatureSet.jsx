@@ -276,6 +276,7 @@ const AddFeatureSet = ({ onSuccess }) => {
 
   const Customersoptions = () => {
     return listCustomers?.map((el) => ({
+      key: el.user_uuid,
       label: el.first_name + " " + el.last_name,
       value: {
         user_uuid: el.user_uuid,
