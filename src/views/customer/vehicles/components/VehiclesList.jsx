@@ -96,7 +96,7 @@ export default function VehiclesList({
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-        <Link to={`ongoing-trip/${rowData.vehicle_uuid}`}>
+        <Link to={`ongoing-trip/${rowData.vehicle_uuid}`} target="_blank">
           <Button
             icon="pi pi-map-marker"
             rounded
