@@ -8,6 +8,7 @@ import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import Preloader from "./Preloader";
 import { InputText } from "primereact/inputtext";
+import { Dialog } from "primereact/dialog";
 
 const SignIn = () => {
   const token = Cookies.get("token");
@@ -25,16 +26,28 @@ const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [data, setData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
+  const [showForgotPasswordDialog, setShowForgotPasswordDialog] =
+    useState(false);
+  const [showOTPInput, setShowOTPInput] = useState(false);
+  const [showNewPasswordFields, setShowNewPasswordFields] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [emailforotp, setEmailForOTP] = useState(null);
+  const [otp, setOtp] = useState(null);
+  const [sendingOTP, setSendingOTP] = useState(false);
 
   const toastRef = useRef(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData({ ...data, [name]: value });
+    setEmailForOTP(value);
+    setOtp(value);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (!data.email.trim() || !data.password.trim()) {
       toastRef.current.show({
         severity: "error",
@@ -53,8 +66,10 @@ const SignIn = () => {
           const token = res.data.token;
           const user_type = res.data.user.user_type;
           const user_uuid = res.data.user.user_uuid;
+          const first_name = res.data.user.first_name;
           const expirationTime = new Date();
-          expirationTime.setDate(expirationTime.getDate() + 7); // Cookie expires in 1 week
+          expirationTime.setMinutes(expirationTime.getMinutes() + 60); // Cookie expires in 1 hour
+
           Cookies.set("token", token, {
             expires: expirationTime,
             sameSite: "strict",
@@ -64,6 +79,10 @@ const SignIn = () => {
             sameSite: "strict",
           });
           Cookies.set("user_type", user_type, {
+            expires: expirationTime,
+            sameSite: "strict",
+          });
+          Cookies.set("first_name", first_name, {
             expires: expirationTime,
             sameSite: "strict",
           });
@@ -90,9 +109,58 @@ const SignIn = () => {
     }
   };
 
-  //const storedToken = Cookies.get('token');
-  //Cookies.remove('token');
+  const handleForgotPasswordClick = () => {
+    setShowForgotPasswordDialog(true);
+  };
+  const handleForgotPasswordNext = async () => {
+    try {
+      setSendingOTP(true);
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/forgot-password-otp`,
+        { email: emailforotp }
+      );
+      if (response.status === 200) {
+        setShowOTPInput(true);
+        console.log("OTP sent successfully");
+        // You can add any additional logic or feedback to the user here
+      } else {
+        console.error("Failed to send OTP");
+        // Handle the error or provide feedback to the user
+      }
+    } catch (error) {
+      console.error("Error sending OTP:", error);
+      // Handle the error or provide feedback to the user
+    } finally {
+      setSendingOTP(false);
+    }
+  };
 
+  const handleOTPSubmit = async () => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/forgot-password-otp-verify`,
+        { email: emailforotp, otp: otp }
+      );
+      if (response.status === 200) {
+        console.log("OTP verified successfully");
+        // You can add any additional logic or feedback to the user here
+      } else {
+        console.error("Failed to send OTP");
+        // Handle the error or provide feedback to the user
+      }
+    } catch (error) {
+      console.error("Error sending OTP:", error);
+      // Handle the error or provide feedback to the user
+
+      // setShowOTPInput(false);
+      // setShowNewPasswordFields(true);
+    }
+  };
+
+  const handleChangePassword = () => {
+    setShowForgotPasswordDialog(false);
+    setShowNewPasswordFields(false);
+  };
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -180,14 +248,129 @@ const SignIn = () => {
               </div>
               <div className="relative border-0 text-center">
                 <p>
-                  <a href="/" className="text-blue-600 underline">
+                  <button
+                    href="/forgot-password"
+                    className="text-blue-600 underline"
+                    onClick={handleForgotPasswordClick}
+                  >
                     Forgot Password?
-                  </a>
+                  </button>
                 </p>
               </div>
             </div>
             <FixedPlugin />
           </div>
+          <Dialog
+            visible={showForgotPasswordDialog}
+            onHide={() => {
+              setShowForgotPasswordDialog(false);
+              setShowOTPInput(false);
+              setEmailForOTP(null);
+              setOtp(null);
+              setShowNewPasswordFields(false);
+            }}
+            header={showOTPInput ? "Enter OTP" : "Forgot Password"}
+            style={{ width: "35rem" }}
+            breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+            modal
+            className="p-fluid dark:bg-gray-900"
+          >
+            {showOTPInput ? (
+              <div>
+                <div className="mt-8">
+                  <span className="p-float-label">
+                    <InputText
+                      keyfilter="print"
+                      id="otp"
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value)}
+                    />
+                    <label htmlFor="otp">OTP</label>
+                  </span>
+                </div>
+                <div className="mt-4 text-center">
+                  <button
+                    className="rounded-md bg-blueSecondary px-4 py-1 text-white dark:!bg-gray-100 dark:!text-gray-850"
+                    onClick={handleOTPSubmit}
+                  >
+                    Verify OTP
+                  </button>
+                </div>
+              </div>
+            ) : showNewPasswordFields ? (
+              <div>
+                {/* New Password input field */}
+                <div className="mt-8">
+                  <span className="p-float-label">
+                    <InputText
+                      id="newPassword"
+                      type="password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                    />
+                    <label htmlFor="newPassword">New Password</label>
+                  </span>
+                </div>
+                {/* Confirm New Password input field */}
+                <div className="mt-4">
+                  <span className="p-float-label">
+                    <InputText
+                      id="confirmNewPassword"
+                      type="password"
+                      value={confirmNewPassword}
+                      onChange={(e) => setConfirmNewPassword(e.target.value)}
+                    />
+                    <label htmlFor="confirmNewPassword">
+                      Confirm New Password
+                    </label>
+                  </span>
+                </div>
+                {/* Change Password button */}
+                <div className="mt-4 text-center">
+                  <button
+                    className="rounded-md bg-blueSecondary px-4 py-1 text-white dark:!bg-gray-100 dark:!text-gray-850"
+                    onClick={handleChangePassword}
+                  >
+                    Change Password
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <div className="mt-8">
+                  <span className="p-float-label">
+                    <InputText
+                      id="username"
+                      name="emailforotp"
+                      value={emailforotp}
+                      onChange={(e) => setEmailForOTP(e.target.value)}
+                    />
+                    <label htmlFor="username">Email</label>
+                  </span>
+                </div>
+                <div className="mt-4 text-center">
+                  <button
+                    className={`relative rounded-md bg-blueSecondary px-4 py-1 text-white dark:!bg-gray-100 dark:!text-gray-850 ${
+                      sendingOTP ? "cursor-not-allowed" : "cursor-pointer"
+                    }`}
+                    onClick={handleForgotPasswordNext}
+                    disabled={sendingOTP}
+                  >
+                    <div className="flex items-center">
+                      {sendingOTP ? (
+                        <div className="flex items-center">
+                          Sending OTP
+                          <div className="ml-2 h-6 w-6 animate-spin rounded-full border-r-2 border-t-2 border-gray-50"></div>
+                        </div>
+                      ) : (
+                        "Send OTP"
+                      )}
+                    </div>
+                  </button>
+                </div>
+              </div>
+            )}
+          </Dialog>
         </div>
       )}
     </div>

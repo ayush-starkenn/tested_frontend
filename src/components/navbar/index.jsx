@@ -15,7 +15,7 @@ const Navbar = ({ onOpenSidenav }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
-
+  const name = Cookies.get("first_name");
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -139,7 +139,7 @@ const Navbar = ({ onOpenSidenav }) => {
               <div className="p-4">
                 <div className="flex items-center gap-2">
                   <p className="text-sm font-bold text-navy-700 dark:text-white">
-                    👋 Hey, Adela
+                    👋 Hey, {name}
                   </p>
                 </div>
               </div>

@@ -465,8 +465,8 @@ const Drivers = () => {
       {!isListView && (
         <DriversGrid
           data={data}
-          onEditDevice={handleEditDriver}
-          onDeleteDevice={handleDeleteDriver}
+          onEditDriver={handleEditDriver}
+          onDeleteDriver={handleDeleteDriver}
         />
       )}
       {isListView && (
