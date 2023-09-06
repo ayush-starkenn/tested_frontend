@@ -136,7 +136,6 @@ const Contacts = () => {
         }
       )
       .then((res) => {
-        console.log(res);
         setRefresh(!refresh);
         toastRef.current.show({
           severity: "success",
@@ -289,7 +288,7 @@ const Contacts = () => {
                 type="submit"
                 className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
               >
-                Add Vehicle
+                Add Contact
               </button>
             </div>
           </form>

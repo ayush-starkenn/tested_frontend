@@ -46,23 +46,16 @@ export default function Admin(props) {
     }
     return activeNavbar;
   };
-  const getRoutes = (routes) => {
-    return routes.map((prop, index) => {
-      if (prop.layout === "/admin") {
-        return (
-          <>
-            <Route
-              path={`/${prop.path}`}
-              element={prop.component}
-              key={index}
-            />
-          </>
-        );
-      } else {
-        return null;
-      }
-    });
-  };
+  const getRoutes = (routes_customer) =>
+    routes_customer
+      .filter((prop) => prop.layout === "/customer")
+      .map((prop) => (
+        <Route
+          path={`/${prop.path}`}
+          element={prop.component}
+          key={prop.path}
+        />
+      ));
 
   document.documentElement.dir = "ltr";
   return (

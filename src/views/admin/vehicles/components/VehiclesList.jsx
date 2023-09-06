@@ -122,7 +122,7 @@ export default function VehiclesList({ data }) {
           value={data}
           selection={selectedVehicles}
           onSelectionChange={(e) => setSelectedVehicles(e.value)}
-          dataKey="user_uuid"
+          dataKey="vehicle_uuid"
           paginator
           rows={5}
           rowsPerPageOptions={[5, 10, 25]}
@@ -219,7 +219,7 @@ export default function VehiclesList({ data }) {
             <VehicleTrips />
           </TabPanel>
           <TabPanel header="Feature Set" leftIcon="pi pi-cog mr-2">
-            <FeatureSet parameters={{ propValue: myData?._id }} />
+            <FeatureSet myData={myData} closeDialog={closeDialog} />
           </TabPanel>
         </TabView>
       </Dialog>

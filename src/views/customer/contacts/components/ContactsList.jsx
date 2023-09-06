@@ -137,7 +137,7 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
       <DataTable
         value={contactsData}
         paginator
-        dataKey="user_uuid"
+        dataKey="contact_uuid"
         header={header}
         rows={5}
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
@@ -265,7 +265,7 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
               type="submit"
               className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
             >
-              Edit Vehicle
+              Edit Contact
             </button>
           </div>
         </form>
