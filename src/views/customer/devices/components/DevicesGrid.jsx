@@ -122,8 +122,6 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
     );
   };
 
-  // Delete Dialog
-
   return (
     <div>
       <div className="my-4 mr-7  flex justify-end">

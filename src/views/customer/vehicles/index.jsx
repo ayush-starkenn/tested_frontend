@@ -14,6 +14,7 @@ const Marketplace = () => {
   const [isListView, setIsListView] = useState(true);
   const [vehiData, setVehiData] = useState([]);
   const [dialog1, setDialog1] = useState(false);
+  const [data, setData] = useState([]);
   const [addData, setAddData] = useState({});
   const [ecuData, setEcuData] = useState([]);
   const [iotData, setIotData] = useState([]);
@@ -74,11 +75,8 @@ const Marketplace = () => {
   };
 
   //api call to get vehicle list
-  useEffect(() => {
-    getData();
-  }, [token]);
 
-  const getData = () => {
+  useEffect(() => {
     axios
       .get(
         `http://localhost:8080/api/vehicles/get-user-vehiclelist/${user_uuid}`,
@@ -94,7 +92,7 @@ const Marketplace = () => {
       .catch((err) => {
         console.log(err);
       });
-  };
+  }, [token, user_uuid, data]);
 
   // get ECUData
   useEffect(() => {
@@ -108,7 +106,7 @@ const Marketplace = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [token, user_uuid]);
 
   //get IoTData
   useEffect(() => {
@@ -122,7 +120,7 @@ const Marketplace = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [token, user_uuid]);
 
   //get dmsData
   useEffect(() => {
@@ -136,7 +134,7 @@ const Marketplace = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [token, user_uuid]);
 
   //get featureset
   useEffect(() => {
@@ -154,7 +152,7 @@ const Marketplace = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [token, user_uuid]);
 
   //edit vehicle Function
 
@@ -169,7 +167,7 @@ const Marketplace = () => {
       )
       .then((res) => {
         console.log(res);
-        getData();
+        setData(data);
         closeDialog1();
         toastRef.current.show({
           severity: "success",
@@ -202,7 +200,7 @@ const Marketplace = () => {
       )
       .then((res) => {
         console.log(res);
-        getData();
+        setData();
         closeDialog1();
         toastRef.current.show({
           severity: "success",
@@ -246,7 +244,7 @@ const Marketplace = () => {
         )
         .then((res) => {
           console.log(res);
-          getData();
+          setData(addData);
           closeDialog1();
           toastRef.current.show({
             severity: "success",
