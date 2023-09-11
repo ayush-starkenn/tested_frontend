@@ -21,6 +21,7 @@ export default function VehiclesList({ data }) {
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
 
+  console.log(data);
   //global search
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
@@ -113,6 +114,10 @@ export default function VehiclesList({ data }) {
     </div>
   );
 
+  const renderCellWithNA = (data) => {
+    return data ? data : "--";
+  };
+
   return (
     <div>
       <Toast ref={toast} />
@@ -155,7 +160,6 @@ export default function VehiclesList({ data }) {
             className="border-none dark:bg-gray-900 dark:text-gray-200"
             style={{ minWidth: "10rem", border: "none !important" }}
           ></Column>
-
           <Column
             key="vehicle_registration"
             field="vehicle_registration"
@@ -163,6 +167,7 @@ export default function VehiclesList({ data }) {
             sortable
             className="border-none dark:bg-gray-900 dark:text-gray-200"
             style={{ minWidth: "12rem" }}
+            body={(rowData) => renderCellWithNA(rowData.ecu)}
           ></Column>
           <Column
             key="dms"
@@ -171,14 +176,16 @@ export default function VehiclesList({ data }) {
             sortable
             className="border-none dark:bg-gray-900 dark:text-gray-200"
             style={{ minWidth: "9rem" }}
+            body={(rowData) => renderCellWithNA(rowData.dms)}
           ></Column>
           <Column
             key="iot"
-            field={`${data.iot === null ? "--" : "iot"}`}
+            field="iot"
             header="IoT"
             sortable
             className="border-none dark:bg-gray-900 dark:text-gray-200"
             style={{ minWidth: "9rem" }}
+            body={(rowData) => renderCellWithNA(rowData.iot)}
           ></Column>
           <Column
             key="ecu"
@@ -187,6 +194,7 @@ export default function VehiclesList({ data }) {
             sortable
             className="border-none dark:bg-gray-900 dark:text-gray-200"
             style={{ minWidth: "9rem" }}
+            body={(rowData) => renderCellWithNA(rowData.ecu)}
           ></Column>
           <Column
             key="vehicle_status"

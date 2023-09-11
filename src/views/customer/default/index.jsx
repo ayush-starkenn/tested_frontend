@@ -4,8 +4,43 @@ import { MdWebhook } from "react-icons/md";
 import { BsTruck, BsFillCpuFill } from "react-icons/bs";
 import { AiOutlineCheckSquare } from "react-icons/ai";
 import Widget from "components/widget/Widget";
+import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const MainDashboard = () => {
+  const user_uuid = Cookies.get("user_uuid");
+  const token = Cookies.get("token");
+  const [devicesCount, setDevicesCount] = useState();
+  const [vehiclesCount, setVehiclesCount] = useState();
+
+  useEffect(() => {
+    axios
+      .get(
+        `http://localhost:8080/api/vehicles/get-user-vehiclelist/${user_uuid}`,
+        { headers: { authorization: `bearer ${token}` } }
+      )
+      .then((res) => {
+        setVehiclesCount(res.data.results.length);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [token, user_uuid]);
+
+  useEffect(() => {
+    axios
+      .get(
+        `http://localhost:8080/api/devices/get-user-devices-list/${user_uuid}`,
+        { headers: { authorization: `bearer ${token}` } }
+      )
+      .then((res) => {
+        setDevicesCount(res.data.results.length);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [token, user_uuid, devicesCount]);
   return (
     <div>
       {/* Card widget */}
@@ -14,12 +49,12 @@ const MainDashboard = () => {
         <Widget
           icon={<BsTruck className="h-7 w-7" />}
           title={"Vehicles"}
-          subtitle={"10"}
+          subtitle={vehiclesCount}
         />
         <Widget
           icon={<BsFillCpuFill className="h-6 w-6" />}
           title={"Devices"}
-          subtitle={"5"}
+          subtitle={devicesCount}
         />
         <Widget
           icon={<MdWebhook className="h-7 w-7" />}
