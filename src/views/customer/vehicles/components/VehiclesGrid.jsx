@@ -1,7 +1,5 @@
 import Cookies from "js-cookie";
-import { FilterMatchMode } from "primereact/api";
 import { Button } from "primereact/button";
-import { MdOnDeviceTraining } from "react-icons/md";
 import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
 import { Tag } from "primereact/tag";
@@ -23,10 +21,6 @@ export default function VehiclesGrid({
   feauresetData,
 }) {
   const token = Cookies.get("token");
-  const [filters, setFilters] = useState({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  });
-  const [globalFilterValue, setGlobalFilterValue] = useState("");
   const [editDialog, setEditDialog] = useState(false);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [editData, setEditData] = useState({});
@@ -37,23 +31,6 @@ export default function VehiclesGrid({
   const [localIoTData, setLocalIoTData] = useState([]);
   const [localDMSData, setLocalDMSData] = useState([]);
   const [myData, setMyData] = useState();
-
-  const onGlobalFilterChange = (e) => {
-    const value = e.target.value;
-    let _filters = { ...filters };
-
-    _filters["global"].value = value;
-
-    setFilters(_filters);
-    setGlobalFilterValue(value);
-  };
-
-  const clearSearch = () => {
-    setGlobalFilterValue(""); // Clear the search input value
-    const _filters = { ...filters };
-    _filters["global"].value = null; // Clear the global filter value
-    setFilters(_filters);
-  };
 
   useEffect(() => {
     if (ecuData) {
@@ -66,31 +43,6 @@ export default function VehiclesGrid({
       setLocalDMSData(dmsData);
     }
   }, [ecuData, iotData, dmsData]);
-
-  const renderHeader = () => {
-    return (
-      <div className="my-4 flex justify-end">
-        <div className="justify-content-between align-items-center flex flex-wrap gap-2">
-          <span className="p-input-icon-left">
-            <i className="pi pi-search" />
-            <InputText
-              value={globalFilterValue}
-              onChange={onGlobalFilterChange}
-              placeholder="Keyword Search"
-              className="searchbox w-[25vw] cursor-pointer rounded-full dark:bg-gray-950 dark:text-gray-50"
-            />
-            {globalFilterValue && (
-              <Button
-                icon="pi pi-times"
-                className="p-button-rounded p-button-text"
-                onClick={clearSearch}
-              />
-            )}
-          </span>
-        </div>
-      </div>
-    );
-  };
 
   const openEditDialog = (rowData) => {
     setEditDialog(true);
@@ -135,8 +87,6 @@ export default function VehiclesGrid({
   const closeViewDialog = () => {
     setViewDialog(false);
   };
-
-  const header = renderHeader();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -207,9 +157,9 @@ export default function VehiclesGrid({
                     {item.iot && <p>{item.iot}</p>}
                     {item.dms && <p>{item.dms}</p>}
                     <Tag
-                      value={item.vehicle_status === 1 ? "Active" : "Deactive"}
+                      value={item?.vehicle_status === 1 ? "Active" : "Deactive"}
                       severity={
-                        item.vehicle_status === 1 ? "success" : "danger"
+                        item?.vehicle_status === 1 ? "success" : "danger"
                       }
                       rounded
                     />

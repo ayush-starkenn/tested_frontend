@@ -46,9 +46,9 @@ export default function Admin(props) {
     }
     return activeNavbar;
   };
-  const getRoutes = (routes_customer) =>
-    routes_customer
-      .filter((prop) => prop.layout === "/customer")
+  const getRoutes = (routes_admin) =>
+    routes_admin
+      .filter((prop) => prop.layout === "/admin")
       .map((prop) => (
         <Route
           path={`/${prop.path}`}

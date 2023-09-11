@@ -271,6 +271,14 @@ export default function VehiclesList({
           style={{ minWidth: "8rem" }}
         ></Column>
         <Column
+          field="dms"
+          header="DMS"
+          sortable
+          className="dark:bg-gray-900 dark:text-gray-200"
+          style={{ minWidth: "5rem" }}
+          body={(rowData) => renderCellWithNA(rowData.dms)}
+        ></Column>
+        <Column
           field="ecu"
           header="ECU"
           sortable
@@ -286,14 +294,7 @@ export default function VehiclesList({
           style={{ minWidth: "5rem" }}
           body={(rowData) => renderCellWithNA(rowData.iot)}
         ></Column>
-        <Column
-          field="dms"
-          header="DMS"
-          sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
-          style={{ minWidth: "5rem" }}
-          body={(rowData) => renderCellWithNA(rowData.dms)}
-        ></Column>
+
         <Column
           field="vehicle_status"
           header="Status"

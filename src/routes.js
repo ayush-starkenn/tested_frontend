@@ -25,7 +25,7 @@ import {
 import { BsTruck, BsFillCpuFill } from "react-icons/bs";
 import { RiAlertLine, RiContactsLine } from "react-icons/ri";
 import { TbReport, TbDeviceAnalytics } from "react-icons/tb";
-import { BiRfid } from "react-icons/bi";
+// import { BiRfid } from "react-icons/bi";
 import { HiOutlineUsers } from "react-icons/hi";
 import AdminProtected from "authorization/AdminProteted";
 import CustomerProtected from "authorization/CustomerProtected";
@@ -198,18 +198,18 @@ export const routes_customer = [
       </CustomerProtected>
     ),
   },
-  {
-    name: "RFIDs",
-    title: "RFIDs",
-    layout: "/customer",
-    path: "RFIDs",
-    icon: <BiRfid className="h-7 w-7" />,
-    component: (
-      <CustomerProtected>
-        <RFIDs />
-      </CustomerProtected>
-    ),
-  },
+  // {
+  //   name: "RFIDs",
+  //   title: "RFIDs",
+  //   layout: "/customer",
+  //   path: "RFIDs",
+  //   icon: <BiRfid className="h-7 w-7" />,
+  //   component: (
+  //     <CustomerProtected>
+  //       <RFIDs />
+  //     </CustomerProtected>
+  //   ),
+  // },
   {
     name: "Reports",
     title: "Reports",
