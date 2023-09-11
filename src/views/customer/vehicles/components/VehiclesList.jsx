@@ -458,7 +458,7 @@ export default function VehiclesList({
       >
         <TabView>
           <TabPanel header="Vehicle's Trips" leftIcon="pi pi-truck mr-2">
-            <VehicleTrips />
+            <VehicleTrips myData={myData} />
           </TabPanel>
           <TabPanel header="Feature Set" leftIcon="pi pi-cog mr-2">
             <FeatureSet myData={myData} closeDialog={closeViewDialog} />

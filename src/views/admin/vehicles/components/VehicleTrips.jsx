@@ -6,35 +6,22 @@ import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Tag } from "primereact/tag";
 import axios from "axios";
+import Cookies from "js-cookie";
 
-const VehicleTrips = () => {
+const VehicleTrips = ({ myData }) => {
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
   const [data, setData] = useState([]);
   const [globalFilterValue, setGlobalFilterValue] = useState("");
-
-  useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_API_URL}/Vehicles/getAllVehicle`)
-      .then((res) => {
-        const formattedData = res.data.data.map((item, index) => ({
-          ...item,
-          serialNo: index + 1,
-        }));
-        setData(formattedData);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+  const token = Cookies.get("token");
+  const [hoveredTripId, setHoveredTripId] = useState(null);
 
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
     let _filters = { ...filters };
 
     _filters["global"].value = value;
-
     setFilters(_filters);
     setGlobalFilterValue(value);
   };
@@ -81,40 +68,58 @@ const VehicleTrips = () => {
     );
   };
 
-  const getSeverity = (data) => {
-    switch (data.status) {
-      case "1":
-        return "success";
-
-      case "0":
-        return "danger";
-
-      default:
-        return null;
-    }
-  };
-
   const statusBodyTemplate = (rowData) => {
-    return (
+    return rowData.trip_status === 1 ? (
       <Tag
-        className="px-3"
-        value={
-          parseInt(rowData.status) === 1
-            ? "Active"
-            : parseInt(rowData.status) === 0
-            ? "Deactive"
-            : undefined
-        }
-        severity={getSeverity(rowData)}
+        value={"Completed"}
+        severity={"success"}
+        style={{ width: "75px" }}
+      ></Tag>
+    ) : (
+      <Tag
+        value={"Ongoing"}
+        severity={"danger"}
+        style={{ width: "75px" }}
       ></Tag>
     );
   };
+
+  //vehicle trip data
+
+  useEffect(() => {
+    axios
+      .get(
+        `http://localhost:8080/api/trips/get-vehicle-trips/${myData.vehicle_uuid}`,
+        {
+          headers: { authorization: `bearer ${token}` },
+        }
+      )
+      .then((res) => {
+        const formattedData = res.data.results.map((item, index) => ({
+          ...item,
+          serialNo: index + 1,
+          key: index + 1,
+        }));
+        setData(formattedData);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  function convertEpochToIST(epoch) {
+    const date = new Date(epoch * 1000); // Convert seconds to milliseconds
+    return date.toLocaleString("en-IN", {
+      timeZone: "Asia/Kolkata",
+    });
+  }
+
   return (
     <>
       <DataTable
         removableSort
         value={data}
-        dataKey="id"
+        dataKey="ts_id"
         paginator
         rows={5}
         rowsPerPageOptions={[5, 10, 25]}
@@ -123,11 +128,10 @@ const VehicleTrips = () => {
         filterDisplay="menu"
         filters={filters}
         globalFilterFields={[
-          "vehicle_name",
-          "vehicle_registration",
-          "dms",
-          "iot",
-          "ecu",
+          "trip_id",
+          "trip_start_time",
+          "trip_end_time",
+          "duration",
         ]}
         emptyMessage="No Trips found."
         header={header}
@@ -144,29 +148,47 @@ const VehicleTrips = () => {
           sortable
           className="border-none dark:bg-gray-900 dark:text-gray-200"
           style={{ minWidth: "10rem", border: "none !important" }}
+          body={(rowData) => (
+            <span
+              onMouseEnter={() => setHoveredTripId(rowData.trip_id)}
+              onMouseLeave={() => setHoveredTripId(null)}
+            >
+              {hoveredTripId === rowData.trip_id
+                ? rowData.trip_id
+                : rowData.trip_id.substring(0, 5) + "..."}
+            </span>
+          )}
         ></Column>
 
         <Column
-          field="trip_start"
+          field="trip_start_time"
           header="Trip Start"
           sortable
           className="border-none dark:bg-gray-900 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
+          body={(rowData) => convertEpochToIST(rowData.trip_start_time)}
         ></Column>
         <Column
-          field="trip_end"
+          field="trip_end_time"
           header="Trip End"
           sortable
           className="border-none dark:bg-gray-900 dark:text-gray-200"
-          style={{ minWidth: "9rem" }}
+          style={{ minWidth: "12rem" }}
+          body={(rowData) => convertEpochToIST(rowData.trip_end_time)}
         ></Column>
         <Column
-          field="total_km"
+          field="total_distance"
           header="Distance Travelled"
           sortable
           className="border-none dark:bg-gray-900 dark:text-gray-200"
           style={{ minWidth: "9rem" }}
+          body={(rowData) => {
+            const distance = parseFloat(rowData.total_distance);
+            const formattedDistance = distance.toFixed(2);
+            return formattedDistance + " km";
+          }}
         ></Column>
+
         <Column
           field="duration"
           header="Duration"
@@ -175,7 +197,7 @@ const VehicleTrips = () => {
           style={{ minWidth: "9rem" }}
         ></Column>
         <Column
-          field="status"
+          field="trip_status"
           header="Status"
           body={statusBodyTemplate}
           sortable

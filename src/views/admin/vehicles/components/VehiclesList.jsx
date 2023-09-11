@@ -21,7 +21,6 @@ export default function VehiclesList({ data }) {
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
 
-  console.log(data);
   //global search
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
@@ -224,7 +223,7 @@ export default function VehiclesList({ data }) {
       >
         <TabView>
           <TabPanel header="Vehicle's Trips" leftIcon="pi pi-truck mr-2">
-            <VehicleTrips />
+            <VehicleTrips myData={myData} />
           </TabPanel>
           <TabPanel header="Feature Set" leftIcon="pi pi-cog mr-2">
             <FeatureSet myData={myData} closeDialog={closeDialog} />
