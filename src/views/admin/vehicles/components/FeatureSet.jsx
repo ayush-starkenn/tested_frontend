@@ -178,7 +178,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
         featureset_status: featuresetDetails?.featureset_status,
         featureset_data: featuresetData,
       };
-      console.log(postData.featureset_version, postData.featureset_status);
+      // console.log(postData.featureset_version, postData.featureset_status);
       const strigifyData = JSON.stringify(postData);
 
       const editData = {
@@ -224,7 +224,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
         featureset_status: featuresetDetails?.featureset_status,
         featureset_data: featuresetData,
       };
-      console.log(postData.featureset_version, postData.featureset_status);
+      // console.log(postData.featureset_version, postData.featureset_status);
       const strigifyData = JSON.stringify(postData);
 
       const editData = {
