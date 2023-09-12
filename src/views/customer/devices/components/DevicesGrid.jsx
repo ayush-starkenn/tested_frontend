@@ -106,7 +106,7 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
                   </div>
                   <div>
                     <Tag
-                      value={(item.device_status = "1" ? "Active" : "Deactive")}
+                      value={item.device_status === 1 ? "Active" : "Deactive"}
                       severity={tagSeverity}
                     />
                   </div>

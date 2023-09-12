@@ -89,11 +89,11 @@ export default function DevicesList({ data }) {
   };
 
   const header = renderHeader();
-
   const renderStatusCell = (rowData) => {
+    console.log(rowData);
+
     const tagValue = rowData?.device_status === 1 ? "Active" : "Deactive";
     const tagSeverity = rowData?.device_status === 1 ? "success" : "danger";
-
     return <Tag value={tagValue} severity={tagSeverity} />;
   };
 

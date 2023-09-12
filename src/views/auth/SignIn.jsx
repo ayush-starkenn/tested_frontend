@@ -68,7 +68,7 @@ const SignIn = () => {
           const user_uuid = res.data.user.user_uuid;
           const first_name = res.data.user.first_name;
           const expirationTime = new Date();
-          expirationTime.setMinutes(expirationTime.getMinutes() + 60); // Cookie expires in 1 hour
+          expirationTime.setDate(expirationTime.getDate() + 7); // Cookie expires in 7 days (1 week)
 
           Cookies.set("token", token, {
             expires: expirationTime,

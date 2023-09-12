@@ -41,17 +41,6 @@ export default function VehiclesGrid({ data }) {
   });
   const [globalFilterValue, setGlobalFilterValue] = useState("");
 
-  const getSeverity = (data) => {
-    switch (data.status) {
-      case "1":
-        return "success";
-      case "0":
-        return "danger";
-      default:
-        return null;
-    }
-  };
-
   useEffect(() => {
     setAllData(data);
     const filteredData = applyFilters(filters, data);
@@ -90,6 +79,7 @@ export default function VehiclesGrid({ data }) {
 
   //card
   const itemTemplate = (item) => {
+    const tagSeverity = item?.vehicle_status === 1 ? "success" : "danger";
     return (
       <div className="p-col-12 vehicle-card mb-6 rounded bg-gray-50 dark:bg-gray-900 dark:text-gray-150">
         <div className="card">
@@ -98,13 +88,13 @@ export default function VehiclesGrid({ data }) {
               <div>
                 <Tag
                   value={
-                    parseInt(item.status) === 1
+                    parseInt(item.vehicle_status) === 1
                       ? "Active"
-                      : parseInt(item.status) === 0
+                      : parseInt(item.vehicle_status) === 0
                       ? "Deactive"
                       : undefined
                   }
-                  severity={getSeverity(item)}
+                  severity={tagSeverity}
                 ></Tag>
               </div>
             </div>

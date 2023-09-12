@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Dropdown from "components/dropdown";
 import { FiAlignJustify } from "react-icons/fi";
 import { BsArrowBarUp } from "react-icons/bs";
@@ -10,14 +10,70 @@ import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { HiOutlineUserCircle } from "react-icons/hi";
 import { TbLogout } from "react-icons/tb";
+import { Toast } from "primereact/toast";
+import { FaEdit, FaLock } from "react-icons/fa";
+import { Dialog } from "primereact/dialog";
+import { InputText } from "primereact/inputtext";
+import axios from "axios";
+import { Button } from "primereact/button";
 
 const Navbar = ({ onOpenSidenav }) => {
   const [darkmode, setDarkmode] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [dialogVisible, setDialogVisible] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editModeColor, setEditModeColor] = useState("text-red-400");
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [formData, setFormData] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    company_name: "",
+    address: "",
+    state: "",
+    city: "",
+    pincode: "",
+    phone: "",
+    user_status: "",
+  });
+
   const navigate = useNavigate();
-  const name = Cookies.get("first_name");
   const user_type = Cookies.get("user_type");
+  const user_uuid = Cookies.get("user_uuid");
+  const token = Cookies.get("token");
+  const toastRef = useRef(null);
+
+  useEffect(() => {
+    if (dialogVisible) {
+      axios
+        .get(
+          `${process.env.REACT_APP_API_URL}/profile/get-profile/${user_uuid}`,
+          {
+            headers: { authorization: `bearer ${token}` },
+          }
+        )
+        .then((res) => {
+          console.log(res.data.results[0]);
+          const profileData = res.data.results[0];
+          setFormData({
+            first_name: profileData.first_name,
+            last_name: profileData.last_name,
+            email: profileData.email,
+            company_name: profileData.company_name,
+            address: profileData.address,
+            state: profileData.state,
+            city: profileData.city,
+            pincode: profileData.pincode,
+            phone: profileData.phone,
+            // user_status: profileData.user_status,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [dialogVisible, user_uuid, token]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -42,144 +98,369 @@ const Navbar = ({ onOpenSidenav }) => {
     Cookies.remove("token");
     Cookies.remove("user_type");
     Cookies.remove("user_uuid");
+    Cookies.remove("first_name");
+    setTimeout(() => {
+      navigate("/signin");
+    }, [3000]);
+    toastRef.current.show({
+      summary: "Logging out",
+      life: 3000,
+      className: "custom-toast bg-gray-300",
+      closable: false,
+    });
+  };
 
-    navigate("/signin");
+  const handleInputChange = (fieldName, value) => {
+    setFormData({
+      ...formData,
+      [fieldName]: value,
+    });
+  };
+
+  const handleSubmit = () => {
+    setIsUpdating(true);
+    axios
+      .put(
+        `${process.env.REACT_APP_API_URL}/profile/update-profile/${user_uuid}`,
+        formData,
+        { headers: { authorization: `bearer ${token}` } }
+      )
+      .then((res) => {
+        // Handle success, show a success toast, etc.
+        console.log(res);
+        setDialogVisible(false);
+        setIsUpdating(false);
+      })
+      .catch((err) => {
+        // Handle error, show an error toast, etc.
+        console.error(err);
+        setIsUpdating(false);
+      });
   };
 
   return (
-    <nav className="sticky top-0 z-40 flex flex-row flex-wrap items-center justify-between bg-white p-2 backdrop-blur-xl dark:bg-navy-800">
-      <div className="ml-[6px]">
-        <div className="">
-          <img src={logo} className="w-[177px]" alt="" />
-        </div>
-        <p className="shrink text-[33px] capitalize text-navy-700 dark:text-white"></p>
-      </div>
-
-      <div className="relative mt-[3px] flex h-[61px] w-[355px] flex-grow items-center justify-around gap-2 rounded-full bg-white px-2 py-2  dark:!bg-navy-800 dark:shadow-none md:w-[365px] md:flex-grow-0 md:gap-1 xl:w-[165px] xl:gap-2">
-        {isMobile && (
-          <span
-            className="flex cursor-pointer text-xl text-gray-600 dark:text-white xl:hidden"
-            onClick={handleOpenSidenav}
-          >
-            <FiAlignJustify className="h-5 w-5" />
-          </span>
-        )}
-        {/* start Notification */}
-        <Dropdown
-          button={
-            <p className="cursor-pointer">
-              <IoMdNotificationsOutline className="h-6 w-6 text-gray-600 dark:text-white" />
-            </p>
-          }
-          animation="origin-[65%_0%] md:origin-top-right transition-all duration-300 ease-in-out"
-          children={
-            <div className="flex w-[360px] flex-col gap-3 rounded-[20px] bg-white p-4 shadow-xl shadow-shadow-500 dark:!bg-navy-700 dark:text-white dark:shadow-none sm:w-[460px]">
-              <div className="flex items-center justify-between">
-                <p className="text-base font-bold text-navy-700 dark:text-white">
-                  Notification
-                </p>
-                <p className="text-sm font-bold text-navy-700 dark:text-white">
-                  Mark all read
-                </p>
-              </div>
-
-              <button className="flex w-full items-center">
-                <div className="flex h-full w-[85px] items-center justify-center rounded-xl bg-gradient-to-b from-brandLinear to-brand-500 py-4 text-2xl text-white">
-                  <BsArrowBarUp />
-                </div>
-                <div className="ml-2 flex h-full w-full flex-col justify-center rounded-lg px-1 text-sm">
-                  <p className="mb-1 text-left text-base font-bold text-gray-900 dark:text-white">
-                    New Alert: Drowsiness detected
-                  </p>
-                  <p className="font-base text-left text-xs text-gray-900 dark:text-white">
-                    New Alert: Drowsiness detected
-                  </p>
-                </div>
-              </button>
-
-              <button className="flex w-full items-center">
-                <div className="flex h-full w-[85px] items-center justify-center rounded-xl bg-gradient-to-b from-brandLinear to-brand-500 py-4 text-2xl text-white">
-                  <BsArrowBarUp />
-                </div>
-                <div className="ml-2 flex h-full w-full flex-col justify-center rounded-lg px-1 text-sm">
-                  <p className="mb-1 text-left text-base font-bold text-gray-900 dark:text-white">
-                    New Alert: Drowsiness detected
-                  </p>
-                  <p className="font-base text-left text-xs text-gray-900 dark:text-white">
-                    New Alert: Drowsiness detected
-                  </p>
-                </div>
-              </button>
+    <>
+      <Dialog
+        visible={dialogVisible}
+        onHide={() => {
+          setDialogVisible(false);
+          setEditMode(false);
+          setEditModeColor(false);
+        }}
+        style={{ width: "40rem" }}
+        breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+        header="Profile Details"
+        modal
+        footer={
+          editMode ? (
+            <div>
+              <Button
+                label={isUpdating ? "Updating..." : "Update"}
+                icon={isUpdating ? "pi pi-spin pi-spinner" : "pi pi-check"}
+                className="p-button-primary  px-3 py-2 hover:bg-none dark:hover:bg-gray-50"
+                disabled={isUpdating}
+                onClick={handleSubmit}
+              />
             </div>
-          }
-          classNames={"py-2 top-4 -left-[230px] md:-left-[440px] w-max"}
-        />
-        <div
-          className="cursor-pointer text-gray-600"
-          onClick={() => {
-            if (darkmode) {
-              document.body.classList.remove("dark");
-              setDarkmode(false);
-            } else {
-              document.body.classList.add("dark");
-              setDarkmode(true);
-            }
-          }}
-        >
-          {darkmode ? (
-            <RiSunFill className="h-5 w-5 text-gray-600 dark:text-white" />
-          ) : (
-            <RiMoonFill className="h-5 w-5 text-gray-600 dark:text-white" />
-          )}
+          ) : null
+        }
+        className="p-fluid dark:bg-gray-900"
+      >
+        <div className="text-center">
+          <HiOutlineUserCircle className="pi pi-user h-12 w-12  text-gray-400 dark:text-white" />
+          <br />
+          <p className="py-3 text-xl font-semibold">
+            👋 Hey, welcome {formData.first_name} !
+          </p>
+          <hr />
         </div>
-        {/* Profile & Dropdown */}
-        {user_type !== "1" ? (
+        <div className="flex justify-end gap-4">
+          <p
+            className={`mt-4 cursor-pointer text-right text-sm text-red-400 ${editModeColor}`}
+            onClick={() => {
+              if (editMode) {
+                setEditMode(false);
+                setEditModeColor("text-red-400");
+              } else {
+                setEditMode(true);
+                setEditModeColor("text-green-600");
+              }
+            }}
+          >
+            <FaEdit className="mb-1 inline-block" />
+            Edit profile
+          </p>
+          <p className="mt-4 cursor-pointer text-right text-sm text-red-400 ">
+            <FaLock className="mb-1 inline-block" /> Reset Password
+          </p>
+        </div>
+        <div className="p-fluid">
+          <div className="flex justify-between">
+            <div className="card justify-content-center mr-1 mt-5 flex-auto">
+              <span className="p-float-label">
+                <InputText
+                  id="first_name"
+                  name="first_name"
+                  value={formData?.first_name}
+                  onChange={(e) =>
+                    handleInputChange("first_name", e.target.value)
+                  }
+                  disabled={!editMode}
+                  // className={!editedCustomerData.first_name ? "p-invalid" : ""}
+                />
+                <label htmlFor="first_name">First Name</label>
+              </span>
+            </div>
+            <div className="card justify-content-center ml-1 mt-5 flex-auto">
+              <span className="p-float-label">
+                <InputText
+                  id="last_name"
+                  name="last_name"
+                  value={formData?.last_name || ""}
+                  onChange={(e) =>
+                    handleInputChange("last_name", e.target.value)
+                  }
+                  disabled={!editMode}
+                  // className={!editedCustomerData.last_name ? "p-invalid" : ""}
+                />
+                <label htmlFor="last_name">Last Name</label>
+              </span>
+            </div>
+          </div>
+          <div className="mx-auto mt-8">
+            <span className="p-float-label">
+              <InputText
+                id="email"
+                type="email"
+                name="email"
+                value={formData?.email || ""}
+                onChange={(e) => handleInputChange("email", e.target.value)}
+                disabled={!editMode}
+                // className={!editedCustomerData.email ? "p-invalid" : ""}
+              />
+              <label htmlFor="email">Email</label>
+            </span>
+          </div>
+          <div className="mx-auto mt-8">
+            <span className="p-float-label">
+              <InputText
+                id="company_name"
+                name="company_name"
+                value={formData?.company_name || ""}
+                onChange={(e) =>
+                  handleInputChange("company_name", e.target.value)
+                }
+                disabled={!editMode}
+                // className={!editedCustomerData.company_name ? "p-invalid" : ""}
+              />
+              <label htmlFor="company_name">Company Name</label>
+            </span>
+          </div>
+          <div className="mx-auto mb-3 mt-8">
+            <span className="p-float-label">
+              <InputText
+                id="phone"
+                keyfilter="pint"
+                name="phone"
+                value={formData?.phone || ""}
+                onChange={(e) => handleInputChange("phone", e.target.value)}
+                disabled={!editMode}
+                // className={
+                //   isValidPhoneNumber(editedCustomerData?.phone || "")
+                //     ? ""
+                //     : "p-invalid"
+                // }
+              />
+              <label htmlFor="phone">Contact Number</label>
+            </span>
+          </div>
+          <div className="mx-auto mt-6">
+            <span>Address:</span>
+          </div>
+          <div className="mx-auto mt-6">
+            <span className="p-float-label">
+              <InputText
+                id="address"
+                type="text"
+                name="address"
+                value={formData?.address || ""}
+                onChange={(e) => handleInputChange("address", e.target.value)}
+                disabled={!editMode}
+                // className={!editedCustomerData.address ? "p-invalid" : ""}
+              />
+              <label htmlFor="address">Flat No./ Plot No., Area/Society</label>
+            </span>
+          </div>
+          <div className="mx-auto mt-6">
+            <span className="p-float-label">
+              <InputText
+                id="city"
+                type="text"
+                name="city"
+                value={formData?.city || ""}
+                onChange={(e) => handleInputChange("city", e.target.value)}
+                disabled={!editMode}
+                // className={!editedCustomerData.city ? "p-invalid" : ""}
+              />
+              <label htmlFor="city">City</label>
+            </span>
+          </div>
+          <div className="mx-auto mt-6">
+            <span className="p-float-label">
+              <InputText
+                id="state"
+                name="state"
+                value={formData?.state || ""}
+                onChange={(e) => handleInputChange("state", e.target.value)}
+                disabled={!editMode}
+                // className={!editedCustomerData.state ? "p-invalid" : ""}
+              />
+              <label htmlFor="state">State</label>
+            </span>
+          </div>
+          <div className="mx-auto mt-6">
+            <span className="p-float-label">
+              <InputText
+                id="pincode"
+                keyfilter="pint"
+                name="pincode"
+                value={formData?.pincode || ""}
+                onChange={(e) => handleInputChange("pincode", e.target.value)}
+                disabled={!editMode}
+                // className={!editedCustomerData.pincode ? "p-invalid" : ""}
+              />
+              <label htmlFor="pincode">Pincode</label>
+            </span>
+          </div>
+        </div>
+      </Dialog>
+      <Toast ref={toastRef} position="top-center" />
+      <nav className="sticky top-0 z-40 flex flex-row flex-wrap items-center justify-between bg-white p-2 backdrop-blur-xl dark:bg-navy-800">
+        <div className="ml-[6px]">
+          <div className="">
+            <img src={logo} className="w-[177px]" alt="" />
+          </div>
+          <p className="shrink text-[33px] capitalize text-navy-700 dark:text-white"></p>
+        </div>
+
+        <div className="relative mt-[3px] flex h-[61px] w-[355px] flex-grow items-center justify-around gap-2 rounded-full bg-white px-2 py-2  dark:!bg-navy-800 dark:shadow-none md:w-[365px] md:flex-grow-0 md:gap-1 xl:w-[165px] xl:gap-2">
+          {isMobile && (
+            <span
+              className="flex cursor-pointer text-xl text-gray-600 dark:text-white xl:hidden"
+              onClick={handleOpenSidenav}
+            >
+              <FiAlignJustify className="h-5 w-5" />
+            </span>
+          )}
+          {/* start Notification */}
           <Dropdown
             button={
-              <HiOutlineUserCircle className="pi pi-user h-6 w-6 cursor-pointer text-gray-400 dark:text-white" />
+              <p className="cursor-pointer">
+                <IoMdNotificationsOutline className="h-6 w-6 text-gray-600 dark:text-white" />
+              </p>
             }
+            animation="origin-[65%_0%] md:origin-top-right transition-all duration-300 ease-in-out"
             children={
-              <div className="flex w-56 flex-col justify-start rounded-[20px] bg-white bg-cover bg-no-repeat shadow-xl shadow-shadow-500 dark:!bg-navy-700 dark:text-white dark:shadow-none">
-                <div className="p-4">
-                  <div className="flex items-center gap-2">
-                    <p className="text-sm font-bold text-navy-700 dark:text-white">
-                      👋 Hey, {name}
+              <div className="flex w-[360px] flex-col gap-3 rounded-[20px] bg-white p-4 shadow-xl shadow-shadow-500 dark:!bg-navy-700 dark:text-white dark:shadow-none sm:w-[460px]">
+                <div className="flex items-center justify-between">
+                  <p className="text-base font-bold text-navy-700 dark:text-white">
+                    Notification
+                  </p>
+                  <p className="text-sm font-bold text-navy-700 dark:text-white">
+                    Mark all read
+                  </p>
+                </div>
+
+                <button className="flex w-full items-center">
+                  <div className="flex h-full w-[85px] items-center justify-center rounded-xl bg-gradient-to-b from-brandLinear to-brand-500 py-4 text-2xl text-white">
+                    <BsArrowBarUp />
+                  </div>
+                  <div className="ml-2 flex h-full w-full flex-col justify-center rounded-lg px-1 text-sm">
+                    <p className="mb-1 text-left text-base font-bold text-gray-900 dark:text-white">
+                      New Alert: Drowsiness detected
+                    </p>
+                    <p className="font-base text-left text-xs text-gray-900 dark:text-white">
+                      New Alert: Drowsiness detected
                     </p>
                   </div>
-                </div>
-                <div className="h-px w-full bg-gray-200 dark:bg-white/20 " />
+                </button>
 
-                <div className="flex flex-col p-4">
-                  <a
-                    href="/profile"
-                    className="text-sm text-gray-800 dark:text-white hover:dark:text-white"
-                  >
-                    Profile Settings
-                  </a>
-                  <button
-                    onClick={handleLogout}
-                    className="mt-3 text-start text-sm font-medium text-red-500 hover:text-red-500"
-                  >
-                    Log Out
-                  </button>
-                </div>
+                <button className="flex w-full items-center">
+                  <div className="flex h-full w-[85px] items-center justify-center rounded-xl bg-gradient-to-b from-brandLinear to-brand-500 py-4 text-2xl text-white">
+                    <BsArrowBarUp />
+                  </div>
+                  <div className="ml-2 flex h-full w-full flex-col justify-center rounded-lg px-1 text-sm">
+                    <p className="mb-1 text-left text-base font-bold text-gray-900 dark:text-white">
+                      New Alert: Drowsiness detected
+                    </p>
+                    <p className="font-base text-left text-xs text-gray-900 dark:text-white">
+                      New Alert: Drowsiness detected
+                    </p>
+                  </div>
+                </button>
               </div>
             }
-            classNames={"py-2 top-8 -left-[180px] w-max"}
+            classNames={"py-2 top-4 -left-[230px] md:-left-[440px] w-max"}
           />
-        ) : (
-          <div className="cursor-pointer text-gray-600">
-            <button
-              onClick={handleLogout}
-              className="mt-3 text-start text-sm font-medium text-red-500 hover:text-red-500"
-            >
-              <TbLogout className="h-5 w-5 text-gray-600 dark:text-white" />
-            </button>
+          <div
+            className="cursor-pointer text-gray-600"
+            onClick={() => {
+              if (darkmode) {
+                document.body.classList.remove("dark");
+                setDarkmode(false);
+              } else {
+                document.body.classList.add("dark");
+                setDarkmode(true);
+              }
+            }}
+          >
+            {darkmode ? (
+              <RiSunFill className="h-5 w-5 text-gray-600 dark:text-white" />
+            ) : (
+              <RiMoonFill className="h-5 w-5 text-gray-600 dark:text-white" />
+            )}
           </div>
-        )}
-      </div>
-      {isMobile && <Sidebar open={sidebarOpen} onClose={handleOpenSidenav} />}
-    </nav>
+          {/* Profile & Dropdown */}
+          {user_type !== "1" ? (
+            <Dropdown
+              button={
+                <HiOutlineUserCircle className="pi pi-user h-6 w-6 cursor-pointer text-gray-400 dark:text-white" />
+              }
+              children={
+                <div className="flex w-56 flex-col justify-start rounded-[20px] bg-white bg-cover bg-no-repeat shadow-xl shadow-shadow-500 dark:!bg-navy-700 dark:text-white dark:shadow-none">
+                  <div className="flex flex-col p-4">
+                    <p
+                      href="/profile"
+                      className="cursor-pointer text-sm text-gray-800 dark:text-white hover:dark:text-white"
+                      onClick={() => setDialogVisible(true)}
+                    >
+                      Profile Settings
+                    </p>
+                    <button
+                      onClick={handleLogout}
+                      className="mt-3 text-start text-sm font-medium text-red-500 hover:text-red-500"
+                    >
+                      Log Out
+                    </button>
+                  </div>
+                </div>
+              }
+              classNames={"py-2 top-8 -left-[180px] w-max"}
+            />
+          ) : (
+            <div className="cursor-pointer text-gray-600">
+              <button
+                onClick={handleLogout}
+                className="mt-3 text-start text-sm font-medium text-red-500 hover:text-red-500"
+              >
+                <TbLogout className="h-5 w-5 text-gray-600 dark:text-white" />
+              </button>
+            </div>
+          )}
+        </div>
+        {isMobile && <Sidebar open={sidebarOpen} onClose={handleOpenSidenav} />}
+      </nav>
+    </>
   );
 };
 
