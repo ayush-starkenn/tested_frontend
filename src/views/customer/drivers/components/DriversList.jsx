@@ -267,6 +267,7 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
     const newValue = parseInt(event.target.value);
     setEditData({ ...editData, driver_status: newValue });
   };
+
   return (
     <>
       {/* Edit Dialog */}
@@ -491,19 +492,21 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
         ></Column>
         <Column
           key="full_name"
-          field="full_name"
+          field="driver_first_name"
           header="Driver Name"
           sortable
           className="dark:bg-gray-900 dark:text-gray-200"
-          style={{ minWidth: "10rem" }}
-        ></Column>
-        {/* <Column
-          field="driver_auth_id"
-          header="Driver AUTH ID"
-          sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
-        ></Column> */}
+          body={(rowData) => (
+            <>
+              {rowData.driver_first_name.charAt(0).toUpperCase() +
+                rowData.driver_first_name.slice(1)}{" "}
+              {rowData.driver_last_name.charAt(0).toUpperCase() +
+                rowData.driver_last_name.slice(1)}
+            </>
+          )}
+        />
+
         <Column
           key="driver_email"
           field="driver_email"

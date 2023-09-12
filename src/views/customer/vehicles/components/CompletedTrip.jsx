@@ -17,8 +17,21 @@ const containerStyle = {
   width: "100%",
   height: "100vh",
 };
-const start = {
-  url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
+
+// customized marker icons
+const markerIcons = {
+  red: {
+    url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+    // scaledSize: new window.google.maps.Size(40, 40),
+  },
+  //   blue: {
+  //     url: markerImage,
+  //     // scaledSize: new window.google.maps.Size(30, 30),
+  //   },
+  green: {
+    url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
+    // scaledSize: new window.google.maps.Size(40, 40),
+  },
 };
 
 const TripInfoItem = ({ title, value }) => (
@@ -28,25 +41,62 @@ const TripInfoItem = ({ title, value }) => (
   </div>
 );
 
-const OngoingTrip = () => {
+const CompletedTrip = () => {
   const token = Cookies.get("token");
-  const { vehicle_uuid } = useParams();
+  const { trip_id } = useParams();
 
   const [isLoading, setIsLoading] = useState(true);
   const [path, setPath] = useState([]);
   const [tripData, setTripData] = useState([]);
   const [center, setCenter] = useState({});
   const [startPoint, setStartPoint] = useState({});
-  const [startAddress, setStartAddress] = useState("");
   const [endPoint, setEndPoint] = useState({});
-  const [startTime, setStartTime] = useState();
+  const [startAddress, setStartAddress] = useState("");
   const [endAddress, setEndAddress] = useState("");
+  const [startTime, setStartTime] = useState();
+  const [endTime, setEndTime] = useState();
+
+  const [distance, setDistance] = useState("");
+  const [maxSpd, setMaxSpd] = useState("");
+  const [avgSpd, setAvgSpd] = useState();
+  const [duration, setDuration] = useState("");
+  const [epochStart, setEpochStart] = useState();
+  const [epochEnd, setEpochEnd] = useState();
+
+  // Get trip summary data
+  useEffect(() => {
+    console.log("1");
+    axios
+      .get(
+        `${process.env.REACT_APP_API_URL}/trips/get-trip-summary-by-tripid/${trip_id}`,
+        {
+          headers: { authorization: `bearer ${token}` },
+        }
+      )
+      .then((res) => {
+        let resTripdata = res.data.tripdata;
+        setAvgSpd(resTripdata[0].avg_spd);
+        setDistance(resTripdata[0].total_distance);
+        setMaxSpd(resTripdata[0].max_spd);
+        setDuration(resTripdata[0].duration);
+        const tripStartTime = new Date(resTripdata[0].trip_start_time * 1000);
+        const tripEndTime = new Date(resTripdata[0].trip_end_time * 1000);
+        setStartTime(tripStartTime.toLocaleString());
+        setEndTime(tripEndTime.toLocaleString());
+        setEpochStart(resTripdata[0].trip_start_time);
+        setEpochEnd(resTripdata[0].trip_end_time);
+        console.log(resTripdata);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [trip_id, token]);
 
   useEffect(() => {
     console.log("One");
     axios
       .get(
-        `${process.env.REACT_APP_API_URL}/trips/get-ongoing-tripdata-by-vehicleUUID/${vehicle_uuid}`,
+        `${process.env.REACT_APP_API_URL}/trips/get-completed-tripdata-by-tripid/${trip_id}`,
         {
           headers: { authorization: `bearer ${token}` },
         }
@@ -92,7 +142,7 @@ const OngoingTrip = () => {
       .catch((error) => {
         console.log(error);
       });
-  }, [vehicle_uuid, token]);
+  }, [trip_id, token]);
 
   // Set Address
   useEffect(() => {
@@ -125,11 +175,11 @@ const OngoingTrip = () => {
     <div className="">
       <dl className="mt-4 grid grid-cols-1 gap-x-6 gap-y-7 sm:grid-cols-2 sm:gap-y-12 lg:gap-x-8">
         <TripInfoItem title="Source" value={startAddress + " " + startTime} />
-        <TripInfoItem title="Current Location" value={endAddress} />
-        <TripInfoItem title="Distance" value="--" />
-        <TripInfoItem title="Duration" value="--" />
-        <TripInfoItem title="Average Speed" value="--" />
-        <TripInfoItem title="Max Speed" value="--" />
+        <TripInfoItem title="Destination" value={endAddress + " " + endTime} />
+        <TripInfoItem title="Distance" value={distance + " KM "} />
+        <TripInfoItem title="Duration" value={duration} />
+        <TripInfoItem title="Average Speed" value={avgSpd + " Kmph "} />
+        <TripInfoItem title="Max Speed" value={maxSpd + " Kmph "} />
         <div className="border-t border-gray-200 pt-4 dark:border-cyan-800">
           <p className="font-medium text-gray-900 dark:text-white">Fuel</p>
           <div className="card justify-content-center flex">
@@ -142,7 +192,7 @@ const OngoingTrip = () => {
           </div>
         </div>
 
-        <TripInfoItem title="Load" value="--" />
+        <TripInfoItem title="Load" value="12 Tons" />
       </dl>
     </div>
   );
@@ -234,11 +284,9 @@ const OngoingTrip = () => {
         <div>
           <div className="page-title pb-4">
             <h2 className="text-gray-900 dark:text-white sm:text-2xl">
-              Ongoing-Trip
+              Completed-Trip
             </h2>
-            <p className="text-gray-700">
-              TRIP-ID: ae0762ee-32ff-46a4-b709-4feac3360568
-            </p>
+            <p className="text-gray-700">TRIP-ID: {trip_id}</p>
           </div>
 
           <LoadScript googleMapsApiKey="AIzaSyCk6RovwH7aF8gjy1svTPJvITZsWGA_roU">
@@ -247,8 +295,15 @@ const OngoingTrip = () => {
               center={center}
               zoom={14}
             >
-              <Marker position={startPoint} icon={start} className="liveIcon" />
-              <Polyline path={path} />
+              <Marker position={startPoint} icon={markerIcons.green} />
+              <Polyline
+                path={path}
+                options={{
+                  strokeColor: "#4252E0", // Set the color of the polyline path
+                  strokeWeight: 4, // Set the stroke size of the polyline
+                }}
+              />
+              <Marker position={endPoint} icon={markerIcons.red} />
             </GoogleMap>
           </LoadScript>
         </div>
@@ -355,4 +410,4 @@ const OngoingTrip = () => {
   );
 };
 
-export default OngoingTrip;
+export default CompletedTrip;
