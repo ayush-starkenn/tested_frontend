@@ -32,6 +32,7 @@ import CustomerProtected from "authorization/CustomerProtected";
 import { DiDatabase } from "react-icons/di";
 import Drivers from "views/customer/drivers";
 import OngoingTrip from "views/customer/vehicles/components/OngoingTrip";
+import CompletedTrip from "views/customer/vehicles/components/CompletedTrip";
 
 //routes for Admin panel
 export const routes_admin = [
@@ -173,7 +174,18 @@ export const routes_customer = [
       </CustomerProtected>
     ),
   },
-
+  {
+    name: "Vehicles",
+    title: "Vehicles",
+    layout: "/customer",
+    path: "vehicles/completed-trip/:trip_id",
+    icon: <BsTruck className="h-7 w-7" />,
+    component: (
+      <CustomerProtected>
+        <CompletedTrip />
+      </CustomerProtected>
+    ),
+  },
   {
     name: "Vehicle",
     title: "Vehicle Logs",
