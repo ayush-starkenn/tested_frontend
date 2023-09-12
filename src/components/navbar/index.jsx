@@ -23,8 +23,14 @@ const Navbar = ({ onOpenSidenav }) => {
   const [dialogVisible, setDialogVisible] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  const [editModeColor, setEditModeColor] = useState("text-red-400");
+  const [editModeColor, setEditModeColor] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
+  const [resetPasswordVisible, setResetPasswordVisible] = useState(false);
+  const [resetPasswordData, setResetPasswordData] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -37,12 +43,13 @@ const Navbar = ({ onOpenSidenav }) => {
     phone: "",
     user_status: "",
   });
-
+  const [pwerr, setPwerr] = useState(false);
   const navigate = useNavigate();
   const user_type = Cookies.get("user_type");
   const user_uuid = Cookies.get("user_uuid");
   const token = Cookies.get("token");
   const toastRef = useRef(null);
+  const toastErr = useRef(null);
 
   useEffect(() => {
     if (dialogVisible) {
@@ -101,10 +108,10 @@ const Navbar = ({ onOpenSidenav }) => {
     Cookies.remove("first_name");
     setTimeout(() => {
       navigate("/signin");
-    }, [3000]);
+    }, [1000]);
     toastRef.current.show({
       summary: "Logging out",
-      life: 3000,
+      life: 1000,
       className: "custom-toast bg-gray-300",
       closable: false,
     });
@@ -117,6 +124,70 @@ const Navbar = ({ onOpenSidenav }) => {
     });
   };
 
+  const toggleResetPasswordDialog = () => {
+    setResetPasswordData("");
+    setResetPasswordVisible(!resetPasswordVisible);
+  };
+  const handleResetPasswordInputChange = (fieldName, value) => {
+    setResetPasswordData({
+      ...resetPasswordData,
+      [fieldName]: value,
+    });
+  };
+
+  const handleResetPasswordSubmit = () => {
+    if (
+      !resetPasswordData.oldPassword ||
+      !resetPasswordData.newPassword ||
+      !resetPasswordData.confirmPassword
+    ) {
+      setPwerr(true);
+      toastErr.current.show({
+        severity: "warn",
+        summary: "Warning",
+        detail: "Please fill in all password fields",
+        life: 3000,
+      });
+      return;
+    }
+    if (resetPasswordData.confirmPassword !== resetPasswordData.newPassword) {
+      toastErr.current.show({
+        severity: "warn",
+        summary: "Warning",
+        detail: "Passwords do not match",
+        life: 3000,
+      });
+      return;
+    }
+
+    setIsUpdating(true);
+    axios
+      .put(
+        `${process.env.REACT_APP_API_URL}/profile/change-profile-password/${user_uuid}`,
+        resetPasswordData,
+        { headers: { authorization: `bearer ${token}` } }
+      )
+      .then((res) => {
+        toastErr.current.show({
+          severity: "success",
+          summary: "Success",
+          detail: "Password changed successfully",
+          life: 3000,
+        });
+        setResetPasswordData("");
+        toggleResetPasswordDialog();
+      })
+      .catch((err) => {
+        toastErr.current.show({
+          severity: "warn",
+          summary: "Warning",
+          detail: err.response.data.message || "Error in changing password",
+          life: 3000,
+        });
+        setIsUpdating(false);
+      });
+  };
+
   const handleSubmit = () => {
     setIsUpdating(true);
     axios
@@ -126,14 +197,25 @@ const Navbar = ({ onOpenSidenav }) => {
         { headers: { authorization: `bearer ${token}` } }
       )
       .then((res) => {
-        // Handle success, show a success toast, etc.
-        console.log(res);
+        toastErr.current.show({
+          severity: "success",
+          summary: "Success",
+          detail: "Profile updated successfully",
+          life: 3000,
+        });
         setDialogVisible(false);
+        setEditMode(false);
+        setEditModeColor(false);
         setIsUpdating(false);
       })
       .catch((err) => {
         // Handle error, show an error toast, etc.
-        console.error(err);
+        toastErr.current.show({
+          severity: "success",
+          summary: "Success",
+          detail: err.response.data.message || "Error in updating profile",
+          life: 3000,
+        });
         setIsUpdating(false);
       });
   };
@@ -157,7 +239,7 @@ const Navbar = ({ onOpenSidenav }) => {
               <Button
                 label={isUpdating ? "Updating..." : "Update"}
                 icon={isUpdating ? "pi pi-spin pi-spinner" : "pi pi-check"}
-                className="p-button-primary  px-3 py-2 hover:bg-none dark:hover:bg-gray-50"
+                className="p-button-primary px-3 py-2 hover:bg-none dark:hover:bg-gray-150"
                 disabled={isUpdating}
                 onClick={handleSubmit}
               />
@@ -176,11 +258,11 @@ const Navbar = ({ onOpenSidenav }) => {
         </div>
         <div className="flex justify-end gap-4">
           <p
-            className={`mt-4 cursor-pointer text-right text-sm text-red-400 ${editModeColor}`}
+            className={`mt-4 cursor-pointer text-right text-sm ${editModeColor}`}
             onClick={() => {
               if (editMode) {
                 setEditMode(false);
-                setEditModeColor("text-red-400");
+                setEditModeColor("");
               } else {
                 setEditMode(true);
                 setEditModeColor("text-green-600");
@@ -190,11 +272,14 @@ const Navbar = ({ onOpenSidenav }) => {
             <FaEdit className="mb-1 inline-block" />
             Edit profile
           </p>
-          <p className="mt-4 cursor-pointer text-right text-sm text-red-400 ">
+          <p
+            className="mt-4 cursor-pointer text-right text-sm text-red-400"
+            onClick={toggleResetPasswordDialog}
+          >
             <FaLock className="mb-1 inline-block" /> Reset Password
           </p>
         </div>
-        <div className="p-fluid">
+        <div className="p-fluid mt-4">
           <div className="flex justify-between">
             <div className="card justify-content-center mr-1 mt-5 flex-auto">
               <span className="p-float-label">
@@ -334,7 +419,82 @@ const Navbar = ({ onOpenSidenav }) => {
           </div>
         </div>
       </Dialog>
+      <Dialog
+        visible={resetPasswordVisible}
+        onHide={toggleResetPasswordDialog}
+        style={{ width: "30rem" }}
+        header="Reset Password"
+        modal
+        footer={
+          <div>
+            <Button
+              label="Change Password"
+              className="p-button-primary px-3 py-2 hover:bg-none dark:bg-blue-700 dark:hover:bg-gray-150"
+              onClick={handleResetPasswordSubmit}
+            />
+          </div>
+        }
+        className="p-fluid dark:bg-gray-900"
+      >
+        <div className="p-fluid mt-8">
+          <span className="p-float-label">
+            <InputText
+              id="currentPassword"
+              type="password"
+              name="oldPassword"
+              value={resetPasswordData?.oldPassword}
+              onChange={(e) => {
+                handleResetPasswordInputChange("oldPassword", e.target.value);
+                setPwerr(false);
+              }}
+              className={pwerr ? "p-invalid" : ""}
+            />
+            <label htmlFor="currentPassword">Current Password</label>
+          </span>
+          {pwerr && <p className="p-error">Old password cannot be empty.</p>}
+        </div>
+        <div className="p-fluid mt-8">
+          <span className="p-float-label">
+            <InputText
+              id="newPassword"
+              type="password"
+              name="newPassword"
+              value={resetPasswordData?.newPassword}
+              onChange={(e) => {
+                handleResetPasswordInputChange("newPassword", e.target.value);
+                setPwerr(false);
+              }}
+              className={pwerr ? "p-invalid" : ""}
+            />
+            <label htmlFor="newPassword">New Password</label>
+          </span>
+          {pwerr && <p className="p-error">New password cannot be empty.</p>}
+        </div>
+        <div className="p-fluid mt-8">
+          <span className="p-float-label">
+            <InputText
+              id="confirmPassword"
+              type="password"
+              name="confirmPassword"
+              onChange={(e) => {
+                handleResetPasswordInputChange(
+                  "confirmPassword",
+                  e.target.value
+                );
+                setPwerr(false);
+              }}
+              className={pwerr ? "p-invalid" : ""}
+            />
+            <label htmlFor="confirmPassword">Confirm Password</label>
+          </span>
+          {pwerr && (
+            <p className="p-error">Confirm password cannot be empty.</p>
+          )}
+        </div>
+      </Dialog>
+
       <Toast ref={toastRef} position="top-center" />
+      <Toast ref={toastErr} position="top-center" />
       <nav className="sticky top-0 z-40 flex flex-row flex-wrap items-center justify-between bg-white p-2 backdrop-blur-xl dark:bg-navy-800">
         <div className="ml-[6px]">
           <div className="">

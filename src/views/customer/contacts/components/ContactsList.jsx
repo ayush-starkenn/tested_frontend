@@ -151,7 +151,7 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
           "contact_mobile",
           "contact_status",
         ]}
-        emptyMessage="No devices found."
+        emptyMessage="No contacts found."
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
       >
         <Column
