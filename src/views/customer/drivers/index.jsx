@@ -356,16 +356,11 @@ const Drivers = () => {
                     onChange={handleCombinedChange}
                     className={validationErrors.driver_dob ? "p-invalid" : ""}
                   />
-                  <label
-                    htmlFor="start_date"
-                    className="text-gray-150 dark:text-gray-150"
-                  >
+                  <label htmlFor="start_date" className="text-gray-150 ">
                     Date Of Birth
                   </label>
                 </span>
-                <small className="text-gray-400 dark:text-gray-150">
-                  Click to Select
-                </small>
+                <small className="text-gray-400 ">Click to Select</small>
                 {validationErrors.driver_dob && (
                   <p className="p-error">DOB is required</p>
                 )}
