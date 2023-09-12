@@ -20,7 +20,11 @@ export function SidebarLinks(props) {
     return routes_admin.map((route, index) => {
       if (route.layout === "/admin" || route.layout === "/customer") {
         return (
-          <Link key={index} to={route.layout + "/" + route.path}>
+          <Link
+            key={index}
+            to={route.layout + "/" + route.path}
+            className={`${"route" + index}`}
+          >
             <div className="relative mb-3 flex hover:cursor-pointer ">
               <li
                 className={`tooltip-button-${index} mx-auto my-[12px] flex cursor-pointer items-center`}
