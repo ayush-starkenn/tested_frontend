@@ -15,7 +15,7 @@ import axios from "axios";
 
 const containerStyle = {
   width: "100%",
-  height: "100vh",
+  height: "350px",
 };
 
 // customized marker icons
@@ -174,8 +174,6 @@ const CompletedTrip = () => {
   const SummaryContent = () => (
     <div className="">
       <dl className="mt-4 grid grid-cols-1 gap-x-6 gap-y-7 sm:grid-cols-2 sm:gap-y-12 lg:gap-x-8">
-        <TripInfoItem title="Source" value={startAddress + " " + startTime} />
-        <TripInfoItem title="Destination" value={endAddress + " " + endTime} />
         <TripInfoItem title="Distance" value={distance + " KM "} />
         <TripInfoItem title="Duration" value={duration} />
         <TripInfoItem title="Average Speed" value={avgSpd + " Kmph "} />
@@ -193,6 +191,8 @@ const CompletedTrip = () => {
         </div>
 
         <TripInfoItem title="Load" value="12 Tons" />
+        <TripInfoItem title="Source" value={startAddress + " " + startTime} />
+        <TripInfoItem title="Destination" value={endAddress + " " + endTime} />
       </dl>
     </div>
   );
@@ -218,13 +218,13 @@ const CompletedTrip = () => {
         <div className="p-col-6 my-5" key={index}>
           <div className="align-items-center flex">
             <Checkbox
-              inputId={`checkboxId${index}`}
-              value={`checkboxValue${index}`}
+              inputId={`DMScheckboxId${index}`}
+              value={`DMScheckboxValue${index}`}
               checked={checked}
               onChange={handleCheckboxChange}
             />
             <label
-              htmlFor={`checkboxId${index}`}
+              htmlFor={`DMScheckboxId${index}`}
               className="ml-2 dark:text-white"
             >
               {checkbox.label}
@@ -258,13 +258,13 @@ const CompletedTrip = () => {
         <div className="p-col-6 my-5" key={index}>
           <div className="align-items-center flex">
             <Checkbox
-              inputId={`checkboxId${index}`}
-              value={`checkboxValue${index}`}
+              inputId={`CAScheckboxId${index}`}
+              value={`CAScheckboxValue${index}`}
               checked={checked}
               onChange={handleCheckboxChange}
             />
             <label
-              htmlFor={`checkboxId${index}`}
+              htmlFor={`CAScheckboxId${index}`}
               className="ml-2 dark:text-white"
             >
               {checkbox.label}
@@ -280,33 +280,33 @@ const CompletedTrip = () => {
 
   return (
     <>
-      <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-8 sm:py-8 lg:max-w-7xl lg:grid-cols-2">
-        <div>
-          <div className="page-title pb-4">
-            <h2 className="text-gray-900 dark:text-white sm:text-2xl">
-              Completed-Trip
-            </h2>
-            <p className="text-gray-700">TRIP-ID: {trip_id}</p>
-          </div>
-
-          <LoadScript googleMapsApiKey="AIzaSyCk6RovwH7aF8gjy1svTPJvITZsWGA_roU">
-            <GoogleMap
-              mapContainerStyle={containerStyle}
-              center={center}
-              zoom={14}
-            >
-              <Marker position={startPoint} icon={markerIcons.green} />
-              <Polyline
-                path={path}
-                options={{
-                  strokeColor: "#4252E0", // Set the color of the polyline path
-                  strokeWeight: 4, // Set the stroke size of the polyline
-                }}
-              />
-              <Marker position={endPoint} icon={markerIcons.red} />
-            </GoogleMap>
-          </LoadScript>
+      <div>
+        <div className="page-title pb-4">
+          <h2 className="text-gray-900 dark:text-white sm:text-2xl">
+            Completed-Trip
+          </h2>
+          <p className="text-gray-700">TRIP-ID: {trip_id}</p>
         </div>
+
+        <LoadScript googleMapsApiKey="AIzaSyCk6RovwH7aF8gjy1svTPJvITZsWGA_roU">
+          <GoogleMap
+            mapContainerStyle={containerStyle}
+            center={center}
+            zoom={14}
+          >
+            <Marker position={startPoint} icon={markerIcons.green} />
+            <Polyline
+              path={path}
+              options={{
+                strokeColor: "#4252E0", // Set the color of the polyline path
+                strokeWeight: 4, // Set the stroke size of the polyline
+              }}
+            />
+            <Marker position={endPoint} icon={markerIcons.red} />
+          </GoogleMap>
+        </LoadScript>
+      </div>
+      <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-8 sm:py-8 lg:max-w-7xl lg:grid-cols-2">
         <div className="bg-gray-100 bg-white p-5 dark:bg-navy-700">
           <div className="">
             <TabView>
@@ -322,85 +322,85 @@ const CompletedTrip = () => {
             </TabView>
           </div>
         </div>
-      </div>
 
-      <div className="bg-white dark:bg-navy-700">
-        <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-8 lg:max-w-7xl lg:px-8">
-          <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-            DMS Media
-          </h2>
+        <div className="bg-white dark:bg-navy-700">
+          <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-8 lg:max-w-7xl lg:px-8">
+            <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+              DMS Media
+            </h2>
 
-          <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-            <div key="" className="group relative">
-              <div className="flex justify-between">
-                <div>
-                  <h3 className="text-gray-700">Distraction</h3>
-                  <p className="mt-1 text-sm text-gray-500">
-                    05/09/2023, 19:05:46
-                  </p>
+            <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-2 xl:gap-x-8">
+              <div key="" className="group relative">
+                <div className="flex justify-between">
+                  <div>
+                    <h3 className="text-gray-700">Distraction</h3>
+                    <p className="mt-1 text-sm text-gray-500">
+                      05/09/2023, 19:05:46
+                    </p>
+                  </div>
+                  <p className="text-5xl font-medium text-cyan-300">&#9900;</p>
                 </div>
-                <p className="text-5xl font-medium text-cyan-300">&#9900;</p>
-              </div>
-              <div className="aspect-h-1 aspect-w-1 lg:aspect-none lg:h-50 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75">
-                <video
-                  className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-                  width="100%"
-                  controls
-                >
-                  <source
-                    src="http://svc-dms.s3-website.ap-south-1.amazonaws.com/vi_DMS_PROD_1_0225_20230905_190549.mp4"
-                    type="video/mp4"
-                  ></source>
-                  Your browser does not support the video tag.
-                </video>
+                <div className="aspect-h-1 aspect-w-1 lg:aspect-none lg:h-50 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75">
+                  <video
+                    className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+                    width="100%"
+                    controls
+                  >
+                    <source
+                      src="http://svc-dms.s3-website.ap-south-1.amazonaws.com/vi_DMS_PROD_1_0225_20230905_190549.mp4"
+                      type="video/mp4"
+                    ></source>
+                    Your browser does not support the video tag.
+                  </video>
 
-                <video
-                  className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-                  width="100%"
-                  controls
-                >
-                  <source
-                    src="http://svc-dms.s3-website.ap-south-1.amazonaws.com/piyush-dashcam-test.mp4"
-                    type="video/mp4"
-                  ></source>
-                  Your browser does not support the video tag.
-                </video>
-              </div>
-            </div>
-            <div key="" className="group relative">
-              <div className="flex justify-between">
-                <div>
-                  <h3 className="text-gray-700">Distraction</h3>
-                  <p className="mt-1 text-sm text-gray-500">
-                    05/09/2023, 19:05:46
-                  </p>
+                  <video
+                    className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+                    width="100%"
+                    controls
+                  >
+                    <source
+                      src="http://svc-dms.s3-website.ap-south-1.amazonaws.com/piyush-dashcam-test.mp4"
+                      type="video/mp4"
+                    ></source>
+                    Your browser does not support the video tag.
+                  </video>
                 </div>
-                <p className="text-5xl font-medium text-cyan-300">&#9900;</p>
               </div>
-              <div className="aspect-h-1 aspect-w-1 lg:aspect-none lg:h-50 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75">
-                <video
-                  className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-                  width="100%"
-                  controls
-                >
-                  <source
-                    src="http://svc-dms.s3-website.ap-south-1.amazonaws.com/vi_DMS_PROD_1_0225_20230905_190549.mp4"
-                    type="video/mp4"
-                  ></source>
-                  Your browser does not support the video tag.
-                </video>
+              <div key="" className="group relative">
+                <div className="flex justify-between">
+                  <div>
+                    <h3 className="text-gray-700">Distraction</h3>
+                    <p className="mt-1 text-sm text-gray-500">
+                      05/09/2023, 19:05:46
+                    </p>
+                  </div>
+                  <p className="text-5xl font-medium text-cyan-300">&#9900;</p>
+                </div>
+                <div className="aspect-h-1 aspect-w-1 lg:aspect-none lg:h-50 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75">
+                  <video
+                    className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+                    width="100%"
+                    controls
+                  >
+                    <source
+                      src="http://svc-dms.s3-website.ap-south-1.amazonaws.com/vi_DMS_PROD_1_0225_20230905_190549.mp4"
+                      type="video/mp4"
+                    ></source>
+                    Your browser does not support the video tag.
+                  </video>
 
-                <video
-                  className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-                  width="100%"
-                  controls
-                >
-                  <source
-                    src="http://svc-dms.s3-website.ap-south-1.amazonaws.com/piyush-dashcam-test.mp4"
-                    type="video/mp4"
-                  ></source>
-                  Your browser does not support the video tag.
-                </video>
+                  <video
+                    className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+                    width="100%"
+                    controls
+                  >
+                    <source
+                      src="http://svc-dms.s3-website.ap-south-1.amazonaws.com/piyush-dashcam-test.mp4"
+                      type="video/mp4"
+                    ></source>
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
               </div>
             </div>
           </div>

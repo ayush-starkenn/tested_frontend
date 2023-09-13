@@ -428,7 +428,7 @@ body
 }
 .route4,
 .route5 {
-  display: none;
+  display: none !important;
 }
 @keyframes ellipsis {
   0% {
