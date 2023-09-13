@@ -9,7 +9,6 @@ import Sidebar from "components/sidebar_admin";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { HiOutlineUserCircle } from "react-icons/hi";
-import { TbLogout } from "react-icons/tb";
 import { Toast } from "primereact/toast";
 import { FaEdit, FaLock } from "react-icons/fa";
 import { Dialog } from "primereact/dialog";
@@ -45,11 +44,24 @@ const Navbar = ({ onOpenSidenav }) => {
   });
   const [pwerr, setPwerr] = useState(false);
   const navigate = useNavigate();
+  const first_name = Cookies.get("first_name");
   const user_type = Cookies.get("user_type");
   const user_uuid = Cookies.get("user_uuid");
   const token = Cookies.get("token");
   const toastRef = useRef(null);
   const toastErr = useRef(null);
+
+  useEffect(() => {
+    const storedDarkMode = localStorage.getItem("darkmode");
+
+    if (storedDarkMode === "true" || !storedDarkMode) {
+      document.body.classList.add("dark");
+      setDarkmode(true);
+    } else {
+      document.body.classList.remove("dark");
+      setDarkmode(false);
+    }
+  }, []);
 
   useEffect(() => {
     if (dialogVisible) {
@@ -106,15 +118,7 @@ const Navbar = ({ onOpenSidenav }) => {
     Cookies.remove("user_type");
     Cookies.remove("user_uuid");
     Cookies.remove("first_name");
-    setTimeout(() => {
-      navigate("/signin");
-    }, [1000]);
-    toastRef.current.show({
-      summary: "Logging out",
-      life: 1000,
-      className: "custom-toast bg-gray-300",
-      closable: false,
-    });
+    navigate("/signin");
   };
 
   const handleInputChange = (fieldName, value) => {
@@ -174,6 +178,7 @@ const Navbar = ({ onOpenSidenav }) => {
           detail: "Password changed successfully",
           life: 3000,
         });
+
         setResetPasswordData("");
         toggleResetPasswordDialog();
       })
@@ -197,6 +202,14 @@ const Navbar = ({ onOpenSidenav }) => {
         { headers: { authorization: `bearer ${token}` } }
       )
       .then((res) => {
+        let name = res.data.first_name;
+        const expirationTime = new Date();
+        expirationTime.setDate(expirationTime.getDate() + 7); // Cookie expires in 7 days (1 week)
+        Cookies.set("first_name", name, {
+          expires: expirationTime,
+          sameSite: "strict",
+        });
+
         toastErr.current.show({
           severity: "success",
           summary: "Success",
@@ -211,8 +224,8 @@ const Navbar = ({ onOpenSidenav }) => {
       .catch((err) => {
         // Handle error, show an error toast, etc.
         toastErr.current.show({
-          severity: "success",
-          summary: "Success",
+          severity: "warn",
+          summary: "Warning",
           detail: err.response.data.message || "Error in updating profile",
           life: 3000,
         });
@@ -457,7 +470,6 @@ const Navbar = ({ onOpenSidenav }) => {
           <span className="p-float-label">
             <InputText
               id="newPassword"
-              type="password"
               name="newPassword"
               value={resetPasswordData?.newPassword}
               onChange={(e) => {
@@ -474,7 +486,6 @@ const Navbar = ({ onOpenSidenav }) => {
           <span className="p-float-label">
             <InputText
               id="confirmPassword"
-              type="password"
               name="confirmPassword"
               onChange={(e) => {
                 handleResetPasswordInputChange(
@@ -565,13 +576,16 @@ const Navbar = ({ onOpenSidenav }) => {
           <div
             className="cursor-pointer text-gray-600"
             onClick={() => {
-              if (darkmode) {
-                document.body.classList.remove("dark");
-                setDarkmode(false);
-              } else {
+              const newMode = !darkmode;
+              localStorage.setItem("darkmode", newMode);
+
+              if (newMode) {
                 document.body.classList.add("dark");
-                setDarkmode(true);
+              } else {
+                document.body.classList.remove("dark");
               }
+
+              setDarkmode(newMode);
             }}
           >
             {darkmode ? (
@@ -580,6 +594,7 @@ const Navbar = ({ onOpenSidenav }) => {
               <RiMoonFill className="h-5 w-5 text-gray-600 dark:text-white" />
             )}
           </div>
+
           {/* Profile & Dropdown */}
           {user_type !== "1" ? (
             <Dropdown
@@ -588,6 +603,14 @@ const Navbar = ({ onOpenSidenav }) => {
               }
               children={
                 <div className="flex w-56 flex-col justify-start rounded-[20px] bg-white bg-cover bg-no-repeat shadow-xl shadow-shadow-500 dark:!bg-navy-700 dark:text-white dark:shadow-none">
+                  <div className="p-4">
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-bold text-navy-700 dark:text-white">
+                        👋 Hey, {first_name}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="h-px w-full bg-gray-200 dark:bg-white/20 " />
                   <div className="flex flex-col p-4">
                     <p
                       href="/profile"
@@ -608,14 +631,33 @@ const Navbar = ({ onOpenSidenav }) => {
               classNames={"py-2 top-8 -left-[180px] w-max"}
             />
           ) : (
-            <div className="cursor-pointer text-gray-600">
-              <button
-                onClick={handleLogout}
-                className="mt-3 text-start text-sm font-medium text-red-500 hover:text-red-500"
-              >
-                <TbLogout className="h-5 w-5 text-gray-600 dark:text-white" />
-              </button>
-            </div>
+            <Dropdown
+              button={
+                <HiOutlineUserCircle className="pi pi-user h-6 w-6 cursor-pointer text-gray-400 dark:text-white" />
+              }
+              children={
+                <div className="flex w-56 flex-col justify-start rounded-[20px] bg-white bg-cover bg-no-repeat shadow-xl shadow-shadow-500 dark:!bg-navy-700 dark:text-white dark:shadow-none">
+                  <div className="p-4">
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-bold text-navy-700 dark:text-white">
+                        👋 Hey, {first_name}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="h-px w-full bg-gray-200 dark:bg-white/20 " />
+
+                  <div className="flex flex-col p-4">
+                    <button
+                      onClick={handleLogout}
+                      className="text-start text-sm font-medium text-red-500 hover:text-red-500"
+                    >
+                      Log Out
+                    </button>
+                  </div>
+                </div>
+              }
+              classNames={"py-2 top-8 -left-[180px] w-max"}
+            />
           )}
         </div>
         {isMobile && <Sidebar open={sidebarOpen} onClose={handleOpenSidenav} />}

@@ -300,7 +300,7 @@ const AnalyticsThreshold = () => {
       <Dialog
         visible={isDialogVisible}
         onHide={closeDialog}
-        style={{ width: "40rem" }}
+        style={{ width: "50vw" }}
         breakpoints={{ "960px": "75vw", "641px": "90vw" }}
         header="Fill the details"
         modal
@@ -310,7 +310,7 @@ const AnalyticsThreshold = () => {
           All Fields Are Required<span className="text-red-500">**</span>
         </p>
         <form onSubmit={handleSubmit}>
-          <div className="my-6 w-[42vw]">
+          <div className="my-6">
             <span className="p-float-label">
               <InputText
                 name="title"
@@ -332,7 +332,7 @@ const AnalyticsThreshold = () => {
                 value={selectedCustomer}
                 options={customerOptions}
                 onChange={(e) => setSelectedCustomer(e.value)}
-                className={`w-[42vw] rounded-lg border border-gray-300 bg-gray-50 py-0 shadow-sm dark:bg-gray-900 dark:placeholder-gray-50 ${
+                className={`rounded-lg border border-gray-300 bg-gray-50 py-0 shadow-sm dark:bg-gray-900 dark:placeholder-gray-50 ${
                   formErrors.customer_id ? "p-invalid" : ""
                 } `}
                 optionLabel="label"
@@ -345,7 +345,7 @@ const AnalyticsThreshold = () => {
               Weightage
             </p>
             <div className="card p-fluid mt-6 flex flex-wrap gap-3">
-              <div className="flex-auto">
+              <div className="flex-1">
                 <span className="p-float-label">
                   <InputText
                     name="brake-input"
@@ -364,7 +364,7 @@ const AnalyticsThreshold = () => {
                   Range: 0-1000
                 </small>
               </div>
-              <div className="flex-auto">
+              <div className="flex-1">
                 <span className="p-float-label">
                   <InputText
                     name="tailgating-input"
@@ -385,7 +385,9 @@ const AnalyticsThreshold = () => {
                   Range: 0-1000
                 </small>
               </div>
-              <div className="mt-3 flex-auto">
+            </div>
+            <div className="card p-fluid mt-6 flex flex-wrap gap-3">
+              <div className="mt-3 flex-1">
                 <span className="p-float-label">
                   <InputText
                     keyfilter="pint"
@@ -406,7 +408,7 @@ const AnalyticsThreshold = () => {
                   Range: 0-1000
                 </small>
               </div>
-              <div className="mt-3 flex-auto">
+              <div className="mt-3 flex-1">
                 <span className="p-float-label">
                   <InputText
                     keyfilter="pint"
@@ -427,7 +429,9 @@ const AnalyticsThreshold = () => {
                   Range: 0-1000
                 </small>
               </div>
-              <div className="mt-3 flex-auto">
+            </div>
+            <div className="card p-fluid mt-6 flex flex-wrap gap-3">
+              <div className="mt-3 flex-1">
                 <span className="p-float-label">
                   <InputText
                     keyfilter="pint"
@@ -448,7 +452,7 @@ const AnalyticsThreshold = () => {
                   Range: 0-1000
                 </small>
               </div>
-              <div className="mt-3 flex-auto">
+              <div className="mt-3 flex-1">
                 <span className="p-float-label">
                   <InputText
                     keyfilter="pint"
@@ -527,7 +531,7 @@ const AnalyticsThreshold = () => {
               Accident
             </p>
             <div className="card p-fluid mt-6 flex flex-wrap gap-3">
-              <div className="w-[285px]">
+              <div className="w-1/2">
                 <span className="p-float-label">
                   <InputText
                     keyfilter="pint"
@@ -557,7 +561,7 @@ const AnalyticsThreshold = () => {
               Leadership Board
             </p>
             <div className="card p-fluid mt-6 flex flex-wrap gap-3">
-              <div className="w-[285px]">
+              <div className="w-1/2">
                 <span className="p-float-label">
                   <InputText
                     keyfilter="pint"
@@ -585,7 +589,7 @@ const AnalyticsThreshold = () => {
               Halt
             </p>
             <div className="card p-fluid mt-6 flex flex-wrap gap-3">
-              <div className="w-[285px]">
+              <div className="w-1/2">
                 <span className="p-float-label">
                   <InputText
                     keyfilter="pint"
