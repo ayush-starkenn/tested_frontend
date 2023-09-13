@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import WeeklyRevenue from "views/admin/default/components/WeeklyRevenue";
-import TotalSpent from "views/admin/default/components/TotalSpent";
+// import WeeklyRevenue from "views/admin/default/components/WeeklyRevenue";
+// import TotalSpent from "views/admin/default/components/TotalSpent";
 import { HiOutlineUsers } from "react-icons/hi";
 import { BsTruck, BsFillCpuFill } from "react-icons/bs";
 import Widget from "components/widget/Widget";
@@ -89,7 +89,7 @@ const Dashboard = () => {
 
       {/* Charts */}
 
-      <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-1 md:grid-cols-2">
+      {/* <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-1 md:grid-cols-2">
         <div className="mb-5 md:mb-0">
           <TotalSpent />
           <br />
@@ -98,7 +98,7 @@ const Dashboard = () => {
         <div>
           <WeeklyRevenue />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

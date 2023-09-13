@@ -42,7 +42,6 @@ const AddFeatureSet = ({ onSuccess }) => {
 
   const handleData = (e) => {
     const { name, value } = e.target;
-
     setvalues({ ...values, [name]: value });
   };
 
@@ -315,6 +314,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }
               name="featureset_name"
               onChange={handleChange}
+              autoComplete="off"
             />
             <small id="username-help">Unique id to identify feature set</small>
           </div>
@@ -332,7 +332,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               optionLabel="label"
               optionValue="value"
               placeholder={selectedValue ? selectedValue : "Tap to Select"}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+              className={`md:w-14rem mt-2 w-full ${
                 invalidFields.includes("featureset_users") ? "p-invalid" : ""
               }`}
               value={selectedValue || ""}
@@ -413,6 +413,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               placeholder="Enter a value"
               name="activationSpeed"
               onChange={handleData}
+              autoComplete="off"
             />
           </div>
           <div className="field my-3 w-[30vw]">
@@ -430,6 +431,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               name="alarmThreshold"
               onChange={handleData}
+              autoComplete="off"
             />
           </div>
         </div>
@@ -449,6 +451,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               name="brakeThreshold"
               onChange={handleData}
+              autoComplete="off"
             />
           </div>
           <div className="field my-3 w-[30vw]">
@@ -466,6 +469,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 invalidFields.includes("brakeSpeed") ? "p-invalid" : ""
               }`}
               onChange={handleData}
+              autoComplete="off"
             />
           </div>
         </div>
@@ -573,6 +577,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               name="ttcThreshold"
               onChange={handleData}
+              autoComplete="off"
             />
           </div>
           <div className="field my-3 w-[30vw]">
@@ -590,6 +595,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
         </div>
@@ -609,6 +615,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
         </div>
@@ -660,6 +667,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               name="preWarning"
               onChange={handleData}
+              autoComplete="off"
             />
           </div>
           <div className="field my-3 w-[30vw]">
@@ -677,6 +685,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
         </div>
@@ -696,6 +705,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
           <div className="field my-3 w-[30vw]">
@@ -713,6 +723,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
         </div>
@@ -732,6 +743,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
           <div className="field my-3 w-[30vw]">
@@ -749,6 +761,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
         </div>
@@ -823,6 +836,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
           <div className="field my-3 w-[30vw]">
@@ -842,6 +856,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
         </div>
@@ -863,6 +878,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
           <div className="field my-3 w-[30vw]">
@@ -882,6 +898,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
         </div>
@@ -903,6 +920,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
           <div className="field my-3 w-[30vw]">
@@ -922,6 +940,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
         </div>
@@ -943,6 +962,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
         </div>
@@ -993,6 +1013,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
         </div>
@@ -1042,6 +1063,7 @@ const AddFeatureSet = ({ onSuccess }) => {
             }`}
             onChange={handleData}
             placeholder="Enter a value"
+            autoComplete="off"
           />
         </div>
         <div className="flex justify-between">
@@ -1273,6 +1295,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
           <div className="field my-3 w-[30vw]">
@@ -1290,6 +1313,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
         </div>
@@ -1309,6 +1333,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
           <div className="field my-3 w-[30vw]">
@@ -1326,6 +1351,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
         </div>
@@ -1371,6 +1397,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
           <div className="field my-3 w-[30vw]">
@@ -1388,6 +1415,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
         </div>
@@ -1408,6 +1436,7 @@ const AddFeatureSet = ({ onSuccess }) => {
             }`}
             onChange={handleData}
             placeholder="Enter a value"
+            autoComplete="off"
           />
         </div>
         <hr style={{ borderColor: "#333" }} />
@@ -1459,6 +1488,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
           <div className="field my-3 w-[30vw]">
@@ -1476,6 +1506,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
         </div>
@@ -1495,6 +1526,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
         </div>
@@ -1516,6 +1548,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
           <div className="field my-3 w-[30vw]">
@@ -1533,6 +1566,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
         </div>
@@ -1552,6 +1586,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
           <div className="field my-3 w-[30vw]">
@@ -1569,6 +1604,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
         </div>
@@ -1588,6 +1624,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
           <div className="field my-3 w-[30vw]">
@@ -1605,6 +1642,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
         </div>
@@ -1625,6 +1663,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
           <div className="field my-3 w-[30vw]">
@@ -1642,6 +1681,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
         </div>
@@ -1661,6 +1701,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
           <div className="field my-3 w-[30vw]">
@@ -1678,6 +1719,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
         </div>
@@ -1697,6 +1739,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
           <div className="field my-3 w-[30vw]">
@@ -1714,6 +1757,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
         </div>
@@ -1733,6 +1777,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
           <div className="field my-3 w-[30vw]">
@@ -1750,6 +1795,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
         </div>
@@ -1769,6 +1815,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
           <div className="field my-3 w-[30vw]">
@@ -1786,6 +1833,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
         </div>
@@ -1887,6 +1935,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
         </div>
@@ -1937,6 +1986,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
         </div>

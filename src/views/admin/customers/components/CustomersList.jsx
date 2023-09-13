@@ -209,6 +209,9 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
               />
               <label htmlFor="phone">Contact Number</label>
             </span>
+            {!isValidPhoneNumber(editedCustomerData.phone) && (
+              <p className="p-error">Contact number must contain 10 digits.</p>
+            )}
           </div>
           <div className="mx-auto mt-6 w-[50.1vw]">
             <span>Address:</span>
@@ -534,6 +537,14 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
           header="Name"
           style={{ minWidth: "8rem" }}
           className="border-none dark:bg-gray-900 dark:text-gray-200"
+          body={(rowData) => (
+            <>
+              {rowData.first_name.charAt(0).toUpperCase() +
+                rowData.first_name.slice(1)}{" "}
+              {rowData.last_name.charAt(0).toUpperCase() +
+                rowData.last_name.slice(1)}
+            </>
+          )}
         />
         <Column
           key="user_uuid"
