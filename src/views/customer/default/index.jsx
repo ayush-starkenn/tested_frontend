@@ -1,5 +1,5 @@
-import WeeklyRevenue from "views/admin/default/components/WeeklyRevenue";
-import TotalSpent from "views/admin/default/components/TotalSpent";
+// import WeeklyRevenue from "views/admin/default/components/WeeklyRevenue";
+// import TotalSpent from "views/admin/default/components/TotalSpent";
 import { MdWebhook } from "react-icons/md";
 import { BsTruck, BsFillCpuFill } from "react-icons/bs";
 import { AiOutlineCheckSquare } from "react-icons/ai";
@@ -50,11 +50,13 @@ const MainDashboard = () => {
           icon={<BsTruck className="h-7 w-7" />}
           title={"Vehicles"}
           subtitle={vehiclesCount}
+          cardhref="/customer/vehicles/*"
         />
         <Widget
           icon={<BsFillCpuFill className="h-6 w-6" />}
           title={"Devices"}
           subtitle={devicesCount}
+          cardhref="/customer/devices"
         />
         <Widget
           icon={<MdWebhook className="h-7 w-7" />}
@@ -70,7 +72,7 @@ const MainDashboard = () => {
 
       {/* Charts */}
 
-      <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-1 md:grid-cols-2">
+      {/* <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-1 md:grid-cols-2">
         <div className="mb-5 md:mb-0">
           <TotalSpent />
           <br />
@@ -79,7 +81,7 @@ const MainDashboard = () => {
         <div>
           <WeeklyRevenue />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

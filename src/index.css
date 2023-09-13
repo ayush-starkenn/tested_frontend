@@ -187,17 +187,17 @@ input:checked.defaultCheckbox::before {
 }
 .dark .p-dialog .p-dialog-header {
   color: #fefefe;
-  background: #070d22;
+  background: #111c44;
 }
 .dark .p-dialog .p-dialog-header .p-dialog-header-icon {
   color: #fefefe;
 }
 .dark .p-dialog .p-dialog-content {
-  background: #070d22;
+  background: #111c44;
   color: #fefefe;
 }
 .dark .p-dialog .p-dialog-footer {
-  background: #070d22;
+  background: #111c44;
   color: #fefefe;
 }
 .p-fluid .p-dialog-footer .p-button {
@@ -205,14 +205,14 @@ input:checked.defaultCheckbox::before {
   border: none;
 }
 .dark .p-fluid .p-inputtext {
-  background-color: #111c44 !important;
+  background-color: #070d22 !important;
   color: #fefefe;
 }
 .dark .p-fluid .p-dropdown {
-  background: #111c44;
+  background: #070d22;
 }
 .dark .p-dropdown-items-wrapper {
-  background: #111c44;
+  background: #070d22;
   color: #fefefe;
 }
 
@@ -426,7 +426,8 @@ body
 .dark-mode .radio-input {
   background: #422afb;
 }
-.route4 {
+.route4,
+.route5 {
   display: none;
 }
 @keyframes ellipsis {

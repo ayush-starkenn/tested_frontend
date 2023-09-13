@@ -384,8 +384,7 @@ const Customers = () => {
       <Button
         label="New Customer"
         icon="pi pi-plus"
-        severity="primary"
-        className="mt-2 h-10 px-3 py-0 text-left dark:hover:text-white"
+        className="mt-2 h-10 px-3 py-0 text-left  dark:hover:text-white"
         onClick={openDialog}
       />
       {!isListView && (
@@ -427,6 +426,10 @@ const Customers = () => {
                       ? "p-invalid p-error"
                       : (data.f_name = "" ? "p-filled" : "")
                   }
+                  onChange={(e) =>
+                    setFormErrors({ ...formErrors, [e.target.name]: false })
+                  }
+                  autoComplete="off"
                 />
                 <label htmlFor="f_name">First Name</label>
               </span>
@@ -441,6 +444,10 @@ const Customers = () => {
                       ? "p-invalid"
                       : (data.l_name = "" ? "p-filled" : "")
                   }
+                  onChange={(e) =>
+                    setFormErrors({ ...formErrors, [e.target.name]: false })
+                  }
+                  autoComplete="off"
                 />
                 <label htmlFor="l_name">Last Name</label>
               </span>
@@ -457,6 +464,10 @@ const Customers = () => {
                     ? "p-invalid"
                     : (data.email = "" ? "p-filled" : "")
                 }
+                onChange={(e) =>
+                  setFormErrors({ ...formErrors, [e.target.name]: false })
+                }
+                autoComplete="off"
               />
               <label htmlFor="email">Email</label>
             </span>
@@ -474,6 +485,10 @@ const Customers = () => {
                     ? ""
                     : "p-filled"
                 }
+                onChange={(e) =>
+                  setFormErrors({ ...formErrors, [e.target.name]: false })
+                }
+                autoComplete="off"
               />
               <label htmlFor="password">Password</label>
               <div className="absolute right-2.5 top-4">
@@ -502,6 +517,10 @@ const Customers = () => {
                     ? "p-invalid"
                     : (data.confirmPassword = "" ? "p-invalid p-filled" : "")
                 }
+                onChange={(e) =>
+                  setFormErrors({ ...formErrors, [e.target.name]: false })
+                }
+                autoComplete="off"
               />
               <label htmlFor="confirmPassword">Confirm Password</label>
             </span>
@@ -536,6 +555,10 @@ const Customers = () => {
                     ? "p-invalid"
                     : (data.company_name = "" ? "p-filled" : "")
                 }
+                onChange={(e) =>
+                  setFormErrors({ ...formErrors, [e.target.name]: false })
+                }
+                autoComplete="off"
               />
               <label htmlFor="company_name">Company Name</label>
             </span>
@@ -551,6 +574,10 @@ const Customers = () => {
                     ? "p-invalid"
                     : (data.phone = "" ? "p-filled" : "")
                 }
+                onChange={(e) =>
+                  setFormErrors({ ...formErrors, [e.target.name]: false })
+                }
+                autoComplete="off"
               />
               <label htmlFor="phone">Contact Number</label>
             </span>
@@ -569,6 +596,10 @@ const Customers = () => {
                     ? "p-invalid"
                     : (data.address = "" ? "p-filled" : "")
                 }
+                onChange={(e) =>
+                  setFormErrors({ ...formErrors, [e.target.name]: false })
+                }
+                autoComplete="off"
               />
               <label htmlFor="address">Flat No./ Plot No., Area/Society</label>
             </span>
@@ -584,6 +615,10 @@ const Customers = () => {
                     ? "p-invalid"
                     : (data.city = "" ? "p-filled" : "")
                 }
+                onChange={(e) =>
+                  setFormErrors({ ...formErrors, [e.target.name]: false })
+                }
+                autoComplete="off"
               />
               <label htmlFor="city">City</label>
             </span>
@@ -599,6 +634,10 @@ const Customers = () => {
                     ? "p-invalid"
                     : (data.state = "" ? "p-filled" : "")
                 }
+                onChange={(e) =>
+                  setFormErrors({ ...formErrors, [e.target.name]: false })
+                }
+                autoComplete="off"
               />
               <label htmlFor="state">State</label>
             </span>
@@ -619,7 +658,9 @@ const Customers = () => {
                   const value = e.target.value;
                   const formattedValue = value.replace(/\D/g, "").slice(0, 6); // Remove non-digits and limit to 6 characters
                   e.target.value = formattedValue;
+                  setFormErrors({ ...formErrors, [e.target.name]: false });
                 }}
+                autoComplete="off"
               />
               <label htmlFor="pincode">Pincode (Format: xxxxxx)</label>
             </span>

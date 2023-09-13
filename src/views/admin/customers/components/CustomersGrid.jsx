@@ -128,9 +128,15 @@ export default function CustomersGrid({ data, onDelete, onUpdate }) {
                 <span>Full Name</span>
               </div>
               <div>
-                <span>{item.full_name}</span>
+                <span>
+                  {item.first_name.charAt(0).toUpperCase() +
+                    item.first_name.slice(1)}{" "}
+                  {item.last_name.charAt(0).toUpperCase() +
+                    item.last_name.slice(1)}
+                </span>
               </div>
             </div>
+
             <div className="mt-4 flex justify-between font-normal">
               <div className="mr-16 flex-shrink-0">
                 <span>Email</span>
