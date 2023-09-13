@@ -426,7 +426,8 @@ body
 .dark-mode .radio-input {
   background: #422afb;
 }
-.route4 {
+.route4,
+.route5 {
   display: none;
 }
 @keyframes ellipsis {
