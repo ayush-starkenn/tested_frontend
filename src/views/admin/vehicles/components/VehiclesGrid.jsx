@@ -1,171 +1,94 @@
-import React, { useState, useEffect } from "react";
-import { FilterMatchMode } from "primereact/api";
-import { DataView } from "primereact/dataview";
-import { Tag } from "primereact/tag";
 import { Button } from "primereact/button";
-import { InputText } from "primereact/inputtext";
-import { GiMineTruck } from "react-icons/gi";
 import { Dialog } from "primereact/dialog";
+import { Tag } from "primereact/tag";
+import React, { useState } from "react";
+import { DataView } from "primereact/dataview";
+import { GiMineTruck } from "react-icons/gi";
 import { TabPanel, TabView } from "primereact/tabview";
-import VehicleTrips from "./VehicleTrips";
 import FeatureSet from "./FeatureSet";
-const applyFilters = (filters, allData) => {
-  let filteredData = allData;
-  //condition to exclude these fields for global search
-  if (filters.global.value) {
-    filteredData = filteredData.filter((item) =>
-      Object.entries(item).some(
-        ([key, value]) =>
-          key !== "created_at" &&
-          key !== "updated_at" &&
-          key !== "_id" &&
-          key !== "status" &&
-          String(value)
-            .toLowerCase()
-            .includes(filters.global.value.toLowerCase())
-      )
-    );
-  }
+import VehicleTrips from "./VehicleTrips";
 
-  return filteredData;
-};
 export default function VehiclesGrid({ data }) {
-  const [visible, setVisible] = useState(false);
-  const [allData, setAllData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
-  const totalItems = filteredData.length;
+  const [viewDialog, setViewDialog] = useState(false);
   const [myData, setMyData] = useState();
-  const [filters, setFilters] = useState({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    device_type: { value: null, matchMode: FilterMatchMode.IN },
-  });
-  const [globalFilterValue, setGlobalFilterValue] = useState("");
 
-  useEffect(() => {
-    setAllData(data);
-    const filteredData = applyFilters(filters, data);
-    setFilteredData(filteredData);
-  }, [data, filters]);
-  //global search
-  const onGlobalFilterChange = (e) => {
-    const value = e.target.value;
-    setGlobalFilterValue(value);
-    const updatedFilters = {
-      ...filters,
-      global: { value, matchMode: FilterMatchMode.CONTAINS },
-    };
-    const filteredData = applyFilters(updatedFilters, allData);
-    setFilters(updatedFilters);
-    setFilteredData(filteredData);
+  const ViewDialog = (rowData) => {
+    setMyData(rowData);
+    setViewDialog(true);
   };
-  const openDialog = (item) => {
-    setMyData(item);
-    setVisible(true);
+  const closeViewDialog = () => {
+    setViewDialog(false);
   };
-
-  const closeDialog = () => {
-    setVisible(false);
-  };
-  const clearSearch = () => {
-    setGlobalFilterValue("");
-    const updatedFilters = {
-      ...filters,
-      global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    };
-    const filteredData = applyFilters(updatedFilters, allData);
-    setFilters(updatedFilters);
-    setFilteredData(filteredData);
-  };
-
-  //card
   const itemTemplate = (item) => {
-    const tagSeverity = item?.vehicle_status === 1 ? "success" : "danger";
     return (
       <div className="p-col-12 vehicle-card mb-6 rounded bg-gray-50 dark:bg-gray-900 dark:text-gray-150">
         <div className="card">
           <div className="card-header">
-            <div className="flex items-center justify-end">
-              <div>
-                <Tag
-                  value={
-                    parseInt(item.vehicle_status) === 1
-                      ? "Active"
-                      : parseInt(item.vehicle_status) === 0
-                      ? "Deactive"
-                      : undefined
-                  }
-                  severity={tagSeverity}
-                ></Tag>
+            <div className="p-text-bold">{`${item.vehicle_name} - ${item.vehicle_registration}`}</div>
+          </div>
+          <div className="card-body flex-grow">
+            <div className="flex-col">
+              <div className=" flex justify-around">
+                <div>
+                  <div>
+                    <GiMineTruck
+                      className="text-red-450 dark:text-red-550"
+                      style={{
+                        fontSize: "4rem",
+                      }}
+                    />
+                  </div>
+                </div>
+                <div></div>
+                <div className="p-grid">
+                  <div className="p-col">
+                    {item.ecu && <h1 className="p-text-bold">ECU:</h1>}
+                    {item.iot && <h1 className="p-text-bold">IoT:</h1>}
+                    {item.dms && <h1 className="p-text-bold">DMS:</h1>}
+                    <h1 className="p-text-bold">Status:</h1>
+                  </div>
+
+                  <div className="p-col">
+                    {item.ecu && <p>{item.ecu}</p>}
+                    {item.iot && <p>{item.iot}</p>}
+                    {item.dms && <p>{item.dms}</p>}
+                    <Tag
+                      value={item?.vehicle_status === 1 ? "Active" : "Deactive"}
+                      severity={
+                        item?.vehicle_status === 1 ? "success" : "danger"
+                      }
+                      rounded
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div className="card-body">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="mt-4 flex justify-between font-semibold">
-                  <div className="mr-auto">
-                    <span>Vehicle Name</span>
-                  </div>
-                  <div>
-                    <span className="px-2 font-normal">
-                      {item.vehicle_name}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex justify-between font-semibold ">
-                  <div className="mr-auto">
-                    <span>Registration No.</span>
-                  </div>
-                  <div className=" text-end">
-                    <span className="px-2 font-normal">
-                      {item.vehicle_registration}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex justify-between font-semibold ">
-                  <div className="mr-auto">
-                    <span>DMS</span>
-                  </div>
-                  <div>
-                    <span className="px-2 font-normal">{item.dms}</span>
-                  </div>
-                </div>
-                <div className="text-bold flex justify-between font-semibold ">
-                  <div className="mr-auto">
-                    <span>IoT</span>
-                  </div>
-                  <div>
-                    <span className="px-2 font-normal">{item.iot}</span>
-                  </div>
-                </div>
-                <div className="text-bold flex justify-between font-semibold ">
-                  <div className="mr-auto">
-                    <span>ECU</span>
-                  </div>
-                  <div>
-                    <span className="px-2 font-normal">{item.ecu}</span>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <GiMineTruck
-                  className="text-red-450 dark:text-red-550"
-                  style={{
-                    fontSize: "4rem",
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="card-actions">
-            <div>
+          <div className="p-card-footer mb-2">
+            <div className="flex justify-center">
               <Button
-                icon="pi pi-eye"
+                icon="pi pi-map-marker"
                 rounded
                 outlined
-                className="text-red-500 dark:text-blue-500"
-                style={{ width: "2rem", height: "2rem" }}
-                onClick={() => openDialog(item)}
+                className="mr-2"
+                style={{
+                  width: "2rem",
+                  height: "2rem",
+                }}
+                severity="info"
+              />
+
+              <Button
+                icon="pi pi-info-circle"
+                rounded
+                outlined
+                style={{
+                  width: "2rem",
+                  height: "2rem",
+                }}
+                className="mr-2"
+                severity="help"
+                onClick={() => ViewDialog(item)}
               />
             </div>
           </div>
@@ -174,55 +97,31 @@ export default function VehiclesGrid({ data }) {
     );
   };
 
-  //searchbox
   return (
-    <div>
-      <div className="my-4 mr-7  flex justify-end">
-        <div className="justify-content-between align-items-center flex flex-wrap gap-2">
-          <span className="p-input-icon-left">
-            <i className="pi pi-search" />
-            <InputText
-              value={globalFilterValue}
-              onChange={onGlobalFilterChange}
-              placeholder="Keyword Search"
-              className="searchbox w-[25vw] cursor-pointer rounded-full dark:bg-gray-950 dark:text-gray-50"
-            />
-            {globalFilterValue && (
-              <Button
-                icon="pi pi-times"
-                className="p-button-rounded p-button-text"
-                onClick={clearSearch}
-              />
-            )}
-          </span>
-        </div>
-      </div>
-      {/* Grid View */}
+    <div className="mt-4">
+      {/* GridView */}
       <DataView
-        value={filteredData}
+        value={data}
         layout="grid"
         itemTemplate={itemTemplate}
         paginator
         rows={6}
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-        emptyMessage="No vehicles found."
+        emptyMessage="No vehicle found."
       />
-      <p className="text-center text-gray-700">Total Items : {totalItems}</p>
 
+      {/* ViewDialog */}
       <Dialog
-        header="Vehicle Details"
-        visible={visible}
+        visible={viewDialog}
+        onHide={closeViewDialog}
+        header="View Page"
         style={{ width: "70vw" }}
-        onHide={closeDialog}
       >
         <TabView>
-          {/* Vehicle Trips dialog */}
           <TabPanel header="Vehicle's Trips" leftIcon="pi pi-truck mr-2">
-            <VehicleTrips />
+            <VehicleTrips myData={myData} />
           </TabPanel>
-          {/* Feature Set dialog */}
           <TabPanel header="Feature Set" leftIcon="pi pi-cog mr-2">
-            <FeatureSet myData={myData} closeDialog={closeDialog} />
+            <FeatureSet myData={myData} closeDialog={closeViewDialog} />
           </TabPanel>
         </TabView>
       </Dialog>

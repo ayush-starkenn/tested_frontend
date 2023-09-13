@@ -267,6 +267,7 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
     const newValue = parseInt(event.target.value);
     setEditData({ ...editData, driver_status: newValue });
   };
+
   return (
     <>
       {/* Edit Dialog */}
@@ -363,10 +364,7 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
                   className={!editData?.driver_dob ? "p-invalid" : ""}
                 />
 
-                <label
-                  htmlFor="driver_dob"
-                  className="text-gray-150 dark:text-gray-150"
-                >
+                <label htmlFor="driver_dob" className="text-gray-150 ">
                   Date Of Birth
                 </label>
               </span>
@@ -494,39 +492,41 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
         ></Column>
         <Column
           key="full_name"
-          field="full_name"
+          field="driver_first_name"
           header="Driver Name"
           sortable
           className="dark:bg-gray-900 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
-        ></Column>
-        {/* <Column
-          field="driver_auth_id"
-          header="Driver AUTH ID"
-          sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
-          style={{ minWidth: "12rem" }}
-        ></Column> */}
+          body={(rowData) => (
+            <>
+              {rowData.driver_first_name.charAt(0).toUpperCase() +
+                rowData.driver_first_name.slice(1)}{" "}
+              {rowData.driver_last_name.charAt(0).toUpperCase() +
+                rowData.driver_last_name.slice(1)}
+            </>
+          )}
+        />
+
         <Column
           key="driver_email"
           field="driver_email"
           header="Email"
           className="dark:bg-gray-900 dark:text-gray-200"
-          style={{ minWidth: "12rem" }}
+          style={{ minWidth: "10rem" }}
         ></Column>
         <Column
           key="driver_mobile"
           field="driver_mobile"
           header="Contact"
           className="dark:bg-gray-900 dark:text-gray-200"
-          style={{ minWidth: "12rem" }}
+          style={{ minWidth: "7rem" }}
         ></Column>
         <Column
           key="driver_license_no"
           field="driver_license_no"
           header="License Number"
           className="dark:bg-gray-900 dark:text-gray-200"
-          style={{ minWidth: "14rem" }}
+          style={{ minWidth: "10rem" }}
         ></Column>
         <Column
           key="driver_status"
@@ -535,7 +535,7 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
           body={statusBodyTemplate}
           sortable
           className="dark:bg-gray-900 dark:text-gray-200"
-          style={{ minWidth: "12rem" }}
+          style={{ minWidth: "5rem" }}
         ></Column>
         <Column
           key="driver_dob"
@@ -544,7 +544,7 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
           sortable
           body={(rowData) => convertToIST(rowData.driver_dob)}
           className="dark:bg-gray-900 dark:text-gray-200"
-          style={{ minWidth: "12rem" }}
+          style={{ minWidth: "7rem" }}
         ></Column>
         <Column
           key="driver_gender"
@@ -553,13 +553,13 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
           sortable
           body={genderBody}
           className="dark:bg-gray-900 dark:text-gray-200"
-          style={{ minWidth: "12rem" }}
+          style={{ minWidth: "7rem" }}
         ></Column>
         <Column
           body={actionBodyTemplate}
           header="Action"
           className="dark:bg-gray-900 dark:text-gray-200"
-          style={{ minWidth: "8rem" }}
+          style={{ minWidth: "7rem" }}
         ></Column>
       </DataTable>
       <DeleteDriverDialog

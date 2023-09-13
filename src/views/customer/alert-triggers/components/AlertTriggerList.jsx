@@ -178,9 +178,9 @@ const AlertTriggerList = ({
 
     let x;
     if (check === true) {
-      x = { ...editData, ["recipients"]: recipient };
+      // x = { ...editData, ["recipients"]: recipient };
     } else {
-      x = { ...editData, ["recipients"]: JSON.parse(editData?.recipients) };
+      // x = { ...editData, ["recipients"]: JSON.parse(editData?.recipients) };
     }
 
     editTrigger(editData?.trigger_id, x);
@@ -311,7 +311,9 @@ const AlertTriggerList = ({
       <Dialog
         visible={editVisible}
         onHide={closeEditDialog}
-        style={{ width: "40rem" }}
+        style={{
+          width: "40rem",
+        }}
         breakpoints={{ "960px": "75vw", "641px": "90vw" }}
         header="Fill the details"
         modal
@@ -408,6 +410,12 @@ const AlertTriggerList = ({
         visible={deleteVisible}
         onHide={closeDeleteDialog}
         header="Confirm Delete"
+        style={{
+          border: "2px solid lightblue",
+          borderRadius: "5px",
+          boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+          animation: "blinkBorder 1s infinite",
+        }}
         modal
         footer={
           <div>

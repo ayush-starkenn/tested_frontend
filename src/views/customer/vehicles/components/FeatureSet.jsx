@@ -578,7 +578,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               name="detectStationaryObject"
               value={featuresetData.detectStationaryObject}
               onChange={handleDetails}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+              className={`md:w-14rem mt-2 w-full dark:bg-gray-900 ${
                 invalidFields.includes("detectStationaryObject")
                   ? "p-invalid"
                   : ""
@@ -604,7 +604,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
                   : "Select an option"
               }
               value={featuresetData.allowCompleteBrake}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+              className={`md:w-14rem mt-2 w-full dark:bg-gray-900 ${
                 invalidFields.includes("allowCompleteBrake") ? "p-invalid" : ""
               }`}
             />
@@ -630,7 +630,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               optionLabel="label"
               optionValue="value"
               onChange={handleDetails}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+              className={`md:w-14rem mt-2 w-full dark:bg-gray-900 ${
                 invalidFields.includes("detectOncomingObstacle")
                   ? "p-invalid"
                   : ""
@@ -656,7 +656,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               onChange={handleDetails}
               optionLabel="label"
               optionValue="value"
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+              className={`md:w-14rem mt-2 w-full dark:bg-gray-900 ${
                 invalidFields.includes("safetyMode") ? "p-invalid" : ""
               }`}
             />
@@ -922,7 +922,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               options={Brakingoptions}
               optionLabel="label"
               optionValue="value"
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+              className={`md:w-14rem mt-2 w-full dark:bg-gray-900 ${
                 invalidFields.includes("braking") ? "p-invalid" : ""
               }`}
             />
@@ -1263,7 +1263,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               options={VehicleTypeoptions}
               optionLabel="label"
               optionValue="value"
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+              className={`md:w-14rem mt-2 w-full dark:bg-gray-900 ${
                 invalidFields.includes("vehicleType") ? "p-invalid" : ""
               }`}
               placeholder={
@@ -1329,7 +1329,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               options={ProtocolTypeoptions}
               optionLabel="label"
               optionValue="value"
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+              className={`md:w-14rem mt-2 w-full dark:bg-gray-900 ${
                 invalidFields.includes("protocolType") ? "p-invalid" : ""
               }`}
             />
@@ -1391,7 +1391,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               name="acceleratorType"
               onChange={handleDetails}
               options={AcceleratorTypeoptions}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+              className={`md:w-14rem mt-2 w-full dark:bg-gray-900 ${
                 invalidFields.includes("acceleratorType") ? "p-invalid" : ""
               }`}
             />
@@ -1415,7 +1415,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               name="brakeType"
               onChange={handleDetails}
               options={BrakeTypeoptions}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+              className={`md:w-14rem mt-2 w-full dark:bg-gray-900 ${
                 invalidFields.includes("brakeType") ? "p-invalid" : ""
               }`}
             />
@@ -1598,7 +1598,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               optionValue="value"
               onChange={handleDetails}
               value={featuresetData.speedSource}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+              className={`md:w-14rem mt-2 w-full dark:bg-gray-900 ${
                 invalidFields.includes("speedSource") ? "p-invalid" : ""
               }`}
               placeholder={
