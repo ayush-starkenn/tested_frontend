@@ -325,11 +325,12 @@ const DriversGrid = ({ data, onDeleteDriver, onEditDriver }) => {
                   value={editData?.driver_first_name || ""}
                   name="driver_first_name"
                   className={!editData?.driver_first_name ? "p-invalid" : ""}
+                  autoComplete="off"
                 />
                 <label htmlFor="first_name">First Name</label>
               </span>
               {editData?.driver_first_name === "" && (
-                <p className="p-error">First Name is required</p>
+                <small className="p-error">First Name is required</small>
               )}
             </div>
             <div className="card justify-content-center ml-1 mt-5 flex-auto">
@@ -340,11 +341,12 @@ const DriversGrid = ({ data, onDeleteDriver, onEditDriver }) => {
                   name="driver_last_name"
                   value={editData?.driver_last_name}
                   className={!editData?.driver_last_name ? "p-invalid" : ""}
+                  autoComplete="off"
                 />
                 <label htmlFor="driver_last_name">Last Name</label>
               </span>
               {editData?.driver_last_name === "" && (
-                <p className="p-error">Last Name is required</p>
+                <small className="p-error">Last Name is required</small>
               )}
             </div>
           </div>
@@ -359,11 +361,12 @@ const DriversGrid = ({ data, onDeleteDriver, onEditDriver }) => {
                 value={editData?.driver_email}
                 className={!editData?.driver_email ? "p-invalid" : ""}
                 name="driver_email"
+                autoComplete="off"
               />
               <label htmlFor="driver_email">Email</label>
             </span>
             {editData?.driver_email === "" && (
-              <p className="p-error">Email id is required</p>
+              <small className="p-error">Email id is required</small>
             )}
           </div>
           <div className="mx-auto mb-3 mt-8">
@@ -377,11 +380,12 @@ const DriversGrid = ({ data, onDeleteDriver, onEditDriver }) => {
                 value={editData?.driver_mobile}
                 name="driver_mobile"
                 className={!editData?.driver_mobile ? "p-invalid" : ""}
+                autoComplete="off"
               />
               <label htmlFor="driver_mobile">Contact Number</label>
             </span>
             {editData?.driver_mobile === "" && (
-              <p className="p-error">Contact number is required</p>
+              <small className="p-error">Contact number is required</small>
             )}
           </div>
           <div className="flex justify-evenly">
@@ -397,6 +401,7 @@ const DriversGrid = ({ data, onDeleteDriver, onEditDriver }) => {
                   dateFormat="dd/mm/yy"
                   name="driver_dob"
                   className={!editData?.driver_dob ? "p-invalid" : ""}
+                  autoComplete="off"
                 />
 
                 <label
@@ -427,7 +432,7 @@ const DriversGrid = ({ data, onDeleteDriver, onEditDriver }) => {
                 <label htmlFor="driver_gender">Gender</label>
               </span>
               {editData?.driver_gender === "" && (
-                <p className="p-error">Gender is required</p>
+                <small className="p-error">Gender is required</small>
               )}
             </div>
           </div>
@@ -441,11 +446,12 @@ const DriversGrid = ({ data, onDeleteDriver, onEditDriver }) => {
                 name="driver_auth_id"
                 value={editData?.driver_auth_id}
                 className={!editData?.driver_auth_id ? "p-invalid" : ""}
+                autoComplete="off"
               />
               <label htmlFor="driver_auth_id">Driver Auth ID</label>
             </span>
             {editData?.driver_auth_id === "" && (
-              <p className="p-error">Auth id is required</p>
+              <small className="p-error">Auth id is required</small>
             )}
           </div>
           <div className="mx-auto mt-8">
@@ -458,11 +464,12 @@ const DriversGrid = ({ data, onDeleteDriver, onEditDriver }) => {
                 value={editData?.driver_license_no}
                 name="driver_license_no"
                 className={!editData?.driver_license_no ? "p-invalid" : ""}
+                autoComplete="off"
               />
               <label htmlFor="driver_license_no">Driver License Number</label>
             </span>
             {editData?.driver_license_no === "" && (
-              <p className="p-error">License number is required</p>
+              <small className="p-error">License number is required</small>
             )}
           </div>
           <div className="mx-auto mt-8">
@@ -531,8 +538,6 @@ const DriversGrid = ({ data, onDeleteDriver, onEditDriver }) => {
       <p className="text-center text-gray-700">Total Items : {totalItems}</p>
       {/* Delete dialog */}
       <Dialog
-        // visible={isDeleteDialogVisible}
-        // onHide={() => setIsDeleteDialogVisible(false)}
         header="Confirm Delete"
         footer={
           <div>
@@ -540,13 +545,11 @@ const DriversGrid = ({ data, onDeleteDriver, onEditDriver }) => {
               label="Delete"
               icon="pi pi-times"
               className="p-button-danger"
-              // onClick={confirmDelete}
             />
             <Button
               label="Cancel"
               icon="pi pi-check"
               className="p-button-secondary"
-              // onClick={() => setIsDeleteDialogVisible(false)}
             />
           </div>
         }

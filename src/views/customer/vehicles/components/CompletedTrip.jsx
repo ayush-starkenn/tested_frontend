@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import {
   GoogleMap,
   LoadScript,
+  InfoWindow,
   Marker,
   Polyline,
 } from "@react-google-maps/api";
@@ -11,6 +12,7 @@ import { TabPanel, TabView } from "primereact/tabview";
 import { Checkbox } from "primereact/checkbox";
 import { Badge } from "primereact/badge";
 import Cookies from "js-cookie";
+import { BsFillPlayCircleFill } from "react-icons/bs";
 import axios from "axios";
 
 const containerStyle = {
@@ -44,7 +46,7 @@ const TripInfoItem = ({ title, value }) => (
 const CompletedTrip = () => {
   const token = Cookies.get("token");
   const { trip_id } = useParams();
-
+  // eslint-disable-next-line
   const [isLoading, setIsLoading] = useState(true);
   const [path, setPath] = useState([]);
   const [tripData, setTripData] = useState([]);
@@ -60,12 +62,76 @@ const CompletedTrip = () => {
   const [maxSpd, setMaxSpd] = useState("");
   const [avgSpd, setAvgSpd] = useState();
   const [duration, setDuration] = useState("");
+  // eslint-disable-next-line
   const [epochStart, setEpochStart] = useState();
+  // eslint-disable-next-line
   const [epochEnd, setEpochEnd] = useState();
+
+  // CAS faults
+  const [accident, setAccident] = useState(0);
+  const [harshacc, setHarshacc] = useState(0);
+  // eslint-disable-next-line
+  const [sleeptAlt, setSleepAlt] = useState(0);
+  const [laneChng, setLaneChng] = useState(0);
+  const [spdBump, setSpdBump] = useState(0);
+  const [suddenBrk, setSuddenBrk] = useState(0);
+  const [tailgating, setTailgating] = useState(0);
+  const [overspeed, setOverspeed] = useState(0);
+  const [engineOff, setEngineOff] = useState(0);
+
+  // SET DMS data & Alerts
+  // eslint-disable-next-line
+  const [media, setMedia] = useState([]);
+  const [drowsiness, setDrowsiness] = useState(0);
+  const [distraction, setDistraction] = useState(0);
+  const [dmsoverSpd, setDmsoverSpd] = useState(0);
+  // eslint-disable-next-line
+  const [noSeatbelt, setNotSeatBelt] = useState(0);
+  // eslint-disable-next-line
+  const [usePhone, setUsePhone] = useState(0);
+  // eslint-disable-next-line
+  const [unknownDriver, setUnknownDriver] = useState(0);
+  const [noDriver, setNoDriver] = useState(0);
+  // eslint-disable-next-line
+  const [smoking, setSmoking] = useState(0);
+  // eslint-disable-next-line
+  const [rashDrive, setRashDrive] = useState(0);
+  // eslint-disable-next-line
+  const [dmsAccident, setDmsAccident] = useState(0);
+  const [tripStartAlert, setTripStartAlert] = useState(0);
+  // eslint-disable-next-line
+  const [vehicle, setVehicle] = useState([]);
+  const [autoBrk, setAutoBrk] = useState(0);
+  const [faultData, setFaultData] = useState(0);
+  const [alarm1, setAlarm1] = useState(0);
+  const [alarm2, setAlarm2] = useState(0);
+
+  // Set faultcount locations and data
+  const [markers, setMarkers] = useState([]);
+  const [selectedMarker, setSelectedMarker] = useState(null);
+  const [filterMarker, setFilterMarker] = useState([]);
+  const [checkboxes, setCheckboxes] = useState({
+    AUTOMATIC_BRAKING: false,
+    ACCIDENT_SAVED: false,
+    ACC_Cut: false,
+    CVN: false,
+    Harsh_Acceleration: false,
+    Speed_Bump: false,
+    Lane_Change: false,
+    Sudden_Braking: false,
+    Tailgating: false,
+    Overspeeding: false,
+    Alarm_2: false,
+    Alarm_3: false,
+    TRIP_START: false,
+    DROWSINESS: false,
+    DISTRACTION: false,
+    OVERSPEEDING: false,
+    NO_DRIVER: false,
+  });
 
   // Get trip summary data
   useEffect(() => {
-    console.log("1");
     axios
       .get(
         `${process.env.REACT_APP_API_URL}/trips/get-trip-summary-by-tripid/${trip_id}`,
@@ -85,7 +151,6 @@ const CompletedTrip = () => {
         setEndTime(tripEndTime.toLocaleString());
         setEpochStart(resTripdata[0].trip_start_time);
         setEpochEnd(resTripdata[0].trip_end_time);
-        console.log(resTripdata);
       })
       .catch((err) => {
         console.log(err);
@@ -93,7 +158,11 @@ const CompletedTrip = () => {
   }, [trip_id, token]);
 
   useEffect(() => {
-    console.log("One");
+    console.log(markers);
+    console.log(filterMarker);
+  }, [markers, filterMarker]);
+
+  useEffect(() => {
     axios
       .get(
         `${process.env.REACT_APP_API_URL}/trips/get-completed-tripdata-by-tripid/${trip_id}`,
@@ -102,7 +171,6 @@ const CompletedTrip = () => {
         }
       )
       .then((res) => {
-        console.log(res.data);
         // Set trip data
         setTripData(res.data.tripdata);
 
@@ -146,7 +214,6 @@ const CompletedTrip = () => {
 
   // Set Address
   useEffect(() => {
-    console.log("two");
     if (tripData.length > 0 && startPoint !== "" && endPoint !== "") {
       const getAddress = async (lat, lng, setAddress) => {
         const response = await fetch(
@@ -156,20 +223,266 @@ const CompletedTrip = () => {
           setIsLoading(false);
         }
         const data = await response.json();
-        // console.log(data);
         setAddress(data.results[0].formatted_address);
       };
 
       getAddress(startPoint.lat, startPoint.lng, setStartAddress);
       getAddress(endPoint.lat, endPoint.lng, setEndAddress);
     }
-  }, [tripData]);
+  }, [tripData, endPoint, startPoint]);
 
-  const [activeTab, setActiveTab] = useState("Summary");
+  //get fault counts data
 
-  const changeTab = (tabName) => {
-    setActiveTab(tabName);
-  };
+  useEffect(() => {
+    axios
+      .get(`http://localhost:8080/api/trips/get-fault-counts/${trip_id}`, {
+        headers: { authorization: `bearer ${token}` },
+      })
+      .then((response) => {
+        setFaultData(response.data.results);
+        let parameters = [];
+        let params = {};
+        let myData = response.data.results;
+
+        // Set all notifications data
+        for (let i = 0; i < myData.length; i++) {
+          // Set Alarm data
+          if (myData[i].event === "ALM") {
+            let almData = myData[i].jsondata;
+            let almparse = JSON.parse(almData);
+            if (almparse.data.alarm === 2) {
+              setAlarm1((prev) => prev + 1);
+            }
+            if (almparse.data.alarm === 3) {
+              setAlarm2((prev) => prev + 1);
+            }
+          }
+
+          // Set Notification data
+          if (myData[i].event === "NTF") {
+            let ntfData = myData[i].jsondata;
+            let ntfparse = JSON.parse(ntfData);
+
+            if (ntfparse.notification === 2) {
+              setHarshacc((prev) => prev + 1);
+            }
+            if (ntfparse.notification === 13) {
+              setSleepAlt((prev) => prev + 1);
+            }
+            if (ntfparse.notification === 5) {
+              setLaneChng((prev) => prev + 1);
+            }
+            if (ntfparse.notification === 4) {
+              setSpdBump((prev) => prev + 1);
+            }
+            if (ntfparse.notification === 3) {
+              setSuddenBrk((prev) => prev + 1);
+            }
+            if (ntfparse.notification === 6) {
+              setTailgating((prev) => prev + 1);
+            }
+            if (ntfparse.notification === 7) {
+              setOverspeed((prev) => prev + 1);
+            }
+            if (ntfparse.notification === 16) {
+              setEngineOff((prev) => prev + 1);
+            }
+          }
+        }
+
+        // loop to set markers
+        for (let l = 0; l < myData.length; l++) {
+          // parsing break json
+          let parseJson = JSON.parse(myData[l].jsondata);
+
+          if (myData[l].event === "BRK") {
+            let ttcdiff = parseJson.data.on_ttc - parseJson.data.off_ttc;
+            let acd = ttcdiff / parseJson.data.off_ttc;
+            let accSvd = acd * 100;
+            let updatedTime = new Date(myData[l].timestamp * 1000);
+            let contentTime = updatedTime.toLocaleString();
+
+            // Set Accident save
+            if (accSvd > 50 && accSvd < 100) {
+              setAccident((prevCount) => prevCount + 1);
+              params = {
+                id: myData[l].id,
+                lat: parseFloat(myData[l].lat),
+                lng: parseFloat(myData[l].lng),
+                title: "ACCIDENT_SAVED",
+                content: contentTime,
+                speed: parseFloat(myData[l].spd),
+                event: myData[l].event,
+                reason: parseJson.data.reason,
+                brake_duration:
+                  parseJson.data.off_timestamp - parseJson.data.on_timestamp,
+              };
+              parameters.push(params);
+            }
+            setAutoBrk((prevCount) => prevCount + 1);
+            params = {
+              id: myData[l].id,
+              lat: parseFloat(myData[l].lat),
+              lng: parseFloat(myData[l].lng),
+              title: "AUTOMATIC_BRAKING",
+              content: contentTime,
+              bypass: parseJson.data.bypass,
+              speed: parseFloat(myData[l].spd),
+              event: myData[l].event,
+              reason: parseJson.data.reason,
+              brake_duration:
+                parseJson.data.off_timestamp - parseJson.data.on_timestamp,
+            };
+            parameters.push(params);
+          }
+
+          // DMS markers
+          if (myData[l].event === "DMS") {
+            let updatedTime = new Date(myData[l].timestamp * 1000);
+            let contentTime = updatedTime.toLocaleString();
+            params = {
+              id: myData[l].id,
+              lat: parseFloat(myData[l].lat),
+              lng: parseFloat(myData[l].lng),
+              title: parseJson.data.alert_type,
+              content: contentTime,
+              speed: parseJson.data.speed,
+              event: myData[l].event,
+              reason: parseJson.data.alert_type,
+              alert_type: parseJson.data.alert_type,
+              media: parseJson.data.media,
+              dashcam: parseJson.data.dashcam,
+              severity: parseJson.data.severity,
+            };
+            parameters.push(params);
+          }
+
+          // adding brk json to markers
+          if (parseJson.notification !== undefined) {
+            let updatedTime = new Date(myData[l].timestamp * 1000);
+            let contentTime = updatedTime.toLocaleString();
+            params = {
+              id: myData[l].id,
+              lat: parseFloat(myData[l].lat),
+              lng: parseFloat(myData[l].lng),
+              title: parseJson.notification,
+              content: contentTime,
+              speed: parseFloat(myData[l].spd),
+              event: myData[l].event,
+              reason: parseJson.notification,
+            };
+            parameters.push(params);
+          }
+          if (parseJson.event === "BRK") {
+            params = {
+              id: myData[l].id,
+              lat: parseFloat(myData[l].lat),
+              lng: parseFloat(myData[l].lng),
+              title: myData[l].message,
+              event: myData[l].event,
+              reason: parseJson.data.reason,
+              bypass: parseJson.data.bypass,
+              speed: parseFloat(myData[l].spd),
+              brake_duration:
+                parseJson.data.off_timestamp - parseJson.data.on_timestamp,
+            };
+            parameters.push(params);
+          }
+
+          // ALM markers
+          if (myData[l].event === "ALM") {
+            let updatedTime = new Date(myData[l].timestamp * 1000);
+            let contentTime = updatedTime.toLocaleString();
+            params = {
+              id: myData[l].id,
+              lat: parseFloat(myData[l].lat),
+              lng: parseFloat(myData[l].lng),
+              reason: myData[l].message,
+              title: myData[l].message,
+              speed: Math.round(myData[l].spd),
+              content: contentTime,
+              event: parseJson.data.alarm === 2 ? "ALM2" : "ALM3",
+              alarm_no: parseJson.data.alarm,
+            };
+            parameters.push(params);
+          }
+        }
+        setMarkers(parameters);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [token, trip_id]);
+
+  // Set DMS media
+  useEffect(() => {
+    if (faultData.length > 0) {
+      let mediaData = [];
+      faultData.forEach((item) => {
+        if (item.event === "DMS") {
+          let dmsData = JSON.parse(item.jsondata);
+          let dmsTimeStamp = item.timestamp;
+          let updatedmsTimeStamp = new Date(dmsTimeStamp * 1000);
+          mediaData.push({
+            dms: dmsData.data.media,
+            dashcam: dmsData.data.dashcam,
+            alert: dmsData.data.alert_type,
+            timestamp: updatedmsTimeStamp.toLocaleString(),
+          });
+          if (dmsData.data.alert_type === "DROWSINESS") {
+            setDrowsiness((prev) => prev + 1);
+          }
+          if (dmsData.data.alert_type === "TRIP_START") {
+            setTripStartAlert((prev) => prev + 1);
+          }
+          if (dmsData.data.alert_type === "DISTRACTION") {
+            setDistraction((prev) => prev + 1);
+          }
+          if (dmsData.data.alert_type === "OVERSPEEDING") {
+            setDmsoverSpd((prev) => prev + 1);
+          }
+          if (dmsData.data.alert_type === "NO_SEATBELT") {
+            setNotSeatBelt((prev) => prev + 1);
+          }
+          if (dmsData.data.alert_type === "USING_PHONE") {
+            setUsePhone((prev) => prev + 1);
+          }
+          if (dmsData.data.alert_type === "UNKNOWN_DRIVER") {
+            setUnknownDriver((prev) => prev + 1);
+          }
+          if (dmsData.data.alert_type === "NO_DRIVER") {
+            setNoDriver((prev) => prev + 1);
+            const NoDTime = new Date(item.timestamp * 1000);
+            console.log(
+              "ID:",
+              item.id,
+              "Event:",
+              dmsData.data.alert_type,
+              "Time:",
+              NoDTime
+            );
+          }
+          if (dmsData.data.alert_type === "SMOKING") {
+            setSmoking((prev) => prev + 1);
+          }
+          if (dmsData.data.alert_type === "RASH_DRIVING") {
+            setRashDrive((prev) => prev + 1);
+          }
+          if (dmsData.data.alert_type === "ACCIDENT") {
+            setDmsAccident((prev) => prev + 1);
+          }
+        }
+      });
+
+      setMedia(mediaData);
+    }
+  }, [faultData]);
+
+  // const [activeTab, setActiveTab] = useState("Summary");
+
+  // const changeTab = (tabName) => {
+  //   setActiveTab(tabName);
+  // };
 
   const SummaryContent = () => (
     <div className="">
@@ -197,85 +510,575 @@ const CompletedTrip = () => {
     </div>
   );
 
-  const [checked, setChecked] = useState(false);
-
-  const handleCheckboxChange = (e) => {
-    setChecked(e.checked);
-  };
-
-  const DMScheckboxes = [
-    { label: "Trip Start", badgeValue: "2" },
-    { label: "Drowsiness" },
-    { label: "Distraction" },
-    { label: "No Driver" },
-    { label: "Accident" },
-    { label: "Overspeeding", badgeValue: "4" },
-  ];
+  // const [checked, setChecked] = useState(false);
 
   const DMSContent = () => (
-    <div className="p-grid">
-      {DMScheckboxes.map((checkbox, index) => (
-        <div className="p-col-6 my-5" key={index}>
-          <div className="align-items-center flex">
-            <Checkbox
-              inputId={`DMScheckboxId${index}`}
-              value={`DMScheckboxValue${index}`}
-              checked={checked}
-              onChange={handleCheckboxChange}
-            />
-            <label
-              htmlFor={`DMScheckboxId${index}`}
-              className="ml-2 dark:text-white"
-            >
-              {checkbox.label}
-              {checkbox.badgeValue && (
-                <Badge value={checkbox.badgeValue} className="mx-3" />
-              )}
-            </label>
+    <>
+      <div className="flex gap-4 text-center">
+        <div className="flex-1">
+          <div className="flex">
+            <div className="flex-1 text-left">
+              <div className="py-5">
+                <Checkbox
+                  value="TRIP_START"
+                  onChange={handlecheckbox}
+                  name="TRIP_START"
+                  checked={checkboxes?.TRIP_START}
+                  disabled={tripStartAlert === 0}
+                />
+                <label
+                  htmlFor="TRIP_START"
+                  className="ml-2 w-[7vw] dark:text-white"
+                >
+                  Trip Start
+                </label>
+              </div>
+              <div className="py-5">
+                <Checkbox
+                  value="DROWSINESS"
+                  onChange={handlecheckbox}
+                  name="DROWSINESS"
+                  checked={checkboxes.DROWSINESS}
+                  disabled={drowsiness === 0}
+                />
+                <label
+                  htmlFor="ACCIDENT_SAVED"
+                  className="ml-2 w-[7vw] dark:text-white"
+                >
+                  Drowsiness
+                </label>
+              </div>
+              <div className="py-5">
+                <Checkbox
+                  value="DISTRACTION"
+                  onChange={handlecheckbox}
+                  name="DISTRACTION"
+                  checked={checkboxes.DISTRACTION}
+                  disabled={distraction === 0}
+                />
+                <label
+                  htmlFor="CAScheckboxId3"
+                  className="ml-2 w-[7vw] dark:text-white"
+                >
+                  Distraction
+                </label>
+              </div>
+            </div>
+            <div className="flex-1 text-right">
+              <div className="py-5">
+                {tripStartAlert === 0 ? (
+                  <Badge
+                    value={tripStartAlert}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={tripStartAlert} className="mx-3" />
+                )}
+              </div>
+              <div className="py-5">
+                {drowsiness === 0 ? (
+                  <Badge
+                    value={drowsiness}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={drowsiness} className="mx-3" />
+                )}
+              </div>
+              <div className="py-5">
+                {distraction === 0 ? (
+                  <Badge
+                    value={distraction}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={distraction} className="mx-3" />
+                )}{" "}
+              </div>
+            </div>
           </div>
         </div>
-      ))}
-    </div>
+        <div className="flex-1">
+          <div className="flex">
+            <div className="flex-1 text-left">
+              <div className="py-5">
+                <Checkbox
+                  value="OVERSPEEDING"
+                  onChange={handlecheckbox}
+                  name="OVERSPEEDING"
+                  checked={checkboxes.OVERSPEEDING}
+                  disabled={dmsoverSpd === 0}
+                />
+                <label
+                  htmlFor="CAScheckboxId4"
+                  className="ml-2 w-[7vw] dark:text-white"
+                >
+                  Overspeeding
+                </label>
+              </div>
+              <div className="py-5">
+                <Checkbox
+                  value="NO_DRIVER"
+                  onChange={handlecheckbox}
+                  name="NO_DRIVER"
+                  checked={checkboxes.Speed_Bump}
+                  disabled={noDriver === 0}
+                />
+                <label
+                  htmlFor="CAScheckboxId5"
+                  className="ml-2 w-[7vw] dark:text-white"
+                >
+                  No Driver
+                </label>
+              </div>
+            </div>
+            <div className="flex-1 text-right">
+              <div className="py-5">
+                {dmsoverSpd === 0 ? (
+                  <Badge
+                    value={dmsoverSpd}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={dmsoverSpd} className="mx-3" />
+                )}
+              </div>
+              <div className="py-5">
+                {noDriver === 0 ? (
+                  <Badge
+                    value={noDriver}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={noDriver} className="mx-3" />
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 
-  const CAScheckboxes = [
-    { label: "Automatic Braking", badgeValue: "2" },
-    { label: "Accident Saved" },
-    { label: "ACC Cut" },
-    { label: "Harsh Acceleration" },
-    { label: "Speed Bump", badgeValue: "4" },
-    { label: "Lane Change" },
-    { label: "Sudden Braking" },
-    { label: "Tailgating" },
-    { label: "Overspeeding" },
-    { label: "Alarm 2" },
-    { label: "Alarm 3" },
-  ];
+  const handlecheckbox = (e) => {
+    const { value, name } = e.target;
+
+    setCheckboxes((prevCheckboxes) => ({
+      ...prevCheckboxes,
+      [name]: !prevCheckboxes[name],
+    }));
+
+    let customAttribute;
+
+    if (name === "AUTOMATIC_BRAKING" && value === "AUTOMATIC_BRAKING") {
+      customAttribute = "BRK";
+    }
+    if (name === "ACCIDENT_SAVED" && value === "AUTOMATIC_BRAKING") {
+      customAttribute = "BRK";
+    }
+    if (name === "ACC_Cut" && value === 16) {
+      customAttribute = "NTF";
+    }
+    if (name === "Harsh_Acceleration" && value === 2) {
+      customAttribute = "NTF";
+    }
+    if (name === "Sudden_Braking" && value === 3) {
+      customAttribute = "NTF";
+    }
+    if (name === "Speed_Bump" && value === 4) {
+      customAttribute = "NTF";
+    }
+    if (name === "Lane_Change" && value === 5) {
+      customAttribute = "NTF";
+    }
+    if (name === "Tailgating" && value === 3) {
+      customAttribute = "NTF";
+    }
+    if (name === "ACCIDENT_SAVED" && value === 6) {
+      customAttribute = "BRK";
+    }
+    if (name === "Overspeeding" && value === 7) {
+      customAttribute = "NTF";
+    }
+    if (name === "Alarm_2" && value === 5) {
+      customAttribute = "ALM2";
+    }
+    if (name === "Alarm_3" && value === 5) {
+      customAttribute = "ALM3";
+    }
+    if (name === "TRIP_START" && value === "TRIP_START") {
+      customAttribute = "DMS";
+    }
+    if (name === "DROWSINESS" && value === "DROWSINESS") {
+      customAttribute = "DMS";
+    }
+    if (name === "DISTRACTION" && value === "DISTRACTION") {
+      customAttribute = "DMS";
+    }
+    if (name === "OVERSPEEDING" && value === "OVERSPEEDING") {
+      customAttribute = "DMS";
+    }
+    if (name === "NO_DRIVER" && value === "NO_DRIVER") {
+      customAttribute = "DMS";
+    }
+
+    if (e.target.checked) {
+      let x = [];
+      markers.map((el) => {
+        if (el.title === value && el.event === customAttribute) {
+          x.push(el);
+        }
+        return null;
+      });
+      setFilterMarker([...filterMarker, x]);
+    } else {
+      let y = [];
+
+      [].concat(...filterMarker)?.map((el) => {
+        if (el.title === value && el.event === customAttribute) {
+        } else {
+          y.push(el);
+        }
+        return null;
+      });
+
+      setFilterMarker([y]);
+    }
+  };
+
+  const handleMarkerClick = (marker) => {
+    setSelectedMarker(marker);
+  };
 
   const CASContent = () => (
-    <div className="p-grid">
-      {CAScheckboxes.map((checkbox, index) => (
-        <div className="p-col-6 my-5" key={index}>
-          <div className="align-items-center flex">
-            <Checkbox
-              inputId={`CAScheckboxId${index}`}
-              value={`CAScheckboxValue${index}`}
-              checked={checked}
-              onChange={handleCheckboxChange}
-            />
-            <label
-              htmlFor={`CAScheckboxId${index}`}
-              className="ml-2 dark:text-white"
-            >
-              {checkbox.label}
-              {checkbox.badgeValue && (
-                <Badge value={checkbox.badgeValue} className="mx-3" />
-              )}
-            </label>
+    <>
+      <div className="flex gap-4 text-center">
+        <div className="flex-1">
+          <div className="flex">
+            <div className="flex-1 text-left">
+              <div className="w-[180px] py-5">
+                <Checkbox
+                  value="AUTOMATIC_BRAKING"
+                  onChange={handlecheckbox}
+                  name="AUTOMATIC_BRAKING"
+                  checked={checkboxes?.AUTOMATIC_BRAKING}
+                  disabled={autoBrk === 0}
+                />
+                <label
+                  htmlFor="AUTOMATIC_BRAKING"
+                  className="ml-2 dark:text-white"
+                >
+                  Automatic Braking
+                </label>
+              </div>
+              <div className="py-5">
+                <Checkbox
+                  value="ACCIDENT_SAVED"
+                  onChange={handlecheckbox}
+                  name="ACCIDENT_SAVED"
+                  checked={checkboxes.ACCIDENT_SAVED}
+                  disabled={accident === 0}
+                />
+                <label
+                  htmlFor="ACCIDENT_SAVED"
+                  className="ml-2 dark:text-white"
+                >
+                  Accident Saved
+                </label>
+              </div>
+              <div className="py-5">
+                <Checkbox
+                  value={16}
+                  onChange={handlecheckbox}
+                  name="ACC_Cut"
+                  checked={checkboxes.ACC_Cut}
+                  disabled={engineOff === 0}
+                />
+                <label
+                  htmlFor="CAScheckboxId3"
+                  className="ml-2 dark:text-white"
+                >
+                  ACC Cut
+                </label>
+              </div>
+              {/* <div className="py-5">
+                <Checkbox
+                  data-custom-attribute="CVN"
+                  value="CVN"
+                  name="CVN"
+                  checked={checkboxes.CVN}
+                />
+                <label
+                  htmlFor="CAScheckboxId5"
+                  className="ml-2 dark:text-white"
+                >
+                  CVN
+                </label>
+              </div> */}
+              <div className="py-5">
+                <Checkbox
+                  value={2}
+                  onChange={handlecheckbox}
+                  name="Harsh_Acceleration"
+                  checked={checkboxes.Harsh_Acceleration}
+                  disabled={harshacc === 0}
+                />
+                <label
+                  htmlFor="CAScheckboxId4"
+                  className="ml-2 dark:text-white"
+                >
+                  Harsh Acceleration
+                </label>
+              </div>
+              <div className="py-5">
+                <Checkbox
+                  value={4}
+                  onChange={handlecheckbox}
+                  name="Speed_Bump"
+                  checked={checkboxes.Speed_Bump}
+                  disabled={spdBump === 0}
+                />
+                <label
+                  htmlFor="CAScheckboxId5"
+                  className="ml-2 dark:text-white"
+                >
+                  Speed Bump
+                </label>
+              </div>
+              <div className="py-5">
+                <Checkbox
+                  value={5}
+                  onChange={handlecheckbox}
+                  name="Lane_Change"
+                  checked={checkboxes.Lane_Change}
+                  disabled={laneChng === 0}
+                />
+                <label
+                  htmlFor="CAScheckboxId5"
+                  className="ml-2 dark:text-white"
+                >
+                  Lane Change
+                </label>
+              </div>
+            </div>
+            <div className="flex-1 text-right">
+              <div className="py-5">
+                {autoBrk === 0 ? (
+                  <Badge
+                    value={autoBrk}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={autoBrk} className="mx-3" />
+                )}
+              </div>
+              <div className="py-5">
+                {accident === 0 ? (
+                  <Badge
+                    value={accident}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={accident} className="mx-3" />
+                )}
+              </div>
+              <div className="py-5">
+                {engineOff === 0 ? (
+                  <Badge
+                    value={engineOff}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={engineOff} className="mx-3" />
+                )}
+              </div>
+              {/* <div>
+              <Badge value="Badge 5" className="mx-3" />
+              </div> */}
+              <div className="py-5">
+                {harshacc === 0 ? (
+                  <Badge
+                    value={harshacc}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={harshacc} className="mx-3" />
+                )}
+              </div>
+              <div className="py-5">
+                {spdBump === 0 ? (
+                  <Badge
+                    value={spdBump}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={spdBump} className="mx-3" />
+                )}
+              </div>
+              <div className="py-4">
+                {laneChng === 0 ? (
+                  <Badge
+                    value={laneChng}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={laneChng} className="mx-3" />
+                )}
+              </div>
+            </div>
           </div>
         </div>
-      ))}
-    </div>
+        <div className="flex-1">
+          <div className="flex">
+            <div className="flex-1 text-left">
+              <div className="w-[180px] py-5">
+                <Checkbox
+                  value={3}
+                  onChange={handlecheckbox}
+                  name="Sudden_Braking"
+                  checked={checkboxes.Sudden_Braking}
+                  disabled={suddenBrk === 0}
+                />
+                <label
+                  htmlFor="CAScheckboxId5"
+                  className="ml-2 dark:text-white"
+                >
+                  Sudden Braking
+                </label>
+              </div>
+              <div className="py-5">
+                <Checkbox
+                  value={6}
+                  onChange={handlecheckbox}
+                  name="Tailgating"
+                  checked={checkboxes.Tailgating}
+                  disabled={tailgating === 0}
+                />
+                <label
+                  htmlFor="CAScheckboxId5"
+                  className="ml-2 dark:text-white"
+                >
+                  Tailgating
+                </label>
+              </div>
+              <div className="py-5">
+                <Checkbox
+                  value={7}
+                  onChange={handlecheckbox}
+                  name="Overspeeding"
+                  checked={checkboxes.Overspeeding}
+                  disabled={overspeed === 0}
+                />
+                <label
+                  htmlFor="CAScheckboxId5"
+                  className="ml-2 dark:text-white"
+                >
+                  Overspeeding
+                </label>
+              </div>
+              <div className="py-5">
+                <Checkbox
+                  value={5}
+                  onChange={handlecheckbox}
+                  name="Alarm_2"
+                  checked={checkboxes.Alarm_2}
+                  disabled={alarm1 === 0}
+                />
+                <label
+                  htmlFor="CAScheckboxId5"
+                  className="ml-2 dark:text-white"
+                >
+                  Alarm 2
+                </label>
+              </div>
+              <div className="py-5">
+                <Checkbox
+                  value={5}
+                  onChange={handlecheckbox}
+                  name="Alarm_3"
+                  checked={checkboxes.Alarm_3}
+                  disabled={alarm2 === 0}
+                />
+                <label
+                  htmlFor="CAScheckboxId5"
+                  className="ml-2 dark:text-white"
+                >
+                  Alarm 3
+                </label>
+              </div>
+            </div>
+            <div className="flex-1 text-right">
+              <div className="py-5">
+                {suddenBrk === 0 ? (
+                  <Badge
+                    value={suddenBrk}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={suddenBrk} className="mx-3" />
+                )}
+              </div>
+              <div className="py-5">
+                {tailgating === 0 ? (
+                  <Badge
+                    value={tailgating}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={tailgating} className="mx-3" />
+                )}
+              </div>
+              <div className="py-5">
+                {overspeed === 0 ? (
+                  <Badge
+                    value={overspeed}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={overspeed} className="mx-3" />
+                )}
+              </div>
+              <div className="py-5">
+                {alarm1 === 0 ? (
+                  <Badge
+                    value={alarm1}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={alarm1} className="mx-3" />
+                )}
+              </div>
+              <div className="py-5">
+                {alarm2 === 0 ? (
+                  <Badge
+                    value={alarm2}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={alarm2} className="mx-3" />
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 
   return (
@@ -295,6 +1098,195 @@ const CompletedTrip = () => {
             zoom={14}
           >
             <Marker position={startPoint} icon={markerIcons.green} />
+            {[].concat(...filterMarker)?.map((marker, index) => (
+              <Marker
+                key={`${marker.id}-${index}`}
+                position={{ lat: marker.lat, lng: marker.lng }}
+                onClick={() => handleMarkerClick(marker)}
+                icon={markerIcons.blue}
+              >
+                {selectedMarker === marker && (
+                  <InfoWindow
+                    position={{ lat: marker.lat, lng: marker.lng }}
+                    onCloseClick={() => setSelectedMarker(null)}
+                  >
+                    {marker.event === "BRK" ? (
+                      <div>
+                        {marker.reason === 0 ? (
+                          <>
+                            <div>
+                              {marker.title} Due to{" "}
+                              <b>Collosion Avoidance System</b>
+                              <p className="mb-0">
+                                TimeStamp: {marker.content}
+                              </p>
+                              <p className="mb-0">Speed: {marker.speed}Kmph</p>
+                              <p className="mb-0">
+                                Brake Duration: {marker.brake_duration}Sec
+                              </p>
+                              <p className="mb-0">
+                                Bypass:{" "}
+                                {marker.bypass !== 0 ? "Bypass" : "No Bypass"}
+                              </p>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div>
+                              {marker.title} Due to <b>Sleep Alert Missed</b>
+                              <p className="mb-0">
+                                TimeStamp: {marker.content}
+                              </p>
+                              <p className="mb-0">Speed: {marker.speed}Kmph</p>
+                              {/* <p className="mb-0">
+                                Brake Duration: {marker.brake_duration}
+                              </p> */}
+                              <p></p>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    ) : marker.event === "DMS" ? (
+                      <>
+                        <div>
+                          <h6>
+                            <strong>{marker.title}</strong>
+                          </h6>
+                          <p className="mb-0">TimeStamp: {marker.content}</p>
+                          <p className="mb-0">Speed: {marker.speed}Kmph</p>
+                          <p className="mb-0">
+                            Alert_type: {marker.alert_type}
+                          </p>
+                          <p className="mb-0">Severity:{marker.severity}</p>
+                          <button
+                            className="btn btn-danger btn-sm rounded-pill mt-2"
+                            // onClick={() =>
+                            //   handleDMSVideoShow(
+                            //     marker.media,
+                            //     marker.dashcam,
+                            //     marker.title,
+                            //     marker.content,
+                            //     marker.speed,
+                            //     marker.alert_type,
+                            //     marker.severity
+                            //   )
+                            // }
+                          >
+                            Play <BsFillPlayCircleFill />
+                          </button>
+                          {/* <Iframe
+                            src={marker.media}
+                            width="80%"
+                            height="200px"
+                            key=""
+                          ></Iframe> */}
+                        </div>
+                      </>
+                    ) : (
+                      <div>
+                        <>
+                          {marker.reason === 2 ? (
+                            <div>
+                              <b>Harsh Acceleration</b>
+                              <p className="mb-0">
+                                TimeStamp: {marker.content}
+                              </p>
+                              <p className="mb-0">Speed: {marker.speed}Kmph</p>
+                            </div>
+                          ) : (
+                            ""
+                          )}
+                          {marker.reason === 3 ? (
+                            <div>
+                              <b>Sudden Braking</b>
+                              <p className="mb-0">
+                                TimeStamp: {marker.content}
+                              </p>
+                              <p className="mb-0">Speed: {marker.speed}Kmph</p>
+                            </div>
+                          ) : (
+                            ""
+                          )}
+                          {marker.reason === 4 ? (
+                            <div>
+                              <b>Speed Bump</b>
+                              <p className="mb-0">
+                                TimeStamp: {marker.content}
+                              </p>
+                              <p className="mb-0">Speed: {marker.speed}Kmph</p>
+                            </div>
+                          ) : (
+                            ""
+                          )}
+                          {marker.reason === 5 && marker.event === "NTF" ? (
+                            <div>
+                              <b>Lane change</b>
+                              <p className="mb-0">
+                                TimeStamp: {marker.content}
+                              </p>
+                              <p className="mb-0">Speed: {marker.speed}Kmph</p>
+                            </div>
+                          ) : (
+                            ""
+                          )}
+                          {marker.reason === 6 ? (
+                            <div>
+                              <b>Tailgating</b>
+                              <p className="mb-0">
+                                TimeStamp: {marker.content}
+                              </p>
+                              <p className="mb-0">Speed: {marker.speed}Kmph</p>
+                            </div>
+                          ) : (
+                            ""
+                          )}
+                          {marker.reason === 7 ? (
+                            <div>
+                              <b>Overspeed</b>
+                              <p className="mb-0">
+                                TimeStamp: {marker.content}
+                              </p>
+                              <p className="mb-0">Speed: {marker.speed}Kmph</p>
+                            </div>
+                          ) : (
+                            ""
+                          )}
+                          {marker.reason === 16 ? (
+                            <div>
+                              <b>ACC Cut due to Tipper ON</b>
+                              <p className="mb-0">
+                                TimeStamp: {marker.content}
+                              </p>
+                              <p className="mb-0">Speed: {marker.speed}Kmph</p>
+                            </div>
+                          ) : (
+                            ""
+                          )}
+                          {marker.reason === 5 &&
+                          (marker.event === "ALM2" ||
+                            marker.event === "ALM3") &&
+                          marker.alarm_no !== 0 ? (
+                            <div>
+                              <b>Alarm</b>
+                              <p className="mb-0">
+                                TimeStamp: {marker.content}
+                              </p>
+                              <p className="mb-0">Speed: {marker.speed}Kmph</p>
+                              <p className="mb-0">
+                                Alarm_NO: {marker.alarm_no}
+                              </p>
+                            </div>
+                          ) : (
+                            ""
+                          )}
+                        </>
+                      </div>
+                    )}
+                  </InfoWindow>
+                )}
+              </Marker>
+            ))}
+
             <Polyline
               path={path}
               options={{
@@ -307,7 +1299,7 @@ const CompletedTrip = () => {
         </LoadScript>
       </div>
       <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-8 sm:py-8 lg:max-w-7xl lg:grid-cols-2">
-        <div className="bg-gray-100 bg-white p-5 dark:bg-navy-700">
+        <div className="bg-gray-100  p-5 dark:bg-navy-700">
           <div className="">
             <TabView>
               <TabPanel header="Summary" className="font-medium">

@@ -105,6 +105,7 @@ export default function DevicesList({ data }) {
         removableSort
         paginator
         dataKey="id"
+        className="mx-5"
         header={header}
         rows={5}
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
@@ -121,9 +122,11 @@ export default function DevicesList({ data }) {
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
       >
         <Column
+          key="serialNo"
           field="serialNo"
+          header="Sr. No."
           className="border-none dark:bg-gray-900 dark:text-gray-200"
-          style={{ minWidth: "4rem", textAlign: "center" }}
+          style={{ minWidth: "4rem" }}
         ></Column>
         <Column
           field="device_id"

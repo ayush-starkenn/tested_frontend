@@ -247,14 +247,14 @@ export default function VehiclesList({
           "iot",
           "dms",
         ]}
-        emptyMessage="No devices found."
+        emptyMessage="No vehicles found."
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
       >
         <Column
           field="serialNo"
-          header="SR.NO"
+          header="Sr. No."
           className="border-none dark:bg-gray-900 dark:text-gray-200"
-          style={{ minWidth: "4rem", textAlign: "center" }}
+          style={{ minWidth: "4rem" }}
         ></Column>
         <Column
           field="vehicle_name"

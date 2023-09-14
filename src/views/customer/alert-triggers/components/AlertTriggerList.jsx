@@ -227,6 +227,7 @@ const AlertTriggerList = ({
         dataKey="trigger_id"
         header={header}
         rows={5}
+        removableSort
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
         rowsPerPageOptions={[5, 10, 25]}
         filters={filters}
@@ -243,14 +244,13 @@ const AlertTriggerList = ({
       >
         <Column
           field="serialNo"
-          header="SR.NO"
+          header="Sr. No."
           className="border-none dark:bg-gray-900 dark:text-gray-200"
-          style={{ minWidth: "4rem", textAlign: "center" }}
+          style={{ minWidth: "4rem" }}
         ></Column>
         <Column
           field="trigger_name"
           header="Trigger Name"
-          sortable
           className="dark:bg-gray-900 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
         ></Column>
@@ -279,11 +279,9 @@ const AlertTriggerList = ({
             </Tag>
           )}
         />
-
         <Column
           field="trigger_status"
           header="Status"
-          sortable
           className="dark:bg-gray-900 dark:text-gray-200"
           style={{ minWidth: "6rem" }}
           body={renderStatusCell}
@@ -299,7 +297,6 @@ const AlertTriggerList = ({
             <span>{mapVehicleName(rowData.vehicle_uuid)}</span>
           )}
         />
-
         <Column
           body={actionBodyTemplate}
           header="Action"
@@ -395,7 +392,7 @@ const AlertTriggerList = ({
             </span>
           </div>
 
-          <div className="p-field p-col-12 flex justify-center">
+          <div className="p-field p-col-12 mt-3 flex justify-center">
             <button
               type="submit"
               className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
