@@ -76,6 +76,7 @@ const Marketplace = () => {
   //api call to get vehicle list
   useEffect(() => {
     getData();
+    // eslint-disable-next-line
   }, [token, user_uuid]);
 
   const getData = () => {
