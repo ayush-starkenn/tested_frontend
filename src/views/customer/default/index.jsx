@@ -7,6 +7,11 @@ import Widget from "components/widget/Widget";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import MapOverview from "./components/MapOverview";
+import CheckTable from "./components/LogsTable";
+import { Card } from "primereact/card";
+import OngoingTable from "./components/OngoingTable";
+import LogsTable from "./components/LogsTable";
 
 const MainDashboard = () => {
   const user_uuid = Cookies.get("user_uuid");
@@ -70,6 +75,22 @@ const MainDashboard = () => {
         />
       </div>
 
+      <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-1 md:grid-cols-2">
+        <div className="my-3">
+          <MapOverview />
+        </div>
+        <div className="my-3">
+          <OngoingTable />
+        </div>
+      </div>
+      <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-1 md:grid-cols-2">
+        <div className="my-3">
+          <LogsTable />
+        </div>
+        <div className="my-3">
+          <LogsTable />
+        </div>
+      </div>
       {/* Charts */}
 
       {/* <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-1 md:grid-cols-2">
