@@ -411,7 +411,6 @@ const Marketplace = () => {
                 optionValue="value"
                 onChange={handleChange}
                 value={addData?.ecu}
-                disabled={addData.dms !== undefined && addData.dms !== null}
               />
               <label htmlFor="status">Select ECU</label>
             </span>
@@ -429,7 +428,6 @@ const Marketplace = () => {
                 optionValue="value"
                 onChange={handleChange}
                 value={addData?.iot}
-                disabled={addData.dms !== undefined && addData.dms !== null}
               />
               <label htmlFor="status">Select IoT</label>
             </span>
