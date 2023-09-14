@@ -140,7 +140,7 @@ export const routes_customer = [
   },
   {
     name: "drivers",
-    title: "drivers",
+    title: "Drivers",
     layout: "/customer",
     path: "drivers",
     icon: <RiContactsLine className="h-7 w-7" />,

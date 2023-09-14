@@ -156,20 +156,13 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
       >
         <Column
           field="serialNo"
-          header="SR.NO"
+          header="Sr. No."
           className="border-none dark:bg-gray-900 dark:text-gray-200"
-          style={{ minWidth: "4rem", textAlign: "center" }}
+          style={{ minWidth: "4rem" }}
         ></Column>
         <Column
-          field="contact_first_name"
-          header="First Name"
-          sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
-          style={{ minWidth: "8rem" }}
-        ></Column>
-        <Column
-          field="contact_last_name"
-          header="Last Name"
+          field="full_name"
+          header="Name"
           sortable
           className="dark:bg-gray-900 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
@@ -253,7 +246,7 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
               <InputText
                 id="contact_mobile"
                 name="contact_mobile"
-                type="number"
+                keyfilter="pint"
                 onChange={handleChange}
                 value={editData?.contact_mobile}
               />
