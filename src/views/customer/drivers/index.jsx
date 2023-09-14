@@ -61,7 +61,7 @@ const Drivers = () => {
         }
       )
       .then((res) => {
-        console.log(res.data.results);
+        console.log(res.data.results.length);
         const formattedData = res.data.results.map((item, index) => ({
           ...item,
           serialNo: index + 1,
@@ -125,17 +125,17 @@ const Drivers = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!isValidPhoneNumber(addData.driver_mobile)) {
-      toastRef.current.show({
-        severity: "warn",
-        summary: "Invalid Phone Number",
-        detail: "Please enter a 10-digit valid phone number.",
-        life: 3000,
-      });
-      return;
-    }
 
     if (isFormValid()) {
+      if (!isValidPhoneNumber(addData.driver_mobile)) {
+        toastRef.current.show({
+          severity: "warn",
+          summary: "Invalid Phone Number",
+          detail: "Please enter a 10-digit valid phone number.",
+          life: 3000,
+        });
+        return;
+      }
       axios
         .post(
           `${process.env.REACT_APP_API_URL}/drivers/add-driver/${userUUID}`,
@@ -149,7 +149,7 @@ const Drivers = () => {
           toastRef.current.show({
             severity: "success",
             summary: "Success",
-            detail: `Device ${addData.device_id} Added successfully`,
+            detail: `Driver ${addData.driver_first_name} added successfully`,
             life: 3000,
           });
           closeDialog();
@@ -181,8 +181,17 @@ const Drivers = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    // Create a copy of the current validation errors
+    const updatedValidationErrors = { ...validationErrors };
+
+    // Remove the error for the changed field
+    updatedValidationErrors[name] = false;
+
+    setValidationErrors(updatedValidationErrors);
     setAddData({ ...addData, [name]: value });
   };
+
   const handleDateChange = (e) => {
     setSelectedDate(e.target.value); // Update the selected date
   };
@@ -252,7 +261,7 @@ const Drivers = () => {
         toastRef.current.show({
           severity: "success",
           summary: "Success",
-          detail: `Device ${addData.driver_first_name} deleted successfully`,
+          detail: `Driver ${drivers.driver_first_name} deleted successfully`,
           life: 3000,
         });
       })
@@ -292,11 +301,12 @@ const Drivers = () => {
                     className={
                       validationErrors.driver_first_name ? "p-invalid" : ""
                     }
+                    autoComplete="off"
                   />
                   <label htmlFor="driver_first_name">First Name</label>
                 </span>
                 {validationErrors.driver_first_name && (
-                  <p className="p-error">First Name is required</p>
+                  <small className="p-error">First Name is required</small>
                 )}
               </div>
               <div className="card justify-content-center ml-1 mt-5 flex-auto">
@@ -308,11 +318,12 @@ const Drivers = () => {
                     className={
                       validationErrors.driver_last_name ? "p-invalid" : ""
                     }
+                    autoComplete="off"
                   />
                   <label htmlFor="driver_last_name">Last Name</label>
                 </span>
                 {validationErrors.driver_last_name && (
-                  <p className="p-error">Last Name is required</p>
+                  <small className="p-error">Last Name is required</small>
                 )}
               </div>
             </div>
@@ -324,11 +335,12 @@ const Drivers = () => {
                   type="email"
                   className={validationErrors.driver_email ? "p-invalid" : ""}
                   name="driver_email"
+                  autoComplete="off"
                 />
                 <label htmlFor="driver_email">Email</label>
               </span>
               {validationErrors.driver_email && (
-                <p className="p-error">Email id is required</p>
+                <small className="p-error">Email id is required</small>
               )}
             </div>
             <div className="mx-auto mb-3 mt-8">
@@ -339,11 +351,12 @@ const Drivers = () => {
                   onChange={handleChange}
                   name="driver_mobile"
                   className={validationErrors.driver_mobile ? "p-invalid" : ""}
+                  autoComplete="off"
                 />
                 <label htmlFor="driver_mobile">Contact Number</label>
               </span>
               {validationErrors.driver_mobile && (
-                <p className="p-error">Contact Number is required</p>
+                <small className="p-error">Contact Number is required</small>
               )}
             </div>
             <div className="flex justify-evenly">
@@ -360,9 +373,11 @@ const Drivers = () => {
                     Date Of Birth
                   </label>
                 </span>
-                <small className="text-gray-400 ">Click to Select</small>
-                {validationErrors.driver_dob && (
-                  <p className="p-error">DOB is required</p>
+
+                {validationErrors.driver_dob ? (
+                  <small className="p-error">DOB is required</small>
+                ) : (
+                  <small className="text-gray-400 ">Click to Select</small>
                 )}
               </div>
               <div className="card justify-content-center mt-5  w-[15vw] flex-auto">
@@ -382,7 +397,7 @@ const Drivers = () => {
                   <label htmlFor="driver_gender">Gender</label>
                 </span>
                 {validationErrors.driver_gender && (
-                  <p className="p-error">Gender is required</p>
+                  <small className="p-error">Gender is required</small>
                 )}
               </div>
             </div>
@@ -393,11 +408,12 @@ const Drivers = () => {
                   onChange={handleChange}
                   name="driver_auth_id"
                   className={validationErrors.driver_auth_id ? "p-invalid" : ""}
+                  autoComplete="off"
                 />
                 <label htmlFor="driver_auth_id">Driver Auth ID</label>
               </span>
               {validationErrors.driver_auth_id && (
-                <p className="p-error">Auth ID is required</p>
+                <small className="p-error">Auth ID is required</small>
               )}
             </div>
             <div className="mx-auto mt-8">
@@ -409,11 +425,12 @@ const Drivers = () => {
                   className={
                     validationErrors.driver_license_no ? "p-invalid" : ""
                   }
+                  autoComplete="off"
                 />
                 <label htmlFor="driver_license_no">Driver License Number</label>
               </span>
               {validationErrors.driver_license_no && (
-                <p className="p-error">License Number is required</p>
+                <small className="p-error">License Number is required</small>
               )}
             </div>
             <div className="mt-6 flex justify-center">

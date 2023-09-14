@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { BsArrowRightCircleFill } from "react-icons/bs";
-import FixedPlugin from "components/fixedPlugin/FixedPlugin";
+import { RiMoonFill, RiSunFill } from "react-icons/ri";
 import axios from "axios";
 import { Toast } from "primereact/toast";
 import Cookies from "js-cookie";
@@ -38,7 +38,20 @@ const SignIn = () => {
   const [showError, setShowError] = useState(false);
   const [otpError, setOtpError] = useState(false);
   const [pwError, setPwError] = useState(false);
+  const [darkmode, setDarkmode] = useState(false);
   const toastRef = useRef(null);
+
+  useEffect(() => {
+    const storedDarkMode = localStorage.getItem("darkmode");
+
+    if (storedDarkMode === "true" || !storedDarkMode) {
+      document.body.classList.add("dark");
+      setDarkmode(true);
+    } else {
+      document.body.classList.remove("dark");
+      setDarkmode(false);
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -247,7 +260,28 @@ const SignIn = () => {
       {loading ? (
         <Preloader />
       ) : (
-        <div className="relative py-3 sm:mx-auto sm:max-w-xl">
+        <div className="relative py-3 sm:mx-auto sm:max-w-xl ">
+          <div
+            className="fixed bottom-10 right-10 cursor-pointer justify-end text-gray-600"
+            onClick={() => {
+              const newMode = !darkmode;
+              localStorage.setItem("darkmode", newMode);
+
+              if (newMode) {
+                document.body.classList.add("dark");
+              } else {
+                document.body.classList.remove("dark");
+              }
+
+              setDarkmode(newMode);
+            }}
+          >
+            {darkmode ? (
+              <RiSunFill className="h-6 w-6 text-gray-600 dark:text-white" />
+            ) : (
+              <RiMoonFill className="h-6 w-6 text-gray-600 dark:text-white" />
+            )}
+          </div>
           <div className="absolute inset-0 -skew-y-6 transform bg-gradient-to-r from-blue-300 to-blueSecondary shadow-lg sm:-rotate-6 sm:skew-y-0 sm:rounded-3xl"></div>
           <div className="relative bg-white px-4 py-10 shadow-lg  dark:!bg-gray-750 dark:shadow-2xl sm:rounded-3xl sm:p-20">
             <div className="mx-auto max-w-md">
@@ -335,8 +369,8 @@ const SignIn = () => {
                 </p>
               </div>
             </div>
-            <FixedPlugin />
           </div>
+
           <Dialog
             visible={showForgotPasswordDialog}
             onHide={() => {
