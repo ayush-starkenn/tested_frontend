@@ -20,6 +20,7 @@ const Marketplace = () => {
   const [dmsData, setDmsData] = useState([]);
   const [feauresetData, setFeaturesetData] = useState([]);
   const [formErrors, setFormErrors] = useState({});
+  const [refresh, setRefresh] = useState(false);
   const toastRef = useRef(null);
   const user_uuid = Cookies.get("user_uuid");
   const token = Cookies.get("token");
@@ -75,11 +76,6 @@ const Marketplace = () => {
 
   //api call to get vehicle list
   useEffect(() => {
-    getData();
-    // eslint-disable-next-line
-  }, [token, user_uuid]);
-
-  const getData = () => {
     axios
       .get(
         `http://localhost:8080/api/vehicles/get-user-vehiclelist/${user_uuid}`,
@@ -95,7 +91,7 @@ const Marketplace = () => {
       .catch((err) => {
         console.log(err);
       });
-  };
+  }, [refresh, token, user_uuid]);
 
   // get ECUData
   useEffect(() => {
@@ -109,7 +105,7 @@ const Marketplace = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [token, user_uuid]);
+  }, [refresh, token, user_uuid]);
 
   //get IoTData
   useEffect(() => {
@@ -123,7 +119,7 @@ const Marketplace = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [token, user_uuid]);
+  }, [refresh, token, user_uuid]);
 
   //get dmsData
   useEffect(() => {
@@ -137,7 +133,7 @@ const Marketplace = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [token, user_uuid]);
+  }, [refresh, token, user_uuid]);
 
   //get featureset
   useEffect(() => {
@@ -168,7 +164,7 @@ const Marketplace = () => {
         }
       )
       .then((res) => {
-        getData();
+        setRefresh(!refresh);
         closeDialog1();
         toastRef.current.show({
           severity: "success",
@@ -208,7 +204,7 @@ const Marketplace = () => {
         }
       )
       .then((res) => {
-        getData();
+        setRefresh(!refresh);
         closeDialog1();
         toastRef.current.show({
           severity: "success",
@@ -251,8 +247,7 @@ const Marketplace = () => {
           }
         )
         .then((res) => {
-          console.log(res);
-          getData();
+          setRefresh(!refresh);
           closeDialog1();
           toastRef.current.show({
             severity: "success",

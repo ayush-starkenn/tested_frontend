@@ -178,9 +178,9 @@ const AlertTriggerList = ({
 
     let x;
     if (check === true) {
-      // x = { ...editData, ["recipients"]: recipient };
+      x = { ...editData, ["recipients"]: recipient };
     } else {
-      // x = { ...editData, ["recipients"]: JSON.parse(editData?.recipients) };
+      x = { ...editData, ["recipients"]: JSON.parse(editData?.recipients) };
     }
 
     editTrigger(editData?.trigger_id, x);
