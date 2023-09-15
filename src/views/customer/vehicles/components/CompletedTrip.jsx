@@ -46,7 +46,7 @@ const TripInfoItem = ({ title, value }) => (
 const CompletedTrip = () => {
   const token = Cookies.get("token");
   const { trip_id } = useParams();
-  // eslint-disable-next-line
+
   const [isLoading, setIsLoading] = useState(true);
   const [path, setPath] = useState([]);
   const [tripData, setTripData] = useState([]);
@@ -232,7 +232,6 @@ const CompletedTrip = () => {
   }, [tripData, endPoint, startPoint]);
 
   //get fault counts data
-
   useEffect(() => {
     axios
       .get(`http://localhost:8080/api/trips/get-fault-counts/${trip_id}`, {
@@ -1178,7 +1177,7 @@ const CompletedTrip = () => {
                             src={marker.media}
                             width="80%"
                             height="200px"
-                            key=""
+                          
                           ></Iframe> */}
                         </div>
                       </>
@@ -1298,8 +1297,8 @@ const CompletedTrip = () => {
           </GoogleMap>
         </LoadScript>
       </div>
-      <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-8 sm:py-8 lg:max-w-7xl lg:grid-cols-2">
-        <div className="bg-gray-100  p-5 dark:bg-navy-700">
+      <div className="lg:max-w-screen mx-auto grid w-full grid-cols-1 gap-x-8 gap-y-8 rounded-[20px] sm:py-8 lg:grid-cols-2">
+        <div className="rounded-[20px] bg-white p-5 dark:bg-navy-700">
           <div className="">
             <TabView>
               <TabPanel header="Summary" className="font-medium">
@@ -1315,14 +1314,14 @@ const CompletedTrip = () => {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-navy-700">
+        <div className="rounded-[20px] bg-white dark:bg-navy-700">
           <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-8 lg:max-w-7xl lg:px-8">
             <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
               DMS Media
             </h2>
 
             <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-2 xl:gap-x-8">
-              <div key="" className="group relative">
+              <div className="group relative">
                 <div className="flex justify-between">
                   <div>
                     <h3 className="text-gray-700">Distraction</h3>
@@ -1358,7 +1357,7 @@ const CompletedTrip = () => {
                   </video>
                 </div>
               </div>
-              <div key="" className="group relative">
+              <div className="group relative">
                 <div className="flex justify-between">
                   <div>
                     <h3 className="text-gray-700">Distraction</h3>
