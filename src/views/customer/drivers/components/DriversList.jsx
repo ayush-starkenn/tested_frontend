@@ -290,11 +290,12 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
                   value={editData?.driver_first_name || ""}
                   name="driver_first_name"
                   className={!editData?.driver_first_name ? "p-invalid" : ""}
+                  autoComplete="off"
                 />
                 <label htmlFor="first_name">First Name</label>
               </span>
               {editData?.driver_first_name === "" && (
-                <p className="p-error">First Name is required</p>
+                <small className="p-error">First Name is required</small>
               )}
             </div>
             <div className="card justify-content-center ml-1 mt-5 flex-auto">
@@ -305,11 +306,12 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
                   name="driver_last_name"
                   value={editData?.driver_last_name}
                   className={!editData?.driver_last_name ? "p-invalid" : ""}
+                  autoComplete="off"
                 />
                 <label htmlFor="driver_last_name">Last Name</label>
               </span>
               {editData?.driver_last_name === "" && (
-                <p className="p-error">Last Name is required</p>
+                <small className="p-error">Last Name is required</small>
               )}
             </div>
           </div>
@@ -324,11 +326,12 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
                 value={editData?.driver_email}
                 className={!editData?.driver_email ? "p-invalid" : ""}
                 name="driver_email"
+                autoComplete="off"
               />
               <label htmlFor="driver_email">Email</label>
             </span>
             {editData?.driver_email === "" && (
-              <p className="p-error">Email id is required</p>
+              <small className="p-error">Email id is required</small>
             )}
           </div>
           <div className="mx-auto mb-3 mt-8">
@@ -342,11 +345,12 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
                 value={editData?.driver_mobile}
                 name="driver_mobile"
                 className={!editData?.driver_mobile ? "p-invalid" : ""}
+                autoComplete="off"
               />
               <label htmlFor="driver_mobile">Contact Number</label>
             </span>
             {editData?.driver_mobile === "" && (
-              <p className="p-error">Contact number is required</p>
+              <small className="p-error">Contact number is required</small>
             )}
           </div>
           <div className="flex justify-evenly">
@@ -368,8 +372,8 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
                   Date Of Birth
                 </label>
               </span>
-              {editData?.driver_dob === "" && (
-                <p className="p-error">Date of birth is required</p>
+              {editData?.driver_dob === null && (
+                <small className="p-error">Date of birth is required</small>
               )}
             </div>
             <div className="card justify-content-center mt-5  w-[15vw] flex-auto">
@@ -389,7 +393,7 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
                 <label htmlFor="driver_gender">Gender</label>
               </span>
               {editData?.driver_gender === "" && (
-                <p className="p-error">Gender is required</p>
+                <small className="p-error">Gender is required</small>
               )}
             </div>
           </div>
@@ -403,11 +407,12 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
                 name="driver_auth_id"
                 value={editData?.driver_auth_id}
                 className={!editData?.driver_auth_id ? "p-invalid" : ""}
+                autoComplete="off"
               />
               <label htmlFor="driver_auth_id">Driver Auth ID</label>
             </span>
             {editData?.driver_auth_id === "" && (
-              <p className="p-error">Auth id is required</p>
+              <small className="p-error">Auth id is required</small>
             )}
           </div>
           <div className="mx-auto mt-8">
@@ -420,11 +425,12 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
                 value={editData?.driver_license_no}
                 name="driver_license_no"
                 className={!editData?.driver_license_no ? "p-invalid" : ""}
+                autoComplete="off"
               />
               <label htmlFor="driver_license_no">Driver License Number</label>
             </span>
             {editData?.driver_license_no === "" && (
-              <p className="p-error">License number is required</p>
+              <small className="p-error">License number is required</small>
             )}
           </div>
           <div className="mx-auto mt-8">

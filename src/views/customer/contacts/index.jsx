@@ -47,15 +47,16 @@ const Contacts = () => {
         const formatedData = res.data.contacts.map((item, ind) => ({
           ...item,
           serialNo: ind + 1,
+          full_name: item.contact_first_name + " " + item.contact_last_name,
         }));
         setContactsData(formatedData);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [refresh]);
+  }, [refresh, token, user_uuid]);
 
-  const openDialog = (rowData) => {
+  const openDialog = () => {
     setIsDialog(true);
   };
 
@@ -67,6 +68,11 @@ const Contacts = () => {
   //onChange function
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    const updatedFormErrors = { ...formErrors };
+    updatedFormErrors[name] = undefined;
+
+    setFormErrors(updatedFormErrors);
     setAddData({ ...addData, [name]: value });
   };
 
@@ -98,7 +104,7 @@ const Contacts = () => {
           closeDialog();
         })
         .catch((err) => {
-          if (err.response.request.status == 400) {
+          if (err.response.request.status === 400) {
             toastRef.current.show({
               severity: "error",
               summary: "Error",
@@ -145,7 +151,7 @@ const Contacts = () => {
         });
       })
       .catch((err) => {
-        if (err.response.request.status == 400) {
+        if (err.response.request.status === 400) {
           toastRef.current.show({
             severity: "error",
             summary: "Error",
@@ -273,7 +279,7 @@ const Contacts = () => {
                 <InputText
                   id="contact_mobile"
                   name="contact_mobile"
-                  type="number"
+                  keyfilter="pint"
                   onChange={handleChange}
                   className={`${formErrors.contact_mobile ? "p-invalid" : ""}`}
                 />

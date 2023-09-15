@@ -349,7 +349,7 @@ const Triggers = () => {
               )}
             </div>
 
-            <div className="p-field p-col-12 flex justify-center">
+            <div className="p-field p-col-12 mt-3 flex justify-center">
               <button
                 type="submit"
                 className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"

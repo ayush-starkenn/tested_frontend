@@ -46,7 +46,7 @@ const TripInfoItem = ({ title, value }) => (
 const CompletedTrip = () => {
   const token = Cookies.get("token");
   const { trip_id } = useParams();
-
+  // eslint-disable-next-line
   const [isLoading, setIsLoading] = useState(true);
   const [path, setPath] = useState([]);
   const [tripData, setTripData] = useState([]);
@@ -62,12 +62,15 @@ const CompletedTrip = () => {
   const [maxSpd, setMaxSpd] = useState("");
   const [avgSpd, setAvgSpd] = useState();
   const [duration, setDuration] = useState("");
+  // eslint-disable-next-line
   const [epochStart, setEpochStart] = useState();
+  // eslint-disable-next-line
   const [epochEnd, setEpochEnd] = useState();
 
   // CAS faults
   const [accident, setAccident] = useState(0);
   const [harshacc, setHarshacc] = useState(0);
+  // eslint-disable-next-line
   const [sleeptAlt, setSleepAlt] = useState(0);
   const [laneChng, setLaneChng] = useState(0);
   const [spdBump, setSpdBump] = useState(0);
@@ -77,18 +80,26 @@ const CompletedTrip = () => {
   const [engineOff, setEngineOff] = useState(0);
 
   // SET DMS data & Alerts
+  // eslint-disable-next-line
   const [media, setMedia] = useState([]);
   const [drowsiness, setDrowsiness] = useState(0);
   const [distraction, setDistraction] = useState(0);
   const [dmsoverSpd, setDmsoverSpd] = useState(0);
+  // eslint-disable-next-line
   const [noSeatbelt, setNotSeatBelt] = useState(0);
+  // eslint-disable-next-line
   const [usePhone, setUsePhone] = useState(0);
+  // eslint-disable-next-line
   const [unknownDriver, setUnknownDriver] = useState(0);
   const [noDriver, setNoDriver] = useState(0);
+  // eslint-disable-next-line
   const [smoking, setSmoking] = useState(0);
+  // eslint-disable-next-line
   const [rashDrive, setRashDrive] = useState(0);
+  // eslint-disable-next-line
   const [dmsAccident, setDmsAccident] = useState(0);
   const [tripStartAlert, setTripStartAlert] = useState(0);
+  // eslint-disable-next-line
   const [vehicle, setVehicle] = useState([]);
   const [autoBrk, setAutoBrk] = useState(0);
   const [faultData, setFaultData] = useState(0);
@@ -218,7 +229,7 @@ const CompletedTrip = () => {
       getAddress(startPoint.lat, startPoint.lng, setStartAddress);
       getAddress(endPoint.lat, endPoint.lng, setEndAddress);
     }
-  }, [tripData]);
+  }, [tripData, endPoint, startPoint]);
 
   //get fault counts data
 
@@ -390,7 +401,7 @@ const CompletedTrip = () => {
               title: myData[l].message,
               speed: Math.round(myData[l].spd),
               content: contentTime,
-              event: parseJson.data.alarm == 2 ? "ALM2" : "ALM3",
+              event: parseJson.data.alarm === 2 ? "ALM2" : "ALM3",
               alarm_no: parseJson.data.alarm,
             };
             parameters.push(params);
@@ -467,11 +478,11 @@ const CompletedTrip = () => {
     }
   }, [faultData]);
 
-  const [activeTab, setActiveTab] = useState("Summary");
+  // const [activeTab, setActiveTab] = useState("Summary");
 
-  const changeTab = (tabName) => {
-    setActiveTab(tabName);
-  };
+  // const changeTab = (tabName) => {
+  //   setActiveTab(tabName);
+  // };
 
   const SummaryContent = () => (
     <div className="">
@@ -499,127 +510,159 @@ const CompletedTrip = () => {
     </div>
   );
 
-  const [checked, setChecked] = useState(false);
+  // const [checked, setChecked] = useState(false);
 
   const DMSContent = () => (
-    <div className="p-grid">
-      <div className="p-col-6 my-5">
-        <div className="align-items-center flex">
-          <Checkbox
-            value="TRIP_START"
-            onChange={handlecheckbox}
-            name="TRIP_START"
-            checked={checkboxes?.TRIP_START}
-            disabled={tripStartAlert === 0}
-          />
-          <label htmlFor="TRIP_START" className="ml-2 dark:text-white">
-            Trip Start
-            {tripStartAlert === 0 ? (
-              <Badge
-                value={tripStartAlert}
-                style={{ backgroundColor: "gray", color: "white" }}
-                className="mx-3"
-              />
-            ) : (
-              <Badge value={tripStartAlert} className="mx-3" />
-            )}
-          </label>
+    <>
+      <div className="flex gap-4 text-center">
+        <div className="flex-1">
+          <div className="flex">
+            <div className="flex-1 text-left">
+              <div className="py-5">
+                <Checkbox
+                  value="TRIP_START"
+                  onChange={handlecheckbox}
+                  name="TRIP_START"
+                  checked={checkboxes?.TRIP_START}
+                  disabled={tripStartAlert === 0}
+                />
+                <label
+                  htmlFor="TRIP_START"
+                  className="ml-2 w-[7vw] dark:text-white"
+                >
+                  Trip Start
+                </label>
+              </div>
+              <div className="py-5">
+                <Checkbox
+                  value="DROWSINESS"
+                  onChange={handlecheckbox}
+                  name="DROWSINESS"
+                  checked={checkboxes.DROWSINESS}
+                  disabled={drowsiness === 0}
+                />
+                <label
+                  htmlFor="ACCIDENT_SAVED"
+                  className="ml-2 w-[7vw] dark:text-white"
+                >
+                  Drowsiness
+                </label>
+              </div>
+              <div className="py-5">
+                <Checkbox
+                  value="DISTRACTION"
+                  onChange={handlecheckbox}
+                  name="DISTRACTION"
+                  checked={checkboxes.DISTRACTION}
+                  disabled={distraction === 0}
+                />
+                <label
+                  htmlFor="CAScheckboxId3"
+                  className="ml-2 w-[7vw] dark:text-white"
+                >
+                  Distraction
+                </label>
+              </div>
+            </div>
+            <div className="flex-1 text-right">
+              <div className="py-5">
+                {tripStartAlert === 0 ? (
+                  <Badge
+                    value={tripStartAlert}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={tripStartAlert} className="mx-3" />
+                )}
+              </div>
+              <div className="py-5">
+                {drowsiness === 0 ? (
+                  <Badge
+                    value={drowsiness}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={drowsiness} className="mx-3" />
+                )}
+              </div>
+              <div className="py-5">
+                {distraction === 0 ? (
+                  <Badge
+                    value={distraction}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={distraction} className="mx-3" />
+                )}{" "}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex-1">
+          <div className="flex">
+            <div className="flex-1 text-left">
+              <div className="py-5">
+                <Checkbox
+                  value="OVERSPEEDING"
+                  onChange={handlecheckbox}
+                  name="OVERSPEEDING"
+                  checked={checkboxes.OVERSPEEDING}
+                  disabled={dmsoverSpd === 0}
+                />
+                <label
+                  htmlFor="CAScheckboxId4"
+                  className="ml-2 w-[7vw] dark:text-white"
+                >
+                  Overspeeding
+                </label>
+              </div>
+              <div className="py-5">
+                <Checkbox
+                  value="NO_DRIVER"
+                  onChange={handlecheckbox}
+                  name="NO_DRIVER"
+                  checked={checkboxes.Speed_Bump}
+                  disabled={noDriver === 0}
+                />
+                <label
+                  htmlFor="CAScheckboxId5"
+                  className="ml-2 w-[7vw] dark:text-white"
+                >
+                  No Driver
+                </label>
+              </div>
+            </div>
+            <div className="flex-1 text-right">
+              <div className="py-5">
+                {dmsoverSpd === 0 ? (
+                  <Badge
+                    value={dmsoverSpd}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={dmsoverSpd} className="mx-3" />
+                )}
+              </div>
+              <div className="py-5">
+                {noDriver === 0 ? (
+                  <Badge
+                    value={noDriver}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={noDriver} className="mx-3" />
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div className="p-col-6 my-5">
-        <div className="align-items-center flex">
-          <Checkbox
-            value="DROWSINESS"
-            onChange={handlecheckbox}
-            name="DROWSINESS"
-            checked={checkboxes.DROWSINESS}
-            disabled={drowsiness === 0}
-          />
-          <label htmlFor="ACCIDENT_SAVED" className="ml-2 dark:text-white">
-            Drowsiness
-            {drowsiness === 0 ? (
-              <Badge
-                value={drowsiness}
-                style={{ backgroundColor: "gray", color: "white" }}
-                className="mx-3"
-              />
-            ) : (
-              <Badge value={drowsiness} className="mx-3" />
-            )}
-          </label>
-        </div>
-      </div>
-      <div className="p-col-6 my-5">
-        <div className="align-items-center flex">
-          <Checkbox
-            value="DISTRACTION"
-            onChange={handlecheckbox}
-            name="DISTRACTION"
-            checked={checkboxes.DISTRACTION}
-            disabled={distraction === 0}
-          />
-          <label htmlFor="CAScheckboxId3" className="ml-2 dark:text-white">
-            Distraction
-            {distraction === 0 ? (
-              <Badge
-                value={distraction}
-                style={{ backgroundColor: "gray", color: "white" }}
-                className="mx-3"
-              />
-            ) : (
-              <Badge value={distraction} className="mx-3" />
-            )}{" "}
-          </label>
-        </div>
-      </div>
-
-      <div className="p-col-6 my-5">
-        <div className="align-items-center flex">
-          <Checkbox
-            value="OVERSPEEDING"
-            onChange={handlecheckbox}
-            name="OVERSPEEDING"
-            checked={checkboxes.OVERSPEEDING}
-            disabled={dmsoverSpd === 0}
-          />
-          <label htmlFor="CAScheckboxId4" className="ml-2 dark:text-white">
-            Overspeeding
-            {dmsoverSpd === 0 ? (
-              <Badge
-                value={dmsoverSpd}
-                style={{ backgroundColor: "gray", color: "white" }}
-                className="mx-3"
-              />
-            ) : (
-              <Badge value={dmsoverSpd} className="mx-3" />
-            )}{" "}
-          </label>
-        </div>
-      </div>
-      <div className="p-col-6 my-5">
-        <div className="align-items-center flex">
-          <Checkbox
-            value="NO_DRIVER"
-            onChange={handlecheckbox}
-            name="NO_DRIVER"
-            checked={checkboxes.Speed_Bump}
-            disabled={noDriver === 0}
-          />
-          <label htmlFor="CAScheckboxId5" className="ml-2 dark:text-white">
-            No Driver
-            {noDriver === 0 ? (
-              <Badge
-                value={noDriver}
-                style={{ backgroundColor: "gray", color: "white" }}
-                className="mx-3"
-              />
-            ) : (
-              <Badge value={noDriver} className="mx-3" />
-            )}
-          </label>
-        </div>
-      </div>
-    </div>
+    </>
   );
 
   const handlecheckbox = (e) => {
@@ -687,19 +730,21 @@ const CompletedTrip = () => {
     if (e.target.checked) {
       let x = [];
       markers.map((el) => {
-        if (el.title == value && el.event == customAttribute) {
+        if (el.title === value && el.event === customAttribute) {
           x.push(el);
         }
+        return null;
       });
       setFilterMarker([...filterMarker, x]);
     } else {
       let y = [];
 
       [].concat(...filterMarker)?.map((el) => {
-        if (el.title == value && el.event == customAttribute) {
+        if (el.title === value && el.event === customAttribute) {
         } else {
           y.push(el);
         }
+        return null;
       });
 
       setFilterMarker([y]);
@@ -711,275 +756,329 @@ const CompletedTrip = () => {
   };
 
   const CASContent = () => (
-    <div className="p-grid">
-      <div className="p-col-6 my-5">
-        <div className="align-items-center flex">
-          <Checkbox
-            value="AUTOMATIC_BRAKING"
-            onChange={handlecheckbox}
-            name="AUTOMATIC_BRAKING"
-            checked={checkboxes?.AUTOMATIC_BRAKING}
-            disabled={autoBrk === 0}
-          />
-          <label htmlFor="AUTOMATIC_BRAKING" className="ml-2 dark:text-white">
-            Automatic Braking
-            {autoBrk === 0 ? (
-              <Badge
-                value={autoBrk}
-                style={{ backgroundColor: "gray", color: "white" }}
-                className="mx-3"
-              />
-            ) : (
-              <Badge value={autoBrk} className="mx-3" />
-            )}
-          </label>
+    <>
+      <div className="flex gap-4 text-center">
+        <div className="flex-1">
+          <div className="flex">
+            <div className="flex-1 text-left">
+              <div className="w-[180px] py-5">
+                <Checkbox
+                  value="AUTOMATIC_BRAKING"
+                  onChange={handlecheckbox}
+                  name="AUTOMATIC_BRAKING"
+                  checked={checkboxes?.AUTOMATIC_BRAKING}
+                  disabled={autoBrk === 0}
+                />
+                <label
+                  htmlFor="AUTOMATIC_BRAKING"
+                  className="ml-2 dark:text-white"
+                >
+                  Automatic Braking
+                </label>
+              </div>
+              <div className="py-5">
+                <Checkbox
+                  value="ACCIDENT_SAVED"
+                  onChange={handlecheckbox}
+                  name="ACCIDENT_SAVED"
+                  checked={checkboxes.ACCIDENT_SAVED}
+                  disabled={accident === 0}
+                />
+                <label
+                  htmlFor="ACCIDENT_SAVED"
+                  className="ml-2 dark:text-white"
+                >
+                  Accident Saved
+                </label>
+              </div>
+              <div className="py-5">
+                <Checkbox
+                  value={16}
+                  onChange={handlecheckbox}
+                  name="ACC_Cut"
+                  checked={checkboxes.ACC_Cut}
+                  disabled={engineOff === 0}
+                />
+                <label
+                  htmlFor="CAScheckboxId3"
+                  className="ml-2 dark:text-white"
+                >
+                  ACC Cut
+                </label>
+              </div>
+              {/* <div className="py-5">
+                <Checkbox
+                  data-custom-attribute="CVN"
+                  value="CVN"
+                  name="CVN"
+                  checked={checkboxes.CVN}
+                />
+                <label
+                  htmlFor="CAScheckboxId5"
+                  className="ml-2 dark:text-white"
+                >
+                  CVN
+                </label>
+              </div> */}
+              <div className="py-5">
+                <Checkbox
+                  value={2}
+                  onChange={handlecheckbox}
+                  name="Harsh_Acceleration"
+                  checked={checkboxes.Harsh_Acceleration}
+                  disabled={harshacc === 0}
+                />
+                <label
+                  htmlFor="CAScheckboxId4"
+                  className="ml-2 dark:text-white"
+                >
+                  Harsh Acceleration
+                </label>
+              </div>
+              <div className="py-5">
+                <Checkbox
+                  value={4}
+                  onChange={handlecheckbox}
+                  name="Speed_Bump"
+                  checked={checkboxes.Speed_Bump}
+                  disabled={spdBump === 0}
+                />
+                <label
+                  htmlFor="CAScheckboxId5"
+                  className="ml-2 dark:text-white"
+                >
+                  Speed Bump
+                </label>
+              </div>
+              <div className="py-5">
+                <Checkbox
+                  value={5}
+                  onChange={handlecheckbox}
+                  name="Lane_Change"
+                  checked={checkboxes.Lane_Change}
+                  disabled={laneChng === 0}
+                />
+                <label
+                  htmlFor="CAScheckboxId5"
+                  className="ml-2 dark:text-white"
+                >
+                  Lane Change
+                </label>
+              </div>
+            </div>
+            <div className="flex-1 text-right">
+              <div className="py-5">
+                {autoBrk === 0 ? (
+                  <Badge
+                    value={autoBrk}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={autoBrk} className="mx-3" />
+                )}
+              </div>
+              <div className="py-5">
+                {accident === 0 ? (
+                  <Badge
+                    value={accident}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={accident} className="mx-3" />
+                )}
+              </div>
+              <div className="py-5">
+                {engineOff === 0 ? (
+                  <Badge
+                    value={engineOff}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={engineOff} className="mx-3" />
+                )}
+              </div>
+              {/* <div>
+              <Badge value="Badge 5" className="mx-3" />
+              </div> */}
+              <div className="py-5">
+                {harshacc === 0 ? (
+                  <Badge
+                    value={harshacc}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={harshacc} className="mx-3" />
+                )}
+              </div>
+              <div className="py-5">
+                {spdBump === 0 ? (
+                  <Badge
+                    value={spdBump}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={spdBump} className="mx-3" />
+                )}
+              </div>
+              <div className="py-4">
+                {laneChng === 0 ? (
+                  <Badge
+                    value={laneChng}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={laneChng} className="mx-3" />
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex-1">
+          <div className="flex">
+            <div className="flex-1 text-left">
+              <div className="w-[180px] py-5">
+                <Checkbox
+                  value={3}
+                  onChange={handlecheckbox}
+                  name="Sudden_Braking"
+                  checked={checkboxes.Sudden_Braking}
+                  disabled={suddenBrk === 0}
+                />
+                <label
+                  htmlFor="CAScheckboxId5"
+                  className="ml-2 dark:text-white"
+                >
+                  Sudden Braking
+                </label>
+              </div>
+              <div className="py-5">
+                <Checkbox
+                  value={6}
+                  onChange={handlecheckbox}
+                  name="Tailgating"
+                  checked={checkboxes.Tailgating}
+                  disabled={tailgating === 0}
+                />
+                <label
+                  htmlFor="CAScheckboxId5"
+                  className="ml-2 dark:text-white"
+                >
+                  Tailgating
+                </label>
+              </div>
+              <div className="py-5">
+                <Checkbox
+                  value={7}
+                  onChange={handlecheckbox}
+                  name="Overspeeding"
+                  checked={checkboxes.Overspeeding}
+                  disabled={overspeed === 0}
+                />
+                <label
+                  htmlFor="CAScheckboxId5"
+                  className="ml-2 dark:text-white"
+                >
+                  Overspeeding
+                </label>
+              </div>
+              <div className="py-5">
+                <Checkbox
+                  value={5}
+                  onChange={handlecheckbox}
+                  name="Alarm_2"
+                  checked={checkboxes.Alarm_2}
+                  disabled={alarm1 === 0}
+                />
+                <label
+                  htmlFor="CAScheckboxId5"
+                  className="ml-2 dark:text-white"
+                >
+                  Alarm 2
+                </label>
+              </div>
+              <div className="py-5">
+                <Checkbox
+                  value={5}
+                  onChange={handlecheckbox}
+                  name="Alarm_3"
+                  checked={checkboxes.Alarm_3}
+                  disabled={alarm2 === 0}
+                />
+                <label
+                  htmlFor="CAScheckboxId5"
+                  className="ml-2 dark:text-white"
+                >
+                  Alarm 3
+                </label>
+              </div>
+            </div>
+            <div className="flex-1 text-right">
+              <div className="py-5">
+                {suddenBrk === 0 ? (
+                  <Badge
+                    value={suddenBrk}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={suddenBrk} className="mx-3" />
+                )}
+              </div>
+              <div className="py-5">
+                {tailgating === 0 ? (
+                  <Badge
+                    value={tailgating}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={tailgating} className="mx-3" />
+                )}
+              </div>
+              <div className="py-5">
+                {overspeed === 0 ? (
+                  <Badge
+                    value={overspeed}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={overspeed} className="mx-3" />
+                )}
+              </div>
+              <div className="py-5">
+                {alarm1 === 0 ? (
+                  <Badge
+                    value={alarm1}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={alarm1} className="mx-3" />
+                )}
+              </div>
+              <div className="py-5">
+                {alarm2 === 0 ? (
+                  <Badge
+                    value={alarm2}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={alarm2} className="mx-3" />
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div className="p-col-6 my-5">
-        <div className="align-items-center flex">
-          <Checkbox
-            value="ACCIDENT_SAVED"
-            onChange={handlecheckbox}
-            name="ACCIDENT_SAVED"
-            checked={checkboxes.ACCIDENT_SAVED}
-            disabled={accident === 0}
-          />
-          <label htmlFor="ACCIDENT_SAVED" className="ml-2 dark:text-white">
-            Accident Saved
-            {accident === 0 ? (
-              <Badge
-                value={accident}
-                style={{ backgroundColor: "gray", color: "white" }}
-                className="mx-3"
-              />
-            ) : (
-              <Badge value={accident} className="mx-3" />
-            )}{" "}
-          </label>
-        </div>
-      </div>
-      <div className="p-col-6 my-5">
-        <div className="align-items-center flex">
-          <Checkbox
-            value={16}
-            onChange={handlecheckbox}
-            name="ACC_Cut"
-            checked={checkboxes.ACC_Cut}
-            disabled={engineOff === 0}
-          />
-          <label htmlFor="CAScheckboxId3" className="ml-2 dark:text-white">
-            ACC Cut
-            {engineOff === 0 ? (
-              <Badge
-                value={engineOff}
-                style={{ backgroundColor: "gray", color: "white" }}
-                className="mx-3"
-              />
-            ) : (
-              <Badge value={engineOff} className="mx-3" />
-            )}{" "}
-          </label>
-        </div>
-      </div>
-      {/* <div className="p-col-6 my-5">
-        <div className="align-items-center flex">
-          <Checkbox
-            data-custom-attribute="CVN"
-            value="CVN"
-            name="CVN"
-            checked={checkboxes.CVN}
-          />
-          <label htmlFor="CAScheckboxId5" className="ml-2 dark:text-white">
-            CVN
-            <Badge value="Badge 5" className="mx-3" />
-          </label>
-        </div>
-      </div> */}
-      <div className="p-col-6 my-5">
-        <div className="align-items-center flex">
-          <Checkbox
-            value={2}
-            onChange={handlecheckbox}
-            name="Harsh_Acceleration"
-            checked={checkboxes.Harsh_Acceleration}
-            disabled={harshacc === 0}
-          />
-          <label htmlFor="CAScheckboxId4" className="ml-2 dark:text-white">
-            Harsh Acceleration
-            {harshacc === 0 ? (
-              <Badge
-                value={harshacc}
-                style={{ backgroundColor: "gray", color: "white" }}
-                className="mx-3"
-              />
-            ) : (
-              <Badge value={harshacc} className="mx-3" />
-            )}{" "}
-          </label>
-        </div>
-      </div>
-      <div className="p-col-6 my-5">
-        <div className="align-items-center flex">
-          <Checkbox
-            value={4}
-            onChange={handlecheckbox}
-            name="Speed_Bump"
-            checked={checkboxes.Speed_Bump}
-            disabled={spdBump === 0}
-          />
-          <label htmlFor="CAScheckboxId5" className="ml-2 dark:text-white">
-            Speed Bump
-            {spdBump === 0 ? (
-              <Badge
-                value={spdBump}
-                style={{ backgroundColor: "gray", color: "white" }}
-                className="mx-3"
-              />
-            ) : (
-              <Badge value={spdBump} className="mx-3" />
-            )}{" "}
-          </label>
-        </div>
-      </div>
-      <div className="p-col-6 my-5">
-        <div className="align-items-center flex">
-          <Checkbox
-            value={5}
-            onChange={handlecheckbox}
-            name="Lane_Change"
-            checked={checkboxes.Lane_Change}
-            disabled={laneChng === 0}
-          />
-          <label htmlFor="CAScheckboxId5" className="ml-2 dark:text-white">
-            Lane Change
-            {laneChng === 0 ? (
-              <Badge
-                value={laneChng}
-                style={{ backgroundColor: "gray", color: "white" }}
-                className="mx-3"
-              />
-            ) : (
-              <Badge value={laneChng} className="mx-3" />
-            )}{" "}
-          </label>
-        </div>
-      </div>
-      <div className="p-col-6 my-5">
-        <div className="align-items-center flex">
-          <Checkbox
-            value={3}
-            onChange={handlecheckbox}
-            name="Sudden_Braking"
-            checked={checkboxes.Sudden_Braking}
-            disabled={suddenBrk === 0}
-          />
-          <label htmlFor="CAScheckboxId5" className="ml-2 dark:text-white">
-            Sudden_Braking
-            {suddenBrk === 0 ? (
-              <Badge
-                value={suddenBrk}
-                style={{ backgroundColor: "gray", color: "white" }}
-                className="mx-3"
-              />
-            ) : (
-              <Badge value={suddenBrk} className="mx-3" />
-            )}{" "}
-          </label>
-        </div>
-      </div>
-      <div className="p-col-6 my-5">
-        <div className="align-items-center flex">
-          <Checkbox
-            value={6}
-            onChange={handlecheckbox}
-            name="Tailgating"
-            checked={checkboxes.Tailgating}
-            disabled={tailgating === 0}
-          />
-          <label htmlFor="CAScheckboxId5" className="ml-2 dark:text-white">
-            Tailgating
-            {tailgating === 0 ? (
-              <Badge
-                value={tailgating}
-                style={{ backgroundColor: "gray", color: "white" }}
-                className="mx-3"
-              />
-            ) : (
-              <Badge value={tailgating} className="mx-3" />
-            )}{" "}
-          </label>
-        </div>
-      </div>
-      <div className="p-col-6 my-5">
-        <div className="align-items-center flex">
-          <Checkbox
-            value={7}
-            onChange={handlecheckbox}
-            name="Overspeeding"
-            checked={checkboxes.Overspeeding}
-            disabled={overspeed === 0}
-          />
-          <label htmlFor="CAScheckboxId5" className="ml-2 dark:text-white">
-            Overspeeding
-            {overspeed === 0 ? (
-              <Badge
-                value={overspeed}
-                style={{ backgroundColor: "gray", color: "white" }}
-                className="mx-3"
-              />
-            ) : (
-              <Badge value={overspeed} className="mx-3" />
-            )}{" "}
-          </label>
-        </div>
-      </div>
-      <div className="p-col-6 my-5">
-        <div className="align-items-center flex">
-          <Checkbox
-            value={5}
-            onChange={handlecheckbox}
-            name="Alarm_2"
-            checked={checkboxes.Alarm_2}
-            disabled={alarm1 === 0}
-          />
-          <label htmlFor="CAScheckboxId5" className="ml-2 dark:text-white">
-            Alarm 2
-            {alarm1 === 0 ? (
-              <Badge
-                value={alarm1}
-                style={{ backgroundColor: "gray", color: "white" }}
-                className="mx-3"
-              />
-            ) : (
-              <Badge value={alarm1} className="mx-3" />
-            )}{" "}
-          </label>
-        </div>
-      </div>
-      <div className="p-col-6 my-5">
-        <div className="align-items-center flex">
-          <Checkbox
-            value={5}
-            onChange={handlecheckbox}
-            name="Alarm_3"
-            checked={checkboxes.Alarm_3}
-            disabled={alarm2 === 0}
-          />
-          <label htmlFor="CAScheckboxId5" className="ml-2 dark:text-white">
-            Alarm 3
-            {alarm2 === 0 ? (
-              <Badge
-                value={alarm2}
-                style={{ backgroundColor: "gray", color: "white" }}
-                className="mx-3"
-              />
-            ) : (
-              <Badge value={alarm2} className="mx-3" />
-            )}{" "}
-          </label>
-        </div>
-      </div>
-    </div>
+    </>
   );
 
   return (
@@ -1119,7 +1218,7 @@ const CompletedTrip = () => {
                           ) : (
                             ""
                           )}
-                          {marker.reason === 5 && marker.event == "NTF" ? (
+                          {marker.reason === 5 && marker.event === "NTF" ? (
                             <div>
                               <b>Lane change</b>
                               <p className="mb-0">
@@ -1164,7 +1263,8 @@ const CompletedTrip = () => {
                             ""
                           )}
                           {marker.reason === 5 &&
-                          (marker.event == "ALM2" || marker.event == "ALM3") &&
+                          (marker.event === "ALM2" ||
+                            marker.event === "ALM3") &&
                           marker.alarm_no !== 0 ? (
                             <div>
                               <b>Alarm</b>
