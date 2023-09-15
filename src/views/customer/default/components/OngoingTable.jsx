@@ -6,7 +6,7 @@ const OngoingTable = () => {
     <>
       <Card className="!z-5 relative flex flex-col rounded-[20px] bg-white bg-clip-border shadow-3xl shadow-shadow-500 dark:!bg-navy-800 dark:text-white dark:shadow-none">
         <h1 className="align-self-center mb-3 font-bold sm:text-2xl">
-          Ongoing Trip
+          Ongoing Trips
         </h1>
         <div className="flex flex-col">
           <div className="overflow-x-auto">
@@ -105,7 +105,7 @@ const OngoingTable = () => {
                         <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
                           <a
                             className="text-green-500 hover:text-green-700"
-                            href="#"
+                            href="/"
                           >
                             Map
                           </a>
@@ -124,7 +124,7 @@ const OngoingTable = () => {
                         <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
                           <a
                             className="text-green-500 hover:text-green-700"
-                            href="#"
+                            href="/"
                           >
                             Map
                           </a>
@@ -143,7 +143,7 @@ const OngoingTable = () => {
                         <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
                           <a
                             className="text-green-500 hover:text-green-700"
-                            href="#"
+                            href="/"
                           >
                             Map
                           </a>
@@ -162,7 +162,7 @@ const OngoingTable = () => {
                         <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
                           <a
                             className="text-green-500 hover:text-green-700"
-                            href="#"
+                            href="/"
                           >
                             Map
                           </a>
@@ -181,7 +181,7 @@ const OngoingTable = () => {
                         <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
                           <a
                             className="text-green-500 hover:text-green-700"
-                            href="#"
+                            href="/"
                           >
                             Map
                           </a>
@@ -200,7 +200,7 @@ const OngoingTable = () => {
                         <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
                           <a
                             className="text-green-500 hover:text-green-700"
-                            href="#"
+                            href="/"
                           >
                             Map
                           </a>
@@ -219,7 +219,7 @@ const OngoingTable = () => {
                         <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
                           <a
                             className="text-green-500 hover:text-green-700"
-                            href="#"
+                            href="/"
                           >
                             Map
                           </a>
@@ -238,7 +238,7 @@ const OngoingTable = () => {
                         <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
                           <a
                             className="text-green-500 hover:text-green-700"
-                            href="#"
+                            href="/"
                           >
                             Map
                           </a>
@@ -257,7 +257,7 @@ const OngoingTable = () => {
                         <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
                           <a
                             className="text-green-500 hover:text-green-700"
-                            href="#"
+                            href="/"
                           >
                             Map
                           </a>

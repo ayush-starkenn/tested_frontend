@@ -105,7 +105,6 @@ export default function DevicesList({ data }) {
         removableSort
         paginator
         dataKey="id"
-        className="mx-5"
         header={header}
         rows={5}
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
@@ -125,14 +124,14 @@ export default function DevicesList({ data }) {
           key="serialNo"
           field="serialNo"
           header="Sr. No."
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          className="border-none dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "4rem" }}
         ></Column>
         <Column
           field="device_id"
           header="Device ID"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
         ></Column>
         <Column
@@ -148,7 +147,7 @@ export default function DevicesList({ data }) {
           filterMatchMode="in"
           filterOptions={deviceTypeOptions}
           filterItemTemplate={representativesItemTemplate}
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "10rem" }}
         ></Column>
 
@@ -156,14 +155,14 @@ export default function DevicesList({ data }) {
           field="sim_number"
           header="Sim Number"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
         ></Column>
         <Column
           field="vehicle_status"
           header="Status"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "6rem" }}
           body={renderStatusCell}
         ></Column>

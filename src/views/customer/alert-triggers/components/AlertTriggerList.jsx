@@ -245,27 +245,27 @@ const AlertTriggerList = ({
         <Column
           field="serialNo"
           header="Sr. No."
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          className="border-none dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "4rem" }}
         ></Column>
         <Column
           field="trigger_name"
           header="Trigger Name"
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
         ></Column>
         <Column
           field="trigger_type"
           header="Trigger Type"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
         ></Column>
         <Column
           field="recipients"
           header="Recipient"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
           body={(rowData) => (
             <Tag
@@ -282,7 +282,7 @@ const AlertTriggerList = ({
         <Column
           field="trigger_status"
           header="Status"
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "6rem" }}
           body={renderStatusCell}
         ></Column>
@@ -291,7 +291,7 @@ const AlertTriggerList = ({
           field="vehicle_uuid"
           header="Vehicle Name"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "6rem" }}
           body={(rowData) => (
             <span>{mapVehicleName(rowData.vehicle_uuid)}</span>
@@ -300,7 +300,7 @@ const AlertTriggerList = ({
         <Column
           body={actionBodyTemplate}
           header="Action"
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "6rem" }}
         ></Column>
       </DataTable>

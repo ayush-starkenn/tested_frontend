@@ -253,28 +253,28 @@ export default function VehiclesList({
         <Column
           field="serialNo"
           header="Sr. No."
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          className="border-none dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "4rem" }}
         ></Column>
         <Column
           field="vehicle_name"
           header="vehicle_name"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
         ></Column>
         <Column
           field="vehicle_registration"
           header="vehicle_registration"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
         ></Column>
         <Column
           field="dms"
           header="DMS"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "5rem" }}
           body={(rowData) => renderCellWithNA(rowData.dms)}
         ></Column>
@@ -282,7 +282,7 @@ export default function VehiclesList({
           field="ecu"
           header="ECU"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "5rem" }}
           body={(rowData) => renderCellWithNA(rowData.ecu)}
         ></Column>
@@ -290,7 +290,7 @@ export default function VehiclesList({
           field="iot"
           header="IoT"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "5rem" }}
           body={(rowData) => renderCellWithNA(rowData.iot)}
         ></Column>
@@ -299,14 +299,14 @@ export default function VehiclesList({
           field="vehicle_status"
           header="Status"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "6rem" }}
           body={renderStatusCell}
         ></Column>
         <Column
           body={actionBodyTemplate}
           header="Action"
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "6rem" }}
         ></Column>
       </DataTable>
