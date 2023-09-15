@@ -1885,6 +1885,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }`}
               onChange={handleData}
               placeholder="Enter a value"
+              autoComplete="off"
             />
           </div>
         </div>

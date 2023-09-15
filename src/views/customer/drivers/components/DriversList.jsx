@@ -493,7 +493,7 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
           key="serialNo"
           field="serialNo"
           header="Sr. No."
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          className="border-none dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "5rem", textAlign: "center" }}
         ></Column>
         <Column
@@ -501,7 +501,7 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
           field="driver_first_name"
           header="Driver Name"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
           body={(rowData) => (
             <>
@@ -517,21 +517,21 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
           key="driver_email"
           field="driver_email"
           header="Email"
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "10rem" }}
         ></Column>
         <Column
           key="driver_mobile"
           field="driver_mobile"
           header="Contact"
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "7rem" }}
         ></Column>
         <Column
           key="driver_license_no"
           field="driver_license_no"
           header="License Number"
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "10rem" }}
         ></Column>
         <Column
@@ -540,7 +540,7 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
           header="Status"
           body={statusBodyTemplate}
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "5rem" }}
         ></Column>
         <Column
@@ -549,7 +549,7 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
           header="DOB"
           sortable
           body={(rowData) => convertToIST(rowData.driver_dob)}
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "7rem" }}
         ></Column>
         <Column
@@ -558,13 +558,13 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
           header="Gender"
           sortable
           body={genderBody}
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "7rem" }}
         ></Column>
         <Column
           body={actionBodyTemplate}
           header="Action"
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "7rem" }}
         ></Column>
       </DataTable>

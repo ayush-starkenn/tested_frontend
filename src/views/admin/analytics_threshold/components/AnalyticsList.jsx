@@ -751,14 +751,14 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
       >
         <Column
           field="serialNo"
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          className="border-none dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "4rem", textAlign: "center" }}
         ></Column>
         <Column
           field="title"
           header="Title"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
         ></Column>
 
@@ -766,7 +766,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
           field="customer_name"
           header="Customer"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
         ></Column>
 
@@ -775,14 +775,14 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
           header="Status"
           body={statusBodyTemplate}
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
         ></Column>
 
         <Column
           body={actionBodyTemplate}
           header="Action"
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "6rem" }}
         ></Column>
       </DataTable>
