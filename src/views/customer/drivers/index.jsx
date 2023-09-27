@@ -12,7 +12,9 @@ import axios from "axios";
 import { Calendar } from "primereact/calendar";
 
 const Drivers = () => {
-  const [isListView, setIsListView] = useState(true);
+  const [isListView, setIsListView] = useState(
+    localStorage.getItem("viewPreference") === "grid" ? false : true
+  );
   const [selectedDate, setSelectedDate] = useState(null);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const toastRef = useRef(null);
@@ -73,12 +75,12 @@ const Drivers = () => {
         console.log(err);
       });
   }, [token, userUUID, drivers]);
-  const handleListView = () => {
-    setIsListView(true);
-  };
 
-  const handleGridView = () => {
-    setIsListView(false);
+  const handleToggleView = () => {
+    const newView = !isListView;
+    setIsListView(newView);
+    // Store the view preference in localStorage
+    localStorage.setItem("viewPreference", newView ? "list" : "grid");
   };
 
   const resetFormData = () => {
@@ -451,7 +453,7 @@ const Drivers = () => {
                 ? "list-btn bg-gray-150 px-3 py-2  dark:bg-gray-700  "
                 : "list-btn bg-white px-3 py-2  dark:bg-gray-150 "
             }`}
-            onClick={handleListView}
+            onClick={handleToggleView}
           >
             <BsListUl />
           </button>
@@ -461,7 +463,7 @@ const Drivers = () => {
                 ? "grid-btn bg-gray-150 px-3 py-2  dark:bg-gray-700  "
                 : "grid-btn bg-white px-3 py-2  dark:bg-gray-150 "
             }`}
-            onClick={handleGridView}
+            onClick={handleToggleView}
           >
             <BsGrid />
           </button>

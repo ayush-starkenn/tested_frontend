@@ -31,6 +31,7 @@ export default function VehiclesGrid({
   const [localIoTData, setLocalIoTData] = useState([]);
   const [localDMSData, setLocalDMSData] = useState([]);
   const [myData, setMyData] = useState();
+  const totalItems = vehiData.length;
 
   useEffect(() => {
     if (ecuData) {
@@ -236,6 +237,7 @@ export default function VehiclesGrid({
         rows={6}
         emptyMessage="No vehicle found."
       />
+      <p className="text-center text-gray-700">Total Items : {totalItems}</p>
       {/* Edit vehicle Data */}
       <Dialog
         visible={editDialog}

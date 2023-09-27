@@ -17,11 +17,11 @@ const OngoingTable = () => {
                   className="custombar1"
                 >
                   <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                    <thead>
                       <tr>
                         <th
                           scope="col"
-                          className="flex items-center px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 "
+                          className="flex items-center px-6 py-3 text-left text-xs font-bold uppercase text-gray-400 "
                         >
                           Sr.No
                           <svg
@@ -93,13 +93,13 @@ const OngoingTable = () => {
                     </thead>
                     <tbody className="divide-y divide-gray-200">
                       <tr>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
                           1
                         </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
                           Jone Doe
                         </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
                           03-12-2023 11:56:30 AM
                         </td>
                         <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
@@ -112,13 +112,13 @@ const OngoingTable = () => {
                         </td>
                       </tr>
                       <tr>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
                           2
                         </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
                           Jone Doe
                         </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
                           03-12-2023 08:36:30 AM
                         </td>
                         <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
@@ -131,13 +131,13 @@ const OngoingTable = () => {
                         </td>
                       </tr>
                       <tr>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
                           2
                         </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
                           Jone Doe
                         </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
                           03-12-2023 08:36:30 AM
                         </td>
                         <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
@@ -150,13 +150,13 @@ const OngoingTable = () => {
                         </td>
                       </tr>
                       <tr>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
                           2
                         </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
                           Jone Doe
                         </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
                           03-12-2023 08:36:30 AM
                         </td>
                         <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
@@ -169,13 +169,13 @@ const OngoingTable = () => {
                         </td>
                       </tr>
                       <tr>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
                           2
                         </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
                           Jone Doe
                         </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
                           03-12-2023 08:36:30 AM
                         </td>
                         <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
@@ -188,13 +188,13 @@ const OngoingTable = () => {
                         </td>
                       </tr>
                       <tr>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200 dark:text-gray-200">
                           2
                         </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200 dark:text-gray-200">
                           Jone Doe
                         </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
                           03-12-2023 08:36:30 AM
                         </td>
                         <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
@@ -207,13 +207,13 @@ const OngoingTable = () => {
                         </td>
                       </tr>
                       <tr>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
                           2
                         </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
                           Jone Doe
                         </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
                           03-12-2023 08:36:30 AM
                         </td>
                         <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
@@ -226,13 +226,13 @@ const OngoingTable = () => {
                         </td>
                       </tr>
                       <tr>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
                           2
                         </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
                           Jone Doe
                         </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
                           03-12-2023 08:36:30 AM
                         </td>
                         <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
@@ -245,13 +245,13 @@ const OngoingTable = () => {
                         </td>
                       </tr>
                       <tr>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
                           2
                         </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
                           Jone Doe
                         </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
                           03-12-2023 08:36:30 AM
                         </td>
                         <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
