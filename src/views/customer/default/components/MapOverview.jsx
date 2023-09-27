@@ -33,7 +33,7 @@ const MapOverview = () => {
             options={filters}
             optionLabel="name"
             placeholder="Select Filter"
-            className="md:w-14rem"
+            className="md:w-14rem dark:bg-navy-800"
           />
         </div>
         <LoadScript googleMapsApiKey="AIzaSyCk6RovwH7aF8gjy1svTPJvITZsWGA_roU">
