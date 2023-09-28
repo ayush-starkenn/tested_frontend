@@ -157,42 +157,42 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
         <Column
           field="serialNo"
           header="Sr. No."
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          className="border-none dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "4rem" }}
         ></Column>
         <Column
           field="full_name"
           header="Name"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
         ></Column>
         <Column
           field="contact_email"
           header="Email"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
         ></Column>
         <Column
           field="contact_mobile"
           header="Mobile Number"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
         ></Column>
         <Column
           field="contact_status"
           header="Status"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "6rem" }}
           body={renderStatusCell}
         ></Column>
         <Column
           body={actionBodyTemplate}
           header="Action"
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "6rem" }}
         ></Column>
       </DataTable>

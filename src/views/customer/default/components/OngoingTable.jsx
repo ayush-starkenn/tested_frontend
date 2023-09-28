@@ -8,7 +8,7 @@ const OngoingTable = () => {
     <>
       <Card className="!z-5 relative flex flex-col rounded-[20px] bg-white bg-clip-border shadow-3xl shadow-shadow-500 dark:!bg-navy-800 dark:text-white dark:shadow-none">
         <h1 className="align-self-center mb-3 font-bold sm:text-2xl">
-          Ongoing Trip
+          Ongoing Trips
         </h1>
         <div className="flex flex-col">
           <div className="overflow-x-auto">
@@ -95,13 +95,13 @@ const OngoingTable = () => {
                     </thead>
                     <tbody className="divide-y divide-gray-200">
                       <tr>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
                           1
                         </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
                           Jone Doe
                         </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
                           03-12-2023 11:56:30 AM
                         </td>
                         <td className="whitespace-nowrap px-6 py-4 text-center text-sm font-medium">
@@ -120,7 +120,7 @@ const OngoingTable = () => {
                         <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
                           1
                         </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
                           Jone Doe
                         </td>
                         <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
@@ -138,7 +138,7 @@ const OngoingTable = () => {
                         <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
                           1
                         </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
                           Jone Doe
                         </td>
                         <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
@@ -156,7 +156,7 @@ const OngoingTable = () => {
                         <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
                           1
                         </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
+                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
                           Jone Doe
                         </td>
                         <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">

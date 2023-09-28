@@ -49,9 +49,9 @@ export default function VehiclesList({
   };
 
   const clearSearch = () => {
-    setGlobalFilterValue(""); // Clear the search input value
+    setGlobalFilterValue("");
     const _filters = { ...filters };
-    _filters["global"].value = null; // Clear the global filter value
+    _filters["global"].value = null;
     setFilters(_filters);
   };
 
@@ -253,28 +253,28 @@ export default function VehiclesList({
         <Column
           field="serialNo"
           header="Sr. No."
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          className="border-none dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "4rem" }}
         ></Column>
         <Column
           field="vehicle_name"
           header="vehicle_name"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
         ></Column>
         <Column
           field="vehicle_registration"
           header="vehicle_registration"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
         ></Column>
         <Column
           field="dms"
           header="DMS"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "5rem" }}
           body={(rowData) => renderCellWithNA(rowData.dms)}
         ></Column>
@@ -282,7 +282,7 @@ export default function VehiclesList({
           field="ecu"
           header="ECU"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "5rem" }}
           body={(rowData) => renderCellWithNA(rowData.ecu)}
         ></Column>
@@ -290,7 +290,7 @@ export default function VehiclesList({
           field="iot"
           header="IoT"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "5rem" }}
           body={(rowData) => renderCellWithNA(rowData.iot)}
         ></Column>
@@ -299,14 +299,14 @@ export default function VehiclesList({
           field="vehicle_status"
           header="Status"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "6rem" }}
           body={renderStatusCell}
         ></Column>
         <Column
           body={actionBodyTemplate}
           header="Action"
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "6rem" }}
         ></Column>
       </DataTable>
@@ -316,7 +316,7 @@ export default function VehiclesList({
         onHide={closeEditDialog}
         style={{ width: "45rem" }}
         breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-        header="Edit the Device"
+        header="Edit the Vehicle"
         modal
         className="p-fluid dark:bg-gray-900"
       >
@@ -343,49 +343,108 @@ export default function VehiclesList({
               <label htmlFor="vehicle_registration">Vehicle Registration</label>
             </span>
           </div>
-          <div className="mx-auto mt-8 w-[34.5vw]">
-            <span className="p-float-label">
-              <Dropdown
-                id="ecu"
-                name="ecu"
-                optionLabel="device_id"
-                optionValue="device_id"
-                options={localEcuData}
-                onChange={handleChange}
-                value={editData?.ecu || ""}
-              />
+          <div className="mx-auto mt-2 flex w-[34.5vw]">
+            <div className="flex-1">
+              <label
+                htmlFor="ecu"
+                style={{ color: "#808080", fontSize: "13px" }}
+                className=""
+              >
+                Select an ECU
+              </label>
+              <span className="p-float-label">
+                <select
+                  name="ecu"
+                  onChange={handleChange}
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "5px 28px",
+                    borderRadius: "5px",
+                    fontSize: "16px",
+                    outline: "none",
+                  }}
+                >
+                  <option>{editData?.ecu || ""}</option>
+                  <option value={null}>Unassign</option>
+                  {ecuData?.map((el) => {
+                    return (
+                      <option key={el.id} value={`${el.device_id}`}>
+                        {el.device_id}
+                      </option>
+                    );
+                  })}
+                </select>
+              </span>
+            </div>
 
-              <label htmlFor="ecu">Select ECU</label>
-            </span>
+            <div className="flex-1">
+              <label
+                htmlFor="iot"
+                style={{ color: "#808080", fontSize: "13px" }}
+              >
+                Select an IoT
+              </label>
+              <span className="p-float-label">
+                <select
+                  name="iot"
+                  onChange={handleChange}
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "5px 28px",
+                    borderRadius: "5px",
+                    fontSize: "16px",
+                    outline: "none",
+                  }}
+                >
+                  <option>{editData?.iot || ""}</option>
+                  <option value={null}>Unassign</option>
+                  {iotData?.map((el) => {
+                    return (
+                      <option key={el.id} value={`${el.device_id}`}>
+                        {el.device_id}
+                      </option>
+                    );
+                  })}
+                </select>
+              </span>
+            </div>
+
+            <div className="flex-1">
+              <label
+                htmlFor="dms"
+                style={{
+                  color: "#808080",
+                  fontSize: "13px",
+                }}
+              >
+                Select a DMS
+              </label>
+              <span className="p-float-label">
+                <select
+                  name="dms"
+                  onChange={handleChange}
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "5px 28px",
+                    borderRadius: "5px",
+                    fontSize: "16px",
+                    outline: "none",
+                  }}
+                >
+                  <option>{editData?.dms || ""}</option>
+                  <option value={null}>Unassign</option>
+                  {dmsData?.map((el) => {
+                    return (
+                      <option key={el.id} value={`${el.device_id}`}>
+                        {el.device_id}
+                      </option>
+                    );
+                  })}
+                </select>
+              </span>
+            </div>
           </div>
-          <div className="mx-auto mt-8 w-[34.5vw]">
-            <span className="p-float-label">
-              <Dropdown
-                id="iot"
-                name="iot"
-                optionLabel="device_id"
-                optionValue="device_id"
-                options={localIoTData}
-                onChange={handleChange}
-                value={editData?.iot || ""}
-              />
-              <label htmlFor="iot">Select IoT</label>
-            </span>
-          </div>
-          <div className="mx-auto mt-8 w-[34.5vw]">
-            <span className="p-float-label">
-              <Dropdown
-                id="dms"
-                name="dms"
-                optionLabel="device_id"
-                optionValue="device_id"
-                options={localDMSData}
-                onChange={handleChange}
-                value={editData?.dms || ""}
-              />
-              <label htmlFor="dms">Select DMS</label>
-            </span>
-          </div>
+
           <div className="mx-auto mt-8 w-[34.5vw]">
             <span className="p-float-label">
               <Dropdown

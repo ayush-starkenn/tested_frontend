@@ -152,14 +152,14 @@ const ReportList = () => {
       >
         <Column
           field="serialNo"
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          className="border-none dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "4rem", textAlign: "center" }}
         ></Column>
         <Column
           field="vehicle_name"
           header="Report ID"
           sortable
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          className="border-none dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "10rem", border: "none !important" }}
         ></Column>
 
@@ -167,20 +167,20 @@ const ReportList = () => {
           field="vehicle_registration"
           header="Report Title"
           sortable
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          className="border-none dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
         ></Column>
         <Column
           field="dms"
           header="Created On"
           sortable
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          className="border-none dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "9rem" }}
         ></Column>
         <Column
           body={actionBodyTemplate}
           header="Action"
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "6rem" }}
         ></Column>
       </DataTable>

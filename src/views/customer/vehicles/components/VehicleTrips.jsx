@@ -139,14 +139,14 @@ const VehicleTrips = ({ myData }) => {
         <Column
           field="serialNo"
           header="Sr.No."
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          className="border-none dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "4rem", textAlign: "center" }}
         ></Column>
         <Column
           field="trip_id"
           header="Trip ID"
           sortable
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          className="border-none dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "10rem", border: "none !important" }}
           body={(rowData) => (
             <span
@@ -164,7 +164,7 @@ const VehicleTrips = ({ myData }) => {
           field="trip_start_time"
           header="Trip Start"
           sortable
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          className="border-none dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
           body={(rowData) => convertEpochToIST(rowData.trip_start_time)}
         ></Column>
@@ -172,7 +172,7 @@ const VehicleTrips = ({ myData }) => {
           field="trip_end_time"
           header="Trip End"
           sortable
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          className="border-none dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
           body={(rowData) => convertEpochToIST(rowData.trip_end_time)}
         ></Column>
@@ -180,7 +180,7 @@ const VehicleTrips = ({ myData }) => {
           field="total_distance"
           header="Distance Travelled"
           sortable
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          className="border-none dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "9rem" }}
           body={(rowData) => {
             const distance = parseFloat(rowData.total_distance);
@@ -193,7 +193,7 @@ const VehicleTrips = ({ myData }) => {
           field="duration"
           header="Duration"
           sortable
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          className="border-none dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "9rem" }}
         ></Column>
         <Column
@@ -201,7 +201,7 @@ const VehicleTrips = ({ myData }) => {
           header="Status"
           body={statusBodyTemplate}
           sortable
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          className="border-none dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "7rem" }}
         ></Column>
         <Column
@@ -209,7 +209,7 @@ const VehicleTrips = ({ myData }) => {
           body={actionBodyTemplate}
           header="Action"
           exportable={false}
-          className="border-none dark:bg-gray-900"
+          className="border-none dark:bg-navy-800"
           style={{ minWidth: "6rem" }}
         ></Column>
       </DataTable>

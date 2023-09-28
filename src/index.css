@@ -80,12 +80,12 @@ input:checked.defaultCheckbox::before {
   border-radius: 18px 18px 0px 0px;
 }
 .p-datatable .p-datatable-thead > tr > th {
-  background-color: #a3aed0;
+  background-color: #ddd;
   border: none;
 }
 .p-datatable .p-paginator-bottom {
   border-radius: 0px 0px 18px 18px;
-  background-color: #a3aed0;
+  background-color: #ddd;
   border: none;
 }
 .p-paginator .p-paginator-pages .p-paginator-page {
@@ -220,11 +220,11 @@ input:checked.defaultCheckbox::before {
   color: #fefefe;
 }
 .dark .p-datatable .p-datatable-thead > tr > th {
-  background-color: #111c44;
+  background-color: #1b2559;
   color: #ddd;
 }
 .dark .p-datatable .p-paginator-bottom {
-  background-color: #111c44;
+  background-color: #1b2559;
   color: #fefefe;
 }
 .dark .p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {

@@ -5,6 +5,7 @@ import { Dropdown } from "primereact/dropdown";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { Toast } from "primereact/toast";
+import { Tag } from "primereact/tag";
 
 const FeatureSet = ({ myData, closeDialog }) => {
   const token = Cookies.get("token");
@@ -332,11 +333,6 @@ const FeatureSet = ({ myData, closeDialog }) => {
     { label: "GPS", value: "GPS" },
   ];
 
-  const activeOption = [
-    { label: "Active", value: "1" },
-    { label: "Deactive", value: "0" },
-  ];
-
   //edit dialog
   return (
     <>
@@ -345,7 +341,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
 
       <form onSubmit={handleSubmit}>
         <div className="card">
-          <div className="mt-2 flex" style={{ flexDirection: "column" }}>
+          <div className="mt-2 flex flex-col">
             <label htmlFor="username">Feature Set Name</label>
             <InputText
               id="username"
@@ -359,7 +355,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
             />
             <small id="username-help">Unique id to identify feature set</small>
           </div>
-          <div className="mt-2 flex" style={{ flexDirection: "column" }}>
+          <div className="mt-2 flex flex-col">
             <label htmlFor="username">Featureset Version</label>
             <InputText
               id="featuerset_version"
@@ -375,32 +371,25 @@ const FeatureSet = ({ myData, closeDialog }) => {
             />
             <small id="username-help">Featureset version</small>
           </div>
-
-          <div className="field my-3 w-[30vw]">
-            <label htmlFor="active">Select Status</label>
-            <Dropdown
-              name="featureset_status"
-              id="active"
+          <div className="mt-2 flex flex-col">
+            <label htmlFor="username">Featureset Status</label>
+            <Tag
+              id="featuerset_version"
               style={{
-                width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                width: "fit-content",
+                borderRadius: "5px",
+                padding: "3px 15px",
               }}
+              severity={`${
+                featuresetDetails.featureset_status === 1 ? "success" : "danger"
+              }`}
+              name="featuerset_status"
               disabled
-              options={activeOption}
-              optionLabel="label"
-              optionValue="value"
-              className="md:w-14rem mt-2 w-full"
-              placeholder={
-                featuresetDetails?.featureset_status === 1
+              value={`${
+                featuresetDetails.featureset_status === 1
                   ? "Active"
                   : "Deactive"
-              }
-              value={featuresetDetails.featureset_status}
+              }`}
             />
           </div>
 
