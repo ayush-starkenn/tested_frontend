@@ -14,6 +14,30 @@ import { Badge } from "primereact/badge";
 import Cookies from "js-cookie";
 import { BsFillPlayCircleFill } from "react-icons/bs";
 import axios from "axios";
+// import Iframe from "react-iframe";
+import { Dialog } from "primereact/dialog";
+
+// All customized icons
+import drowsinessIcon from "../../../../assets/img/icons/drowsiness.png";
+import accCutIcon from "../../../../assets/img/icons/accCut.png";
+import accidentCasIcon from "../../../../assets/img/icons/accidentCas.png";
+import accidentdmsIcon from "../../../../assets/img/icons/accidentdms.png";
+import alarm2Icon from "../../../../assets/img/icons/alarm2.png";
+import alarm3Icon from "../../../../assets/img/icons/alarm3.png";
+import automaticBrakingIcon from "../../../../assets/img/icons/automaticBraking.png";
+import cvnIcon from "../../../../assets/img/icons/cvn.png";
+import defaultIcon from "../../../../assets/img/icons/default.png";
+import distractionIcon from "../../../../assets/img/icons/distraction.png";
+import harshAccIcon from "../../../../assets/img/icons/harshAcc.png";
+import laneChngIcon from "../../../../assets/img/icons/laneChng.png";
+import nodriverIcon from "../../../../assets/img/icons/nodriver.png";
+import overspeedDMSIcon from "../../../../assets/img/icons/overspdDMS.png";
+import overspeedIcon from "../../../../assets/img/icons/overspeed.png";
+import spdBumpIcon from "../../../../assets/img/icons/spdBump.png";
+import suddenBrkIcon from "../../../../assets/img/icons/suddenBrk.png";
+import tailgatingIcon from "../../../../assets/img/icons/tailgating.png";
+import tripstartIcon from "../../../../assets/img/icons/tripstart.png";
+import { ScrollPanel } from "primereact/scrollpanel";
 
 const containerStyle = {
   width: "100%",
@@ -47,7 +71,7 @@ const CompletedTrip = () => {
   const token = Cookies.get("token");
   const { trip_id } = useParams();
 
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
   const [path, setPath] = useState([]);
   const [tripData, setTripData] = useState([]);
   const [center, setCenter] = useState({});
@@ -78,6 +102,7 @@ const CompletedTrip = () => {
   const [tailgating, setTailgating] = useState(0);
   const [overspeed, setOverspeed] = useState(0);
   const [engineOff, setEngineOff] = useState(0);
+  const [cvn, setCVN] = useState(0);
 
   // SET DMS data & Alerts
   // eslint-disable-next-line
@@ -85,17 +110,17 @@ const CompletedTrip = () => {
   const [drowsiness, setDrowsiness] = useState(0);
   const [distraction, setDistraction] = useState(0);
   const [dmsoverSpd, setDmsoverSpd] = useState(0);
-  // eslint-disable-next-line
-  const [noSeatbelt, setNotSeatBelt] = useState(0);
-  // eslint-disable-next-line
-  const [usePhone, setUsePhone] = useState(0);
-  // eslint-disable-next-line
-  const [unknownDriver, setUnknownDriver] = useState(0);
+  // // eslint-disable-next-line
+  // const [noSeatbelt, setNotSeatBelt] = useState(0);
+  // // eslint-disable-next-line
+  // const [usePhone, setUsePhone] = useState(0);
+  // // eslint-disable-next-line
+  // const [unknownDriver, setUnknownDriver] = useState(0);
   const [noDriver, setNoDriver] = useState(0);
   // eslint-disable-next-line
-  const [smoking, setSmoking] = useState(0);
+  // const [smoking, setSmoking] = useState(0);
   // eslint-disable-next-line
-  const [rashDrive, setRashDrive] = useState(0);
+  // const [rashDrive, setRashDrive] = useState(0);
   // eslint-disable-next-line
   const [dmsAccident, setDmsAccident] = useState(0);
   const [tripStartAlert, setTripStartAlert] = useState(0);
@@ -220,7 +245,7 @@ const CompletedTrip = () => {
           `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyCk6RovwH7aF8gjy1svTPJvITZsWGA_roU`
         );
         if (response) {
-          setIsLoading(false);
+          // setIsLoading(false);
         }
         const data = await response.json();
         setAddress(data.results[0].formatted_address);
@@ -231,12 +256,15 @@ const CompletedTrip = () => {
     }
   }, [tripData, endPoint, startPoint]);
 
-  //get fault counts data
+  // Get fault counts data
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/trips/get-fault-counts/${trip_id}`, {
-        headers: { authorization: `bearer ${token}` },
-      })
+      .get(
+        `${process.env.REACT_APP_API_URL}/trips/get-fault-counts/${trip_id}`,
+        {
+          headers: { authorization: `bearer ${token}` },
+        }
+      )
       .then((response) => {
         setFaultData(response.data.results);
         let parameters = [];
@@ -287,6 +315,11 @@ const CompletedTrip = () => {
               setEngineOff((prev) => prev + 1);
             }
           }
+
+          // set CVN
+          if (myData[i].event === "CVN") {
+            setCVN((prev) => prev + 1);
+          }
         }
 
         // loop to set markers
@@ -315,6 +348,7 @@ const CompletedTrip = () => {
                 reason: parseJson.data.reason,
                 brake_duration:
                   parseJson.data.off_timestamp - parseJson.data.on_timestamp,
+                icon: accidentCasIcon,
               };
               parameters.push(params);
             }
@@ -331,6 +365,7 @@ const CompletedTrip = () => {
               reason: parseJson.data.reason,
               brake_duration:
                 parseJson.data.off_timestamp - parseJson.data.on_timestamp,
+              icon: automaticBrakingIcon,
             };
             parameters.push(params);
           }
@@ -339,6 +374,20 @@ const CompletedTrip = () => {
           if (myData[l].event === "DMS") {
             let updatedTime = new Date(myData[l].timestamp * 1000);
             let contentTime = updatedTime.toLocaleString();
+            let dmsIcon = defaultIcon;
+            if (parseJson.data.alert_type === "DROWSINESS") {
+              dmsIcon = drowsinessIcon;
+            } else if (parseJson.data.alert_type === "DISTRACTION") {
+              dmsIcon = distractionIcon;
+            } else if (parseJson.data.alert_type === "TRIP_START") {
+              dmsIcon = tripstartIcon;
+            } else if (parseJson.data.alert_type === "NO_DRIVER") {
+              dmsIcon = nodriverIcon;
+            } else if (parseJson.data.alert_type === "OVERSPEEDING") {
+              dmsIcon = overspeedDMSIcon;
+            } else if (parseJson.data.alert_type === "ACCIDENT") {
+              dmsIcon = accidentdmsIcon;
+            }
             params = {
               id: myData[l].id,
               lat: parseFloat(myData[l].lat),
@@ -352,6 +401,7 @@ const CompletedTrip = () => {
               media: parseJson.data.media,
               dashcam: parseJson.data.dashcam,
               severity: parseJson.data.severity,
+              icon: dmsIcon,
             };
             parameters.push(params);
           }
@@ -360,6 +410,20 @@ const CompletedTrip = () => {
           if (parseJson.notification !== undefined) {
             let updatedTime = new Date(myData[l].timestamp * 1000);
             let contentTime = updatedTime.toLocaleString();
+            let ntfIcons = defaultIcon;
+            if (parseJson.notification === 2) {
+              ntfIcons = harshAccIcon;
+            } else if (parseJson.notification === 3) {
+              ntfIcons = suddenBrkIcon;
+            } else if (parseJson.notification === 4) {
+              ntfIcons = spdBumpIcon;
+            } else if (parseJson.notification === 5) {
+              ntfIcons = laneChngIcon;
+            } else if (parseJson.notification === 6) {
+              ntfIcons = tailgatingIcon;
+            } else if (parseJson.notification === 7) {
+              ntfIcons = overspeedIcon;
+            }
             params = {
               id: myData[l].id,
               lat: parseFloat(myData[l].lat),
@@ -369,6 +433,7 @@ const CompletedTrip = () => {
               speed: parseFloat(myData[l].spd),
               event: myData[l].event,
               reason: parseJson.notification,
+              icon: ntfIcons,
             };
             parameters.push(params);
           }
@@ -392,6 +457,12 @@ const CompletedTrip = () => {
           if (myData[l].event === "ALM") {
             let updatedTime = new Date(myData[l].timestamp * 1000);
             let contentTime = updatedTime.toLocaleString();
+            let almIcon = defaultIcon;
+            if (parseJson.data.alarm === 2) {
+              almIcon = alarm2Icon;
+            } else {
+              almIcon = alarm3Icon;
+            }
             params = {
               id: myData[l].id,
               lat: parseFloat(myData[l].lat),
@@ -402,6 +473,7 @@ const CompletedTrip = () => {
               content: contentTime,
               event: parseJson.data.alarm === 2 ? "ALM2" : "ALM3",
               alarm_no: parseJson.data.alarm,
+              icon: almIcon,
             };
             parameters.push(params);
           }
@@ -440,33 +512,24 @@ const CompletedTrip = () => {
           if (dmsData.data.alert_type === "OVERSPEEDING") {
             setDmsoverSpd((prev) => prev + 1);
           }
-          if (dmsData.data.alert_type === "NO_SEATBELT") {
-            setNotSeatBelt((prev) => prev + 1);
-          }
-          if (dmsData.data.alert_type === "USING_PHONE") {
-            setUsePhone((prev) => prev + 1);
-          }
-          if (dmsData.data.alert_type === "UNKNOWN_DRIVER") {
-            setUnknownDriver((prev) => prev + 1);
-          }
+          // if (dmsData.data.alert_type === "NO_SEATBELT") {
+          //   setNotSeatBelt((prev) => prev + 1);
+          // }
+          // if (dmsData.data.alert_type === "USING_PHONE") {
+          //   setUsePhone((prev) => prev + 1);
+          // }
+          // if (dmsData.data.alert_type === "UNKNOWN_DRIVER") {
+          //   setUnknownDriver((prev) => prev + 1);
+          // }
           if (dmsData.data.alert_type === "NO_DRIVER") {
             setNoDriver((prev) => prev + 1);
-            const NoDTime = new Date(item.timestamp * 1000);
-            console.log(
-              "ID:",
-              item.id,
-              "Event:",
-              dmsData.data.alert_type,
-              "Time:",
-              NoDTime
-            );
           }
-          if (dmsData.data.alert_type === "SMOKING") {
-            setSmoking((prev) => prev + 1);
-          }
-          if (dmsData.data.alert_type === "RASH_DRIVING") {
-            setRashDrive((prev) => prev + 1);
-          }
+          // if (dmsData.data.alert_type === "SMOKING") {
+          //   setSmoking((prev) => prev + 1);
+          // }
+          // if (dmsData.data.alert_type === "RASH_DRIVING") {
+          //   setRashDrive((prev) => prev + 1);
+          // }
           if (dmsData.data.alert_type === "ACCIDENT") {
             setDmsAccident((prev) => prev + 1);
           }
@@ -476,12 +539,6 @@ const CompletedTrip = () => {
       setMedia(mediaData);
     }
   }, [faultData]);
-
-  // const [activeTab, setActiveTab] = useState("Summary");
-
-  // const changeTab = (tabName) => {
-  //   setActiveTab(tabName);
-  // };
 
   const SummaryContent = () => (
     <div className="">
@@ -508,8 +565,6 @@ const CompletedTrip = () => {
       </dl>
     </div>
   );
-
-  // const [checked, setChecked] = useState(false);
 
   const DMSContent = () => (
     <>
@@ -615,7 +670,7 @@ const CompletedTrip = () => {
                   htmlFor="CAScheckboxId4"
                   className="ml-2 w-[7vw] dark:text-white"
                 >
-                  Overspeeding
+                  Overspeed
                 </label>
               </div>
               <div className="py-5">
@@ -663,6 +718,97 @@ const CompletedTrip = () => {
       </div>
     </>
   );
+
+  // Set Iframe for DMS
+  const dmsIframes = media.map((data, index) => {
+    // console.log(data.dms);
+    // const checkDriveUrl = "drive.google.com";
+    // const isDriveUrl = data.dms.includes(checkDriveUrl);
+
+    return (
+      <div className="group relative" key={index}>
+        <div className="flex justify-between">
+          <div>
+            <h3 className="text-gray-700">{data.alert}</h3>
+            <p className="mt-1 text-sm text-gray-500">{data?.timestamp}</p>
+          </div>
+          <p className="text-5xl font-medium text-cyan-300">&#9900;</p>
+        </div>
+        <div className="aspect-h-1 aspect-w-1 lg:aspect-none lg:h-50 w-full overflow-hidden rounded-md bg-gray-200">
+          {data.dms && (
+            <video
+              className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+              width="100%"
+              controls
+            >
+              <source
+                src={`${process.env.REACT_APP_S3_URL}/${data.dms}`}
+                type="video/mp4"
+              ></source>
+              Your browser does not support the video tag.
+            </video>
+          )}
+
+          {data.dashcam && (
+            <>
+              <video
+                className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+                width="100%"
+                controls
+              >
+                <source
+                  src={`${process.env.REACT_APP_S3_URL}/${data.dashcam}`}
+                  type="video/mp4"
+                ></source>
+                Your browser does not support the video tag.
+              </video>
+            </>
+          )}
+        </div>
+      </div>
+    );
+  });
+
+  const [visible, setVisible] = useState(false);
+  const [videoUrl, setVideoUrl] = useState("");
+  const [dashCamVideo, setDashCamVideo] = useState("");
+  const [videoTitle, setVideoTitle] = useState("");
+  const [videoContent, setVideoContent] = useState("");
+  const [videoSpeed, setVideoSpeed] = useState("");
+  const [videoAlert, setVideoAlert] = useState("");
+  const [videoSeverity, setVideoSeverity] = useState("");
+
+  function handleDMSVideoShow(
+    url,
+    dashcamVid,
+    title,
+    content,
+    speed,
+    alert_type,
+    severity
+  ) {
+    const checkDriveUrl = "drive.google.com";
+    if (url.includes(checkDriveUrl)) {
+      setVideoUrl(url);
+    } else {
+      setVideoUrl(`${process.env.REACT_APP_S3_URL}/${url}`);
+    }
+
+    if (dashcamVid) {
+      if (dashcamVid.includes(checkDriveUrl)) {
+        setDashCamVideo(dashcamVid);
+      } else {
+        setDashCamVideo(`${process.env.REACT_APP_S3_URL}/${dashcamVid}`);
+      }
+    }
+
+    setVideoTitle(title);
+    setVideoContent(content);
+    setVideoSpeed(speed);
+    setVideoAlert(alert_type);
+    setVideoSeverity(severity);
+    setVisible(true);
+  }
 
   const handlecheckbox = (e) => {
     const { value, name } = e.target;
@@ -756,11 +902,13 @@ const CompletedTrip = () => {
 
   const CASContent = () => (
     <>
-      <div className="flex gap-4 text-center">
-        <div className="flex-1">
-          <div className="flex">
-            <div className="flex-1 text-left">
-              <div className="w-[180px] py-5">
+      {/* CAS */}
+      <div className="cas">
+        <h4 className="font-semibold">CAS</h4>
+        <div className="flex gap-4">
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0">
                 <Checkbox
                   value="AUTOMATIC_BRAKING"
                   onChange={handlecheckbox}
@@ -775,7 +923,22 @@ const CompletedTrip = () => {
                   Automatic Braking
                 </label>
               </div>
-              <div className="py-5">
+              <div className="flex-shrink-0">
+                {autoBrk === 0 ? (
+                  <Badge
+                    value={autoBrk}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={autoBrk} className="mx-3" />
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0">
                 <Checkbox
                   value="ACCIDENT_SAVED"
                   onChange={handlecheckbox}
@@ -790,36 +953,30 @@ const CompletedTrip = () => {
                   Accident Saved
                 </label>
               </div>
-              <div className="py-5">
-                <Checkbox
-                  value={16}
-                  onChange={handlecheckbox}
-                  name="ACC_Cut"
-                  checked={checkboxes.ACC_Cut}
-                  disabled={engineOff === 0}
-                />
-                <label
-                  htmlFor="CAScheckboxId3"
-                  className="ml-2 dark:text-white"
-                >
-                  ACC Cut
-                </label>
+              <div className="flex-shrink-0">
+                {accident === 0 ? (
+                  <Badge
+                    value={accident}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={accident} className="mx-3" />
+                )}
               </div>
-              {/* <div className="py-5">
-                <Checkbox
-                  data-custom-attribute="CVN"
-                  value="CVN"
-                  name="CVN"
-                  checked={checkboxes.CVN}
-                />
-                <label
-                  htmlFor="CAScheckboxId5"
-                  className="ml-2 dark:text-white"
-                >
-                  CVN
-                </label>
-              </div> */}
-              <div className="py-5">
+            </div>
+          </div>
+        </div>
+        <hr />
+      </div>
+
+      {/* Driver Evaluation */}
+      <div className="drive-eval mt-4">
+        <h4 className="font-semibold">Driver Evaluation</h4>
+        <div className="flex gap-4">
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0">
                 <Checkbox
                   value={2}
                   onChange={handlecheckbox}
@@ -834,7 +991,22 @@ const CompletedTrip = () => {
                   Harsh Acceleration
                 </label>
               </div>
-              <div className="py-5">
+              <div className="flex-shrink-0">
+                {harshacc === 0 ? (
+                  <Badge
+                    value={harshacc}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={harshacc} className="mx-3" />
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0">
                 <Checkbox
                   value={4}
                   onChange={handlecheckbox}
@@ -849,7 +1021,25 @@ const CompletedTrip = () => {
                   Speed Bump
                 </label>
               </div>
-              <div className="py-5">
+              <div className="flex-shrink-0">
+                {spdBump === 0 ? (
+                  <Badge
+                    value={spdBump}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={spdBump} className="mx-3" />
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex gap-4">
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0">
                 <Checkbox
                   value={5}
                   onChange={handlecheckbox}
@@ -864,56 +1054,7 @@ const CompletedTrip = () => {
                   Lane Change
                 </label>
               </div>
-            </div>
-            <div className="flex-1 text-right">
-              <div className="py-5">
-                {autoBrk === 0 ? (
-                  <Badge
-                    value={autoBrk}
-                    style={{ backgroundColor: "gray", color: "white" }}
-                    className="mx-3"
-                  />
-                ) : (
-                  <Badge value={autoBrk} className="mx-3" />
-                )}
-              </div>
-              <div className="py-5">
-                {accident === 0 ? (
-                  <Badge
-                    value={accident}
-                    style={{ backgroundColor: "gray", color: "white" }}
-                    className="mx-3"
-                  />
-                ) : (
-                  <Badge value={accident} className="mx-3" />
-                )}
-              </div>
-              <div className="py-5">
-                {engineOff === 0 ? (
-                  <Badge
-                    value={engineOff}
-                    style={{ backgroundColor: "gray", color: "white" }}
-                    className="mx-3"
-                  />
-                ) : (
-                  <Badge value={engineOff} className="mx-3" />
-                )}
-              </div>
-              {/* <div>
-              <Badge value="Badge 5" className="mx-3" />
-              </div> */}
-              <div className="py-5">
-                {harshacc === 0 ? (
-                  <Badge
-                    value={harshacc}
-                    style={{ backgroundColor: "gray", color: "white" }}
-                    className="mx-3"
-                  />
-                ) : (
-                  <Badge value={harshacc} className="mx-3" />
-                )}
-              </div>
-              <div className="py-5">
+              <div className="flex-shrink-0">
                 {spdBump === 0 ? (
                   <Badge
                     value={spdBump}
@@ -924,24 +1065,11 @@ const CompletedTrip = () => {
                   <Badge value={spdBump} className="mx-3" />
                 )}
               </div>
-              <div className="py-4">
-                {laneChng === 0 ? (
-                  <Badge
-                    value={laneChng}
-                    style={{ backgroundColor: "gray", color: "white" }}
-                    className="mx-3"
-                  />
-                ) : (
-                  <Badge value={laneChng} className="mx-3" />
-                )}
-              </div>
             </div>
           </div>
-        </div>
-        <div className="flex-1">
-          <div className="flex">
-            <div className="flex-1 text-left">
-              <div className="w-[180px] py-5">
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0">
                 <Checkbox
                   value={3}
                   onChange={handlecheckbox}
@@ -956,7 +1084,25 @@ const CompletedTrip = () => {
                   Sudden Braking
                 </label>
               </div>
-              <div className="py-5">
+              <div className="flex-shrink-0">
+                {suddenBrk === 0 ? (
+                  <Badge
+                    value={suddenBrk}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={suddenBrk} className="mx-3" />
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex gap-4">
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0">
                 <Checkbox
                   value={6}
                   onChange={handlecheckbox}
@@ -971,7 +1117,153 @@ const CompletedTrip = () => {
                   Tailgating
                 </label>
               </div>
-              <div className="py-5">
+              <div className="flex-shrink-0">
+                {tailgating === 0 ? (
+                  <Badge
+                    value={tailgating}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={tailgating} className="mx-3" />
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="w-[50%]"></div>
+        </div>
+        <hr />
+      </div>
+
+      {/* Notifications */}
+      <div className="noti mt-4">
+        <h4 className="font-semibold">Notifications</h4>
+        <div className="flex gap-4">
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0">
+                <Checkbox
+                  value={16}
+                  onChange={handlecheckbox}
+                  name="ACC_Cut"
+                  checked={checkboxes.ACC_Cut}
+                  disabled={engineOff === 0}
+                />
+                <label
+                  htmlFor="CAScheckboxId3"
+                  className="ml-2 dark:text-white"
+                >
+                  ACC Cut
+                </label>
+              </div>
+              <div className="flex-shrink-0">
+                {engineOff === 0 ? (
+                  <Badge
+                    value={engineOff}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={engineOff} className="mx-3" />
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0">
+                <Checkbox
+                  value={36}
+                  onChange={handlecheckbox}
+                  name="CVN"
+                  checked={checkboxes.ACC_Cut}
+                  disabled={cvn === 0}
+                />
+                <label htmlFor="cvn" className="ml-2 dark:text-white">
+                  CVN
+                </label>
+              </div>
+              <div className="flex-shrink-0">
+                {engineOff === 0 ? (
+                  <Badge
+                    value={engineOff}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={engineOff} className="mx-3" />
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex gap-4">
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0">
+                <Checkbox
+                  value={16}
+                  onChange={handlecheckbox}
+                  name="Load"
+                  checked={checkboxes.load}
+                  disabled={engineOff === 0}
+                />
+                <label htmlFor="load" className="ml-2 dark:text-white">
+                  Load
+                </label>
+              </div>
+              <div className="flex-shrink-0">
+                {engineOff === 0 ? (
+                  <Badge
+                    value={engineOff}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={engineOff} className="mx-3" />
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0">
+                <Checkbox
+                  value={36}
+                  onChange={handlecheckbox}
+                  name="Fuel"
+                  checked={checkboxes.ACC_Cut}
+                  disabled={cvn === 0}
+                />
+                <label htmlFor="cvn" className="ml-2 dark:text-white">
+                  Fuel
+                </label>
+              </div>
+              <div className="flex-shrink-0">
+                {engineOff === 0 ? (
+                  <Badge
+                    value={engineOff}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={engineOff} className="mx-3" />
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr />
+      </div>
+
+      {/* Speed Governer */}
+      <div className="noti mt-4">
+        <h4 className="font-semibold">Speed Governer</h4>
+        <div className="flex gap-4">
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0">
                 <Checkbox
                   value={7}
                   onChange={handlecheckbox}
@@ -983,10 +1275,39 @@ const CompletedTrip = () => {
                   htmlFor="CAScheckboxId5"
                   className="ml-2 dark:text-white"
                 >
-                  Overspeeding
+                  Overspeed
                 </label>
               </div>
-              <div className="py-5">
+              <div className="flex-shrink-0">
+                {overspeed === 0 ? (
+                  <Badge
+                    value={overspeed}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={overspeed} className="mx-3" />
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0"></div>
+              <div className="flex-shrink-0"></div>
+            </div>
+          </div>
+        </div>
+        <hr />
+      </div>
+
+      {/* Alarm Data */}
+      <div className="noti mt-4">
+        <h4 className="font-semibold">Alarm Data</h4>
+        <div className="flex gap-4">
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0">
                 <Checkbox
                   value={5}
                   onChange={handlecheckbox}
@@ -1001,7 +1322,22 @@ const CompletedTrip = () => {
                   Alarm 2
                 </label>
               </div>
-              <div className="py-5">
+              <div className="flex-shrink-0">
+                {alarm1 === 0 ? (
+                  <Badge
+                    value={alarm1}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={alarm1} className="mx-3" />
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0">
                 <Checkbox
                   value={5}
                   onChange={handlecheckbox}
@@ -1016,53 +1352,7 @@ const CompletedTrip = () => {
                   Alarm 3
                 </label>
               </div>
-            </div>
-            <div className="flex-1 text-right">
-              <div className="py-5">
-                {suddenBrk === 0 ? (
-                  <Badge
-                    value={suddenBrk}
-                    style={{ backgroundColor: "gray", color: "white" }}
-                    className="mx-3"
-                  />
-                ) : (
-                  <Badge value={suddenBrk} className="mx-3" />
-                )}
-              </div>
-              <div className="py-5">
-                {tailgating === 0 ? (
-                  <Badge
-                    value={tailgating}
-                    style={{ backgroundColor: "gray", color: "white" }}
-                    className="mx-3"
-                  />
-                ) : (
-                  <Badge value={tailgating} className="mx-3" />
-                )}
-              </div>
-              <div className="py-5">
-                {overspeed === 0 ? (
-                  <Badge
-                    value={overspeed}
-                    style={{ backgroundColor: "gray", color: "white" }}
-                    className="mx-3"
-                  />
-                ) : (
-                  <Badge value={overspeed} className="mx-3" />
-                )}
-              </div>
-              <div className="py-5">
-                {alarm1 === 0 ? (
-                  <Badge
-                    value={alarm1}
-                    style={{ backgroundColor: "gray", color: "white" }}
-                    className="mx-3"
-                  />
-                ) : (
-                  <Badge value={alarm1} className="mx-3" />
-                )}
-              </div>
-              <div className="py-5">
+              <div className="flex-shrink-0">
                 {alarm2 === 0 ? (
                   <Badge
                     value={alarm2}
@@ -1077,6 +1367,40 @@ const CompletedTrip = () => {
           </div>
         </div>
       </div>
+
+      {/* Alcohol data */}
+      {/* <div className="noti mt-4">
+        <h4 className="font-semibold">Alcohol data</h4>
+        <div className="flex gap-4">
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0">
+                <Checkbox name="alchohol" />
+                <label
+                  htmlFor="CAScheckboxId3"
+                  className="ml-2 dark:text-white"
+                >
+                  Alcohol
+                </label>
+              </div>
+              <div className="flex-shrink-0">
+                <Badge
+                  value="0"
+                  style={{ backgroundColor: "gray", color: "white" }}
+                  className="mx-3"
+                />
+              </div>
+            </div>
+          </div>
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0"></div>
+              <div className="flex-shrink-0"></div>
+            </div>
+          </div>
+        </div>
+        <hr />
+      </div> */}
     </>
   );
 
@@ -1097,12 +1421,13 @@ const CompletedTrip = () => {
             zoom={14}
           >
             <Marker position={startPoint} icon={markerIcons.green} />
+
             {[].concat(...filterMarker)?.map((marker, index) => (
               <Marker
                 key={`${marker.id}-${index}`}
                 position={{ lat: marker.lat, lng: marker.lng }}
                 onClick={() => handleMarkerClick(marker)}
-                icon={markerIcons.blue}
+                icon={marker.icon}
               >
                 {selectedMarker === marker && (
                   <InfoWindow
@@ -1158,27 +1483,21 @@ const CompletedTrip = () => {
                           </p>
                           <p className="mb-0">Severity:{marker.severity}</p>
                           <button
-                            className="btn btn-danger btn-sm rounded-pill mt-2"
-                            // onClick={() =>
-                            //   handleDMSVideoShow(
-                            //     marker.media,
-                            //     marker.dashcam,
-                            //     marker.title,
-                            //     marker.content,
-                            //     marker.speed,
-                            //     marker.alert_type,
-                            //     marker.severity
-                            //   )
-                            // }
+                            className="btn-play mt-3"
+                            onClick={() =>
+                              handleDMSVideoShow(
+                                marker.media,
+                                marker.dashcam,
+                                marker.title,
+                                marker.content,
+                                marker.speed,
+                                marker.alert_type,
+                                marker.severity
+                              )
+                            }
                           >
-                            Play <BsFillPlayCircleFill />
+                            Play &nbsp; <BsFillPlayCircleFill />
                           </button>
-                          {/* <Iframe
-                            src={marker.media}
-                            width="80%"
-                            height="200px"
-                          
-                          ></Iframe> */}
                         </div>
                       </>
                     ) : (
@@ -1296,6 +1615,49 @@ const CompletedTrip = () => {
             <Marker position={endPoint} icon={markerIcons.red} />
           </GoogleMap>
         </LoadScript>
+
+        {/* DMS videos pop-ups */}
+        <Dialog
+          header={videoTitle}
+          visible={visible}
+          style={{ width: "50vw" }}
+          onHide={() => setVisible(false)}
+        >
+          <p className="mb-0">
+            <b>Timestamp:</b> {videoContent}
+          </p>
+          <p className="mb-0">
+            <b>Speed:</b> {videoSpeed} KMPH
+          </p>
+          <p className="mb-0">
+            <b>Alert Type:</b> {videoAlert}
+          </p>
+          <p className="mb-0">
+            <b>Severity:</b> {videoSeverity}
+          </p>
+          <div className="flex justify-center">
+            {videoUrl && (
+              <div className="w-1/2">
+                <video controls className="h-48 w-full">
+                  <source src={videoUrl} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+
+                <h5 className="text-center text-red-500">DMS Video</h5>
+              </div>
+            )}
+
+            {dashCamVideo && (
+              <div className="w-1/2">
+                <video controls className="h-48 w-full">
+                  <source src={dashCamVideo} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+                <h5 className="text-center text-red-500">Dashcam Video</h5>
+              </div>
+            )}
+          </div>
+        </Dialog>
       </div>
       <div className="lg:max-w-screen mx-auto grid w-full grid-cols-1 gap-x-8 gap-y-8 rounded-[20px] sm:py-8 lg:grid-cols-2">
         <div className="rounded-[20px] bg-white p-5 dark:bg-navy-700">
@@ -1304,11 +1666,11 @@ const CompletedTrip = () => {
               <TabPanel header="Summary" className="font-medium">
                 <SummaryContent />
               </TabPanel>
-              <TabPanel header="DMS">
-                <DMSContent />
-              </TabPanel>
               <TabPanel header="CAS">
                 <CASContent />
+              </TabPanel>
+              <TabPanel header="DMS">
+                <DMSContent />
               </TabPanel>
             </TabView>
           </div>
@@ -1320,80 +1682,11 @@ const CompletedTrip = () => {
               DMS Media
             </h2>
 
-            <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-2 xl:gap-x-8">
-              <div className="group relative">
-                <div className="flex justify-between">
-                  <div>
-                    <h3 className="text-gray-700">Distraction</h3>
-                    <p className="mt-1 text-sm text-gray-500">
-                      05/09/2023, 19:05:46
-                    </p>
-                  </div>
-                  <p className="text-5xl font-medium text-cyan-300">&#9900;</p>
-                </div>
-                <div className="aspect-h-1 aspect-w-1 lg:aspect-none lg:h-50 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75">
-                  <video
-                    className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-                    width="100%"
-                    controls
-                  >
-                    <source
-                      src="http://svc-dms.s3-website.ap-south-1.amazonaws.com/vi_DMS_PROD_1_0225_20230905_190549.mp4"
-                      type="video/mp4"
-                    ></source>
-                    Your browser does not support the video tag.
-                  </video>
-
-                  <video
-                    className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-                    width="100%"
-                    controls
-                  >
-                    <source
-                      src="http://svc-dms.s3-website.ap-south-1.amazonaws.com/piyush-dashcam-test.mp4"
-                      type="video/mp4"
-                    ></source>
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
+            <ScrollPanel style={{ width: "100%", height: "600px" }}>
+              <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-2 xl:gap-x-8">
+                {dmsIframes}
               </div>
-              <div className="group relative">
-                <div className="flex justify-between">
-                  <div>
-                    <h3 className="text-gray-700">Distraction</h3>
-                    <p className="mt-1 text-sm text-gray-500">
-                      05/09/2023, 19:05:46
-                    </p>
-                  </div>
-                  <p className="text-5xl font-medium text-cyan-300">&#9900;</p>
-                </div>
-                <div className="aspect-h-1 aspect-w-1 lg:aspect-none lg:h-50 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75">
-                  <video
-                    className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-                    width="100%"
-                    controls
-                  >
-                    <source
-                      src="http://svc-dms.s3-website.ap-south-1.amazonaws.com/vi_DMS_PROD_1_0225_20230905_190549.mp4"
-                      type="video/mp4"
-                    ></source>
-                    Your browser does not support the video tag.
-                  </video>
-
-                  <video
-                    className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-                    width="100%"
-                    controls
-                  >
-                    <source
-                      src="http://svc-dms.s3-website.ap-south-1.amazonaws.com/piyush-dashcam-test.mp4"
-                      type="video/mp4"
-                    ></source>
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
-              </div>
-            </div>
+            </ScrollPanel>
           </div>
         </div>
       </div>
