@@ -32,7 +32,7 @@ const OngoingTrip = () => {
   const token = Cookies.get("token");
   const { vehicle_uuid } = useParams();
 
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
   const [path, setPath] = useState([]);
   const [tripData, setTripData] = useState([]);
   const [center, setCenter] = useState({});
@@ -103,7 +103,7 @@ const OngoingTrip = () => {
           `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyCk6RovwH7aF8gjy1svTPJvITZsWGA_roU`
         );
         if (response) {
-          setIsLoading(false);
+          // setIsLoading(false);
         }
         const data = await response.json();
         // console.log(data);
@@ -114,12 +114,6 @@ const OngoingTrip = () => {
       getAddress(endPoint.lat, endPoint.lng, setEndAddress);
     }
   }, [tripData]);
-
-  const [activeTab, setActiveTab] = useState("Summary");
-
-  const changeTab = (tabName) => {
-    setActiveTab(tabName);
-  };
 
   const SummaryContent = () => (
     <div className="">
@@ -147,86 +141,9 @@ const OngoingTrip = () => {
     </div>
   );
 
-  const [checked, setChecked] = useState(false);
+  const DMSContent = () => <div className="p-grid">DMS</div>;
 
-  const handleCheckboxChange = (e) => {
-    setChecked(e.checked);
-  };
-
-  const DMScheckboxes = [
-    { label: "Trip Start", badgeValue: "2" },
-    { label: "Drowsiness" },
-    { label: "Distraction" },
-    { label: "No Driver" },
-    { label: "Accident" },
-    { label: "Overspeeding", badgeValue: "4" },
-  ];
-
-  const DMSContent = () => (
-    <div className="p-grid">
-      {DMScheckboxes.map((checkbox, index) => (
-        <div className="p-col-6 my-5" key={index}>
-          <div className="align-items-center flex">
-            <Checkbox
-              inputId={`checkboxId${index}`}
-              value={`checkboxValue${index}`}
-              checked={checked}
-              onChange={handleCheckboxChange}
-            />
-            <label
-              htmlFor={`checkboxId${index}`}
-              className="ml-2 dark:text-white"
-            >
-              {checkbox.label}
-              {checkbox.badgeValue && (
-                <Badge value={checkbox.badgeValue} className="mx-3" />
-              )}
-            </label>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-
-  const CAScheckboxes = [
-    { label: "Automatic Braking", badgeValue: "2" },
-    { label: "Accident Saved" },
-    { label: "ACC Cut" },
-    { label: "Harsh Acceleration" },
-    { label: "Speed Bump", badgeValue: "4" },
-    { label: "Lane Change" },
-    { label: "Sudden Braking" },
-    { label: "Tailgating" },
-    { label: "Overspeeding" },
-    { label: "Alarm 2" },
-    { label: "Alarm 3" },
-  ];
-
-  const CASContent = () => (
-    <div className="p-grid">
-      {CAScheckboxes.map((checkbox, index) => (
-        <div className="p-col-6 my-5" key={index}>
-          <div className="align-items-center flex">
-            <Checkbox
-              inputId={`checkboxId${index}`}
-              value={`checkboxValue${index}`}
-              checked={checked}
-              onChange={handleCheckboxChange}
-            />
-            <label
-              htmlFor={`checkboxId${index}`}
-              className="ml-2 dark:text-white"
-            >
-              {checkbox.label}
-              {checkbox.badgeValue && (
-                <Badge value={checkbox.badgeValue} className="mx-3" />
-              )}
-            </label>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
+  const CASContent = () => <div className="p-grid">CAS</div>;
 
   return (
     <>
