@@ -62,7 +62,9 @@ const Dashboard = () => {
 
   return (
     <div>
-      <h4 className="text-dark text-xl font-bold dark:text-white">Dashboard</h4>
+      <h4 className="text-dark pt-3 text-2xl font-bold dark:text-white">
+        Dashboard
+      </h4>
 
       {/* Card widget */}
 

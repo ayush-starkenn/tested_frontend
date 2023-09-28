@@ -124,6 +124,7 @@ export default function DevicesList({ data }) {
           key="serialNo"
           field="serialNo"
           header="Sr. No."
+          sortable
           className="border-none dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "4rem" }}
         ></Column>
@@ -154,14 +155,14 @@ export default function DevicesList({ data }) {
         <Column
           field="sim_number"
           header="Sim Number"
-          sortable
           className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
         ></Column>
         <Column
-          field="vehicle_status"
+          field="device_status"
           header="Status"
           sortable
+          sortField="device_status"
           className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "6rem" }}
           body={renderStatusCell}

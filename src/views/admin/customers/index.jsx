@@ -355,7 +355,7 @@ const Customers = () => {
       <Toast ref={toastRef} className="toast-custom" position="top-right" />
       <Toast ref={toastErr} className="bg-red-400" />
       <div className="flex justify-between">
-        <h4 className="text-dark text-xl font-bold dark:text-white">
+        <h4 className="text-dark pt-3 text-2xl font-bold dark:text-white">
           Customers
         </h4>
 

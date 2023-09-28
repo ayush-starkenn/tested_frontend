@@ -245,6 +245,7 @@ const AlertTriggerList = ({
         <Column
           field="serialNo"
           header="Sr. No."
+          sortable
           className="border-none dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "4rem" }}
         ></Column>
@@ -253,6 +254,12 @@ const AlertTriggerList = ({
           header="Trigger Name"
           className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
+          body={(rowData) => (
+            <>
+              {rowData.trigger_name.charAt(0).toUpperCase() +
+                rowData.trigger_name.slice(1)}
+            </>
+          )}
         ></Column>
         <Column
           field="trigger_type"

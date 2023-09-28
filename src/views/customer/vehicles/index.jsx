@@ -317,10 +317,10 @@ const Marketplace = () => {
     <>
       <Toast ref={toastRef} position="top-right" />
       <div className="flex justify-between">
-        <h4 className="text-dark text-xl font-bold dark:text-white">
+        <h4 className="text-dark pt-3 text-2xl font-bold dark:text-white">
           Vehicles
         </h4>
-        <div>
+        <div className="pt-3">
           <button
             className={`${
               isListView === true

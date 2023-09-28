@@ -41,7 +41,7 @@ const VehiclesAdmin = () => {
   return (
     <>
       <div className="flex justify-between">
-        <h4 className="text-dark text-xl font-bold dark:text-white">
+        <h4 className="text-dark pt-3 text-2xl font-bold dark:text-white">
           Vehicles
         </h4>
 

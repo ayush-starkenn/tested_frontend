@@ -203,9 +203,12 @@ const Contacts = () => {
     <>
       <Toast ref={toastRef} position="top-right" />
       <div className="flex-col justify-between">
+        <h4 className="text-dark pt-3 text-2xl font-bold dark:text-white">
+          Contacts
+        </h4>
         <div>
           <Button
-            label="New Contacts"
+            label="New Contact"
             icon="pi pi-plus"
             severity="primary"
             className="mt-2 h-10 px-3 py-0 text-left dark:hover:text-white"
@@ -223,7 +226,7 @@ const Contacts = () => {
           className="p-fluid dark:bg-gray-900"
         >
           <form onSubmit={handleSubmit}>
-            <div className="mx-auto mt-1 w-[34.5vw]">
+            <div className="mx-auto mt-6 ">
               <span className={`p-float-label `}>
                 <InputText
                   id="contact_first_name"
@@ -241,7 +244,7 @@ const Contacts = () => {
                 </small>
               )}
             </div>
-            <div className="mx-auto mt-6 w-[34.5vw]">
+            <div className="mx-auto mt-6 ">
               <span className={`p-float-label `}>
                 <InputText
                   id="contact_last_name"
@@ -259,7 +262,7 @@ const Contacts = () => {
                 </small>
               )}
             </div>
-            <div className="mx-auto mt-6 w-[34.5vw]">
+            <div className="mx-auto mt-6 ">
               <span className={`p-float-label`}>
                 <InputText
                   id="contact_email"
@@ -274,7 +277,7 @@ const Contacts = () => {
                 <small className="p-error">{formErrors.contact_email}</small>
               )}
             </div>
-            <div className="mx-auto mt-6 w-[34.5vw]">
+            <div className="mx-auto mt-6 ">
               <span className={`p-float-label `}>
                 <InputText
                   id="contact_mobile"
@@ -289,7 +292,7 @@ const Contacts = () => {
                 <small className="p-error">{formErrors.contact_mobile}</small>
               )}
             </div>
-            <div className="p-field p-col-12 flex justify-center">
+            <div className="p-field p-col-12 my-2 flex justify-center">
               <button
                 type="submit"
                 className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
@@ -299,7 +302,7 @@ const Contacts = () => {
             </div>
           </form>
         </Dialog>
-        <div>
+        <div className="mt-[-4px]">
           <ContactsList
             contactsData={contactsData}
             editContacts={editContacts}
