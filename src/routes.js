@@ -23,14 +23,14 @@ import {
   MdContactPhone,
 } from "react-icons/md";
 import { BsTruck, BsFillCpuFill } from "react-icons/bs";
-import { RiAlertLine, RiContactsLine } from "react-icons/ri";
+import { RiAlertLine } from "react-icons/ri";
 import { TbReport, TbDeviceAnalytics } from "react-icons/tb";
 // import { BiRfid } from "react-icons/bi";
 import { HiOutlineUsers } from "react-icons/hi";
 import AdminProtected from "authorization/AdminProteted";
 import CustomerProtected from "authorization/CustomerProtected";
 import { DiDatabase } from "react-icons/di";
-import Drivers from "views/customer/drivers";
+// import Drivers from "views/customer/drivers";
 import OngoingTrip from "views/customer/vehicles/components/OngoingTrip";
 import CompletedTrip from "views/customer/vehicles/components/CompletedTrip";
 
@@ -138,18 +138,18 @@ export const routes_customer = [
       </CustomerProtected>
     ),
   },
-  {
-    name: "drivers",
-    title: "Drivers",
-    layout: "/customer",
-    path: "drivers",
-    icon: <RiContactsLine className="h-7 w-7" />,
-    component: (
-      <CustomerProtected>
-        <Drivers />
-      </CustomerProtected>
-    ),
-  },
+  // {
+  //   name: "drivers",
+  //   title: "Drivers",
+  //   layout: "/customer",
+  //   path: "drivers",
+  //   icon: <RiContactsLine className="h-7 w-7" />,
+  //   component: (
+  //     <CustomerProtected>
+  //       <Drivers />
+  //     </CustomerProtected>
+  //   ),
+  // },
   {
     name: "Vehicles",
     title: "Vehicles",

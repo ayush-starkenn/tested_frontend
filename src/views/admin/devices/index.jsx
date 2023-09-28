@@ -262,7 +262,9 @@ const DevicesAdmin = () => {
     <>
       <Toast ref={toastRef} className="toast-custom" position="top-right" />
       <div className="flex justify-between">
-        <h4 className="text-dark text-xl font-bold dark:text-white">Devices</h4>
+        <h4 className="text-dark pt-3 text-2xl font-bold dark:text-white">
+          Devices
+        </h4>
         <Dialog
           visible={isDialogVisible}
           onHide={closeDialog}

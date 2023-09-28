@@ -71,7 +71,7 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
   const itemTemplate = (item) => {
     const tagSeverity = item?.device_status === 1 ? "success" : "danger";
     return (
-      <div className="p-col-11 mb-6 rounded bg-gray-50 dark:bg-gray-900 dark:text-gray-150">
+      <div className="p-col-12 mb-6 rounded bg-gray-50 dark:bg-gray-900 dark:text-gray-150">
         <div className="card">
           <div className="card-body px-6 py-3">
             <div className="flex items-center justify-between">
@@ -102,7 +102,7 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
                 </div>
                 <div className="text-bold flex justify-between font-semibold ">
                   <div className="mr-16">
-                    <span>Sim Number</span>
+                    <span>Status</span>
                   </div>
                   <div>
                     <Tag
@@ -124,7 +124,7 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
 
   return (
     <div>
-      <div className="my-4 mr-7  flex justify-end">
+      <div className="my-4  flex justify-end">
         <div className="justify-content-between align-items-center flex flex-wrap gap-2">
           <span className="p-input-icon-left">
             <i className="pi pi-search" />

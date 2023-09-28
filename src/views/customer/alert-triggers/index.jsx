@@ -245,6 +245,9 @@ const Triggers = () => {
     <>
       <Toast ref={toastRef} position="top-right" />
       <div>
+        <h4 className="text-dark pt-3 text-2xl font-bold dark:text-white">
+          Alert Triggers
+        </h4>
         {/* button to add vehicle */}
         <Button
           label="New Trigger"
