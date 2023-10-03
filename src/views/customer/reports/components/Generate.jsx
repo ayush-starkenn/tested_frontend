@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Calendar } from "primereact/calendar";
-import { InputText } from "primereact/inputtext";
+// import { InputText } from "primereact/inputtext";
 import { MultiSelect } from "primereact/multiselect";
-import { RadioButton } from "primereact/radiobutton";
+// import { RadioButton } from "primereact/radiobutton";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const Generate = () => {
+const Generate = ({ close }) => {
   const [selectedStartDate, setSelectedStartDate] = useState(null);
   const [selectedEndDate, setSelectedEndDate] = useState(null);
   const [vehicles, setVehicles] = useState([]);
@@ -16,15 +16,15 @@ const Generate = () => {
   const [selectedVehicles, setSelectedVehicles] = useState([]);
   const [selectedEvents, setSelectedEvents] = useState([]);
   const [selectedContacts, setSelectedContacts] = useState([]);
-  const [vehicleParams, setVehicleParams] = useState([]);
-  const [driverParams, setDriverParams] = useState([]);
+  // const [vehicleParams, setVehicleParams] = useState([]);
+  // const [driverParams, setDriverParams] = useState([]);
   const [contacts, setContacts] = useState([]);
 
-  const vehicleparams = [
-    { name: "CAS", value: "CAS" },
-    { name: "DMS", value: "DMS" },
-    // Add more vehicles as needed
-  ];
+  // const vehicleparams = [
+  //   { name: "CAS", value: "CAS" },
+  //   { name: "DMS", value: "DMS" },
+  //   // Add more vehicles as needed
+  // ];
 
   const events = [
     { name: "ALM-2", value: "ALM-2" },
@@ -37,10 +37,17 @@ const Generate = () => {
     { name: "DMS", value: "DMS" },
   ];
 
-  const driverparams = [
-    { name: "Score", id: 1 },
-    // Add more vehicles as needed
-  ];
+  // const driverparams = [
+  //   { name: "Score", id: 1 },
+  //   // Add more vehicles as needed
+  // ];
+
+  function formatDateToYYYYMMDD(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Month is 0-based, so add 1 and pad with '0' if needed
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
 
   useEffect(() => {
     axios
@@ -60,6 +67,34 @@ const Generate = () => {
       });
   }, [token, user_uuid]);
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const requestData = {
+      fromDate: selectedStartDate,
+      toDate: selectedEndDate,
+      vehicle_uuid: selectedVehicles,
+      event: selectedEvents,
+      contact_uuid: selectedContacts,
+    };
+
+    axios
+      .post(
+        `${process.env.REACT_APP_API_URL}/reports/getreports-all`,
+        requestData,
+        {
+          headers: { authorization: `bearer ${token}` },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+        close();
+        window.location.href = "/customer/report";
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   const vehicleOptions = () => {
     const optionsArray = [];
     vehicles.forEach((el) => {
@@ -78,25 +113,27 @@ const Generate = () => {
         headers: { authorization: `bearer ${token}` },
       })
       .then((res) => {
-        console.log(res.data.contacts[0].contact_first_name);
+        console.log(res.data.contacts);
         setContacts(res.data.contacts);
       })
       .catch((err) => {
         console.log(err);
       });
   }, [token, user_uuid]);
+
   const contactOptions = () => {
     const optionsArray = [];
     contacts.forEach((el) => {
+      console.log(el.contact_first_name, "checking");
       optionsArray.push({
         key: el.user_uuid,
-        label: el.contact_first_name,
+        label: el.contact_first_name + " " + el.contact_last_name,
         value: el.contact_uuid,
       });
     });
     return optionsArray;
   };
-  console.log(selectedStartDate);
+
   return (
     <div>
       <p className="text-right text-sm text-red-400">
@@ -104,13 +141,17 @@ const Generate = () => {
       </p>
       <form>
         <div className="mb-6">
-          <div className="card p-fluid mt-6 flex flex-wrap gap-3">
+          <div className="card p-fluid mt-6 flex flex-wrap">
             <div className="flex-auto">
               <span className="p-float-label">
                 <Calendar
                   inputId="start_date"
                   value={selectedStartDate}
-                  onChange={(e) => setSelectedStartDate(e.value)}
+                  onChange={(e) =>
+                    setSelectedStartDate(
+                      e.value ? new Date(formatDateToYYYYMMDD(e.value)) : null
+                    )
+                  }
                 />
                 <label
                   htmlFor="start_date"
@@ -129,8 +170,13 @@ const Generate = () => {
                 <Calendar
                   inputId="end_date"
                   value={selectedEndDate}
-                  onChange={(e) => setSelectedEndDate(e.value)}
+                  onChange={(e) =>
+                    setSelectedEndDate(
+                      e.value ? new Date(formatDateToYYYYMMDD(e.value)) : null
+                    )
+                  }
                 />
+
                 <label
                   htmlFor="start_date"
                   className="text-gray-150 dark:text-gray-150"
@@ -173,7 +219,7 @@ const Generate = () => {
               </div>
             </div> */}
             {/* {selectedOption === "Vehicle" && ( */}
-            <div className="mt-3 w-[42vw]">
+            <div className="mt-3">
               <span className="p-float-label">
                 <MultiSelect
                   value={selectedVehicles}
@@ -191,7 +237,7 @@ const Generate = () => {
                   Select Vehicles
                 </label>
               </span>
-              <span className="p-float-label mt-8">
+              {/* <span className="p-float-label mt-8">
                 <MultiSelect
                   value={vehicleParams}
                   options={vehicleparams}
@@ -206,7 +252,7 @@ const Generate = () => {
                 >
                   Select Parameters
                 </label>
-              </span>
+              </span> */}
             </div>
             <div className="mt-3 w-[42vw]">
               <span className="p-float-label">
@@ -225,7 +271,7 @@ const Generate = () => {
                   Select Events
                 </label>
               </span>
-              <span className="p-float-label mt-8">
+              {/* <span className="p-float-label mt-8">
                 <MultiSelect
                   value={driverParams}
                   options={driverparams}
@@ -240,15 +286,15 @@ const Generate = () => {
                 >
                   Select Parameters
                 </label>
-              </span>
+              </span> */}
             </div>
-            {/* <div className="mt-3 w-[42vw]">
+            <div className="mt-3 w-[42vw]">
               <span className="p-float-label">
                 <MultiSelect
                   value={selectedContacts}
                   options={contactOptions()}
                   onChange={(e) => setSelectedContacts(e.value)}
-                  optionLabel="name"
+                  optionLabel="label"
                   optionValue="value"
                   className="rounded-lg border border-gray-300 bg-gray-50 py-0 shadow-sm dark:bg-gray-900 dark:placeholder-gray-50"
                 />
@@ -259,7 +305,7 @@ const Generate = () => {
                   Select Recipients
                 </label>
               </span>
-            </div> */}
+            </div>
             {/* <div className="mt-3 w-[42vw]">
               <p className="text-gray-600">Select Recipient</p>
               <span className="p-float-label mt-6">
@@ -316,6 +362,7 @@ const Generate = () => {
           <Link to="/customer/report">
             <button
               type="submit"
+              onClick={handleSubmit}
               className="rounded-lg bg-blue-700 px-4 py-1.5 text-lg font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
               Generate

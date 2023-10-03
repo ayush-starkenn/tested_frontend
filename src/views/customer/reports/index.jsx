@@ -51,7 +51,7 @@ const Reports = () => {
         modal
         className="p-fluid dark:bg-gray-900"
       >
-        <Generate />
+        <Generate close={closeDialog1} />
       </Dialog>
       <Dialog
         visible={isScheduleDialogVisible}

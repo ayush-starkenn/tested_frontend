@@ -380,7 +380,7 @@ const DevicesAdmin = () => {
             </div>
           </form>
         </Dialog>
-        <div>
+        <div className="pt-3">
           <button
             className={`${
               isListView === true
