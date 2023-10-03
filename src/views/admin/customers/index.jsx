@@ -359,7 +359,7 @@ const Customers = () => {
           Customers
         </h4>
 
-        <div>
+        <div className="pt-3">
           <button
             className={`${
               isListView === true
