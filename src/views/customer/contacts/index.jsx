@@ -4,8 +4,8 @@ import Cookies from "js-cookie";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import ContactsList from "./components/ContactsList";
-import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
+import { FiPlus } from "react-icons/fi";
 
 const Contacts = () => {
   const token = Cookies.get("token");
@@ -207,13 +207,13 @@ const Contacts = () => {
           Contacts
         </h4>
         <div>
-          <Button
-            label="New Contact"
-            icon="pi pi-plus"
-            severity="primary"
-            className="mt-2 h-10 px-3 py-0 text-left dark:hover:text-white"
+          <button
+            className="mt-2 flex h-10 items-center rounded-lg bg-blue-500 px-3 py-2 text-left font-semibold text-white hover:bg-blue-600"
             onClick={openDialog}
-          />
+          >
+            <FiPlus className="mr-2" /> {/* Use the React Icons component */}
+            New Vehicle
+          </button>
         </div>
         {/* dialog to add contact */}
         <Dialog
@@ -226,13 +226,13 @@ const Contacts = () => {
           className="p-fluid dark:bg-gray-900"
         >
           <form onSubmit={handleSubmit}>
-            <div className="mx-auto mt-6 ">
+            <div className="mx-auto mt-8 ">
               <span className={`p-float-label `}>
                 <InputText
                   id="contact_first_name"
                   name="contact_first_name"
                   onChange={handleChange}
-                  className={`${
+                  className={`border py-2 pl-2 ${
                     formErrors.contact_first_name ? "p-invalid" : ""
                   }`}
                 />
@@ -244,13 +244,13 @@ const Contacts = () => {
                 </small>
               )}
             </div>
-            <div className="mx-auto mt-6 ">
+            <div className="mx-auto mt-7 ">
               <span className={`p-float-label `}>
                 <InputText
                   id="contact_last_name"
                   name="contact_last_name"
                   onChange={handleChange}
-                  className={`${
+                  className={`border py-2 pl-2 ${
                     formErrors.contact_last_name ? "p-invalid" : ""
                   }`}
                 />
@@ -262,14 +262,16 @@ const Contacts = () => {
                 </small>
               )}
             </div>
-            <div className="mx-auto mt-6 ">
+            <div className="mx-auto mt-7 ">
               <span className={`p-float-label`}>
                 <InputText
                   id="contact_email"
                   name="contact_email"
                   type="email"
                   onChange={handleChange}
-                  className={`${formErrors.contact_email ? "p-invalid" : ""}`}
+                  className={`border py-2 pl-2 ${
+                    formErrors.contact_email ? "p-invalid" : ""
+                  }`}
                 />
                 <label htmlFor="contact_email">Email</label>
               </span>
@@ -277,14 +279,16 @@ const Contacts = () => {
                 <small className="p-error">{formErrors.contact_email}</small>
               )}
             </div>
-            <div className="mx-auto mt-6 ">
+            <div className="mx-auto mt-7 ">
               <span className={`p-float-label `}>
                 <InputText
                   id="contact_mobile"
                   name="contact_mobile"
                   keyfilter="pint"
                   onChange={handleChange}
-                  className={`${formErrors.contact_mobile ? "p-invalid" : ""}`}
+                  className={`border py-2 pl-2 ${
+                    formErrors.contact_mobile ? "p-invalid" : ""
+                  }`}
                 />
                 <label htmlFor="contact_mobile">Mobile Number</label>
               </span>

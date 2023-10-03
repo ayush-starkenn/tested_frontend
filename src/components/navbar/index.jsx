@@ -11,10 +11,10 @@ import { useNavigate } from "react-router-dom";
 import { HiOutlineUserCircle } from "react-icons/hi";
 import { Toast } from "primereact/toast";
 import { FaEdit, FaLock } from "react-icons/fa";
+import { FiCheck, FiLoader } from "react-icons/fi";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import axios from "axios";
-import { Button } from "primereact/button";
 
 const Navbar = ({ onOpenSidenav }) => {
   const [darkmode, setDarkmode] = useState(false);
@@ -249,13 +249,26 @@ const Navbar = ({ onOpenSidenav }) => {
         footer={
           editMode ? (
             <div>
-              <Button
-                label={isUpdating ? "Updating..." : "Update"}
-                icon={isUpdating ? "pi pi-spin pi-spinner" : "pi pi-check"}
-                className="p-button-primary px-3 py-2 hover:bg-none dark:hover:bg-gray-150"
+              <button
+                className={`p-button-primary rounded px-3 py-2 dark:bg-gray-150 dark:font-bold dark:text-blue-800 ${
+                  isUpdating
+                    ? "cursor-not-allowed bg-blue-200 text-blue-500"
+                    : "bg-blue-500 text-white hover:bg-blue-600"
+                } `}
                 disabled={isUpdating}
                 onClick={handleSubmit}
-              />
+              >
+                {isUpdating ? (
+                  <>
+                    Updating...{" "}
+                    <FiLoader className="inline-block animate-spin" />
+                  </>
+                ) : (
+                  <>
+                    Update <FiCheck className="inline-block" />
+                  </>
+                )}
+              </button>
             </div>
           ) : null
         }
@@ -304,6 +317,7 @@ const Navbar = ({ onOpenSidenav }) => {
                     handleInputChange("first_name", e.target.value)
                   }
                   disabled={!editMode}
+                  className="border py-2 pl-2"
                   // className={!editedCustomerData.first_name ? "p-invalid" : ""}
                 />
                 <label htmlFor="first_name">First Name</label>
@@ -319,6 +333,7 @@ const Navbar = ({ onOpenSidenav }) => {
                     handleInputChange("last_name", e.target.value)
                   }
                   disabled={!editMode}
+                  className="border py-2 pl-2"
                   // className={!editedCustomerData.last_name ? "p-invalid" : ""}
                 />
                 <label htmlFor="last_name">Last Name</label>
@@ -334,6 +349,7 @@ const Navbar = ({ onOpenSidenav }) => {
                 value={formData?.email || ""}
                 onChange={(e) => handleInputChange("email", e.target.value)}
                 disabled={!editMode}
+                className="border py-2 pl-2"
                 // className={!editedCustomerData.email ? "p-invalid" : ""}
               />
               <label htmlFor="email">Email</label>
@@ -349,6 +365,7 @@ const Navbar = ({ onOpenSidenav }) => {
                   handleInputChange("company_name", e.target.value)
                 }
                 disabled={!editMode}
+                className="border py-2 pl-2"
                 // className={!editedCustomerData.company_name ? "p-invalid" : ""}
               />
               <label htmlFor="company_name">Company Name</label>
@@ -363,6 +380,7 @@ const Navbar = ({ onOpenSidenav }) => {
                 value={formData?.phone || ""}
                 onChange={(e) => handleInputChange("phone", e.target.value)}
                 disabled={!editMode}
+                className="border py-2 pl-2"
                 // className={
                 //   isValidPhoneNumber(editedCustomerData?.phone || "")
                 //     ? ""
@@ -384,6 +402,7 @@ const Navbar = ({ onOpenSidenav }) => {
                 value={formData?.address || ""}
                 onChange={(e) => handleInputChange("address", e.target.value)}
                 disabled={!editMode}
+                className="border py-2 pl-2"
                 // className={!editedCustomerData.address ? "p-invalid" : ""}
               />
               <label htmlFor="address">Flat No./ Plot No., Area/Society</label>
@@ -398,6 +417,7 @@ const Navbar = ({ onOpenSidenav }) => {
                 value={formData?.city || ""}
                 onChange={(e) => handleInputChange("city", e.target.value)}
                 disabled={!editMode}
+                className="border py-2 pl-2"
                 // className={!editedCustomerData.city ? "p-invalid" : ""}
               />
               <label htmlFor="city">City</label>
@@ -411,6 +431,7 @@ const Navbar = ({ onOpenSidenav }) => {
                 value={formData?.state || ""}
                 onChange={(e) => handleInputChange("state", e.target.value)}
                 disabled={!editMode}
+                className="border py-2 pl-2"
                 // className={!editedCustomerData.state ? "p-invalid" : ""}
               />
               <label htmlFor="state">State</label>
@@ -425,6 +446,7 @@ const Navbar = ({ onOpenSidenav }) => {
                 value={formData?.pincode || ""}
                 onChange={(e) => handleInputChange("pincode", e.target.value)}
                 disabled={!editMode}
+                className="border py-2 pl-2"
                 // className={!editedCustomerData.pincode ? "p-invalid" : ""}
               />
               <label htmlFor="pincode">Pincode</label>
@@ -440,11 +462,12 @@ const Navbar = ({ onOpenSidenav }) => {
         modal
         footer={
           <div>
-            <Button
-              label="Change Password"
-              className="p-button-primary px-3 py-2 hover:bg-none dark:bg-blue-700 dark:hover:bg-gray-150"
+            <button
+              className="p-button-primary rounded px-3 py-2 dark:bg-gray-150 dark:font-bold dark:text-blue-800"
               onClick={handleResetPasswordSubmit}
-            />
+            >
+              Change Password
+            </button>
           </div>
         }
         className="p-fluid dark:bg-gray-900"
@@ -460,7 +483,7 @@ const Navbar = ({ onOpenSidenav }) => {
                 handleResetPasswordInputChange("oldPassword", e.target.value);
                 setPwerr(false);
               }}
-              className={pwerr ? "p-invalid" : ""}
+              className={`border py-2 pl-2 ${pwerr ? "p-invalid" : ""}`}
             />
             <label htmlFor="currentPassword">Current Password</label>
           </span>
@@ -476,7 +499,7 @@ const Navbar = ({ onOpenSidenav }) => {
                 handleResetPasswordInputChange("newPassword", e.target.value);
                 setPwerr(false);
               }}
-              className={pwerr ? "p-invalid" : ""}
+              className={`border py-2 pl-2 ${pwerr ? "p-invalid" : ""}`}
             />
             <label htmlFor="newPassword">New Password</label>
           </span>
@@ -494,7 +517,7 @@ const Navbar = ({ onOpenSidenav }) => {
                 );
                 setPwerr(false);
               }}
-              className={pwerr ? "p-invalid" : ""}
+              className={`border py-2 pl-2 ${pwerr ? "p-invalid" : ""}`}
             />
             <label htmlFor="confirmPassword">Confirm Password</label>
           </span>

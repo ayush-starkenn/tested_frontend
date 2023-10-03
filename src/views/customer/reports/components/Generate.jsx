@@ -13,9 +13,9 @@ const Generate = ({ close }) => {
   const [vehicles, setVehicles] = useState([]);
   const token = Cookies.get("token");
   const user_uuid = Cookies.get("user_uuid");
-  const [selectedVehicles, setSelectedVehicles] = useState([]);
-  const [selectedEvents, setSelectedEvents] = useState([]);
-  const [selectedContacts, setSelectedContacts] = useState([]);
+  const [selectedVehicles, setSelectedVehicles] = useState(null);
+  const [selectedEvents, setSelectedEvents] = useState(null);
+  const [selectedContacts, setSelectedContacts] = useState(null);
   // const [vehicleParams, setVehicleParams] = useState([]);
   // const [driverParams, setDriverParams] = useState([]);
   const [contacts, setContacts] = useState([]);
@@ -27,16 +27,15 @@ const Generate = ({ close }) => {
   // ];
 
   const events = [
-    { name: "ALM-2", value: "ALM-2" },
-    { name: "Break Data", value: "BRK" },
-    { name: "Accelarator Cut Data", value: "ACC" },
-    { name: "Limp Mode Data", value: "LMP" },
-    { name: "Accident Data", value: "ACD" },
-    { name: "Accelarator Cut Data", value: "ACC" },
-    { name: "ALM-3", value: "ALM-3" },
-    { name: "DMS", value: "DMS" },
+    { name: "ALM-2", code: "ALM-2" },
+    { name: "Break Data", code: "BRK" },
+    { name: "Accelarator Cut Data", code: "ACC" },
+    { name: "Limp Mode Data", code: "LMP" },
+    { name: "Accident Data", code: "ACD" },
+    { name: "Accelarator Cut Data", code: "ACC" },
+    { name: "ALM-3", code: "ALM-3" },
+    { name: "DMS", code: "DMS" },
   ];
-
   // const driverparams = [
   //   { name: "Score", id: 1 },
   //   // Add more vehicles as needed
@@ -99,9 +98,9 @@ const Generate = ({ close }) => {
     const optionsArray = [];
     vehicles.forEach((el) => {
       optionsArray.push({
-        key: el.user_uuid,
-        label: el.vehicle_name,
-        value: el.vehicle_uuid,
+        key: el.vehicle_uuid,
+        name: el.vehicle_name,
+        code: el.vehicle_uuid,
       });
     });
     return optionsArray;
@@ -124,16 +123,14 @@ const Generate = ({ close }) => {
   const contactOptions = () => {
     const optionsArray = [];
     contacts.forEach((el) => {
-      console.log(el.contact_first_name, "checking");
       optionsArray.push({
-        key: el.user_uuid,
+        key: el.contact_uuid,
         label: el.contact_first_name + " " + el.contact_last_name,
-        value: el.contact_uuid,
+        code: el.contact_uuid,
       });
     });
     return optionsArray;
   };
-
   return (
     <div>
       <p className="text-right text-sm text-red-400">
@@ -141,7 +138,7 @@ const Generate = ({ close }) => {
       </p>
       <form>
         <div className="mb-6">
-          <div className="card p-fluid mt-6 flex flex-wrap">
+          <div className="card p-fluid mt-6 flex w-[42vw] flex-wrap gap-3">
             <div className="flex-auto">
               <span className="p-float-label">
                 <Calendar
@@ -152,10 +149,11 @@ const Generate = ({ close }) => {
                       e.value ? new Date(formatDateToYYYYMMDD(e.value)) : null
                     )
                   }
+                  className="rounded border"
                 />
                 <label
                   htmlFor="start_date"
-                  className="text-gray-150 dark:text-gray-150"
+                  className="text-gray-700 dark:text-gray-150"
                 >
                   From
                 </label>
@@ -175,11 +173,12 @@ const Generate = ({ close }) => {
                       e.value ? new Date(formatDateToYYYYMMDD(e.value)) : null
                     )
                   }
+                  className="rounded border dark:bg-gray-900"
                 />
 
                 <label
                   htmlFor="start_date"
-                  className="text-gray-150 dark:text-gray-150"
+                  className="text-gray-700  dark:text-gray-150"
                 >
                   To
                 </label>
@@ -219,14 +218,15 @@ const Generate = ({ close }) => {
               </div>
             </div> */}
             {/* {selectedOption === "Vehicle" && ( */}
-            <div className="mt-3">
+          </div>
+          <div>
+            <div className="mt-8 w-[42vw] flex-auto">
               <span className="p-float-label">
                 <MultiSelect
                   value={selectedVehicles}
                   options={vehicleOptions()}
                   onChange={(e) => setSelectedVehicles(e.value)}
-                  optionLabel="label"
-                  optionValue="value"
+                  optionLabel="name"
                   className="rounded-lg border border-gray-300 bg-gray-50 py-0 shadow-sm dark:bg-gray-900 dark:placeholder-gray-50"
                 />
 
@@ -254,14 +254,13 @@ const Generate = ({ close }) => {
                 </label>
               </span> */}
             </div>
-            <div className="mt-3 w-[42vw]">
+            <div className="mt-8 w-[42vw]">
               <span className="p-float-label">
                 <MultiSelect
                   value={selectedEvents}
                   options={events}
                   onChange={(e) => setSelectedEvents(e.value)}
                   optionLabel="name"
-                  optionValue="value"
                   className="rounded-lg border border-gray-300 bg-gray-50 py-0 shadow-sm dark:bg-gray-900 dark:placeholder-gray-50"
                 />
                 <label
@@ -288,15 +287,15 @@ const Generate = ({ close }) => {
                 </label>
               </span> */}
             </div>
-            <div className="mt-3 w-[42vw]">
+            <div className="mt-8 w-[42vw]">
               <span className="p-float-label">
                 <MultiSelect
                   value={selectedContacts}
                   options={contactOptions()}
                   onChange={(e) => setSelectedContacts(e.value)}
                   optionLabel="label"
-                  optionValue="value"
-                  className="rounded-lg border border-gray-300 bg-gray-50 py-0 shadow-sm dark:bg-gray-900 dark:placeholder-gray-50"
+                  display="chip"
+                  className="rounded-lg  border border-gray-300 bg-gray-50 py-0 shadow-sm dark:bg-gray-900 dark:placeholder-gray-50"
                 />
                 <label
                   htmlFor="vehicle"

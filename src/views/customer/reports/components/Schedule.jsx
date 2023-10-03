@@ -56,6 +56,7 @@ const Schedule = () => {
                   inputId="start_date"
                   value={selectedStartDate}
                   onChange={(e) => setSelectedStartDate(e.value)}
+                  className="rounded border"
                 />
                 <label
                   htmlFor="start_date"
@@ -75,6 +76,7 @@ const Schedule = () => {
                   inputId="end_date"
                   value={selectedEndDate}
                   onChange={(e) => setSelectedEndDate(e.value)}
+                  className="rounded border"
                 />
                 <label
                   htmlFor="start_date"
@@ -192,7 +194,7 @@ const Schedule = () => {
             <div className="mt-3 w-[42vw]">
               <p className="text-gray-600">Select Recipient</p>
               <span className="p-float-label mt-6">
-                <InputText name="name" />
+                <InputText name="name" className="border py-2 pl-2" />
                 <label
                   htmlFor="name"
                   className="text-gray-150 dark:text-gray-150"
@@ -214,8 +216,12 @@ const Schedule = () => {
               </label>
             </div>
             {recipient === "Mobile" && (
-              <div className="mt-1">
-                <InputText name="name" placeholder="Enter mobile no." />
+              <div className="mt-4">
+                <InputText
+                  name="name"
+                  className="border py-2 pl-2"
+                  placeholder="Enter mobile no."
+                />
               </div>
             )}
             <div className="align-items-center mt-4 flex">
@@ -231,10 +237,11 @@ const Schedule = () => {
               </label>
             </div>
             {recipient === "Email" && (
-              <div className="mt-1">
+              <div className="mt-4">
                 <InputText
                   name="name"
                   keyfilter="email"
+                  className="border py-2 pl-2"
                   placeholder="Enter email ID"
                 />
               </div>
