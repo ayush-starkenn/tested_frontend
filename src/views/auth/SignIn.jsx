@@ -308,7 +308,7 @@ const SignIn = () => {
                           type="email"
                           name="email"
                           onChange={handleChange}
-                          className="peer block w-full appearance-none rounded-t-lg border-0 border-b-2 border-gray-300 bg-gray-50 px-2.5 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:!bg-gray-800 dark:!text-white dark:focus:border-blue-500"
+                          className="peer block w-full appearance-none rounded-t-lg border-0 border-b-2 border-gray-300 bg-gray-50 px-2.5 pb-3 pt-2 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:!bg-gray-800 dark:!text-white dark:focus:border-blue-500"
                         />
                         <label htmlFor="email" className="text-base">
                           Username
@@ -323,14 +323,14 @@ const SignIn = () => {
                           name="password"
                           onChange={handleChange}
                           type={showPassword ? "text" : "password"}
-                          className="peer block w-full appearance-none rounded-t-lg border-0 border-b-2 border-gray-300 bg-gray-50 px-2.5 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:!bg-gray-800 dark:!text-white dark:focus:border-blue-500"
+                          className="peer block w-full appearance-none rounded-t-lg border-0 border-b-2 border-gray-300 bg-gray-50 px-2.5 pb-3 pt-2 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:!bg-gray-800 dark:!text-white dark:focus:border-blue-500"
                         />
                         <label htmlFor="password" className="text-base">
                           Password
                         </label>
                       </span>
 
-                      <div className="absolute right-2.5 top-4">
+                      <div className="absolute right-2.5 top-3">
                         {showPassword ? (
                           <FaEyeSlash
                             className="h-5 w-5 cursor-pointer  text-gray-500"
@@ -399,7 +399,9 @@ const SignIn = () => {
                       keyfilter="pint"
                       id="otp"
                       value={otp}
-                      className={otpError ? "p-invalid" : ""}
+                      className={`border py-2 pl-2 ${
+                        otpError ? "p-invalid" : ""
+                      }`}
                       onChange={(e) => {
                         setOtp(e.target.value);
                         setOtpError(false);
@@ -429,7 +431,9 @@ const SignIn = () => {
                       id="newPassword"
                       type="password"
                       name="changepassword"
-                      className={pwError ? "p-invalid" : ""}
+                      className={`border py-2 pl-2 ${
+                        pwError ? "p-invalid" : ""
+                      }`}
                       value={changepassword}
                       onChange={(e) => {
                         setChangePassword(e.target.value);
@@ -448,7 +452,9 @@ const SignIn = () => {
                     <InputText
                       id="confirmNewPassword"
                       type="password"
-                      className={pwError ? "p-invalid" : ""}
+                      className={`border py-2 pl-2 ${
+                        pwError ? "p-invalid" : ""
+                      }`}
                       value={confirmNewPassword}
                       onChange={(e) => setConfirmNewPassword(e.target.value)}
                     />
@@ -480,7 +486,9 @@ const SignIn = () => {
                       id="username"
                       name="emailforotp"
                       value={emailforotp}
-                      className={showError ? "p-invalid" : ""}
+                      className={`border py-2 pl-2 ${
+                        showError ? "p-invalid" : ""
+                      }`}
                       onChange={(e) => {
                         setEmailForOTP(e.target.value);
                         setShowError(false);

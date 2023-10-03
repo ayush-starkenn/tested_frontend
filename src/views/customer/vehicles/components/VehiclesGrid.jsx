@@ -30,8 +30,8 @@ export default function VehiclesGrid({
   const [localEcuData, setLocalEcuData] = useState([]);
   const [localIoTData, setLocalIoTData] = useState([]);
   const [localDMSData, setLocalDMSData] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [myData, setMyData] = useState();
-  const totalItems = vehiData.length;
 
   useEffect(() => {
     if (ecuData) {
@@ -228,16 +228,37 @@ export default function VehiclesGrid({
 
   return (
     <div className="mt-4">
+      <div className="my-4 flex justify-end">
+        <div className="justify-content-between align-items-center flex flex-wrap gap-2">
+          <span className="p-input-icon-left">
+            <i className="pi pi-search" />
+            <InputText
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Keyword Search"
+              className="searchbox w-[25vw] cursor-pointer rounded-full border py-3 pl-8 font-bold dark:bg-gray-950 dark:text-gray-50"
+            />
+            {searchQuery && (
+              <Button
+                icon="pi pi-times"
+                className="p-button-rounded p-button-text"
+                onClick={() => setSearchQuery("")}
+              />
+            )}
+          </span>
+        </div>
+      </div>
       {/* GridView */}
       <DataView
-        value={vehiData}
+        value={vehiData.filter((item) =>
+          item.vehicle_name.toLowerCase().includes(searchQuery.toLowerCase())
+        )}
         layout="grid"
         itemTemplate={itemTemplate}
         paginator
         rows={6}
         emptyMessage="No vehicle found."
       />
-      <p className="text-center text-gray-700">Total Items : {totalItems}</p>
       {/* Edit vehicle Data */}
       <Dialog
         visible={editDialog}
