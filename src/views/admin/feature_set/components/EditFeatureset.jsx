@@ -289,8 +289,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
   ];
 
   const activeOption = [
-    { label: "Yes", value: "1" },
-    { label: "No", value: "0" },
+    { label: "Active", value: 1 },
+    { label: "Deactive", value: 2 },
   ];
 
   //edit dialog
@@ -353,23 +353,13 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
               id="active"
               style={{
                 width: "30vw",
-                borderBottom: "1px dashed #ced4da",
-                borderRadius: "0px",
-                padding: "0.30px",
-                borderRight: "none",
-                borderLeft: "none",
-                borderTop: "none",
+                borderRadius: "5px",
               }}
               onChange={handleChange}
               options={activeOption}
               optionLabel="label"
               optionValue="value"
               className="md:w-14rem mt-2 w-full"
-              placeholder={
-                featuresetDetails?.featureset_status === 1
-                  ? "Active"
-                  : "Deactive"
-              }
               value={featuresetDetails.featureset_status}
             />
           </div>

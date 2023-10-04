@@ -460,20 +460,20 @@ const FeatureList = () => {
         <Column
           field="serialNo"
           style={{ minWidth: "3rem" }}
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          className="border-none dark:bg-navy-800 dark:text-gray-200"
         />
         <Column
           field="featureset_name"
           header="Featureset Name"
           style={{ minWidth: "12rem" }}
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          className="border-none dark:bg-navy-800 dark:text-gray-200"
         />
         <Column
           field="featureset_users"
           header="Featureset Users"
           body={usersBodyTemplate}
           style={{ minWidth: "16rem" }}
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          className="border-none dark:bg-navy-800 dark:text-gray-200"
         />
         <Column
           field="featureset_status"
@@ -481,12 +481,12 @@ const FeatureList = () => {
           body={statusBodyTemplate}
           sortable
           style={{ minWidth: "8rem" }}
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          className="border-none dark:bg-navy-800 dark:text-gray-200"
         />
         <Column
           body={actionBodyTemplate}
           header="Action"
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
         />
       </DataTable>

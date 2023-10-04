@@ -8,8 +8,6 @@ import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import MapOverview from "./components/MapOverview";
-import CheckTable from "./components/LogsTable";
-import { Card } from "primereact/card";
 import OngoingTable from "./components/OngoingTable";
 import LogsTable from "./components/LogsTable";
 import { RiContactsLine } from "react-icons/ri";
@@ -64,7 +62,9 @@ const MainDashboard = () => {
   return (
     <div>
       {/* Card widget */}
-      <h4 className="text-dark text-xl font-bold dark:text-white">Dashboard</h4>
+      <h4 className="text-dark py-3 text-2xl font-bold dark:text-white">
+        Dashboard
+      </h4>
       <div className="3xl:grid-cols-6 mt-3 grid grid-cols-1 gap-5 md:grid-cols-3 lg:grid-cols-3 2xl:grid-cols-3">
         <Widget
           icon={<BsFillCpuFill className="h-6 w-6" />}

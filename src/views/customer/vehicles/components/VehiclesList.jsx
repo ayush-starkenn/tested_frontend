@@ -33,6 +33,7 @@ export default function VehiclesList({
   const [editData, setEditData] = useState({});
   const [editId, setEditId] = useState("");
   const [deleteId, setDeleteId] = useState("");
+  const [deleteVehicleName, setDeleteVehicleName] = useState("");
   const [localEcuData, setLocalEcuData] = useState([]);
   const [localIoTData, setLocalIoTData] = useState([]);
   const [localDMSData, setLocalDMSData] = useState([]);
@@ -77,7 +78,7 @@ export default function VehiclesList({
               value={globalFilterValue}
               onChange={onGlobalFilterChange}
               placeholder="Keyword Search"
-              className="searchbox w-[25vw] cursor-pointer rounded-full dark:bg-gray-950 dark:text-gray-50"
+              className="searchbox w-[25vw] cursor-pointer rounded-full border py-3 pl-8 dark:bg-gray-950 dark:text-gray-50"
             />
             {globalFilterValue && (
               <Button
@@ -100,37 +101,32 @@ export default function VehiclesList({
           <Button
             icon="pi pi-map-marker"
             rounded
-            outlined
-            className="mr-2"
+            className="mr-2 border border-green-600 text-green-600"
             style={{
               width: "2rem",
               height: "2rem",
             }}
-            severity="info"
           />
         </Link>
         <Button
           icon="pi pi-pencil"
           rounded
-          outlined
-          className="mr-2"
+          className="mr-2 border border-gray-700 text-gray-700"
           style={{ width: "2rem", height: "2rem" }}
           onClick={() => openEditDialog(rowData)}
         />
         <Button
           icon="pi pi-trash"
           rounded
-          outlined
           style={{ width: "2rem", height: "2rem" }}
-          severity="danger"
-          className="mr-2"
+          className="mr-2 border border-red-600 text-red-600"
           onClick={() => DeleteDialog(rowData)}
         />
         <Button
           icon="pi pi-eye"
           rounded
           outlined
-          className="text-red-500 dark:text-blue-500"
+          className="border border-blue-500 text-blue-500 dark:text-blue-500"
           style={{ width: "2rem", height: "2rem" }}
           onClick={() => ViewDialog(rowData)}
         />
@@ -165,6 +161,7 @@ export default function VehiclesList({
   const DeleteDialog = (rowData) => {
     setDeleteDialog(!deleteDialog);
     setDeleteId(rowData?.vehicle_uuid);
+    setDeleteVehicleName(rowData?.vehicle_name);
   };
 
   const ViewDialog = (rowData) => {
@@ -253,28 +250,28 @@ export default function VehiclesList({
         <Column
           field="serialNo"
           header="Sr. No."
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "4rem" }}
         ></Column>
         <Column
           field="vehicle_name"
           header="vehicle_name"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
         ></Column>
         <Column
           field="vehicle_registration"
           header="vehicle_registration"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
         ></Column>
         <Column
           field="dms"
           header="DMS"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "5rem" }}
           body={(rowData) => renderCellWithNA(rowData.dms)}
         ></Column>
@@ -282,7 +279,7 @@ export default function VehiclesList({
           field="ecu"
           header="ECU"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "5rem" }}
           body={(rowData) => renderCellWithNA(rowData.ecu)}
         ></Column>
@@ -290,7 +287,7 @@ export default function VehiclesList({
           field="iot"
           header="IoT"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="border-b dark:bg-navy-800  dark:text-gray-200"
           style={{ minWidth: "5rem" }}
           body={(rowData) => renderCellWithNA(rowData.iot)}
         ></Column>
@@ -299,14 +296,14 @@ export default function VehiclesList({
           field="vehicle_status"
           header="Status"
           sortable
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "6rem" }}
           body={renderStatusCell}
         ></Column>
         <Column
           body={actionBodyTemplate}
           header="Action"
-          className="dark:bg-gray-900 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "6rem" }}
         ></Column>
       </DataTable>
@@ -473,7 +470,7 @@ export default function VehiclesList({
               <label htmlFor="status">Select Status</label>
             </span>
           </div>
-          <div className="p-field p-col-12 flex justify-center">
+          <div className="p-field p-col-12 mt-7 flex justify-center">
             <button
               type="submit"
               className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
@@ -492,20 +489,20 @@ export default function VehiclesList({
           <div>
             <Button
               label="Delete"
-              icon="pi pi-times"
-              className="p-button-danger mr-2 px-3 hover:bg-none dark:hover:bg-gray-50"
+              icon="pi pi-check"
+              className="mr-2 bg-red-500 px-3 py-2 text-white"
               onClick={handleDelete}
             />
             <Button
               label="Cancel"
-              icon="pi pi-check"
-              className="p-button-secondary px-3 py-2 hover:bg-none dark:hover:bg-gray-50"
+              icon="pi pi-times"
+              className="bg-gray-600 px-3 py-2 text-white dark:text-gray-850 "
               onClick={DeleteDialog}
             />
           </div>
         }
       >
-        <div>Are you sure you want to delete ?</div>
+        <div>Are you sure you want to delete {deleteVehicleName}?</div>
       </Dialog>
 
       {/* ViewDialog */}

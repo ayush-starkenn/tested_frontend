@@ -80,12 +80,12 @@ input:checked.defaultCheckbox::before {
   border-radius: 18px 18px 0px 0px;
 }
 .p-datatable .p-datatable-thead > tr > th {
-  background-color: #a3aed0;
+  background-color: #ddd;
   border: none;
 }
 .p-datatable .p-paginator-bottom {
   border-radius: 0px 0px 18px 18px;
-  background-color: #a3aed0;
+  background-color: #ddd;
   border: none;
 }
 .p-paginator .p-paginator-pages .p-paginator-page {
@@ -132,6 +132,9 @@ input:checked.defaultCheckbox::before {
 }
 .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
   background: #fff;
+}
+.dark .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+  color: #444;
 }
 .p-datatable .p-sortable-column:focus {
   box-shadow: none;
@@ -205,7 +208,7 @@ input:checked.defaultCheckbox::before {
   border: none;
 }
 .dark .p-fluid .p-inputtext {
-  background-color: #070d22 !important;
+  background-color: #1b2559 !important;
   color: #fefefe;
 }
 .dark .p-fluid .p-dropdown {
@@ -220,11 +223,11 @@ input:checked.defaultCheckbox::before {
   color: #fefefe;
 }
 .dark .p-datatable .p-datatable-thead > tr > th {
-  background-color: #111c44;
+  background-color: #1b2559;
   color: #ddd;
 }
 .dark .p-datatable .p-paginator-bottom {
-  background-color: #111c44;
+  background-color: #1b2559;
   color: #fefefe;
 }
 .dark .p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {
@@ -308,7 +311,7 @@ body
   border: none;
 }
 .p-tabview .p-tabview-nav li .p-tabview-nav-link {
-  color: #918c8c;
+  color: #070d22;
   background: none;
   font-weight: 500;
 }
@@ -319,10 +322,6 @@ body
 .p-tabview .p-tabview-nav li .p-tabview-nav-link {
   border-radius: 0px;
 }
-.highlight {
-  background-color: yellow; /* Change this to the desired highlight color */
-  /* Add any other styles to highlight the matched text */
-}
 
 .p-tabview .p-tabview-nav li .p-tabview-nav-link:hover {
   background: none;
@@ -330,13 +329,17 @@ body
 .p-tabview .p-tabview-panels {
   border-radius: 0px;
 }
+.p-highlight {
+  background-color: #ccc;
+  border-radius: 15px;
+  color: #070d22;
+}
 .p-tabview
   .p-tabview-nav
   li:not(.p-highlight):not(.p-disabled):hover
   .p-tabview-nav-link {
   background: none;
   border-color: #adb5bd;
-  color: #6c757d;
 }
 .p-tabview .p-tabview-nav li .p-tabview-nav-link:hover {
   background: #ffffff;
@@ -406,9 +409,6 @@ body
   border: 1px solid #a9abf8;
 }
 
-.pi-pencil {
-  color: #a9abf8;
-}
 .p-dataview .p-paginator-bottom {
   border-width: 0px;
   border-radius: 0;
@@ -426,8 +426,8 @@ body
 .dark-mode .radio-input {
   background: #422afb;
 }
-.route4,
-.route5 {
+.route3,
+.route4 {
   display: none;
 }
 @keyframes ellipsis {
@@ -474,4 +474,15 @@ body
   .custom-tooltip {
     display: none;
   }
+}
+
+.btn-play {
+  background-color: #333;
+  color: #f1f1f1;
+  font-weight: bold;
+  display: flex;
+  padding: 8px 12px;
+  border-radius: 8px;
+  align-items: center;
+  align-self: center;
 }

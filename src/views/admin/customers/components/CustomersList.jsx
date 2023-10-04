@@ -528,15 +528,16 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
         <Column
           key="user_uuid"
           field="serialNo"
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
-          style={{ minWidth: "4rem", textAlign: "center" }}
+          header="Sr. no."
+          className="border-none dark:bg-navy-800 dark:text-gray-200"
+          style={{ minWidth: "4rem" }}
         />
         <Column
           key="user_uuid"
           field="full_name"
           header="Name"
           style={{ minWidth: "8rem" }}
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          className="border-none dark:bg-navy-800 dark:text-gray-200"
           body={(rowData) => (
             <>
               {rowData.first_name.charAt(0).toUpperCase() +
@@ -551,20 +552,20 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
           field="email"
           header="Email"
           style={{ minWidth: "8rem" }}
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          className="border-none dark:bg-navy-800 dark:text-gray-200"
         />
         <Column
           key="user_uuid"
           field="company_name"
           header="Company Name"
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          className="border-none dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "6rem" }}
         />
         <Column
           key="user_uuid"
           field="phone"
           header="Contact No."
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          className="border-none dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "5rem" }}
         />
         <Column
@@ -572,16 +573,16 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
           field="user_status"
           header="Status"
           body={statusBodyTemplate}
-          className="border-none dark:bg-gray-900 dark:text-gray-200"
+          className="border-none dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "5rem" }}
         />
         <Column
           key="user_uuid"
           header="Action"
-          headerStyle={{ width: "11rem", textAlign: "left" }}
+          headerStyle={{ width: "9rem", textAlign: "left" }}
           bodyStyle={{ textAlign: "left", overflow: "visible" }}
           body={actionBodyTemplate}
-          className="border-none dark:bg-gray-900 "
+          className="border-none dark:bg-navy-800 "
         />
       </DataTable>
       <EditCustomerDialog

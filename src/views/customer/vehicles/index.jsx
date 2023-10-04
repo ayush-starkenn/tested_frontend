@@ -4,14 +4,16 @@ import VehiclesGrid from "./components/VehiclesGrid";
 import { BsGrid, BsListUl } from "react-icons/bs";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { Toast } from "primereact/toast";
+import { FiPlus } from "react-icons/fi";
 
 const Marketplace = () => {
-  const [isListView, setIsListView] = useState(true);
+  const [isListView, setIsListView] = useState(
+    localStorage.getItem("viewPreference") === "grid" ? false : true
+  );
   const [vehiData, setVehiData] = useState([]);
   const [dialog1, setDialog1] = useState(false);
   const [addData, setAddData] = useState({});
@@ -56,12 +58,11 @@ const Marketplace = () => {
     return errors;
   };
 
-  const handleListView = () => {
-    setIsListView(true);
-  };
-
-  const handleGridView = () => {
-    setIsListView(false);
+  const handleToggleView = () => {
+    const newView = !isListView;
+    setIsListView(newView);
+    // Store the view preference in localStorage
+    localStorage.setItem("viewPreference", newView ? "list" : "grid");
   };
 
   const openDialog1 = () => {
@@ -316,17 +317,17 @@ const Marketplace = () => {
     <>
       <Toast ref={toastRef} position="top-right" />
       <div className="flex justify-between">
-        <h4 className="text-dark text-xl font-bold dark:text-white">
+        <h4 className="text-dark pt-3 text-2xl font-bold dark:text-white">
           Vehicles
         </h4>
-        <div>
+        <div className="pt-3">
           <button
             className={`${
               isListView === true
                 ? "list-btn bg-gray-150 px-3 py-2  dark:bg-gray-700  "
                 : "list-btn bg-white px-3 py-2  dark:bg-gray-150 "
             }`}
-            onClick={handleListView}
+            onClick={handleToggleView}
           >
             <BsListUl />
           </button>
@@ -336,20 +337,20 @@ const Marketplace = () => {
                 ? "grid-btn bg-gray-150 px-3 py-2  dark:bg-gray-700  "
                 : "grid-btn bg-white px-3 py-2  dark:bg-gray-150 "
             }`}
-            onClick={handleGridView}
+            onClick={handleToggleView}
           >
             <BsGrid />
           </button>
         </div>
       </div>
       {/* button to add vehicle */}
-      <Button
-        label="New Vehicle"
-        icon="pi pi-plus"
-        severity="primary"
-        className="mt-2 h-10 px-3 py-0 text-left dark:hover:text-white"
+      <button
+        className="mt-2 flex h-10 items-center rounded-lg bg-blue-500 px-3 py-2 text-left font-semibold text-white hover:bg-blue-600"
         onClick={openDialog1}
-      />
+      >
+        <FiPlus className="mr-2" /> {/* Use the React Icons component */}
+        New Vehicle
+      </button>
       {/* dialog for adding vehicle */}
       <Dialog
         visible={dialog1}
@@ -361,7 +362,7 @@ const Marketplace = () => {
         className="p-fluid dark:bg-gray-900"
       >
         <form onSubmit={handleSubmit} className="flex flex-wrap">
-          <div className="mx-auto mt-1 w-[34.5vw]">
+          <div className="mx-auto mt-8 w-[34.5vw]">
             <span
               className={`p-float-label ${
                 formErrors.vehicle_name && "p-invalid"
@@ -371,6 +372,7 @@ const Marketplace = () => {
                 id="vehicle_name"
                 name="vehicle_name"
                 onChange={handleChange}
+                className="border py-2 pl-2"
               />
               <label htmlFor="vehicle_name">Vehicle Name</label>
             </span>
@@ -378,7 +380,7 @@ const Marketplace = () => {
               <small className="p-error">{formErrors.vehicle_name}</small>
             )}
           </div>
-          <div className="mx-auto mt-6 w-[34.5vw]">
+          <div className="mx-auto mt-7 w-[34.5vw]">
             <span
               className={`p-float-label ${
                 formErrors.vehicle_registration && "p-invalid"
@@ -388,6 +390,7 @@ const Marketplace = () => {
                 id="vehicle_registration"
                 name="vehicle_registration"
                 onChange={handleChange}
+                className="border py-2 pl-2"
               />
               <label htmlFor="vehicle_registration">Vehicle Registration</label>
             </span>
@@ -397,7 +400,7 @@ const Marketplace = () => {
               </small>
             )}
           </div>
-          <div className="mx-auto mt-6 w-[34.5vw]">
+          <div className="mx-auto mt-7 w-[34.5vw]">
             <span className={`p-float-label ${formErrors.dms && "p-invalid"}`}>
               <Dropdown
                 id="ecu"
@@ -407,6 +410,7 @@ const Marketplace = () => {
                 optionValue="value"
                 onChange={handleChange}
                 value={addData?.ecu}
+                className="border"
               />
               <label htmlFor="status">Select ECU</label>
             </span>
@@ -414,7 +418,7 @@ const Marketplace = () => {
               <small className="p-error">{formErrors.ecu}</small>
             )}
           </div>
-          <div className="mx-auto mt-6 w-[34.5vw]">
+          <div className="mx-auto mt-7 w-[34.5vw]">
             <span className={`p-float-label ${formErrors.dms && "p-invalid"}`}>
               <Dropdown
                 id="iot"
@@ -424,6 +428,7 @@ const Marketplace = () => {
                 optionValue="value"
                 onChange={handleChange}
                 value={addData?.iot}
+                className="border"
               />
               <label htmlFor="status">Select IoT</label>
             </span>
@@ -431,7 +436,7 @@ const Marketplace = () => {
               <small className="p-error">{formErrors.iot}</small>
             )}
           </div>
-          <div className="mx-auto mt-6 w-[34.5vw]">
+          <div className="mx-auto mt-7 w-[34.5vw]">
             <span className="p-float-label">
               <Dropdown
                 id="dms"
@@ -441,11 +446,12 @@ const Marketplace = () => {
                 optionValue="value"
                 onChange={handleChange}
                 value={addData?.dms}
+                className="border"
               />
               <label htmlFor="status">Select DMS</label>
             </span>
           </div>
-          <div className="mx-auto mt-6 w-[34.5vw]">
+          <div className="mx-auto mt-7 w-[34.5vw]">
             <span className={`p-float-label ${formErrors.dms && "p-invalid"}`}>
               <Dropdown
                 id="featureset_uuid"
@@ -455,6 +461,7 @@ const Marketplace = () => {
                 optionValue="value"
                 onChange={handleChange}
                 value={addData?.featureset_uuid}
+                className="border"
               />
               <label htmlFor="status">Select Featureset</label>
             </span>
@@ -463,10 +470,10 @@ const Marketplace = () => {
             )}
           </div>
 
-          <div className="p-field p-col-12 flex justify-center">
+          <div className="p-field p-col-12 mt-7 flex justify-center">
             <button
               type="submit"
-              className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
+              className="rounded bg-blue-600 px-3 py-2 text-white dark:bg-gray-150 dark:font-bold dark:text-blue-800"
             >
               Add Vehicle
             </button>

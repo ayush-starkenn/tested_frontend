@@ -11,6 +11,7 @@ import VehicleTrips from "./VehicleTrips";
 export default function VehiclesGrid({ data }) {
   const [viewDialog, setViewDialog] = useState(false);
   const [myData, setMyData] = useState();
+  const totalItems = data.length;
 
   const ViewDialog = (rowData) => {
     setMyData(rowData);
@@ -108,7 +109,7 @@ export default function VehiclesGrid({ data }) {
         rows={6}
         emptyMessage="No vehicle found."
       />
-
+      <p className="text-center text-gray-700">Total Items : {totalItems}</p>
       {/* ViewDialog */}
       <Dialog
         visible={viewDialog}
