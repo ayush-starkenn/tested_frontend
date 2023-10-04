@@ -308,10 +308,10 @@ const SignIn = () => {
                           type="email"
                           name="email"
                           onChange={handleChange}
-                          className="peer block w-full appearance-none rounded-t-lg border-0 border-b-2 border-gray-300 bg-gray-50 px-2.5 pb-3 pt-2 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:!bg-gray-800 dark:!text-white dark:focus:border-blue-500"
+                          className="peer block w-full appearance-none rounded-t-lg border-0 border-b-2 border-gray-300 bg-gray-50 px-2.5 py-2.5 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:!bg-gray-800 dark:!text-white dark:focus:border-blue-500"
                         />
-                        <label htmlFor="email" className="text-base">
-                          Username
+                        <label htmlFor="email">
+                          <p className="text-[1rem]">Username</p>
                         </label>
                       </span>
                     </div>
@@ -323,10 +323,10 @@ const SignIn = () => {
                           name="password"
                           onChange={handleChange}
                           type={showPassword ? "text" : "password"}
-                          className="peer block w-full appearance-none rounded-t-lg border-0 border-b-2 border-gray-300 bg-gray-50 px-2.5 pb-3 pt-2 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:!bg-gray-800 dark:!text-white dark:focus:border-blue-500"
+                          className="peer block w-full appearance-none rounded-t-lg border-0 border-b-2 border-gray-300 bg-gray-50 px-2.5 py-2.5 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:!bg-gray-800 dark:!text-white dark:focus:border-blue-500"
                         />
-                        <label htmlFor="password" className="text-base">
-                          Password
+                        <label htmlFor="password">
+                          <p className="text-[1rem]">Password</p>
                         </label>
                       </span>
 
@@ -351,7 +351,7 @@ const SignIn = () => {
                         className="rounded-md bg-blueSecondary py-1 pl-4 pr-8 text-white dark:!bg-gray-100 dark:!text-gray-850"
                       >
                         Sign In
-                        <BsArrowRightCircleFill className="absolute left-[4.6rem] top-[0.6rem]" />
+                        <BsArrowRightCircleFill className="absolute left-[4.6rem] top-[0.6rem] " />
                       </button>
                     </div>
                   </form>
@@ -429,7 +429,7 @@ const SignIn = () => {
                   <span className="p-float-label">
                     <InputText
                       id="newPassword"
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       name="changepassword"
                       className={`border py-2 pl-2 ${
                         pwError ? "p-invalid" : ""
@@ -442,6 +442,19 @@ const SignIn = () => {
                     />
                     <label htmlFor="newPassword">New Password</label>
                   </span>
+                  <div className="absolute right-[2.5rem] top-[7.7rem]">
+                    {showPassword ? (
+                      <FaEyeSlash
+                        className="h-5 w-5 cursor-pointer  text-gray-500"
+                        onClick={togglePasswordVisibility}
+                      />
+                    ) : (
+                      <FaEye
+                        className="h-5 w-5 cursor-pointer text-gray-600"
+                        onClick={togglePasswordVisibility}
+                      />
+                    )}
+                  </div>
                   {pwError && (
                     <small className="p-error">Password cannot be empty</small>
                   )}
@@ -451,7 +464,7 @@ const SignIn = () => {
                   <span className="p-float-label">
                     <InputText
                       id="confirmNewPassword"
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       className={`border py-2 pl-2 ${
                         pwError ? "p-invalid" : ""
                       }`}
@@ -462,6 +475,19 @@ const SignIn = () => {
                       Confirm New Password
                     </label>
                   </span>
+                  <div className="absolute right-[2.5rem] top-[13.7rem]">
+                    {showPassword ? (
+                      <FaEyeSlash
+                        className="h-5 w-5 cursor-pointer  text-gray-500"
+                        onClick={togglePasswordVisibility}
+                      />
+                    ) : (
+                      <FaEye
+                        className="h-5 w-5 cursor-pointer text-gray-600"
+                        onClick={togglePasswordVisibility}
+                      />
+                    )}
+                  </div>
                   {pwError && (
                     <small className="p-error">
                       Confirm password cannot be empty

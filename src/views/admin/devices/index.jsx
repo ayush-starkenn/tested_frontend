@@ -2,13 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import DevicesList from "./components/DevicesList";
 import DevicesGrid from "./components/DevicesGrid";
 import { BsGrid, BsListUl } from "react-icons/bs";
-import { Button } from "primereact/button";
 import axios from "axios";
 import { Toast } from "primereact/toast";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import Cookies from "js-cookie";
+import { FiPlus } from "react-icons/fi";
 
 const DevicesAdmin = () => {
   const token = Cookies.get("token");
@@ -285,7 +285,9 @@ const DevicesAdmin = () => {
                   id="device_id"
                   name="device_id"
                   onChange={handleChange}
-                  className={validationErrors.device_id ? "p-invalid" : ""}
+                  className={`border py-2 pl-2 ${
+                    validationErrors.device_id ? "p-invalid" : ""
+                  }`}
                 />
                 <label htmlFor="device_id">Device ID</label>
               </span>
@@ -302,7 +304,7 @@ const DevicesAdmin = () => {
                   options={devicesOptions}
                   optionLabel="label"
                   optionValue="value"
-                  className={`p-dropdown ${
+                  className={`p-dropdown border ${
                     validationErrors.device_type ? "p-invalid" : ""
                   }`}
                   onChange={handleChange}
@@ -324,7 +326,7 @@ const DevicesAdmin = () => {
                   options={Customersoptions()}
                   optionLabel="label"
                   optionValue="value"
-                  className={`p-dropdown ${
+                  className={`p-dropdown border ${
                     validationErrors.user_uuid ? "p-invalid" : ""
                   }`}
                   onChange={handleChange}
@@ -345,7 +347,7 @@ const DevicesAdmin = () => {
                   options={stateOptions}
                   optionLabel="label"
                   optionValue="value"
-                  className={`p-dropdown ${
+                  className={`p-dropdown border ${
                     validationErrors.status ? "p-invalid" : ""
                   }`}
                   onChange={handleChange}
@@ -365,7 +367,9 @@ const DevicesAdmin = () => {
                   name="sim_number"
                   keyfilter="pint"
                   onChange={handleChange}
-                  className={validationErrors.sim_number ? "p-invalid" : ""}
+                  className={`border py-2 pl-2 ${
+                    validationErrors.sim_number ? "p-invalid" : ""
+                  }`}
                 />
                 <label htmlFor="device_id">Sim Number</label>
               </span>
@@ -373,7 +377,7 @@ const DevicesAdmin = () => {
             <div className="mt-6 flex justify-center">
               <button
                 type="submit"
-                className="rounded bg-blue-600 px-4 py-2 font-semibold text-white  hover:bg-blue-600"
+                className="rounded bg-blue-600 px-3 py-2 text-white dark:bg-gray-150 dark:font-bold dark:text-blue-800"
               >
                 Add Device
               </button>
@@ -403,13 +407,13 @@ const DevicesAdmin = () => {
           </button>
         </div>
       </div>
-      <Button
-        label="New Device"
-        icon="pi pi-plus"
-        severity="Primary"
-        className="mt-2 h-10 px-3 py-0 text-left dark:hover:text-white"
+      <button
+        className="mt-2 flex h-10 items-center rounded-lg bg-blue-500 px-3 py-2 text-left font-semibold text-white hover:bg-blue-600"
         onClick={openDialog}
-      />
+      >
+        <FiPlus className="mr-2" />
+        New Device
+      </button>
       {!isListView && (
         <DevicesGrid
           data={data}

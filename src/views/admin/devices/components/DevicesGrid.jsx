@@ -411,7 +411,7 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
               value={globalFilterValue}
               onChange={onGlobalFilterChange}
               placeholder="Keyword Search"
-              className="searchbox w-[25vw] cursor-pointer rounded-full dark:bg-gray-950 dark:text-gray-50"
+              className="searchbox w-[25vw] cursor-pointer rounded-full border py-3 pl-8 dark:bg-gray-950 dark:text-gray-50"
             />
             {globalFilterValue && (
               <Button

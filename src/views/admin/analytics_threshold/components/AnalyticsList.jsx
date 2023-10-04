@@ -90,7 +90,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
               value={globalFilterValue}
               onChange={onGlobalFilterChange}
               placeholder="Keyword Search"
-              className="searchbox w-[25vw] cursor-pointer rounded-full dark:bg-gray-950 dark:text-gray-50"
+              className="searchbox w-[25vw] cursor-pointer rounded-full border py-3 pl-8 dark:bg-gray-950 dark:text-gray-50"
             />
             {globalFilterValue && (
               <Button
@@ -115,17 +115,15 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
         <Button
           icon="pi pi-pencil"
           rounded
-          outlined
-          className="mr-2"
+          className="mr-2 border border-gray-700 text-gray-700"
           style={{ width: "2rem", height: "2rem" }}
           onClick={() => openDialog(rowData)}
         />
         <Button
           icon="pi pi-trash"
           rounded
-          outlined
           style={{ width: "2rem", height: "2rem" }}
-          severity="danger"
+          className="mr-2 border border-red-600 text-red-600"
           onClick={() => openDeleteDialog(rowData)}
         />
       </>
@@ -155,14 +153,14 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
           <div>
             <Button
               label="Delete"
-              icon="pi pi-times"
-              className="p-button-danger px-3 py-2 hover:bg-none dark:hover:bg-gray-50"
+              icon="pi pi-check"
+              className="mr-2 bg-red-500 px-3 py-2 text-white"
               onClick={handleConfirmDelete}
             />
             <Button
               label="Cancel"
-              icon="pi pi-check"
-              className="p-button-secondary px-3 py-2 hover:bg-none dark:hover:bg-gray-50"
+              icon="pi pi-times"
+              className="bg-gray-600 px-3 py-2 text-white dark:text-gray-850 "
               onClick={onHide}
             />
           </div>
@@ -353,7 +351,9 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                 name="title"
                 onChange={(e) => handleChange(e, "title")}
                 value={editData?.title || ""}
-                className={emptyFields.includes("title") ? "p-invalid" : ""}
+                className={`border py-2 pl-2 ${
+                  emptyFields.includes("title") ? "p-invalid" : ""
+                }`}
               />
 
               <label htmlFor="title">Title</label>
@@ -369,7 +369,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                 options={Customersoptions()}
                 optionLabel="label"
                 optionValue="value"
-                className="p-dropdown"
+                className="p-dropdown border"
                 value={editData?.user_uuid || ""}
                 onChange={(e) => handleChange(e, "user_uuid")}
               />
@@ -391,11 +391,11 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                   id="brake-input"
                   onChange={(e) => handleChange(e, "score", "brake")}
                   value={editData?.score.brake || ""}
-                  className={
+                  className={`border py-2 pl-2 ${
                     emptyFields.includes("score") && !editData?.score.brake
                       ? "p-invalid"
                       : ""
-                  }
+                  }`}
                 />
                 <label
                   htmlFor="brake-input"
@@ -416,11 +416,11 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                   title="(1-1000)"
                   onChange={(e) => handleChange(e, "score", "tailgating")}
                   value={editData?.score.tailgating || ""}
-                  className={
+                  className={`border py-2 pl-2 ${
                     emptyFields.includes("score") && !editData?.score.tailgating
                       ? "p-invalid"
                       : ""
-                  }
+                  }`}
                 />
                 <label
                   htmlFor="tailgating-input"
@@ -433,7 +433,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                 Range: 0-1000
               </small>
             </div>
-            <div className="mt-3 flex-auto">
+            <div className="flex-auto">
               <span className="p-float-label">
                 <InputText
                   keyfilter="pint"
@@ -441,12 +441,12 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                   title="(1-1000)"
                   onChange={(e) => handleChange(e, "score", "rash_driving")}
                   value={editData?.score.rash_driving || ""}
-                  className={
+                  className={`border py-2 pl-2 ${
                     emptyFields.includes("score") &&
                     !editData?.score.rash_driving
                       ? "p-invalid"
                       : ""
-                  }
+                  }`}
                 />
                 <label
                   htmlFor="rash-driving-input"
@@ -467,12 +467,12 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                   title="(1-1000)"
                   onChange={(e) => handleChange(e, "score", "sleep_alert")}
                   value={editData?.score.sleep_alert || ""}
-                  className={
+                  className={`border py-2 pl-2 ${
                     emptyFields.includes("score") &&
                     !editData?.score.sleep_alert
                       ? "p-invalid"
                       : ""
-                  }
+                  }`}
                 />
                 <label
                   htmlFor="sleep-alert-input"
@@ -493,11 +493,11 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                   title="(1-1000)"
                   onChange={(e) => handleChange(e, "score", "over_speed")}
                   value={editData?.score.over_speed || ""}
-                  className={
+                  className={`border py-2 pl-2 ${
                     emptyFields.includes("score") && !editData?.score.over_speed
                       ? "p-invalid"
                       : ""
-                  }
+                  }`}
                 />
                 <label
                   htmlFor="over-speed-input"
@@ -518,11 +518,11 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                   title="(1-1000)"
                   onChange={(e) => handleChange(e, "score", "green_zone")}
                   value={editData?.score.green_zone || ""}
-                  className={
+                  className={`border py-2 pl-2 ${
                     emptyFields.includes("score") && !editData?.score.green_zone
                       ? "p-invalid"
                       : ""
-                  }
+                  }`}
                 />
                 <label
                   htmlFor="green-zone-input"
@@ -536,7 +536,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
               </small>
             </div>
           </div>
-          <div className="mb-6">
+          <div className="my-6">
             <p className="mb-2 block text-lg font-medium text-gray-600 dark:text-white">
               Incentive
             </p>
@@ -551,12 +551,12 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                       handleChange(e, "incentive", "minimum_distance")
                     }
                     value={editData?.incentive.minimum_distance || ""}
-                    className={
+                    className={`border py-2 pl-2 ${
                       emptyFields.includes("incentive") &&
                       !editData?.incentive.minimum_distance
                         ? "p-invalid"
                         : ""
-                    }
+                    }`}
                   />
                   <label
                     htmlFor="minimum-distance-input"
@@ -579,12 +579,12 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                       handleChange(e, "incentive", "minimum_driver_rating")
                     }
                     value={editData?.incentive.minimum_driver_rating || ""}
-                    className={
+                    className={`border py-2 pl-2 ${
                       emptyFields.includes("incentive") &&
                       !editData?.incentive.minimum_driver_rating
                         ? "p-invalid"
                         : ""
-                    }
+                    }`}
                   />
                   <label
                     htmlFor="minimum-driver-rating-input"
@@ -614,12 +614,12 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                       handleChange(e, "accident", "ttc_difference_percentage")
                     }
                     value={editData?.accident.ttc_difference_percentage || ""}
-                    className={
+                    className={`border py-2 pl-2 ${
                       emptyFields.includes("accident") &&
                       !editData?.accident.ttc_difference_percentage
                         ? "p-invalid"
                         : ""
-                    }
+                    }`}
                   />
                   <label
                     htmlFor="ttc-difference-percentage-input"
@@ -648,12 +648,12 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                     handleChange(e, "leadership_board", "total_distance")
                   }
                   value={editData?.leadership_board.total_distance || ""}
-                  className={
+                  className={`border py-2 pl-2 ${
                     emptyFields.includes("leadership_board") &&
                     !editData?.leadership_board.total_distance
                       ? "p-invalid"
                       : ""
-                  }
+                  }`}
                 />
                 <label
                   htmlFor="total-distance-input"
@@ -679,11 +679,11 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                   title="(1-1000)"
                   onChange={(e) => handleChange(e, "halt", "duration")}
                   value={editData?.halt.duration || ""}
-                  className={
+                  className={`border py-2 pl-2 ${
                     emptyFields.includes("halt") && !editData?.halt.duration
                       ? "p-invalid"
                       : ""
-                  }
+                  }`}
                 />
                 <label
                   htmlFor="halt-duration-input"
@@ -751,15 +751,16 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
       >
         <Column
           field="serialNo"
+          header="Sr. No."
           className="border-none dark:bg-navy-800 dark:text-gray-200"
-          style={{ minWidth: "4rem", textAlign: "center" }}
+          style={{ minWidth: "3rem" }}
         ></Column>
         <Column
           field="title"
           header="Title"
           sortable
           className="dark:bg-navy-800 dark:text-gray-200"
-          style={{ minWidth: "12rem" }}
+          style={{ minWidth: "14rem" }}
         ></Column>
 
         <Column
@@ -767,7 +768,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
           header="Customer"
           sortable
           className="dark:bg-navy-800 dark:text-gray-200"
-          style={{ minWidth: "12rem" }}
+          style={{ minWidth: "14rem" }}
         ></Column>
 
         <Column
@@ -776,14 +777,14 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
           body={statusBodyTemplate}
           sortable
           className="dark:bg-navy-800 dark:text-gray-200"
-          style={{ minWidth: "12rem" }}
+          style={{ minWidth: "14rem" }}
         ></Column>
 
         <Column
           body={actionBodyTemplate}
           header="Action"
           className="dark:bg-navy-800 dark:text-gray-200"
-          style={{ minWidth: "6rem" }}
+          style={{ minWidth: "10rem" }}
         ></Column>
       </DataTable>
       <DeleteDeviceDialog

@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import AnalyticsList from "./components/AnalyticsList";
 import { Toast } from "primereact/toast";
-import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Dialog } from "primereact/dialog";
 import axios from "axios";
 import { Dropdown } from "primereact/dropdown";
 import Cookies from "js-cookie";
+import { FiPlus } from "react-icons/fi";
 
 const AnalyticsThreshold = () => {
   const token = Cookies.get("token");
@@ -281,14 +281,13 @@ const AnalyticsThreshold = () => {
         </h4>
       </div>
 
-      <Button
-        label="Create New"
-        icon="pi pi-plus"
-        severity="primary"
-        className="mt-2 h-10 px-3 py-0 text-left dark:hover:text-white"
+      <button
+        className="mt-2 flex h-10 items-center rounded-lg bg-blue-500 px-3 py-2 text-left font-semibold text-white hover:bg-blue-600"
         onClick={openDialog}
-      />
-
+      >
+        <FiPlus className="mr-2" />
+        New Device
+      </button>
       {/* List of AT */}
       <AnalyticsList
         data={data}
@@ -314,7 +313,7 @@ const AnalyticsThreshold = () => {
             <span className="p-float-label">
               <InputText
                 name="title"
-                className={`dark:shadow-sm-light block w-full rounded-lg border border-gray-300 bg-gray-50 py-3.5 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white dark:placeholder-gray-50 dark:focus:border-blue-500 dark:focus:ring-blue-500 ${
+                className={`border py-2 pl-2 ${
                   formErrors.title ? "p-invalid" : ""
                 }`}
               />
@@ -332,7 +331,7 @@ const AnalyticsThreshold = () => {
                 value={selectedCustomer}
                 options={customerOptions}
                 onChange={(e) => setSelectedCustomer(e.value)}
-                className={`rounded-lg border border-gray-300 bg-gray-50 py-0 shadow-sm dark:bg-gray-900 dark:placeholder-gray-50 ${
+                className={`border ${
                   formErrors.customer_id ? "p-invalid" : ""
                 } `}
                 optionLabel="label"
@@ -351,7 +350,9 @@ const AnalyticsThreshold = () => {
                     name="brake-input"
                     keyfilter="pint"
                     title="(1-1000)"
-                    className={formErrors.brake ? "p-invalid p-filled" : ""}
+                    className={`border py-2 pl-2 ${
+                      formErrors.brake ? "p-invalid p-filled" : ""
+                    }`}
                   />
                   <label
                     htmlFor="brake-input"
@@ -370,9 +371,9 @@ const AnalyticsThreshold = () => {
                     name="tailgating-input"
                     keyfilter="pint"
                     title="(1-1000)"
-                    className={
+                    className={`border py-2 pl-2 ${
                       formErrors.tailgating ? "p-invalid p-filled" : ""
-                    }
+                    }`}
                   />
                   <label
                     htmlFor="tailgating-input"
@@ -393,9 +394,9 @@ const AnalyticsThreshold = () => {
                     keyfilter="pint"
                     name="rash-driving-input"
                     title="(1-1000)"
-                    className={
+                    className={`border py-2 pl-2 ${
                       formErrors.rash_driving ? "p-invalid p-filled" : ""
-                    }
+                    }`}
                   />
                   <label
                     htmlFor="rash-driving-input"
@@ -414,9 +415,9 @@ const AnalyticsThreshold = () => {
                     keyfilter="pint"
                     name="sleep-alert-input"
                     title="(1-1000)"
-                    className={
+                    className={`border py-2 pl-2 ${
                       formErrors.sleep_alert ? "p-invalid p-filled" : ""
-                    }
+                    }`}
                   />
                   <label
                     htmlFor="sleep-alert-input"
@@ -437,9 +438,9 @@ const AnalyticsThreshold = () => {
                     keyfilter="pint"
                     name="over-speed-input"
                     title="(1-1000)"
-                    className={
+                    className={`border py-2 pl-2 ${
                       formErrors.over_speed ? "p-invalid p-filled" : ""
-                    }
+                    }`}
                   />
                   <label
                     htmlFor="over-speed-input"
@@ -458,9 +459,9 @@ const AnalyticsThreshold = () => {
                     keyfilter="pint"
                     name="green-zone-input"
                     title="(1-1000)"
-                    className={
+                    className={`border py-2 pl-2 ${
                       formErrors.green_zone ? "p-invalid p-filled" : ""
-                    }
+                    }`}
                   />
                   <label
                     htmlFor="green-zone-input"
@@ -486,9 +487,9 @@ const AnalyticsThreshold = () => {
                     keyfilter="pint"
                     name="minimum-distance-input"
                     title="(1-1000)"
-                    className={
+                    className={`border py-2 pl-2 ${
                       formErrors.minimum_distance ? "p-invalid p-filled" : ""
-                    }
+                    }`}
                   />
                   <label
                     htmlFor="minimum-distance-input"
@@ -507,11 +508,11 @@ const AnalyticsThreshold = () => {
                     keyfilter="num"
                     name="minimum-driver-rating-input"
                     title="(0-5)"
-                    className={
+                    className={`border py-2 pl-2 ${
                       formErrors.minimum_driver_rating
                         ? "p-invalid p-filled"
                         : ""
-                    }
+                    }`}
                   />
                   <label
                     htmlFor="minimum-driver-rating-input"
@@ -537,11 +538,11 @@ const AnalyticsThreshold = () => {
                     keyfilter="pint"
                     name="ttc-difference-percentage-input"
                     title="(0-100)"
-                    className={
+                    className={`border py-2 pl-2 ${
                       formErrors.ttc_difference_percentage
                         ? "p-invalid p-filled"
                         : ""
-                    }
+                    }`}
                   />
                   <label
                     htmlFor="ttc-difference-percentage-input"
@@ -567,9 +568,9 @@ const AnalyticsThreshold = () => {
                     keyfilter="pint"
                     name="total-distance-input"
                     title="(0-10000)"
-                    className={
+                    className={`border py-2 pl-2 ${
                       formErrors.total_distance ? "p-invalid p-filled" : ""
-                    }
+                    }`}
                   />
                   <label
                     htmlFor="total-distance-input"
@@ -595,7 +596,9 @@ const AnalyticsThreshold = () => {
                     keyfilter="pint"
                     name="halt-duration-input"
                     title="(1-1000)"
-                    className={formErrors.duration ? "p-invalid p-filled" : ""}
+                    className={`border py-2 pl-2 ${
+                      formErrors.duration ? "p-invalid p-filled" : ""
+                    }`}
                   />
                   <label
                     htmlFor="halt-duration-input"
@@ -630,12 +633,14 @@ const AnalyticsThreshold = () => {
             <label htmlFor="userDeactive">Deactive</label>
           </div>
 
-          <button
-            type="submit"
-            className="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-          >
-            Submit
-          </button>
+          <div className="mt-6 flex justify-center">
+            <button
+              type="submit"
+              className="rounded bg-blue-600 px-3 py-2 text-white dark:bg-gray-150 dark:font-bold dark:text-blue-800"
+            >
+              Add Analytic Threshold
+            </button>
+          </div>
         </form>
       </Dialog>
     </>

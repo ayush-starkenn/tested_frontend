@@ -15,6 +15,7 @@ import AssignCustomer from "./AssignCustomer";
 import UnAssignCustomer from "./UnAssignCustomer";
 import { Toast } from "primereact/toast";
 import { Tag } from "primereact/tag";
+import { FiPlus } from "react-icons/fi";
 
 const FeatureList = () => {
   const [isDialogVisible, setIsDialogVisible] = useState(false);
@@ -290,13 +291,13 @@ const FeatureList = () => {
         <InputText
           value={globalFilterValue}
           onChange={onGlobalFilterChange}
-          placeholder="Search by Featureset Name"
-          className="searchbox w-[25vw] cursor-pointer rounded-full dark:bg-gray-950 dark:text-gray-50"
+          placeholder="Keyword Search"
+          className="searchbox w-[25vw] cursor-pointer rounded-full border py-3 pl-8 dark:bg-gray-950 dark:text-gray-50"
         />
         {globalFilterValue && (
           <Button
             icon="pi pi-times"
-            className="p-button-rounded p-button-text hover:none dark:text-gray-100"
+            className="p-button-rounded p-button-text"
             onClick={clearSearch}
           />
         )}
@@ -310,32 +311,29 @@ const FeatureList = () => {
         <Button
           icon="pi pi-file"
           rounded
-          outlined
-          style={{ width: "2rem", height: "2rem", marginRight: "5px" }}
+          className="mr-2 border border-gray-700 text-gray-700"
+          style={{ width: "2rem", height: "2rem" }}
           onClick={() => openDialog2(rowData)}
         />
         <Button
-          icon="pi pi-file-excel
-"
+          icon="pi pi-file-excel"
           rounded
-          outlined
-          style={{ width: "2rem", height: "2rem", marginRight: "5px" }}
+          className="mr-2 border border-gray-700 text-gray-700"
+          style={{ width: "2rem", height: "2rem" }}
           onClick={() => openDialog3(rowData)}
         />
         <Button
           icon="pi pi-pencil"
           rounded
-          outlined
-          className="mr-2"
-          style={{ width: "2rem", height: "2rem", marginRight: "5px" }}
+          className="mr-2 border border-gray-700 text-gray-700"
+          style={{ width: "2rem", height: "2rem" }}
           onClick={() => openDialog1(rowData)}
         />
         <Button
           icon="pi pi-trash"
           rounded
-          outlined
           style={{ width: "2rem", height: "2rem" }}
-          severity="danger"
+          className="mr-2 border border-red-600 text-red-600"
           onClick={() => openDeleteDialog(rowData)}
         />
       </React.Fragment>
@@ -344,13 +342,13 @@ const FeatureList = () => {
   return (
     <>
       <div>
-        <Button
-          label="New Feature Set"
-          icon="pi pi-plus"
-          severity="Primary"
-          className="mt-2 h-10 px-3 py-0 text-left dark:hover:text-white"
+        <button
+          className="mt-2 flex h-10 items-center rounded-lg bg-blue-500 px-3 py-2 text-left font-semibold text-white hover:bg-blue-600"
           onClick={openDialog}
-        />
+        >
+          <FiPlus className="mr-2" />
+          New Device
+        </button>
       </div>
       {/* assign dialog  */}
       <Dialog
@@ -424,21 +422,21 @@ const FeatureList = () => {
           <div>
             <Button
               label="Delete"
-              icon="pi pi-times"
-              className="p-button-danger px-3 py-2 hover:bg-none dark:hover:bg-gray-50"
+              icon="pi pi-check"
+              className="mr-2 bg-red-500 px-3 py-2 text-white"
               onClick={handleDeleteConfirmation}
             />
             <Button
               label="Cancel"
-              icon="pi pi-check"
-              className="p-button-secondary px-3 py-2 hover:bg-none dark:hover:bg-gray-50"
+              icon="pi pi-times"
+              className="bg-gray-600 px-3 py-2 text-white dark:text-gray-850 "
               onClick={closeDeleteDialog}
             />
           </div>
         }
       >
         <div>
-          Are you sure you want to delete {selectedFeature?.featureSetName}?
+          Are you sure you want to delete {selectedFeature?.featureset_name}?
         </div>
       </Dialog>
       {/* List View */}
@@ -459,21 +457,22 @@ const FeatureList = () => {
       >
         <Column
           field="serialNo"
+          header="Sr. No."
           style={{ minWidth: "3rem" }}
-          className="border-none dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
         />
         <Column
           field="featureset_name"
           header="Featureset Name"
           style={{ minWidth: "12rem" }}
-          className="border-none dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
         />
         <Column
           field="featureset_users"
           header="Featureset Users"
           body={usersBodyTemplate}
           style={{ minWidth: "16rem" }}
-          className="border-none dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
         />
         <Column
           field="featureset_status"
@@ -481,12 +480,12 @@ const FeatureList = () => {
           body={statusBodyTemplate}
           sortable
           style={{ minWidth: "8rem" }}
-          className="border-none dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
         />
         <Column
           body={actionBodyTemplate}
           header="Action"
-          className="dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
         />
       </DataTable>

@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import axios from "axios";
@@ -2308,13 +2307,12 @@ const FeatureSet = ({ myData, closeDialog }) => {
           </div>
         </div>
         <div className="text-right">
-          <Button
-            label="Update Feature Set"
-            icon="pi pi-check"
+          <button
             type="submit"
-            className="px-3 py-2 text-right hover:bg-none dark:hover:bg-gray-50"
-            style={{ width: "fit-content", background: "#2152FF" }}
-          />
+            className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
+          >
+            Update
+          </button>
         </div>
       </form>
     </>

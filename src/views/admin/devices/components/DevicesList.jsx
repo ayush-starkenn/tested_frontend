@@ -65,7 +65,7 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
               value={globalFilterValue}
               onChange={onGlobalFilterChange}
               placeholder="Keyword Search"
-              className="searchbox w-[25vw] cursor-pointer rounded-full dark:bg-gray-950 dark:text-gray-50"
+              className="searchbox w-[25vw] cursor-pointer rounded-full border py-3 pl-8 dark:bg-gray-950 dark:text-gray-50"
             />
             {globalFilterValue && (
               <Button
@@ -120,17 +120,15 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
         <Button
           icon="pi pi-pencil"
           rounded
-          outlined
-          className="mr-2"
+          className="mr-2 border border-gray-700 text-gray-700"
           style={{ width: "2rem", height: "2rem" }}
           onClick={() => openDialog(rowData)}
         />
         <Button
           icon="pi pi-trash"
           rounded
-          outlined
           style={{ width: "2rem", height: "2rem" }}
-          severity="danger"
+          className="mr-2 border border-red-600 text-red-600"
           onClick={() => openDeleteDialog(rowData)}
         />
       </>
@@ -160,14 +158,14 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
           <div>
             <Button
               label="Delete"
-              icon="pi pi-times"
-              className="p-button-danger px-3 py-2 hover:bg-none dark:hover:bg-gray-50"
+              icon="pi pi-check"
+              className="mr-2 bg-red-500 px-3 py-2 text-white"
               onClick={handleConfirmDelete}
             />
             <Button
               label="Cancel"
-              icon="pi pi-check"
-              className="p-button-secondary px-3 py-2 hover:bg-none dark:hover:bg-gray-50"
+              icon="pi pi-times"
+              className="bg-gray-600 px-3 py-2 text-white dark:text-gray-850 "
               onClick={onHide}
             />
           </div>
@@ -312,9 +310,11 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
                 id="device_id"
                 name="device_id"
                 value={editData?.device_id || ""}
-                className={!editData?.device_id ? "p-invalid" : ""}
+                className={`border py-2 pl-2 ${
+                  !editData?.device_id ? "p-invalid" : ""
+                }`}
               />
-              <label htmlFor="device_id">DeviceId</label>
+              <label htmlFor="device_id">Device ID</label>
             </span>
           </div>
           <div className="mx-auto mt-8 w-[34.5vw]">
@@ -326,7 +326,7 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
                 optionLabel="label"
                 optionValue="value"
                 value={editData?.device_type || ""}
-                className="p-dropdown"
+                className="p-dropdown border"
                 onChange={(e) => handleChange(e, "device_type")}
               />
               <label htmlFor="device_type">Device_type</label>
@@ -341,7 +341,7 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
                 options={Customersoptions()}
                 optionLabel="label"
                 optionValue="value"
-                className="p-dropdown"
+                className="p-dropdown border"
                 value={editData?.user_uuid || ""}
                 onChange={(e) => handleChange(e, "user_uuid")}
               />
@@ -358,7 +358,7 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
                 optionLabel="label"
                 optionValue="value"
                 editData
-                className="p-dropdown"
+                className="p-dropdown border"
                 value={editData?.device_status || ""}
                 placeholder={deviceData?.device_status}
                 onChange={(e) => handleChange(e, "device_status")}
@@ -375,7 +375,9 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
                 value={editData?.sim_number || ""}
                 placeholder={deviceData?.sim_number}
                 onChange={(e) => handleChange(e, "sim_number")}
-                className={!editData?.sim_number ? "p-invalid" : ""}
+                className={`border py-2 pl-2 ${
+                  !editData?.sim_number ? "p-invalid" : ""
+                }`}
               />
               <label htmlFor="sim_number">Sim Number</label>
             </span>
@@ -383,9 +385,9 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
           <div className="mt-6 flex justify-center">
             <button
               type="submit"
-              className="rounded bg-blue-600 px-4 py-2 font-semibold text-white  hover:bg-blue-600"
+              className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
             >
-              Update Device
+              Update
             </button>
           </div>
         </form>
@@ -414,14 +416,14 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
         <Column
           field="serialNo"
           header="Sr. No."
-          className="border-none dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "4rem", textAlign: "center" }}
         ></Column>
         <Column
           field="device_id"
           header="Device ID"
           sortable
-          className="dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
         ></Column>
         <Column
@@ -437,36 +439,36 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
           filterMatchMode="in"
           filterOptions={deviceTypeOptions}
           filterItemTemplate={representativesItemTemplate}
-          className="dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "10rem" }}
         ></Column>
         <Column
           field="full_name"
           header="Customer"
           sortable
-          className="dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
         ></Column>
         <Column
           field="sim_number"
           header="Sim Number"
           sortable
-          className="dark:bg-navy-800 dark:text-gray-200"
-          style={{ minWidth: "12rem" }}
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
+          style={{ minWidth: "14rem" }}
         ></Column>
         <Column
           field="device_status"
           header="Status"
           body={statusBodyTemplate}
           sortable
-          className="dark:bg-navy-800 dark:text-gray-200"
-          style={{ minWidth: "12rem" }}
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
+          style={{ minWidth: "10rem" }}
         ></Column>
 
         <Column
           body={actionBodyTemplate}
           header="Action"
-          className="dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "6rem" }}
         ></Column>
       </DataTable>
