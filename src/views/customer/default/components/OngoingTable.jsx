@@ -2,12 +2,52 @@ import { Card } from "primereact/card";
 import { ScrollPanel } from "primereact/scrollpanel";
 import { BsFillPinMapFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 const OngoingTable = () => {
+  const token = Cookies.get("token");
+
+  const [tripData, setTripData] = useState([]);
+  const [dataLoaded, setDataLoaded] = useState(false);
+
+  let user_uuid = "2e48cda9-e194-4b0c-a42a-81936f47d1b8";
+
+  const OngoingTripsHere = async () => {
+    try {
+      const res = await axios.get(
+        `${process.env.REACT_APP_API_URL}/dashboardCustomers/getOngoingTripDashboard/${user_uuid}`,
+        { headers: { authorization: `bearer ${token}` } }
+      );
+
+      console.log(res.data.data.trip_data);
+      if (res.data.data.trip_data.length > 0) {
+        setTripData(res.data.data.trip_data);
+        setDataLoaded(true);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    OngoingTripsHere();
+  }, []);
+
+  const getTimeStamp = (e) => {
+    var d = new Date(0);
+    d.setUTCSeconds(e);
+
+    var formattedDate = d.toISOString().slice(0, 19).replace("T", " ");
+
+    return formattedDate;
+  };
+
   return (
     <>
       <Card className="!z-5 relative flex flex-col rounded-[20px] bg-white bg-clip-border shadow-3xl shadow-shadow-500 dark:!bg-navy-800 dark:text-white dark:shadow-none">
-        <h1 className="align-self-center mb-3 font-bold sm:text-2xl">
+        <h1 className="align-self-center font-bold sm:text-2xl">
           Ongoing Trips
         </h1>
         <div className="flex flex-col">
@@ -94,82 +134,36 @@ const OngoingTable = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
-                      <tr>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
-                          1
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
-                          Jone Doe
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
-                          03-12-2023 11:56:30 AM
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-center text-sm font-medium">
-                          <Link
-                            to={`ongoing-trip`}
-                            target="_blank"
-                            className="mx-auto"
-                          >
-                            <span className="mx-auto text-center text-xl">
-                              <BsFillPinMapFill className="text-center text-navy-600" />
-                            </span>
-                          </Link>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
-                          1
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
-                          Jone Doe
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
-                          03-12-2023 11:56:30 AM
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-center text-sm font-medium">
-                          <Link to={`ongoing-trip`} target="_blank">
-                            <span className="text-xl">
-                              <BsFillPinMapFill className="text-navy-600" />
-                            </span>
-                          </Link>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
-                          1
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
-                          Jone Doe
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
-                          03-12-2023 11:56:30 AM
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-center text-sm font-medium">
-                          <Link to={`ongoing-trip`} target="_blank">
-                            <span className="text-xl">
-                              <BsFillPinMapFill className="text-navy-600" />
-                            </span>
-                          </Link>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
-                          1
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
-                          Jone Doe
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
-                          03-12-2023 11:56:30 AM
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-center text-sm font-medium">
-                          <Link to={`ongoing-trip`} target="_blank">
-                            <span className="text-xl">
-                              <BsFillPinMapFill className="text-navy-600" />
-                            </span>
-                          </Link>
-                        </td>
-                      </tr>
+                      {dataLoaded ? (
+                        tripData.map((ele, index) => (
+                          <tr key={index}>
+                            <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
+                              {index + 1}
+                            </td>
+                            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+                              {ele.vehicle_name}
+                            </td>
+                            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+                              {getTimeStamp(ele.trip_start_time)}
+                            </td>
+                            <td className="whitespace-nowrap px-6 py-4 text-center text-sm font-medium">
+                              <Link
+                                to={`ongoing-trip/${ele.trip_id}`}
+                                target="_blank"
+                                className="mx-auto"
+                              >
+                                <span className="mx-auto text-center text-xl">
+                                  <BsFillPinMapFill className="text-center text-navy-600" />
+                                </span>
+                              </Link>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={4}>No record Found</td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </ScrollPanel>
