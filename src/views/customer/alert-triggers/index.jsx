@@ -1,12 +1,12 @@
 import axios from "axios";
 import Cookies from "js-cookie";
-import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import React, { useEffect, useRef, useState } from "react";
 import AlertTriggerList from "./components/AlertTriggerList";
 import { Toast } from "primereact/toast";
+import { FiPlus } from "react-icons/fi";
 
 const Triggers = () => {
   const token = Cookies.get("token");
@@ -110,6 +110,8 @@ const Triggers = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log(name, value);
+
     setAddData({ ...addData, [name]: value });
   };
 
@@ -234,25 +236,29 @@ const Triggers = () => {
   const contactsOptions = () => {
     return contactsData?.map((el) => ({
       label: el.contact_first_name + " " + el.contact_last_name,
-      value: {
-        contact_mobile: el.contact_mobile,
-        contact_email: el.contact_email,
-      },
+      value: el.contact_uuid,
     }));
   };
+
+  useEffect(() => {
+    console.log(contactsData);
+  }, [contactsData]);
 
   return (
     <>
       <Toast ref={toastRef} position="top-right" />
       <div>
+        <h4 className="text-dark pt-3 text-2xl font-bold dark:text-white">
+          Alert Triggers
+        </h4>
         {/* button to add vehicle */}
-        <Button
-          label="New Trigger"
-          icon="pi pi-plus"
-          severity="primary"
-          className="mt-2 h-10 px-3 py-0 text-left dark:hover:text-white"
+        <button
+          className="mt-2 flex h-10 items-center rounded-lg bg-blue-500 px-3 py-2 text-left font-semibold text-white hover:bg-blue-600"
           onClick={openDialog}
-        />
+        >
+          <FiPlus className="mr-2" /> {/* Use the React Icons component */}
+          New Alert Trigger
+        </button>
         {/* dialog for adding vehicle */}
         <Dialog
           visible={visible}

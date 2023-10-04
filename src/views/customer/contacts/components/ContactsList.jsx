@@ -3,6 +3,7 @@ import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { Dialog } from "primereact/dialog";
+import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { Tag } from "primereact/tag";
 import React, { useState } from "react";
@@ -16,6 +17,7 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
   const [globalFilterValue, setGlobalFilterValue] = useState("");
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [deleteId, setDeleteId] = useState("");
+  const [deleteName, setDeleteName] = useState("");
   const [editId, setEditId] = useState("");
 
   const onGlobalFilterChange = (e) => {
@@ -38,7 +40,10 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
   const openDialog = (rowData) => {
     setIsDialog(true);
     setEditId(rowData.contact_uuid);
-    setEditData(rowData);
+    setEditData({
+      ...rowData,
+      contact_status: rowData.contact_status.toString(),
+    });
   };
 
   const closeDialog = () => {
@@ -48,6 +53,7 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
   const openDeleteDialog = (rowData) => {
     setDeleteDialog(true);
     setDeleteId(rowData.contact_uuid);
+    setDeleteName(rowData.contact_first_name + " " + rowData.contact_last_name);
   };
   const closeDeleteDialog = () => {
     setDeleteDialog(false);
@@ -64,8 +70,15 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
     e.preventDefault();
     if (editId && editData) {
       editContacts(editId, editData);
+      closeDialog();
     }
   };
+  console.log(editData);
+
+  const stateOptions = [
+    { label: "Active", value: "1" },
+    { label: "Deactive", value: "2" },
+  ];
 
   //onChange function
   const handleChange = (e) => {
@@ -84,7 +97,7 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
               value={globalFilterValue}
               onChange={onGlobalFilterChange}
               placeholder="Keyword Search"
-              className="searchbox w-[25vw] cursor-pointer rounded-full dark:bg-gray-950 dark:text-gray-50"
+              className="searchbox w-[25vw] cursor-pointer rounded-full border py-3 pl-8 dark:bg-gray-950 dark:text-gray-50"
             />
             {globalFilterValue && (
               <Button
@@ -114,18 +127,15 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
         <Button
           icon="pi pi-pencil"
           rounded
-          outlined
-          className="mr-2"
+          className="mr-2 border border-gray-700 text-gray-700"
           style={{ width: "2rem", height: "2rem" }}
           onClick={() => openDialog(rowData)}
         />
         <Button
           icon="pi pi-trash"
           rounded
-          outlined
           style={{ width: "2rem", height: "2rem" }}
-          severity="danger"
-          className="mr-2"
+          className="mr-2 border border-red-600 text-red-600"
           onClick={() => openDeleteDialog(rowData)}
         />
       </React.Fragment>
@@ -140,6 +150,7 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
         dataKey="contact_uuid"
         header={header}
         rows={5}
+        removableSort
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
         rowsPerPageOptions={[5, 10, 25]}
         filters={filters}
@@ -157,6 +168,7 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
         <Column
           field="serialNo"
           header="Sr. No."
+          sortable
           className="border-none dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "4rem" }}
         ></Column>
@@ -170,14 +182,12 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
         <Column
           field="contact_email"
           header="Email"
-          sortable
           className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
         ></Column>
         <Column
           field="contact_mobile"
           header="Mobile Number"
-          sortable
           className="dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
         ></Column>
@@ -200,36 +210,38 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
       <Dialog
         visible={isDialog}
         onHide={closeDialog}
-        style={{ width: "40rem" }}
+        style={{ width: "45vw" }}
         breakpoints={{ "960px": "75vw", "641px": "90vw" }}
         header="Edit the details"
         modal
         className="p-fluid dark:bg-gray-900"
       >
         <form onSubmit={handleSubmit}>
-          <div className="mx-auto mt-1 w-[34.5vw]">
+          <div className="mx-auto mt-8">
             <span className={`p-float-label `}>
               <InputText
                 id="contact_first_name"
                 name="contact_first_name"
                 onChange={handleChange}
                 value={editData?.contact_first_name}
+                className="border py-2 pl-2"
               />
               <label htmlFor="contact_first_name">First Name</label>
             </span>
           </div>
-          <div className="mx-auto mt-6 w-[34.5vw]">
+          <div className="mx-auto mt-7">
             <span className={`p-float-label `}>
               <InputText
                 id="contact_last_name"
                 name="contact_last_name"
                 onChange={handleChange}
                 value={editData?.contact_last_name}
+                className="border py-2 pl-2"
               />
               <label htmlFor="contact_last_name">Last Name</label>
             </span>
           </div>
-          <div className="mx-auto mt-6 w-[34.5vw]">
+          <div className="mx-auto mt-7">
             <span className={`p-float-label`}>
               <InputText
                 id="contact_email"
@@ -237,11 +249,12 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
                 type="email"
                 onChange={handleChange}
                 value={editData?.contact_email}
+                className="border py-2 pl-2"
               />
               <label htmlFor="contact_email">Email</label>
             </span>
           </div>
-          <div className="mx-auto mt-6 w-[34.5vw]">
+          <div className="mx-auto mt-7">
             <span className={`p-float-label `}>
               <InputText
                 id="contact_mobile"
@@ -249,11 +262,29 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
                 keyfilter="pint"
                 onChange={handleChange}
                 value={editData?.contact_mobile}
+                className="border py-2 pl-2"
               />
               <label htmlFor="contact_mobile">Mobile Number</label>
             </span>
           </div>
-          <div className="p-field p-col-12 flex justify-center">
+          <div className="mx-auto mt-7">
+            <span className="p-float-label">
+              <Dropdown
+                id="status"
+                name="contact_status"
+                options={stateOptions}
+                optionLabel="label"
+                optionValue="value"
+                onChange={(e) => {
+                  handleChange(e, "contact_status");
+                }}
+                value={editData?.contact_status}
+                className="border"
+              />
+              <label htmlFor="status">Status</label>
+            </span>
+          </div>
+          <div className="p-field p-col-12 mt-7 flex justify-center">
             <button
               type="submit"
               className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
@@ -272,20 +303,20 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
           <div>
             <Button
               label="Delete"
-              icon="pi pi-times"
-              className="p-button-danger mr-2 px-3 hover:bg-none dark:hover:bg-gray-50"
+              icon="pi pi-check"
+              className="mr-2 bg-red-500 px-3 py-2 text-white"
               onClick={handleDelete}
             />
             <Button
               label="Cancel"
-              icon="pi pi-check"
-              className="p-button-secondary px-3 py-2 hover:bg-none dark:hover:bg-gray-50"
+              icon="pi pi-times"
+              className="bg-gray-600 px-3 py-2 text-white dark:text-gray-850 "
               onClick={closeDeleteDialog}
             />
           </div>
         }
       >
-        <div>Are you sure you want to delete ?</div>
+        <div>Are you sure you want to delete {deleteName}?</div>
       </Dialog>
     </div>
   );

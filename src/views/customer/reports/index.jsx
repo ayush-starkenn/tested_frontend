@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import ReportsList from "./components/ReportsList";
-import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import Schedule from "./components/Schedule";
 import Generate from "./components/Generate";
+import { FaCalendarPlus, FaChartLine } from "react-icons/fa";
 
 const Reports = () => {
   const [isGenerateDialogVisible, setIsGenerateDialogVisible] = useState(false);
@@ -24,21 +24,27 @@ const Reports = () => {
 
   return (
     <div>
-      <h4 className="text-dark text-xl font-bold dark:text-white">Reports</h4>
-      <Button
-        label="Generate"
-        icon="pi pi-chart-line"
-        severity="Primary"
-        className="mt-2 h-10 px-3 py-0 text-left dark:hover:text-white"
-        onClick={openDialog1}
-      />
-      <Button
-        label="Schedule"
-        icon="pi pi-calendar-plus"
-        severity="Primary"
-        className="mx-3 mt-2 h-10 px-3 py-0 text-left dark:hover:text-white"
-        onClick={openDialog2}
-      />
+      <h4 className="text-dark pt-3 text-2xl font-bold dark:text-white">
+        Reports
+      </h4>
+      <div className="flex gap-2">
+        <button
+          className="mt-2 flex h-10 items-center rounded-lg bg-blue-500 px-3 py-2 text-left font-semibold text-white hover:bg-blue-600"
+          onClick={openDialog1}
+        >
+          <FaChartLine className="mr-2 inline-block text-xl" />
+          Generate
+        </button>
+
+        <button
+          className="mt-2 flex h-10 items-center rounded-lg bg-blue-500 px-3 py-2 text-left font-semibold text-white hover:bg-blue-600"
+          onClick={openDialog2}
+        >
+          <FaCalendarPlus className="mr-2 inline-block text-xl" />
+          Schedule
+        </button>
+      </div>
+
       <ReportsList />
       <Dialog
         visible={isGenerateDialogVisible}
@@ -49,7 +55,7 @@ const Reports = () => {
         modal
         className="p-fluid dark:bg-gray-900"
       >
-        <Generate />
+        <Generate close={closeDialog1} />
       </Dialog>
       <Dialog
         visible={isScheduleDialogVisible}

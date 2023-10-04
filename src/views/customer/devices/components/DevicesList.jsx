@@ -41,7 +41,7 @@ export default function DevicesList({ data }) {
               value={globalFilterValue}
               onChange={onGlobalFilterChange}
               placeholder="Keyword Search"
-              className="searchbox w-[25vw] cursor-pointer rounded-full dark:bg-gray-950 dark:text-gray-50"
+              className="searchbox w-[25vw] cursor-pointer rounded-full border py-3 pl-8 dark:bg-gray-950 dark:text-gray-50"
             />
             {globalFilterValue && (
               <Button
@@ -124,14 +124,15 @@ export default function DevicesList({ data }) {
           key="serialNo"
           field="serialNo"
           header="Sr. No."
-          className="border-none dark:bg-navy-800 dark:text-gray-200"
+          sortable
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "4rem" }}
         ></Column>
         <Column
           field="device_id"
           header="Device ID"
           sortable
-          className="dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
         ></Column>
         <Column
@@ -147,22 +148,22 @@ export default function DevicesList({ data }) {
           filterMatchMode="in"
           filterOptions={deviceTypeOptions}
           filterItemTemplate={representativesItemTemplate}
-          className="dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800  dark:text-gray-200"
           style={{ minWidth: "10rem" }}
         ></Column>
 
         <Column
           field="sim_number"
           header="Sim Number"
-          sortable
-          className="dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
         ></Column>
         <Column
-          field="vehicle_status"
+          field="device_status"
           header="Status"
           sortable
-          className="dark:bg-navy-800 dark:text-gray-200"
+          sortField="device_status"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "6rem" }}
           body={renderStatusCell}
         ></Column>

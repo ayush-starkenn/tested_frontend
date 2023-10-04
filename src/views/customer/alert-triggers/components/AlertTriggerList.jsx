@@ -24,9 +24,9 @@ const AlertTriggerList = ({
   const [editVisible, setEditVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(false);
   const [editData, setEditData] = useState({});
-  const [recipient, setRecipient] = useState();
-  const [check, setCheck] = useState(false);
+
   const [deleteId, setDeleteId] = useState("");
+  const [triggerName, setTriggerName] = useState("");
 
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
@@ -55,7 +55,7 @@ const AlertTriggerList = ({
               value={globalFilterValue}
               onChange={onGlobalFilterChange}
               placeholder="Keyword Search"
-              className="searchbox w-[25vw] cursor-pointer rounded-full dark:bg-gray-950 dark:text-gray-50"
+              className="searchbox w-[25vw] cursor-pointer rounded-full border py-3 pl-8 dark:bg-gray-950 dark:text-gray-50"
             />
             {globalFilterValue && (
               <Button
@@ -77,18 +77,15 @@ const AlertTriggerList = ({
         <Button
           icon="pi pi-pencil"
           rounded
-          outlined
-          className="mr-2"
+          className="mr-2 border border-gray-700 text-gray-700"
           style={{ width: "2rem", height: "2rem" }}
           onClick={() => openEditDialog(rowData)}
         />
         <Button
           icon="pi pi-trash"
           rounded
-          outlined
           style={{ width: "2rem", height: "2rem" }}
-          severity="danger"
-          className="mr-2"
+          className="mr-2 border border-red-600 text-red-600"
           onClick={() => openDeleteDialog(rowData)}
         />
       </React.Fragment>
@@ -108,6 +105,7 @@ const AlertTriggerList = ({
 
   const openDeleteDialog = (rowData) => {
     setDeleteId(rowData.trigger_id);
+    setTriggerName(rowData.trigger_name);
     setDeleteVisible(true);
   };
 
@@ -136,18 +134,11 @@ const AlertTriggerList = ({
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
+    console.log(name, value);
     setEditData((prevEditData) => ({
       ...prevEditData,
       [name]: value,
     }));
-  };
-
-  const handleRecipient = (e) => {
-    const { value } = e.target;
-
-    setRecipient(value);
-    setCheck(true);
   };
 
   const vehiclesOptions = () => {
@@ -160,30 +151,16 @@ const AlertTriggerList = ({
   const contactsOptions = () => {
     return contactsData?.map((el) => ({
       label: el.contact_first_name + " " + el.contact_last_name,
-      value: {
-        contact_mobile: el.contact_mobile,
-        contact_email: el.contact_email,
-      },
+      value: el.contact_uuid,
     }));
   };
-
-  const parsedRecipients = editData.recipients
-    ? JSON.parse(editData.recipients)
-    : null;
 
   //handle Submity function
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    let x;
-    if (check === true) {
-      x = { ...editData, ["recipients"]: recipient };
-    } else {
-      x = { ...editData, ["recipients"]: JSON.parse(editData?.recipients) };
-    }
-
-    editTrigger(editData?.trigger_id, x);
+    editTrigger(editData?.trigger_id, editData);
     setTimeout(() => {
       closeEditDialog();
     }, [500]);
@@ -192,26 +169,6 @@ const AlertTriggerList = ({
   const mapVehicleName = (vehicleUuid) => {
     const vehicle = vehiData?.find((v) => v.vehicle_uuid === vehicleUuid);
     return vehicle ? vehicle.vehicle_name : "";
-  };
-
-  const getRecipientFirstName = (recipients) => {
-    try {
-      const parsedRecipients = JSON.parse(recipients);
-      if (
-        parsedRecipients &&
-        typeof parsedRecipients === "object" &&
-        parsedRecipients.contact_email
-      ) {
-        const recipientEmail = parsedRecipients.contact_email;
-        const contact = contactsData.find(
-          (contact) => contact.contact_email === recipientEmail
-        );
-        return contact ? contact.contact_first_name : "N/A";
-      }
-    } catch (error) {
-      console.error("Error parsing recipients JSON", error);
-    }
-    return "N/A";
   };
 
   const handleDelete = () => {
@@ -245,44 +202,69 @@ const AlertTriggerList = ({
         <Column
           field="serialNo"
           header="Sr. No."
-          className="border-none dark:bg-navy-800 dark:text-gray-200"
+          sortable
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "4rem" }}
         ></Column>
         <Column
           field="trigger_name"
           header="Trigger Name"
-          className="dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
+          body={(rowData) => (
+            <>
+              {rowData.trigger_name.charAt(0).toUpperCase() +
+                rowData.trigger_name.slice(1)}
+            </>
+          )}
         ></Column>
         <Column
           field="trigger_type"
           header="Trigger Type"
           sortable
-          className="dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
         ></Column>
         <Column
           field="recipients"
           header="Recipient"
           sortable
-          className="dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
-          body={(rowData) => (
-            <Tag
-              className="my-1 mr-2 bg-gray-200 text-gray-800"
-              icon="pi pi-user"
-              style={{ width: "100px", height: "25px", lineHeight: "40px" }}
-            >
-              <span style={{ fontSize: "13px" }}>
-                {getRecipientFirstName(rowData.recipients)}
-              </span>
-            </Tag>
-          )}
+          body={(rowData) => {
+            console.log(rowData);
+            const matchingContacts = contactsData.filter(
+              (el) => el.contact_uuid === rowData.recipients
+            );
+            return (
+              <>
+                {matchingContacts.map((contact) => (
+                  <Tag
+                    key={contact.contact_uuid}
+                    className="my-1 mr-2 bg-gray-200 text-gray-800"
+                    icon="pi pi-user"
+                    style={{
+                      width: "100px",
+                      height: "25px",
+                      lineHeight: "40px",
+                    }}
+                  >
+                    <span style={{ fontSize: "13px" }}>
+                      {contact.contact_first_name +
+                        " " +
+                        contact.contact_last_name}
+                    </span>
+                  </Tag>
+                ))}
+              </>
+            );
+          }}
         />
+
         <Column
           field="trigger_status"
           header="Status"
-          className="dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "6rem" }}
           body={renderStatusCell}
         ></Column>
@@ -291,7 +273,7 @@ const AlertTriggerList = ({
           field="vehicle_uuid"
           header="Vehicle Name"
           sortable
-          className="dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "6rem" }}
           body={(rowData) => (
             <span>{mapVehicleName(rowData.vehicle_uuid)}</span>
@@ -300,7 +282,7 @@ const AlertTriggerList = ({
         <Column
           body={actionBodyTemplate}
           header="Action"
-          className="dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "6rem" }}
         ></Column>
       </DataTable>
@@ -323,6 +305,7 @@ const AlertTriggerList = ({
                 id="trigger_type"
                 name="trigger_type"
                 value={editData?.trigger_type}
+                className="border py-2 pl-2"
               />
               <label htmlFor="trigger_type">Trigger Type</label>
             </span>
@@ -334,6 +317,7 @@ const AlertTriggerList = ({
                 name="trigger_name"
                 onChange={handleChange}
                 value={editData?.trigger_name}
+                className="border py-2 pl-2"
               />
               <label htmlFor="trigger_name">Trigger Name</label>
             </span>
@@ -348,6 +332,7 @@ const AlertTriggerList = ({
                 options={vehiclesOptions()}
                 onChange={handleChange}
                 value={editData?.vehicle_uuid}
+                className="border"
               />
               <label htmlFor="vehicle_uuid">Select Vehicle</label>
             </span>
@@ -359,6 +344,7 @@ const AlertTriggerList = ({
                 name="trigger_description"
                 onChange={handleChange}
                 value={editData?.trigger_description}
+                className="border py-2 pl-2"
               />
               <label htmlFor="trigger_description">Trigger Description</label>
             </span>
@@ -371,8 +357,8 @@ const AlertTriggerList = ({
                 optionLabel="label"
                 optionValue="value"
                 options={contactsOptions()}
-                onChange={handleRecipient}
-                value={check === false ? parsedRecipients : recipient}
+                onChange={handleChange}
+                value={editData?.recipients}
               />
               <label htmlFor="recipients">Select Contact</label>
             </span>
@@ -387,8 +373,9 @@ const AlertTriggerList = ({
                 options={statusOptions}
                 onChange={handleChange}
                 value={editData?.trigger_status}
+                className="border"
               />
-              <label htmlFor="recipients">Select Contact</label>
+              <label htmlFor="trigger_status">Select Status</label>
             </span>
           </div>
 
@@ -397,7 +384,7 @@ const AlertTriggerList = ({
               type="submit"
               className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
             >
-              Add Trigger
+              Edit Alert Trigger
             </button>
           </div>
         </form>
@@ -407,31 +394,24 @@ const AlertTriggerList = ({
         visible={deleteVisible}
         onHide={closeDeleteDialog}
         header="Confirm Delete"
-        style={{
-          border: "2px solid lightblue",
-          borderRadius: "5px",
-          boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-          animation: "blinkBorder 1s infinite",
-        }}
-        modal
         footer={
           <div>
             <Button
               label="Delete"
-              icon="pi pi-times"
-              className="p-button-danger px-3 py-2 hover:bg-none dark:hover:bg-gray-50"
+              icon="pi pi-check"
+              className="mr-2 bg-red-500 px-3 py-2 text-white"
               onClick={handleDelete}
             />
             <Button
               label="Cancel"
-              icon="pi pi-check"
-              className="p-button-secondary px-3 py-2 hover:bg-none dark:hover:bg-gray-50"
+              icon="pi pi-times"
+              className="bg-gray-600 px-3 py-2 text-white dark:text-gray-850 "
               onClick={closeDeleteDialog}
             />
           </div>
         }
       >
-        <div>Are you sure you want to delete ?</div>
+        <div>Are you sure you want to delete {triggerName}?</div>
       </Dialog>
     </div>
   );
