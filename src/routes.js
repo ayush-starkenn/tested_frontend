@@ -166,7 +166,7 @@ export const routes_customer = [
     name: "Vehicles",
     title: "Vehicles",
     layout: "/customer",
-    path: "vehicles/ongoing-trip/:vehicle_uuid",
+    path: "vehicles/ongoing-trip/:trip_id",
     icon: <BsTruck className="h-7 w-7" />,
     component: (
       <CustomerProtected>
