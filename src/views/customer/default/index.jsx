@@ -12,6 +12,7 @@ import CheckTable from "./components/LogsTable";
 import { Card } from "primereact/card";
 import OngoingTable from "./components/OngoingTable";
 import LogsTable from "./components/LogsTable";
+import { RiContactsLine } from "react-icons/ri";
 
 const MainDashboard = () => {
   const user_uuid = Cookies.get("user_uuid");

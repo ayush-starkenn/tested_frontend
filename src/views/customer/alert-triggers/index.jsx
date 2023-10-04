@@ -110,6 +110,8 @@ const Triggers = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log(name, value);
+
     setAddData({ ...addData, [name]: value });
   };
 
@@ -234,12 +236,13 @@ const Triggers = () => {
   const contactsOptions = () => {
     return contactsData?.map((el) => ({
       label: el.contact_first_name + " " + el.contact_last_name,
-      value: {
-        contact_mobile: el.contact_mobile,
-        contact_email: el.contact_email,
-      },
+      value: el.contact_uuid,
     }));
   };
+
+  useEffect(() => {
+    console.log(contactsData);
+  }, [contactsData]);
 
   return (
     <>
