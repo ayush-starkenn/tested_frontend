@@ -347,7 +347,7 @@ const FeatureList = () => {
           onClick={openDialog}
         >
           <FiPlus className="mr-2" />
-          New Device
+          New Featureset
         </button>
       </div>
       {/* assign dialog  */}
