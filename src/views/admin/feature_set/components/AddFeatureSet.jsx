@@ -189,7 +189,6 @@ const AddFeatureSet = ({ onSuccess }) => {
       }
     }
     setInvalidFields(invalidFieldsArray);
-    console.log(invalidFields);
     // If there are invalid fields, show a toast and return
     if (invalidFieldsArray.length > 0) {
       toastErr.current.show({
@@ -389,7 +388,12 @@ const AddFeatureSet = ({ onSuccess }) => {
                   : ""
               }`}
               name="featureset_name"
-              onChange={handleChange}
+              onChange={(e) => {
+                handleChange(e);
+                setInvalidFields(
+                  invalidFields.filter((field) => field !== "featureset_name")
+                );
+              }}
               autoComplete="off"
             />
             <small id="username-help">Unique id to identify feature set</small>
@@ -409,7 +413,9 @@ const AddFeatureSet = ({ onSuccess }) => {
               optionValue="value"
               placeholder={selectedValue ? selectedValue : "Tap to Select"}
               className={`md:w-14rem mt-2 w-full border ${
-                invalidFields.includes("featureset_users") ? "p-invalid" : ""
+                invalidFields.includes("featureset_users")
+                  ? "border-red-600"
+                  : ""
               }`}
               value={selectedValue || ""}
             />
@@ -473,7 +479,9 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("activationSpeed") ? "p-invalid" : ""
+                invalidFields.includes("activationSpeed")
+                  ? "border-red-600"
+                  : ""
               }`}
               placeholder="Enter a value"
               name="activationSpeed"
@@ -492,7 +500,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               placeholder="Enter a value"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("alarmThreshold") ? "p-invalid" : ""
+                invalidFields.includes("alarmThreshold") ? "border-red-600" : ""
               }`}
               name="alarmThreshold"
               onChange={handleData}
@@ -512,7 +520,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               placeholder="Enter a value"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("brakeThreshold") ? "p-invalid" : ""
+                invalidFields.includes("brakeThreshold") ? "border-red-600" : ""
               }`}
               name="brakeThreshold"
               onChange={handleData}
@@ -531,7 +539,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               placeholder="Enter a value"
               name="brakeSpeed"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("brakeSpeed") ? "p-invalid" : ""
+                invalidFields.includes("brakeSpeed") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               autoComplete="off"
@@ -558,7 +566,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               value={values.detectStationaryObject}
               className={`md:w-14rem  $dark:bg-gray-900 mt-2 w-full border ${
                 invalidFields.includes("detectStationaryObject")
-                  ? "p-invalid"
+                  ? "border-red-600"
                   : ""
               }`}
             />
@@ -579,7 +587,9 @@ const AddFeatureSet = ({ onSuccess }) => {
               optionLabel="label"
               optionValue="value"
               className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
-                invalidFields.includes("allowCompleteBrake") ? "p-invalid" : ""
+                invalidFields.includes("allowCompleteBrake")
+                  ? "border-red-600"
+                  : ""
               }`}
             />
           </div>
@@ -604,7 +614,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               onChange={handleData}
               className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
                 invalidFields.includes("detectOncomingObstacle")
-                  ? "p-invalid"
+                  ? "border-red-600"
                   : ""
               }`}
             />
@@ -625,7 +635,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               optionLabel="label"
               optionValue="value"
               className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
-                invalidFields.includes("safetyMode") ? "p-invalid" : ""
+                invalidFields.includes("safetyMode") ? "border-red-600" : ""
               }`}
             />
           </div>
@@ -642,7 +652,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               placeholder="Enter a value"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("ttcThreshold") ? "p-invalid" : ""
+                invalidFields.includes("ttcThreshold") ? "border-red-600" : ""
               }`}
               name="ttcThreshold"
               onChange={handleData}
@@ -660,7 +670,9 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="brakeOnDuration"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("brakeOnDuration") ? "p-invalid" : ""
+                invalidFields.includes("brakeOnDuration")
+                  ? "border-red-600"
+                  : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -680,7 +692,9 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="brakeOffDuration"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("brakeOffDuration") ? "p-invalid" : ""
+                invalidFields.includes("brakeOffDuration")
+                  ? "border-red-600"
+                  : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -698,7 +712,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="start_time"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("start_time") ? "p-invalid" : ""
+                invalidFields.includes("start_time") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -718,7 +732,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="stop_time"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("stop_time") ? "p-invalid" : ""
+                invalidFields.includes("stop_time") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -770,7 +784,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               placeholder="Enter a value"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("preWarning") ? "p-invalid" : ""
+                invalidFields.includes("preWarning") ? "border-red-600" : ""
               }`}
               name="preWarning"
               onChange={handleData}
@@ -788,7 +802,9 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="sleepAlertInterval"
               className={`border  py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("sleepAlertInterval") ? "p-invalid" : ""
+                invalidFields.includes("sleepAlertInterval")
+                  ? "border-red-600"
+                  : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -807,8 +823,10 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="sa_activationSpeed"
-              className={`border  py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("sa_activationSpeed") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("sa_activationSpeed")
+                  ? "border-red-600"
+                  : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -826,7 +844,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="startTime"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("startTime") ? "p-invalid" : ""
+                invalidFields.includes("startTime") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -846,7 +864,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="stopTime"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("stopTime") ? "p-invalid" : ""
+                invalidFields.includes("stopTime") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -864,7 +882,9 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="brakeActivateTime"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("brakeActivateTime") ? "p-invalid" : ""
+                invalidFields.includes("brakeActivateTime")
+                  ? "border-red-600"
+                  : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -889,7 +909,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               optionLabel="label"
               optionValue="value"
               className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
-                invalidFields.includes("braking") ? "p-invalid" : ""
+                invalidFields.includes("braking") ? "border-red-600" : ""
               }`}
             />
           </div>
@@ -940,7 +960,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               name="maxLaneChangeThreshold"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("maxLaneChangeThreshold")
-                  ? "p-invalid"
+                  ? "border-red-600"
                   : ""
               }`}
               onChange={handleData}
@@ -962,7 +982,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               name="minLaneChangeThreshold"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("minLaneChangeThreshold")
-                  ? "p-invalid"
+                  ? "border-red-600"
                   : ""
               }`}
               onChange={handleData}
@@ -986,7 +1006,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               name="maxHarshAccelerationThreshold"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("maxHarshAccelerationThreshold")
-                  ? "p-invalid"
+                  ? "border-red-600"
                   : ""
               }`}
               onChange={handleData}
@@ -1008,7 +1028,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               name="minHarshAccelerationThreshold"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("minHarshAccelerationThreshold")
-                  ? "p-invalid"
+                  ? "border-red-600"
                   : ""
               }`}
               onChange={handleData}
@@ -1032,7 +1052,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               name="suddenBrakingThreshold"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("suddenBrakingThreshold")
-                  ? "p-invalid"
+                  ? "border-red-600"
                   : ""
               }`}
               onChange={handleData}
@@ -1054,7 +1074,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               name="maxSpeedBumpThreshold"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("maxSpeedBumpThreshold")
-                  ? "p-invalid"
+                  ? "border-red-600"
                   : ""
               }`}
               onChange={handleData}
@@ -1078,7 +1098,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               name="minSpeedBumpThreshold"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("minSpeedBumpThreshold")
-                  ? "p-invalid"
+                  ? "border-red-600"
                   : ""
               }`}
               onChange={handleData}
@@ -1130,7 +1150,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="speedLimit"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("speedLimit") ? "p-invalid" : ""
+                invalidFields.includes("speedLimit") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1180,7 +1200,9 @@ const AddFeatureSet = ({ onSuccess }) => {
             }}
             name="cruiseactivationSpeed"
             className={`border py-2 pl-2 dark:bg-gray-900 ${
-              invalidFields.includes("cruiseactivationSpeed") ? "p-invalid" : ""
+              invalidFields.includes("cruiseactivationSpeed")
+                ? "border-red-600"
+                : ""
             }`}
             onChange={handleData}
             placeholder="Enter a value"
@@ -1204,7 +1226,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               optionLabel="label"
               optionValue="value"
               className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
-                invalidFields.includes("vehicleType") ? "p-invalid" : ""
+                invalidFields.includes("vehicleType") ? "border-red-600" : ""
               }`}
             />
           </div>
@@ -1258,7 +1280,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               optionLabel="label"
               optionValue="value"
               className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
-                invalidFields.includes("protocolType") ? "p-invalid" : ""
+                invalidFields.includes("protocolType") ? "border-red-600" : ""
               }`}
             />
           </div>
@@ -1313,7 +1335,9 @@ const AddFeatureSet = ({ onSuccess }) => {
               onChange={handleData}
               options={AcceleratorTypeoptions}
               className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
-                invalidFields.includes("acceleratorType") ? "p-invalid" : ""
+                invalidFields.includes("acceleratorType")
+                  ? "border-red-600"
+                  : ""
               }`}
             />
           </div>
@@ -1331,9 +1355,9 @@ const AddFeatureSet = ({ onSuccess }) => {
               optionValue="value"
               name="VS_brk_typ"
               onChange={handleData}
-              options={BrakeTypeoptions}
+              options={BrakingOptions}
               className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
-                invalidFields.includes("VS_brk_typ") ? "p-invalid" : ""
+                invalidFields.includes("VS_brk_typ") ? "border-red-600" : ""
               }`}
             />
           </div>
@@ -1354,7 +1378,7 @@ const AddFeatureSet = ({ onSuccess }) => {
             onChange={handleData}
             options={GyroOptions}
             className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
-              invalidFields.includes("VS_gyro_type") ? "p-invalid" : ""
+              invalidFields.includes("VS_gyro_type") ? "border-red-600" : ""
             }`}
           />
         </div>
@@ -1432,7 +1456,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="rfAngle"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("rfAngle") ? "p-invalid" : ""
+                invalidFields.includes("rfAngle") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1450,7 +1474,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="rdr_act_spd"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("rdr_act_spd") ? "p-invalid" : ""
+                invalidFields.includes("rdr_act_spd") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1474,8 +1498,8 @@ const AddFeatureSet = ({ onSuccess }) => {
               optionLabel="label"
               optionValue="value"
               onChange={handleData}
-              className={`md:w-14rem $dark:bg-gray-900  w-full border ${
-                invalidFields.includes("rdr_type") ? "p-invalid" : ""
+              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+                invalidFields.includes("rdr_type") ? "border-red-600" : ""
               }`}
             />
           </div>
@@ -1490,7 +1514,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="Sensor_res1"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("Sensor_res1") ? "p-invalid" : ""
+                invalidFields.includes("Sensor_res1") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1519,7 +1543,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               optionValue="value"
               onChange={handleData}
               className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
-                invalidFields.includes("speedSource") ? "p-invalid" : ""
+                invalidFields.includes("speedSource") ? "border-red-600" : ""
               }`}
             />
           </div>
@@ -1536,7 +1560,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="slope"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("slope") ? "p-invalid" : ""
+                invalidFields.includes("slope") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1554,7 +1578,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="offset"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("offset") ? "p-invalid" : ""
+                invalidFields.includes("offset") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1575,7 +1599,7 @@ const AddFeatureSet = ({ onSuccess }) => {
             }}
             name="delay"
             className={`border py-2 pl-2 dark:bg-gray-900 ${
-              invalidFields.includes("delay") ? "p-invalid" : ""
+              invalidFields.includes("delay") ? "border-red-600" : ""
             }`}
             onChange={handleData}
             placeholder="Enter a value"
@@ -1627,7 +1651,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="noAlarm"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("noAlarm") ? "p-invalid" : ""
+                invalidFields.includes("noAlarm") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1645,7 +1669,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="speed"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("speed") ? "p-invalid" : ""
+                invalidFields.includes("speed") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1665,7 +1689,9 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="accelerationBypass"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("accelerationBypass") ? "p-invalid" : ""
+                invalidFields.includes("accelerationBypass")
+                  ? "border-red-600"
+                  : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1683,7 +1709,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="tim_err_tpms"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("tim_err_tpms") ? "p-invalid" : ""
+                invalidFields.includes("tim_err_tpms") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1705,7 +1731,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="rfSensorAbsent"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("rfSensorAbsent") ? "p-invalid" : ""
+                invalidFields.includes("rfSensorAbsent") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1723,7 +1749,9 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="gyroscopeAbsent"
               className={`border  py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("gyroscopeAbsent") ? "p-invalid" : ""
+                invalidFields.includes("gyroscopeAbsent")
+                  ? "border-red-600"
+                  : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1743,7 +1771,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="hmiAbsent"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("hmiAbsent") ? "p-invalid" : ""
+                invalidFields.includes("hmiAbsent") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1761,7 +1789,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="timeNotSet"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("timeNotSet") ? "p-invalid" : ""
+                invalidFields.includes("timeNotSet") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1781,7 +1809,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="brakeError"
               className={`border  py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("brakeError") ? "p-invalid" : ""
+                invalidFields.includes("brakeError") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1800,7 +1828,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="tpmsError"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("tpmsError") ? "p-invalid" : ""
+                invalidFields.includes("tpmsError") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1820,7 +1848,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="obdAbsent"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("obdAbsent") ? "p-invalid" : ""
+                invalidFields.includes("obdAbsent") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1838,7 +1866,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="noAlarmSpeed"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("noAlarmSpeed") ? "p-invalid" : ""
+                invalidFields.includes("noAlarmSpeed") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1858,7 +1886,9 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="laserSensorAbsent"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("laserSensorAbsent") ? "p-invalid" : ""
+                invalidFields.includes("laserSensorAbsent")
+                  ? "border-red-600"
+                  : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1876,7 +1906,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="rfidAbsent"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("rfidAbsent") ? "p-invalid" : ""
+                invalidFields.includes("rfidAbsent") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1896,7 +1926,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="iotAbsent"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("iotAbsent") ? "p-invalid" : ""
+                invalidFields.includes("iotAbsent") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1914,7 +1944,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="acc_board"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("acc_board") ? "p-invalid" : ""
+                invalidFields.includes("acc_board") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1935,7 +1965,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="SBE_dd"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("SBE_dd") ? "p-invalid" : ""
+                invalidFields.includes("SBE_dd") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1953,7 +1983,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="SBE_alcohol"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("SBE_alcohol") ? "p-invalid" : ""
+                invalidFields.includes("SBE_alcohol") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1973,7 +2003,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="SBE_temp"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("SBE_temp") ? "p-invalid" : ""
+                invalidFields.includes("SBE_temp") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2025,7 +2055,9 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="firewarereserver1"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("firewarereserver1") ? "p-invalid" : ""
+                invalidFields.includes("firewarereserver1")
+                  ? "border-red-600"
+                  : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2043,7 +2075,9 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="firewarereserver2"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("firewarereserver2") ? "p-invalid" : ""
+                invalidFields.includes("firewarereserver2")
+                  ? "border-red-600"
+                  : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2094,7 +2128,9 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="alcoholinterval"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("alcoholinterval") ? "p-invalid" : ""
+                invalidFields.includes("alcoholinterval")
+                  ? "border-red-600"
+                  : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2112,7 +2148,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="alcoholact_spd"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("alcoholact_spd") ? "p-invalid" : ""
+                invalidFields.includes("alcoholact_spd") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2132,7 +2168,9 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="alcoholstart_time"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("alcoholstart_time") ? "p-invalid" : ""
+                invalidFields.includes("alcoholstart_time")
+                  ? "border-red-600"
+                  : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2150,7 +2188,9 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="alcoholstop_time"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("alcoholstop_time") ? "p-invalid" : ""
+                invalidFields.includes("alcoholstop_time")
+                  ? "border-red-600"
+                  : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2174,8 +2214,8 @@ const AddFeatureSet = ({ onSuccess }) => {
               optionLabel="label"
               optionValue="value"
               onChange={handleData}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
-                invalidFields.includes("alcoholmode") ? "p-invalid" : ""
+              className={`border dark:bg-gray-900 ${
+                invalidFields.includes("alcoholmode") ? "border-red-600" : ""
               }`}
             />
           </div>
@@ -2223,7 +2263,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="dd_act_spd"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("dd_act_spd") ? "p-invalid" : ""
+                invalidFields.includes("dd_act_spd") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2241,7 +2281,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="dd_acc_cut"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("dd_acc_cut") ? "p-invalid" : ""
+                invalidFields.includes("dd_acc_cut") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2261,7 +2301,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="dd_strt_tim"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("dd_strt_tim") ? "p-invalid" : ""
+                invalidFields.includes("dd_strt_tim") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2279,7 +2319,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="dd_stop_tim"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("dd_stop_tim") ? "p-invalid" : ""
+                invalidFields.includes("dd_stop_tim") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2299,7 +2339,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="dd_res1"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("dd_res1") ? "p-invalid" : ""
+                invalidFields.includes("dd_res1") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2348,9 +2388,9 @@ const AddFeatureSet = ({ onSuccess }) => {
                 width: "30vw",
                 borderRadius: "5px",
               }}
-              name="load_max_cap"
+              name="load_tak_cap"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("load_max_cap") ? "p-invalid" : ""
+                invalidFields.includes("load_tak_cap") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2368,7 +2408,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="load_acc"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("load_acc") ? "p-invalid" : ""
+                invalidFields.includes("load_acc") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2419,7 +2459,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="fuel_tnk_cap"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("fuel_tnk_cap") ? "p-invalid" : ""
+                invalidFields.includes("fuel_tnk_cap") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2437,7 +2477,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="fuel_intvl1"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("fuel_intvl1") ? "p-invalid" : ""
+                invalidFields.includes("fuel_intvl1") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2457,7 +2497,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="fuel_intvl2"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("fuel_intvl2") ? "p-invalid" : ""
+                invalidFields.includes("fuel_intvl2") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2475,7 +2515,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="fuel_acc"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("fuel_acc") ? "p-invalid" : ""
+                invalidFields.includes("fuel_acc") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2494,7 +2534,7 @@ const AddFeatureSet = ({ onSuccess }) => {
             }}
             name="fuel_thrsh"
             className={`border py-2 pl-2 dark:bg-gray-900 ${
-              invalidFields.includes("fuel_thrsh") ? "p-invalid" : ""
+              invalidFields.includes("fuel_thrsh") ? "border-red-600" : ""
             }`}
             onChange={handleData}
             placeholder="Enter a value"

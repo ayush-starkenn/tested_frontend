@@ -49,7 +49,7 @@ const Reports = () => {
       <Dialog
         visible={isGenerateDialogVisible}
         onHide={closeDialog1}
-        style={{ width: "40rem" }}
+        style={{ width: "45rem" }}
         breakpoints={{ "960px": "75vw", "641px": "90vw" }}
         header="Fill the details"
         modal

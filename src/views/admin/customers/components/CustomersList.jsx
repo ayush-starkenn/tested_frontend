@@ -150,7 +150,7 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
                   value={editedCustomerData?.first_name || ""}
                   onChange={handleInputChange}
                   className={`border py-2 pl-2 ${
-                    !editedCustomerData.first_name ? "p-invalid" : ""
+                    !editedCustomerData.first_name ? "border-red-600" : ""
                   }`}
                 />
                 <label htmlFor="first_name">First Name</label>
@@ -164,7 +164,7 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
                   value={editedCustomerData?.last_name || ""}
                   onChange={handleInputChange}
                   className={`border py-2 pl-2 ${
-                    !editedCustomerData.last_name ? "p-invalid" : ""
+                    !editedCustomerData.last_name ? "border-red-600" : ""
                   }`}
                 />
                 <label htmlFor="last_name">Last Name</label>
@@ -180,7 +180,7 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
                 value={editedCustomerData?.email || ""}
                 onChange={handleInputChange}
                 className={`border py-2 pl-2 ${
-                  !editedCustomerData.email ? "p-invalid" : ""
+                  !editedCustomerData.email ? "border-red-600" : ""
                 }`}
               />
               <label htmlFor="email">Email</label>
@@ -195,7 +195,7 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
                 value={editedCustomerData?.company_name || ""}
                 onChange={handleInputChange}
                 className={`border py-2 pl-2 ${
-                  !editedCustomerData.company_name ? "p-invalid" : ""
+                  !editedCustomerData.company_name ? "border-red-600" : ""
                 }`}
               />
               <label htmlFor="company_name">Company Name</label>
@@ -205,6 +205,7 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
             <span className="p-float-label">
               <InputText
                 id="phone"
+                keyfilter="pint"
                 type="tel"
                 name="phone"
                 value={editedCustomerData?.phone || ""}
@@ -212,7 +213,7 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
                 className={`border py-2 pl-2 ${
                   isValidPhoneNumber(editedCustomerData?.phone || "")
                     ? ""
-                    : "p-invalid"
+                    : "border-red-600"
                 }`}
               />
               <label htmlFor="phone">Contact Number</label>
@@ -233,7 +234,7 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
                 value={editedCustomerData?.address || ""}
                 onChange={handleInputChange}
                 className={`border py-2 pl-2 ${
-                  !editedCustomerData.address ? "p-invalid" : ""
+                  !editedCustomerData.address ? "border-red-600" : ""
                 }`}
               />
               <label htmlFor="address">Flat No./ Plot No., Area/Society</label>
@@ -248,7 +249,7 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
                 value={editedCustomerData?.city || ""}
                 onChange={handleInputChange}
                 className={`border py-2 pl-2 ${
-                  !editedCustomerData.city ? "p-invalid" : ""
+                  !editedCustomerData.city ? "border-red-600" : ""
                 }`}
               />
               <label htmlFor="city">City</label>
@@ -263,7 +264,7 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
                 value={editedCustomerData?.state || ""}
                 onChange={handleInputChange}
                 className={`border py-2 pl-2 ${
-                  !editedCustomerData.state ? "p-invalid" : ""
+                  !editedCustomerData.state ? "border-red-600" : ""
                 }`}
               />
               <label htmlFor="state">State</label>
@@ -278,7 +279,7 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
                 value={editedCustomerData?.pincode || ""}
                 onChange={handleInputChange}
                 className={`border py-2 pl-2 ${
-                  !editedCustomerData.pincode ? "p-invalid" : ""
+                  !editedCustomerData.pincode ? "border-red-600" : ""
                 }`}
               />
               <label htmlFor="pincode">Pincode</label>
