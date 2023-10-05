@@ -6,7 +6,6 @@ import axios from "axios";
 import { AppContext } from "context/AppContext";
 import { Toast } from "primereact/toast";
 import Cookies from "js-cookie";
-import { Button } from "primereact/button";
 
 const AddFeatureSet = ({ onSuccess }) => {
   const [data, setData] = useState({});
@@ -268,11 +267,6 @@ const AddFeatureSet = ({ onSuccess }) => {
     },
   ];
 
-  const Brakingoptions = [
-    { label: "Yes", value: "1" },
-    { label: "No", value: "0" },
-  ];
-
   const VehicleTypeoptions = [{ label: "12V Pedal", value: "12V Pedal" }];
 
   const AcceleratorTypeoptions = [
@@ -339,14 +333,14 @@ const AddFeatureSet = ({ onSuccess }) => {
     { label: "Strict", value: 3 },
   ];
 
-  // const BrakeTypeoptions = [
-  //   { label: "Cylinder", value: "Cylinder" },
-  //   { label: "Internal Braking", value: "Internal Braking" },
-  //   {
-  //     label: "Electromagnetic",
-  //     value: "Electromagnetic",
-  //   },
-  // ];
+  const BrakeTypeoptions = [
+    { label: "Cylinder", value: "Cylinder" },
+    { label: "Internal Braking", value: "Internal Braking" },
+    {
+      label: "Electromagnetic",
+      value: "Electromagnetic",
+    },
+  ];
 
   const SpeedSourceoptions = [
     { label: "Speed Wire", value: "Speed Wire" },
@@ -426,23 +420,13 @@ const AddFeatureSet = ({ onSuccess }) => {
           )}
           <div className="mb-3 mt-2 flex flex-wrap gap-3">
             <div className="align-items-center flex">
-              <input
-                type="radio"
-                name="mode"
-                onChange={handleData}
-                value="Online"
-              />
+              <input type="radio" name="mode" onChange={handleData} value={1} />
               <label htmlFor="ingredient2" className="ml-2">
                 Online Mode
               </label>
             </div>
             <div className="align-items-center flex">
-              <input
-                type="radio"
-                name="mode"
-                onChange={handleData}
-                value="Offline"
-              />
+              <input type="radio" name="mode" onChange={handleData} value={0} />
               <label htmlFor="ingredient1" className="ml-2">
                 Offline Mode
               </label>
@@ -459,7 +443,7 @@ const AddFeatureSet = ({ onSuccess }) => {
             <input
               type="radio"
               name="CASMode"
-              value="Enable"
+              value={1}
               onChange={handleData}
             />
             <label htmlFor="ingredient2" className="ml-2">
@@ -470,7 +454,7 @@ const AddFeatureSet = ({ onSuccess }) => {
             <input
               type="radio"
               name="CASMode"
-              value="Disable"
+              value={0}
               onChange={handleData}
             />
             <label htmlFor="ingredient1" className="ml-2">
@@ -713,7 +697,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="start_time"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("start_time") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -733,7 +717,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="stop_time"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("stop_time") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -755,7 +739,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="op2"
               name="sleepAlertMode"
               onChange={handleData}
-              value="Online"
+              value={1}
             />
             <label htmlFor="op2" className="ml-2">
               Enable
@@ -767,7 +751,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="op1"
               name="sleepAlertMode"
               onChange={handleData}
-              value="Offline"
+              value={0}
             />
             <label htmlFor="op1" className="ml-2">
               Disable
@@ -823,7 +807,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="sa_activationSpeed"
-              className={`dark:bg-gray-900 ${
+              className={`border  py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("sa_activationSpeed") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -900,7 +884,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 width: "30vw",
                 borderRadius: "5px",
               }}
-              options={Brakingoptions}
+              options={BrakingOptions}
               placeholder="Select an option"
               optionLabel="label"
               optionValue="value"
@@ -921,7 +905,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="driverEvalMode"
               name="driverEvalMode"
-              value="Online"
+              value={1}
               onChange={handleData}
             />
             <label htmlFor="ingredient2" className="ml-2">
@@ -933,7 +917,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="ingredient1"
               name="driverEvalMode"
-              value="Offline"
+              value={0}
               onChange={handleData}
             />
             <label htmlFor="ingredient1" className="ml-2">
@@ -1115,7 +1099,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="GovernerMode"
               onChange={handleData}
               name="GovernerMode"
-              value="Online"
+              value={1}
             />
             <label htmlFor="ingredient2" className="ml-2">
               Enable
@@ -1126,7 +1110,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="GovernerMode"
               name="GovernerMode"
-              value="Offline"
+              value={0}
               onChange={handleData}
             />
             <label htmlFor="off" className="ml-2">
@@ -1165,7 +1149,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="cruiseMode"
               name="cruiseMode"
-              value="Online"
+              value={1}
               onChange={handleData}
             />
             <label htmlFor="mode2" className="ml-2">
@@ -1178,7 +1162,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="cruiseMode"
               onChange={handleData}
               name="cruiseMode"
-              value="Offline"
+              value={0}
             />
             <label htmlFor="mode1" className="ml-2">
               Disable
@@ -1236,7 +1220,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="enable"
               name="obdMode"
-              value="Online"
+              value={1}
               onChange={handleData}
             />
             <label htmlFor="enable" className="ml-2">
@@ -1248,7 +1232,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="disable"
               name="obdMode"
-              value="Offline"
+              value={0}
               onChange={handleData}
             />
             <label htmlFor="disable" className="ml-2">
@@ -1290,7 +1274,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="tpmsMode"
               name="tpmsMode"
-              value="Online"
+              value={1}
               onChange={handleData}
             />
             <label htmlFor="online" className="ml-2">
@@ -1302,7 +1286,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               name="tpmsMode"
               id="tpmsMode"
-              value="Offline"
+              value={0}
               onChange={handleData}
             />
             <label htmlFor="offline" className="ml-2">
@@ -1347,8 +1331,8 @@ const AddFeatureSet = ({ onSuccess }) => {
               optionValue="value"
               name="VS_brk_typ"
               onChange={handleData}
-              options={BrakingOptions}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+              options={BrakeTypeoptions}
+              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
                 invalidFields.includes("VS_brk_typ") ? "p-invalid" : ""
               }`}
             />
@@ -1369,7 +1353,7 @@ const AddFeatureSet = ({ onSuccess }) => {
             name="VS_gyro_type"
             onChange={handleData}
             options={GyroOptions}
-            className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+            className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
               invalidFields.includes("VS_gyro_type") ? "p-invalid" : ""
             }`}
           />
@@ -1386,7 +1370,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="lazerMode"
               name="lazerMode"
-              value="Online"
+              value={1}
               onChange={handleData}
             />
             <label htmlFor="lm_on" className="ml-2">
@@ -1398,7 +1382,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="lm_off"
               name="lazerMode"
-              value="Offline"
+              value={0}
               onChange={handleData}
             />
             <label htmlFor="lazerMode" className="ml-2">
@@ -1416,7 +1400,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="rfSensorMode"
               name="rfSensorMode"
-              value="Online"
+              value={1}
               onChange={handleData}
             />
             <label htmlFor="rfSensorMode" className="ml-2">
@@ -1428,7 +1412,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="rf_dis"
               name="rfSensorMode"
-              value="Offline"
+              value={0}
               onChange={handleData}
             />
             <label htmlFor="rfSensorMode" className="ml-2">
@@ -1465,7 +1449,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="rdr_act_spd"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("rdr_act_spd") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -1490,7 +1474,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               optionLabel="label"
               optionValue="value"
               onChange={handleData}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+              className={`md:w-14rem $dark:bg-gray-900  w-full border ${
                 invalidFields.includes("rdr_type") ? "p-invalid" : ""
               }`}
             />
@@ -1505,7 +1489,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="Sensor_res1"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("Sensor_res1") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -1609,7 +1593,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="rfNameMode"
               name="rfNameMode"
-              value="Online"
+              value={1}
               onChange={handleData}
             />
             <label htmlFor="rfNameMode" className="ml-2">
@@ -1621,7 +1605,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="rfNameMode"
               name="rfNameMode"
-              value="Offline"
+              value={0}
               onChange={handleData}
             />
             <label htmlFor="rfNameMode" className="ml-2">
@@ -1698,7 +1682,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="tim_err_tpms"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("tim_err_tpms") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -1911,7 +1895,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="iotAbsent"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("iotAbsent") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -1929,7 +1913,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="acc_board"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("acc_board") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -1950,7 +1934,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="SBE_dd"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("SBE_dd") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -1968,7 +1952,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="SBE_alcohol"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("SBE_alcohol") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -1988,7 +1972,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="SBE_temp"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("SBE_temp") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -2009,7 +1993,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="firmwareOtaUpdate"
               name="firmwareOtaUpdate"
-              value="Online"
+              value={1}
               onChange={handleData}
             />
             <label htmlFor="firmwareOtaUpdate" className="ml-2">
@@ -2021,7 +2005,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="ota_nav"
               name="firmwareOtaUpdate"
-              value="Offline"
+              value={0}
               onChange={handleData}
             />
             <label htmlFor="ota_nav" className="ml-2">
@@ -2058,7 +2042,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="firewarereserver2"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("firewarereserver2") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -2078,7 +2062,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="alc_on"
               name="alcoholDetectionMode"
-              value="Online"
+              value={1}
               onChange={handleData}
             />
             <label htmlFor="alc_on" className="ml-2">
@@ -2090,7 +2074,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="alc_off"
               name="alcoholDetectionMode"
-              value="Offline"
+              value={0}
               onChange={handleData}
             />
             <label htmlFor="alc_off" className="ml-2">
@@ -2109,7 +2093,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="alcoholinterval"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("alcoholinterval") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -2127,7 +2111,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="alcoholact_spd"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("alcoholact_spd") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -2147,7 +2131,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="alcoholstart_time"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("alcoholstart_time") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -2165,7 +2149,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="alcoholstop_time"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("alcoholstop_time") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -2190,7 +2174,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               optionLabel="label"
               optionValue="value"
               onChange={handleData}
-              className={`dark:bg-gray-900 ${
+              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
                 invalidFields.includes("alcoholmode") ? "p-invalid" : ""
               }`}
             />
@@ -2207,7 +2191,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="driverDrowsinessMode"
               name="driverDrowsinessMode"
-              value="Online"
+              value={1}
               onChange={handleData}
             />
             <label htmlFor="driverDrowsinessMode" className="ml-2">
@@ -2219,7 +2203,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="driverDrowsinessMode"
               name="driverDrowsinessMode"
-              value="Offline"
+              value={0}
               onChange={handleData}
             />
             <label htmlFor="drowsi_off" className="ml-2">
@@ -2238,7 +2222,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="dd_act_spd"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("dd_act_spd") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -2256,7 +2240,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="dd_acc_cut"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("dd_acc_cut") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -2276,7 +2260,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="dd_strt_tim"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("dd_strt_tim") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -2294,7 +2278,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="dd_stop_tim"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("dd_stop_tim") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -2314,7 +2298,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="dd_res1"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("dd_res1") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -2334,7 +2318,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="load_sts"
               name="load_sts"
-              value="Online"
+              value={1}
               onChange={handleData}
             />
             <label htmlFor="load_sts" className="ml-2">
@@ -2346,7 +2330,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="load_sts"
               name="load_sts"
-              value="Offline"
+              value={0}
               onChange={handleData}
             />
             <label htmlFor="load_sts" className="ml-2">
@@ -2365,7 +2349,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="load_max_cap"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("load_max_cap") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -2383,7 +2367,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="load_acc"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("load_acc") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -2403,7 +2387,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="fuelMode"
               name="fuelMode"
-              value="Online"
+              value={1}
               onChange={handleData}
             />
             <label htmlFor="fuelMode" className="ml-2">
@@ -2415,7 +2399,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="fuelMode"
               name="fuelMode"
-              value="Offline"
+              value={0}
               onChange={handleData}
             />
             <label htmlFor="fuelMode" className="ml-2">
@@ -2434,7 +2418,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="fuel_tnk_cap"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("fuel_tnk_cap") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -2452,7 +2436,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="fuel_intvl1"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("fuel_intvl1") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -2472,7 +2456,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="fuel_intvl2"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("fuel_intvl2") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -2490,7 +2474,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="fuel_acc"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("fuel_acc") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -2509,22 +2493,12 @@ const AddFeatureSet = ({ onSuccess }) => {
               borderRadius: "5px",
             }}
             name="fuel_thrsh"
-            className={`dark:bg-gray-900 ${
+            className={`border py-2 pl-2 dark:bg-gray-900 ${
               invalidFields.includes("fuel_thrsh") ? "p-invalid" : ""
             }`}
             onChange={handleData}
             placeholder="Enter a value"
             autoComplete="off"
-          />
-        </div>
-
-        <div className="text-right">
-          <Button
-            label="Add Feature Set"
-            icon="pi pi-check"
-            type="submit"
-            className="px-3 py-2 text-right hover:bg-none dark:hover:bg-gray-50"
-            style={{ width: "fit-content", background: "#2152FF" }}
           />
         </div>
 
