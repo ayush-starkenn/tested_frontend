@@ -27,7 +27,7 @@ const applyFilters = (filters, allData) => {
 
   return filteredData;
 };
-export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
+export default function DevicesGrid({ data }) {
   const [allData, setAllData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [filters, setFilters] = useState({

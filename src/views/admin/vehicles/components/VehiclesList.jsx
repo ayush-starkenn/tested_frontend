@@ -70,8 +70,7 @@ export default function VehiclesList({ data }) {
         <Button
           icon="pi pi-eye"
           rounded
-          outlined
-          className="text-red-500 dark:text-blue-500"
+          className="border border-blue-500 text-blue-500 dark:text-blue-500"
           style={{ width: "2rem", height: "2rem" }}
           onClick={() => openDialog(rowData)}
         />
@@ -100,7 +99,7 @@ export default function VehiclesList({ data }) {
           value={globalFilterValue}
           onChange={onGlobalFilterChange}
           placeholder="Keyword Search"
-          className="searchbox w-[25vw] cursor-pointer rounded-full dark:bg-gray-950 dark:text-gray-50"
+          className="searchbox w-[25vw] cursor-pointer rounded-full border py-3 pl-8 dark:bg-gray-950 dark:text-gray-50"
         />
         {globalFilterValue && (
           <Button
@@ -148,7 +147,7 @@ export default function VehiclesList({ data }) {
             key="serialNo"
             field="serialNo"
             header="Sr.No."
-            className="border-none dark:bg-navy-800 dark:text-gray-200"
+            className="border-b dark:bg-navy-800 dark:text-gray-200"
             style={{ minWidth: "4rem", textAlign: "center" }}
           ></Column>
           <Column
@@ -156,7 +155,7 @@ export default function VehiclesList({ data }) {
             field="vehicle_name"
             header="Vehicle Name"
             sortable
-            className="border-none dark:bg-navy-800 dark:text-gray-200"
+            className="border-b dark:bg-navy-800 dark:text-gray-200"
             style={{ minWidth: "10rem", border: "none !important" }}
           ></Column>
           <Column
@@ -164,7 +163,7 @@ export default function VehiclesList({ data }) {
             field="vehicle_registration"
             header="Registration No."
             sortable
-            className="border-none dark:bg-navy-800 dark:text-gray-200"
+            className="border-b dark:bg-navy-800 dark:text-gray-200"
             style={{ minWidth: "12rem" }}
             body={(rowData) => renderCellWithNA(rowData.ecu)}
           ></Column>
@@ -173,7 +172,7 @@ export default function VehiclesList({ data }) {
             field="dms"
             header="DMS"
             sortable
-            className="border-none dark:bg-navy-800 dark:text-gray-200"
+            className="border-b dark:bg-navy-800 dark:text-gray-200"
             style={{ minWidth: "9rem" }}
             body={(rowData) => renderCellWithNA(rowData.dms)}
           ></Column>
@@ -182,7 +181,7 @@ export default function VehiclesList({ data }) {
             field="iot"
             header="IoT"
             sortable
-            className="border-none dark:bg-navy-800 dark:text-gray-200"
+            className="border-b dark:bg-navy-800 dark:text-gray-200"
             style={{ minWidth: "9rem" }}
             body={(rowData) => renderCellWithNA(rowData.iot)}
           ></Column>
@@ -191,7 +190,7 @@ export default function VehiclesList({ data }) {
             field="ecu"
             header="ECU"
             sortable
-            className="border-none dark:bg-navy-800 dark:text-gray-200"
+            className="border-b dark:bg-navy-800 dark:text-gray-200"
             style={{ minWidth: "9rem" }}
             body={(rowData) => renderCellWithNA(rowData.ecu)}
           ></Column>
@@ -201,7 +200,7 @@ export default function VehiclesList({ data }) {
             header="Status"
             body={statusBodyTemplate}
             sortable
-            className="border-none dark:bg-navy-800 dark:text-gray-200"
+            className="border-b dark:bg-navy-800 dark:text-gray-200"
             style={{ minWidth: "7rem" }}
           ></Column>
           <Column
@@ -209,7 +208,7 @@ export default function VehiclesList({ data }) {
             body={actionBodyTemplate}
             header="Action"
             exportable={false}
-            className="border-none dark:bg-navy-800"
+            className="border-b dark:bg-navy-800"
             style={{ minWidth: "6rem" }}
           ></Column>
         </DataTable>

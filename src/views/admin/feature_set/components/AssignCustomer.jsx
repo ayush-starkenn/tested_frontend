@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { Dropdown } from "primereact/dropdown";
-import { Button } from "primereact/button";
 import { useRef } from "react";
 import { Toast } from "primereact/toast";
 import Cookies from "js-cookie";
@@ -126,16 +125,15 @@ const AssignCustomer = ({ parameters, onSuccess }) => {
             <label htmlFor="dd-city">Select a customer</label>
           </span>
           {validationError && (
-            <div className="text-red-600">Please select a customer.</div>
+            <small className="text-red-600">Please select a customer.</small>
           )}
           <div className="mt-4 text-right">
-            <Button
-              label="Assign"
-              icon="pi pi-check"
+            <button
               type="submit"
-              className="px-3 py-2 text-right hover:bg-none dark:hover:bg-gray-50"
-              style={{ width: "fit-content", background: "#2152FF" }}
-            />
+              className="rounded bg-blue-600 px-3 py-2 text-white dark:bg-gray-150 dark:font-bold dark:text-blue-800"
+            >
+              Assign
+            </button>
           </div>
         </form>
       </div>

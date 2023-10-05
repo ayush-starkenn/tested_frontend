@@ -11,7 +11,6 @@ import React, { useEffect, useState } from "react";
 import { TabPanel, TabView } from "primereact/tabview";
 import VehicleTrips from "./VehicleTrips";
 import FeatureSet from "./FeatureSet";
-import { Link } from "react-router-dom";
 
 export default function VehiclesList({
   vehiData,
@@ -97,7 +96,7 @@ export default function VehiclesList({
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-        <Link to={`ongoing-trip/${rowData.vehicle_uuid}`} target="_blank">
+        {/* <Link to={`ongoing-trip/${rowData.vehicle_uuid}`} target="_blank">
           <Button
             icon="pi pi-map-marker"
             rounded
@@ -107,7 +106,7 @@ export default function VehiclesList({
               height: "2rem",
             }}
           />
-        </Link>
+        </Link> */}
         <Button
           icon="pi pi-pencil"
           rounded
@@ -125,7 +124,6 @@ export default function VehiclesList({
         <Button
           icon="pi pi-eye"
           rounded
-          outlined
           className="border border-blue-500 text-blue-500 dark:text-blue-500"
           style={{ width: "2rem", height: "2rem" }}
           onClick={() => ViewDialog(rowData)}
@@ -475,7 +473,7 @@ export default function VehiclesList({
               type="submit"
               className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
             >
-              Edit Vehicle
+              Update
             </button>
           </div>
         </form>

@@ -4,12 +4,12 @@ import { Toast } from "primereact/toast";
 import CustomersGrid from "./components/CustomersGrid";
 import { BsGrid, BsListUl } from "react-icons/bs";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Dialog } from "primereact/dialog";
 import axios from "axios";
 import { Dropdown } from "primereact/dropdown";
 import Cookies from "js-cookie";
+import { FiPlus } from "react-icons/fi";
 
 const Customers = () => {
   const token = Cookies.get("token");
@@ -382,12 +382,13 @@ const Customers = () => {
           </button>
         </div>
       </div>
-      <Button
-        label="New Customer"
-        icon="pi pi-plus"
-        className="mt-2 h-10 px-3 py-0 text-left  dark:hover:text-white"
+      <button
+        className="mt-2 flex h-10 items-center rounded-lg bg-blue-500 px-3 py-2 text-left font-semibold text-white hover:bg-blue-600"
         onClick={openDialog}
-      />
+      >
+        <FiPlus className="mr-2" />
+        New Customer
+      </button>
       {!isListView && (
         <CustomersGrid
           data={data}
@@ -422,11 +423,13 @@ const Customers = () => {
                 <InputText
                   id="f_name"
                   name="f_name"
-                  className={
-                    formErrors.f_name
-                      ? "p-invalid p-error"
-                      : (data.f_name = "" ? "p-filled" : "")
-                  }
+                  className={`border py-2 pl-2 
+                    ${
+                      formErrors.f_name
+                        ? "p-invalid p-error"
+                        : (data.f_name = "" ? "p-filled" : "")
+                    }
+                  `}
                   onChange={(e) =>
                     setFormErrors({ ...formErrors, [e.target.name]: false })
                   }
@@ -440,11 +443,11 @@ const Customers = () => {
                 <InputText
                   id="l_name"
                   name="l_name"
-                  className={
+                  className={`border py-2 pl-2 ${
                     formErrors.l_name
                       ? "p-invalid"
                       : (data.l_name = "" ? "p-filled" : "")
-                  }
+                  }`}
                   onChange={(e) =>
                     setFormErrors({ ...formErrors, [e.target.name]: false })
                   }
@@ -460,11 +463,11 @@ const Customers = () => {
                 id="email"
                 type="email"
                 name="email"
-                className={
+                className={`border py-2 pl-2 ${
                   formErrors.email
                     ? "p-invalid"
                     : (data.email = "" ? "p-filled" : "")
-                }
+                }`}
                 onChange={(e) =>
                   setFormErrors({ ...formErrors, [e.target.name]: false })
                 }
@@ -479,20 +482,20 @@ const Customers = () => {
                 id="password"
                 type={showPassword ? "text" : "password"}
                 name="password"
-                className={
+                className={`border py-2 pl-2 ${
                   formErrors.password
                     ? "p-invalid"
                     : data.password !== ""
                     ? ""
                     : "p-filled"
-                }
+                }`}
                 onChange={(e) =>
                   setFormErrors({ ...formErrors, [e.target.name]: false })
                 }
                 autoComplete="off"
               />
               <label htmlFor="password">Password</label>
-              <div className="absolute right-2.5 top-4">
+              <div className="absolute right-2.5 top-[0.7rem]">
                 {showPassword ? (
                   <FaEyeSlash
                     className="h-5 w-5 cursor-pointer text-gray-500"
@@ -513,11 +516,11 @@ const Customers = () => {
                 id="confirmPassword"
                 type="password"
                 name="confirmPassword"
-                className={
+                className={`border py-2 pl-2 ${
                   formErrors.confirmPassword
                     ? "p-invalid"
                     : (data.confirmPassword = "" ? "p-invalid p-filled" : "")
-                }
+                }`}
                 onChange={(e) =>
                   setFormErrors({ ...formErrors, [e.target.name]: false })
                 }
@@ -540,7 +543,7 @@ const Customers = () => {
                 optionLabel="label"
                 optionValue="value"
                 onChange={handleChange}
-                className={formErrors.user_type ? "p-invalid" : ""}
+                className={`border ${formErrors.user_type ? "p-invalid" : ""}`}
               />
               <label htmlFor="user_type">User Type</label>
             </span>
@@ -551,11 +554,11 @@ const Customers = () => {
                 id="company_name"
                 type="text"
                 name="company_name"
-                className={
+                className={`border py-2 pl-2 ${
                   formErrors.company_name
                     ? "p-invalid"
                     : (data.company_name = "" ? "p-filled" : "")
-                }
+                }`}
                 onChange={(e) =>
                   setFormErrors({ ...formErrors, [e.target.name]: false })
                 }
@@ -570,11 +573,11 @@ const Customers = () => {
                 id="phone"
                 type="tel"
                 name="phone"
-                className={
+                className={`border py-2 pl-2 ${
                   formErrors.phone
                     ? "p-invalid"
                     : (data.phone = "" ? "p-filled" : "")
-                }
+                }`}
                 onChange={(e) =>
                   setFormErrors({ ...formErrors, [e.target.name]: false })
                 }
@@ -592,11 +595,11 @@ const Customers = () => {
                 id="address"
                 type="text"
                 name="address"
-                className={
+                className={`border py-2 pl-2 ${
                   formErrors.address
                     ? "p-invalid"
                     : (data.address = "" ? "p-filled" : "")
-                }
+                }`}
                 onChange={(e) =>
                   setFormErrors({ ...formErrors, [e.target.name]: false })
                 }
@@ -611,11 +614,11 @@ const Customers = () => {
                 id="city"
                 type="text"
                 name="city"
-                className={
+                className={`border py-2 pl-2 ${
                   formErrors.city
                     ? "p-invalid"
                     : (data.city = "" ? "p-filled" : "")
-                }
+                }`}
                 onChange={(e) =>
                   setFormErrors({ ...formErrors, [e.target.name]: false })
                 }
@@ -630,11 +633,11 @@ const Customers = () => {
                 id="state"
                 type="text"
                 name="state"
-                className={
+                className={`border py-2 pl-2 ${
                   formErrors.state
                     ? "p-invalid"
                     : (data.state = "" ? "p-filled" : "")
-                }
+                }`}
                 onChange={(e) =>
                   setFormErrors({ ...formErrors, [e.target.name]: false })
                 }
@@ -650,11 +653,11 @@ const Customers = () => {
                 type="text"
                 name="pincode"
                 keyfilter="pint"
-                className={
+                className={`border py-2 pl-2 ${
                   formErrors.pincode
                     ? "p-invalid"
                     : (data.pincode = "" ? "p-filled" : "")
-                }
+                }`}
                 onChange={(e) => {
                   const value = e.target.value;
                   const formattedValue = value.replace(/\D/g, "").slice(0, 6); // Remove non-digits and limit to 6 characters
@@ -718,7 +721,7 @@ const Customers = () => {
             ) : (
               <button
                 type="submit"
-                className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
+                className="rounded bg-blue-600 px-3 py-2 text-white dark:bg-gray-150 dark:font-bold dark:text-blue-800"
               >
                 Add Customer
               </button>

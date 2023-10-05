@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useRef } from "react";
-import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { useState } from "react";
@@ -7,6 +6,7 @@ import axios from "axios";
 import { AppContext } from "context/AppContext";
 import { Toast } from "primereact/toast";
 import Cookies from "js-cookie";
+import { Button } from "primereact/button";
 
 const AddFeatureSet = ({ onSuccess }) => {
   const [data, setData] = useState({});
@@ -386,13 +386,12 @@ const AddFeatureSet = ({ onSuccess }) => {
             <InputText
               id="username"
               style={{
-                width: "63vw",
                 borderRadius: "5px",
               }}
               placeholder="Feature Set Name"
-              className={
+              className={`border py-2 pl-2 ${
                 invalidFields.includes("featureset_name") ? "p-invalid" : ""
-              }
+              }`}
               name="featureset_name"
               onChange={handleChange}
               autoComplete="off"
@@ -413,7 +412,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               optionLabel="label"
               optionValue="value"
               placeholder={selectedValue ? selectedValue : "Tap to Select"}
-              className={`md:w-14rem mt-2 w-full ${
+              className={`md:w-14rem mt-2 w-full border ${
                 invalidFields.includes("featureset_users") ? "p-invalid" : ""
               }`}
               value={selectedValue || ""}
@@ -487,7 +486,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 width: "30vw",
                 borderRadius: "5px",
               }}
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("activationSpeed") ? "p-invalid" : ""
               }`}
               placeholder="Enter a value"
@@ -506,7 +505,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               placeholder="Enter a value"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("alarmThreshold") ? "p-invalid" : ""
               }`}
               name="alarmThreshold"
@@ -526,7 +525,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               placeholder="Enter a value"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("brakeThreshold") ? "p-invalid" : ""
               }`}
               name="brakeThreshold"
@@ -545,7 +544,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               placeholder="Enter a value"
               name="brakeSpeed"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("brakeSpeed") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -569,7 +568,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               name="detectStationaryObject"
               onChange={handleData}
               value={values.detectStationaryObject}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+              className={`md:w-14rem  $dark:bg-gray-900 mt-2 w-full border ${
                 invalidFields.includes("detectStationaryObject")
                   ? "p-invalid"
                   : ""
@@ -591,7 +590,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               value={values.allowCompleteBrake}
               optionLabel="label"
               optionValue="value"
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
                 invalidFields.includes("allowCompleteBrake") ? "p-invalid" : ""
               }`}
             />
@@ -613,7 +612,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               optionLabel="label"
               optionValue="value"
               onChange={handleData}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
                 invalidFields.includes("detectOncomingObstacle")
                   ? "p-invalid"
                   : ""
@@ -635,7 +634,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               onChange={handleData}
               optionLabel="label"
               optionValue="value"
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
                 invalidFields.includes("safetyMode") ? "p-invalid" : ""
               }`}
             />
@@ -652,7 +651,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               placeholder="Enter a value"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("ttcThreshold") ? "p-invalid" : ""
               }`}
               name="ttcThreshold"
@@ -670,7 +669,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="brakeOnDuration"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("brakeOnDuration") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -690,7 +689,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="brakeOffDuration"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("brakeOffDuration") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -780,7 +779,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               placeholder="Enter a value"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("preWarning") ? "p-invalid" : ""
               }`}
               name="preWarning"
@@ -798,7 +797,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="sleepAlertInterval"
-              className={`dark:bg-gray-900 ${
+              className={`border  py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("sleepAlertInterval") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -836,7 +835,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="startTime"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("startTime") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -856,7 +855,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="stopTime"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("stopTime") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -874,7 +873,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="brakeActivateTime"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("brakeActivateTime") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -899,7 +898,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               placeholder="Select an option"
               optionLabel="label"
               optionValue="value"
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
                 invalidFields.includes("braking") ? "p-invalid" : ""
               }`}
             />
@@ -947,7 +946,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="maxLaneChangeThreshold"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("maxLaneChangeThreshold")
                   ? "p-invalid"
                   : ""
@@ -967,7 +966,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="minLaneChangeThreshold"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("minLaneChangeThreshold")
                   ? "p-invalid"
                   : ""
@@ -989,7 +988,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="maxHarshAccelerationThreshold"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("maxHarshAccelerationThreshold")
                   ? "p-invalid"
                   : ""
@@ -1009,7 +1008,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="minHarshAccelerationThreshold"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("minHarshAccelerationThreshold")
                   ? "p-invalid"
                   : ""
@@ -1031,7 +1030,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="suddenBrakingThreshold"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("suddenBrakingThreshold")
                   ? "p-invalid"
                   : ""
@@ -1051,7 +1050,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="maxSpeedBumpThreshold"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("maxSpeedBumpThreshold")
                   ? "p-invalid"
                   : ""
@@ -1073,7 +1072,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="minSpeedBumpThreshold"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("minSpeedBumpThreshold")
                   ? "p-invalid"
                   : ""
@@ -1126,7 +1125,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="speedLimit"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("speedLimit") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -1176,7 +1175,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               borderRadius: "5px",
             }}
             name="cruiseactivationSpeed"
-            className={`dark:bg-gray-900 ${
+            className={`border py-2 pl-2 dark:bg-gray-900 ${
               invalidFields.includes("cruiseactivationSpeed") ? "p-invalid" : ""
             }`}
             onChange={handleData}
@@ -1200,7 +1199,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               placeholder="Select an option"
               optionLabel="label"
               optionValue="value"
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
                 invalidFields.includes("vehicleType") ? "p-invalid" : ""
               }`}
             />
@@ -1254,7 +1253,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               value={values.protocolType}
               optionLabel="label"
               optionValue="value"
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
                 invalidFields.includes("protocolType") ? "p-invalid" : ""
               }`}
             />
@@ -1309,7 +1308,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               name="acceleratorType"
               onChange={handleData}
               options={AcceleratorTypeoptions}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
                 invalidFields.includes("acceleratorType") ? "p-invalid" : ""
               }`}
             />
@@ -1428,7 +1427,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="rfAngle"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("rfAngle") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -1515,7 +1514,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               optionLabel="label"
               optionValue="value"
               onChange={handleData}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
+              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
                 invalidFields.includes("speedSource") ? "p-invalid" : ""
               }`}
             />
@@ -1532,7 +1531,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="slope"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("slope") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -1550,7 +1549,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="offset"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("offset") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -1571,7 +1570,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               borderRadius: "5px",
             }}
             name="delay"
-            className={`dark:bg-gray-900 ${
+            className={`border py-2 pl-2 dark:bg-gray-900 ${
               invalidFields.includes("delay") ? "p-invalid" : ""
             }`}
             onChange={handleData}
@@ -1623,7 +1622,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="noAlarm"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("noAlarm") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -1641,7 +1640,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="speed"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("speed") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -1661,7 +1660,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="accelerationBypass"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("accelerationBypass") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -1701,7 +1700,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="rfSensorAbsent"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("rfSensorAbsent") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -1719,7 +1718,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="gyroscopeAbsent"
-              className={`dark:bg-gray-900 ${
+              className={`border  py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("gyroscopeAbsent") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -1739,7 +1738,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="hmiAbsent"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("hmiAbsent") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -1757,7 +1756,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="timeNotSet"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("timeNotSet") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -1777,7 +1776,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="brakeError"
-              className={`dark:bg-gray-900 ${
+              className={`border  py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("brakeError") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -1796,7 +1795,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="tpmsError"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("tpmsError") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -1816,7 +1815,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="obdAbsent"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("obdAbsent") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -1834,7 +1833,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="noAlarmSpeed"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("noAlarmSpeed") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -1854,7 +1853,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="laserSensorAbsent"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("laserSensorAbsent") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -1872,7 +1871,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="rfidAbsent"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("rfidAbsent") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -2021,7 +2020,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="firewarereserver1"
-              className={`dark:bg-gray-900 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("firewarereserver1") ? "p-invalid" : ""
               }`}
               onChange={handleData}
@@ -2507,6 +2506,15 @@ const AddFeatureSet = ({ onSuccess }) => {
             className="px-3 py-2 text-right hover:bg-none dark:hover:bg-gray-50"
             style={{ width: "fit-content", background: "#2152FF" }}
           />
+        </div>
+
+        <div className="text-right">
+          <button
+            type="submit"
+            className="rounded bg-blue-600 px-3 py-2 text-white dark:bg-gray-150 dark:font-bold dark:text-blue-800"
+          >
+            Add Feature Set
+          </button>
         </div>
       </form>
     </>

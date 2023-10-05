@@ -133,7 +133,7 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
             <Button
               label={isUpdating ? "Updating..." : "Update"}
               icon={isUpdating ? "pi pi-spin pi-spinner" : "pi pi-check"}
-              className="p-button-primary px-3 py-2 hover:bg-none dark:hover:bg-gray-50"
+              className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
               disabled={isUpdating}
               onClick={onSave}
             />
@@ -149,7 +149,9 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
                   name="first_name"
                   value={editedCustomerData?.first_name || ""}
                   onChange={handleInputChange}
-                  className={!editedCustomerData.first_name ? "p-invalid" : ""}
+                  className={`border py-2 pl-2 ${
+                    !editedCustomerData.first_name ? "p-invalid" : ""
+                  }`}
                 />
                 <label htmlFor="first_name">First Name</label>
               </span>
@@ -161,7 +163,9 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
                   name="last_name"
                   value={editedCustomerData?.last_name || ""}
                   onChange={handleInputChange}
-                  className={!editedCustomerData.last_name ? "p-invalid" : ""}
+                  className={`border py-2 pl-2 ${
+                    !editedCustomerData.last_name ? "p-invalid" : ""
+                  }`}
                 />
                 <label htmlFor="last_name">Last Name</label>
               </span>
@@ -175,7 +179,9 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
                 name="email"
                 value={editedCustomerData?.email || ""}
                 onChange={handleInputChange}
-                className={!editedCustomerData.email ? "p-invalid" : ""}
+                className={`border py-2 pl-2 ${
+                  !editedCustomerData.email ? "p-invalid" : ""
+                }`}
               />
               <label htmlFor="email">Email</label>
             </span>
@@ -188,7 +194,9 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
                 name="company_name"
                 value={editedCustomerData?.company_name || ""}
                 onChange={handleInputChange}
-                className={!editedCustomerData.company_name ? "p-invalid" : ""}
+                className={`border py-2 pl-2 ${
+                  !editedCustomerData.company_name ? "p-invalid" : ""
+                }`}
               />
               <label htmlFor="company_name">Company Name</label>
             </span>
@@ -201,11 +209,11 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
                 name="phone"
                 value={editedCustomerData?.phone || ""}
                 onChange={handleInputChange}
-                className={
+                className={`border py-2 pl-2 ${
                   isValidPhoneNumber(editedCustomerData?.phone || "")
                     ? ""
                     : "p-invalid"
-                }
+                }`}
               />
               <label htmlFor="phone">Contact Number</label>
             </span>
@@ -224,7 +232,9 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
                 name="address"
                 value={editedCustomerData?.address || ""}
                 onChange={handleInputChange}
-                className={!editedCustomerData.address ? "p-invalid" : ""}
+                className={`border py-2 pl-2 ${
+                  !editedCustomerData.address ? "p-invalid" : ""
+                }`}
               />
               <label htmlFor="address">Flat No./ Plot No., Area/Society</label>
             </span>
@@ -237,7 +247,9 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
                 name="city"
                 value={editedCustomerData?.city || ""}
                 onChange={handleInputChange}
-                className={!editedCustomerData.city ? "p-invalid" : ""}
+                className={`border py-2 pl-2 ${
+                  !editedCustomerData.city ? "p-invalid" : ""
+                }`}
               />
               <label htmlFor="city">City</label>
             </span>
@@ -250,7 +262,9 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
                 name="state"
                 value={editedCustomerData?.state || ""}
                 onChange={handleInputChange}
-                className={!editedCustomerData.state ? "p-invalid" : ""}
+                className={`border py-2 pl-2 ${
+                  !editedCustomerData.state ? "p-invalid" : ""
+                }`}
               />
               <label htmlFor="state">State</label>
             </span>
@@ -263,7 +277,9 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
                 name="pincode"
                 value={editedCustomerData?.pincode || ""}
                 onChange={handleInputChange}
-                className={!editedCustomerData.pincode ? "p-invalid" : ""}
+                className={`border py-2 pl-2 ${
+                  !editedCustomerData.pincode ? "p-invalid" : ""
+                }`}
               />
               <label htmlFor="pincode">Pincode</label>
             </span>
@@ -343,14 +359,14 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
           <div>
             <Button
               label="Delete"
-              icon="pi pi-times"
-              className="p-button-danger px-3 py-2 hover:bg-none dark:hover:bg-gray-50"
+              icon="pi pi-check"
+              className="mr-2 bg-red-500 px-3 py-2 text-white"
               onClick={handleConfirmDelete}
             />
             <Button
               label="Cancel"
-              icon="pi pi-check"
-              className="p-button-secondary px-3 py-2 hover:bg-none dark:hover:bg-gray-50"
+              icon="pi pi-times"
+              className="bg-gray-600 px-3 py-2 text-white dark:text-gray-850 "
               onClick={onHide}
             />
           </div>
@@ -387,12 +403,12 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
           value={globalFilterValue}
           onChange={onGlobalFilterChange}
           placeholder="Keyword Search"
-          className="searchbox w-[25vw] cursor-pointer rounded-full dark:bg-gray-950 dark:text-gray-50"
+          className="searchbox w-[25vw] cursor-pointer rounded-full border py-3 pl-8 dark:bg-gray-950 dark:text-gray-50"
         />
         {globalFilterValue && (
           <Button
             icon="pi pi-times"
-            className="p-button-rounded p-button-text hover:none dark:text-gray-100"
+            className="p-button-rounded p-button-text"
             onClick={clearSearch}
           />
         )}
@@ -417,23 +433,20 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
         <Button
           icon="pi pi-pencil"
           rounded
-          outlined
-          className="mr-2 dark:text-gray-100"
+          className="mr-2 border border-gray-700 text-gray-700"
           style={{ width: "2rem", height: "2rem" }}
           onClick={handleEdit}
         />
         <Button
           icon="pi pi-trash"
           rounded
-          outlined
-          severity="danger"
-          className="text-red-500 dark:text-red-500"
           style={{ width: "2rem", height: "2rem" }}
+          className="mr-2 border border-red-600 text-red-600"
           onClick={handleDelete}
         />
         <Button
-          type="button"
-          className="text-bold setting ml-2 rounded-full text-gray-950 dark:text-white"
+          rounded
+          className="mr-2 border border-blue-500 text-blue-500 dark:text-blue-500"
           onClick={(event) => menuRight.current.toggle(event)}
           style={{ padding: "0.4rem" }}
           aria-controls="popup_menu_right"
@@ -529,7 +542,7 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
           key="user_uuid"
           field="serialNo"
           header="Sr. no."
-          className="border-none dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "4rem" }}
         />
         <Column
@@ -537,7 +550,7 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
           field="full_name"
           header="Name"
           style={{ minWidth: "8rem" }}
-          className="border-none dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           body={(rowData) => (
             <>
               {rowData.first_name.charAt(0).toUpperCase() +
@@ -552,20 +565,20 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
           field="email"
           header="Email"
           style={{ minWidth: "8rem" }}
-          className="border-none dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
         />
         <Column
           key="user_uuid"
           field="company_name"
           header="Company Name"
-          className="border-none dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "6rem" }}
         />
         <Column
           key="user_uuid"
           field="phone"
           header="Contact No."
-          className="border-none dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "5rem" }}
         />
         <Column
@@ -573,16 +586,16 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
           field="user_status"
           header="Status"
           body={statusBodyTemplate}
-          className="border-none dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "5rem" }}
         />
         <Column
           key="user_uuid"
           header="Action"
-          headerStyle={{ width: "9rem", textAlign: "left" }}
+          headerStyle={{ width: "10rem", textAlign: "left" }}
           bodyStyle={{ textAlign: "left", overflow: "visible" }}
           body={actionBodyTemplate}
-          className="border-none dark:bg-navy-800 "
+          className="border-b dark:bg-navy-800 "
         />
       </DataTable>
       <EditCustomerDialog

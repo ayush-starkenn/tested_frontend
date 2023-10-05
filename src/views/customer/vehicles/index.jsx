@@ -348,7 +348,7 @@ const Marketplace = () => {
         className="mt-2 flex h-10 items-center rounded-lg bg-blue-500 px-3 py-2 text-left font-semibold text-white hover:bg-blue-600"
         onClick={openDialog1}
       >
-        <FiPlus className="mr-2" /> {/* Use the React Icons component */}
+        <FiPlus className="mr-2" />
         New Vehicle
       </button>
       {/* dialog for adding vehicle */}
