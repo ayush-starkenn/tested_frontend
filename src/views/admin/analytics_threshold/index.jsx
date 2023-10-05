@@ -286,7 +286,7 @@ const AnalyticsThreshold = () => {
         onClick={openDialog}
       >
         <FiPlus className="mr-2" />
-        New Device
+        New Analytic Threshold
       </button>
       {/* List of AT */}
       <AnalyticsList

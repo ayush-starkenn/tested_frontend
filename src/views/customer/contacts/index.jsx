@@ -212,7 +212,7 @@ const Contacts = () => {
             onClick={openDialog}
           >
             <FiPlus className="mr-2" /> {/* Use the React Icons component */}
-            New Vehicle
+            New Contact
           </button>
         </div>
         {/* dialog to add contact */}
@@ -233,13 +233,13 @@ const Contacts = () => {
                   name="contact_first_name"
                   onChange={handleChange}
                   className={`border py-2 pl-2 ${
-                    formErrors.contact_first_name ? "p-invalid" : ""
+                    formErrors.contact_first_name ? "border-red-600" : ""
                   }`}
                 />
                 <label htmlFor="contact_first_name">First Name</label>
               </span>
               {formErrors.contact_first_name && (
-                <small className="p-error">
+                <small className="text-red-600">
                   {formErrors.contact_first_name}
                 </small>
               )}
@@ -251,13 +251,13 @@ const Contacts = () => {
                   name="contact_last_name"
                   onChange={handleChange}
                   className={`border py-2 pl-2 ${
-                    formErrors.contact_last_name ? "p-invalid" : ""
+                    formErrors.contact_last_name ? "border-red-600" : ""
                   }`}
                 />
                 <label htmlFor="contact_last_name">Last Name</label>
               </span>
               {formErrors.contact_last_name && (
-                <small className="p-error">
+                <small className="text-red-600">
                   {formErrors.contact_last_name}
                 </small>
               )}
@@ -270,13 +270,15 @@ const Contacts = () => {
                   type="email"
                   onChange={handleChange}
                   className={`border py-2 pl-2 ${
-                    formErrors.contact_email ? "p-invalid" : ""
+                    formErrors.contact_email ? "border-red-600" : ""
                   }`}
                 />
                 <label htmlFor="contact_email">Email</label>
               </span>
               {formErrors.contact_email && (
-                <small className="p-error">{formErrors.contact_email}</small>
+                <small className="text-red-600">
+                  {formErrors.contact_email}
+                </small>
               )}
             </div>
             <div className="mx-auto mt-7 ">
@@ -287,13 +289,15 @@ const Contacts = () => {
                   keyfilter="pint"
                   onChange={handleChange}
                   className={`border py-2 pl-2 ${
-                    formErrors.contact_mobile ? "p-invalid" : ""
+                    formErrors.contact_mobile ? "border-red-600" : ""
                   }`}
                 />
                 <label htmlFor="contact_mobile">Mobile Number</label>
               </span>
               {formErrors.contact_mobile && (
-                <small className="p-error">{formErrors.contact_mobile}</small>
+                <small className="text-red-600">
+                  {formErrors.contact_mobile}
+                </small>
               )}
             </div>
             <div className="p-field p-col-12 my-2 flex justify-center">

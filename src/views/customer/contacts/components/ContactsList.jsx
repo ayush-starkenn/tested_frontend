@@ -6,7 +6,8 @@ import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { Tag } from "primereact/tag";
-import React, { useState } from "react";
+import { Toast } from "primereact/toast";
+import React, { useRef, useState } from "react";
 
 const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
   const [isDialog, setIsDialog] = useState(false);
@@ -14,11 +15,19 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
+  const toastRef = useRef(null);
   const [globalFilterValue, setGlobalFilterValue] = useState("");
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [deleteId, setDeleteId] = useState("");
   const [deleteName, setDeleteName] = useState("");
   const [editId, setEditId] = useState("");
+  const [fieldValidities, setFieldValidities] = useState({
+    contact_first_name: true,
+    contact_last_name: true,
+    contact_email: true,
+    contact_mobile: true,
+    contact_status: true,
+  });
 
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
@@ -48,6 +57,13 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
 
   const closeDialog = () => {
     setIsDialog(false);
+    setFieldValidities({
+      contact_first_name: true,
+      contact_last_name: true,
+      contact_email: true,
+      contact_mobile: true,
+      contact_status: true,
+    });
   };
 
   const openDeleteDialog = (rowData) => {
@@ -68,12 +84,30 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (editId && editData) {
+    const isValid = Object.values(editData).every((value) => value !== "");
+
+    // Update field validities based on the check
+    const newFieldValidities = {};
+    for (const key in editData) {
+      if (editData.hasOwnProperty(key)) {
+        newFieldValidities[key] = editData[key] !== "";
+      }
+    }
+    setFieldValidities(newFieldValidities);
+    toastRef.current.show({
+      severity: "warn",
+      summary: "Fill Required Fields",
+      detail: "Please fill in all the required details.",
+      life: 3000,
+    });
+    if (isValid) {
       editContacts(editId, editData);
       closeDialog();
     }
   };
-  console.log(editData);
+  const getClassName = (fieldName) => {
+    return fieldValidities[fieldName] ? "" : "border-red-600";
+  };
 
   const stateOptions = [
     { label: "Active", value: "1" },
@@ -83,6 +117,12 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
   //onChange function
   const handleChange = (e) => {
     const { name, value } = e.target;
+    const newFieldValidities = { ...fieldValidities };
+
+    // Check if the value is not empty and update the field validity
+    newFieldValidities[name] = value !== "";
+    setFieldValidities(newFieldValidities);
+
     setEditData({ ...editData, [name]: value });
   };
 
@@ -143,182 +183,193 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
   };
 
   return (
-    <div>
-      <DataTable
-        value={contactsData}
-        paginator
-        dataKey="contact_uuid"
-        header={header}
-        rows={5}
-        removableSort
-        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-        rowsPerPageOptions={[5, 10, 25]}
-        filters={filters}
-        filterDisplay="menu"
-        globalFilterFields={[
-          "contact_first_name",
-          "contact_last_name",
-          "contact_email",
-          "contact_mobile",
-          "contact_status",
-        ]}
-        emptyMessage="No contacts found."
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-      >
-        <Column
-          field="serialNo"
-          header="Sr. No."
-          sortable
-          className="border-b dark:bg-navy-800 dark:text-gray-200"
-          style={{ minWidth: "4rem" }}
-        ></Column>
-        <Column
-          field="full_name"
-          header="Name"
-          sortable
-          className="border-b dark:bg-navy-800 dark:text-gray-200"
-          style={{ minWidth: "8rem" }}
-        ></Column>
-        <Column
-          field="contact_email"
-          header="Email"
-          className="border-b dark:bg-navy-800 dark:text-gray-200"
-          style={{ minWidth: "8rem" }}
-        ></Column>
-        <Column
-          field="contact_mobile"
-          header="Mobile Number"
-          className="border-b dark:bg-navy-800 dark:text-gray-200"
-          style={{ minWidth: "8rem" }}
-        ></Column>
-        <Column
-          field="contact_status"
-          header="Status"
-          sortable
-          className="border-b dark:bg-navy-800 dark:text-gray-200"
-          style={{ minWidth: "6rem" }}
-          body={renderStatusCell}
-        ></Column>
-        <Column
-          body={actionBodyTemplate}
-          header="Action"
-          className="border-b dark:bg-navy-800 dark:text-gray-200"
-          style={{ minWidth: "6rem" }}
-        ></Column>
-      </DataTable>
-      {/* Dialog to Edit contact */}
-      <Dialog
-        visible={isDialog}
-        onHide={closeDialog}
-        style={{ width: "45vw" }}
-        breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-        header="Edit the details"
-        modal
-        className="p-fluid dark:bg-gray-900"
-      >
-        <form onSubmit={handleSubmit}>
-          <div className="mx-auto mt-8">
-            <span className={`p-float-label `}>
-              <InputText
-                id="contact_first_name"
-                name="contact_first_name"
-                onChange={handleChange}
-                value={editData?.contact_first_name}
-                className="border py-2 pl-2"
+    <>
+      <Toast ref={toastRef} className="toast-custom" position="top-right" />
+      <div>
+        <DataTable
+          value={contactsData}
+          paginator
+          dataKey="contact_uuid"
+          header={header}
+          rows={5}
+          removableSort
+          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+          rowsPerPageOptions={[5, 10, 25]}
+          filters={filters}
+          filterDisplay="menu"
+          globalFilterFields={[
+            "contact_first_name",
+            "contact_last_name",
+            "contact_email",
+            "contact_mobile",
+            "contact_status",
+          ]}
+          emptyMessage="No contacts found."
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        >
+          <Column
+            field="serialNo"
+            header="Sr. No."
+            sortable
+            className="border-b dark:bg-navy-800 dark:text-gray-200"
+            style={{ minWidth: "4rem" }}
+          ></Column>
+          <Column
+            field="full_name"
+            header="Name"
+            sortable
+            className="border-b dark:bg-navy-800 dark:text-gray-200"
+            style={{ minWidth: "8rem" }}
+          ></Column>
+          <Column
+            field="contact_email"
+            header="Email"
+            className="border-b dark:bg-navy-800 dark:text-gray-200"
+            style={{ minWidth: "8rem" }}
+          ></Column>
+          <Column
+            field="contact_mobile"
+            header="Mobile Number"
+            className="border-b dark:bg-navy-800 dark:text-gray-200"
+            style={{ minWidth: "8rem" }}
+          ></Column>
+          <Column
+            field="contact_status"
+            header="Status"
+            sortable
+            className="border-b dark:bg-navy-800 dark:text-gray-200"
+            style={{ minWidth: "6rem" }}
+            body={renderStatusCell}
+          ></Column>
+          <Column
+            body={actionBodyTemplate}
+            header="Action"
+            className="border-b dark:bg-navy-800 dark:text-gray-200"
+            style={{ minWidth: "6rem" }}
+          ></Column>
+        </DataTable>
+        {/* Dialog to Edit contact */}
+        <Dialog
+          visible={isDialog}
+          onHide={closeDialog}
+          style={{ width: "45vw" }}
+          breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+          header="Edit the details"
+          modal
+          className="p-fluid dark:bg-gray-900"
+        >
+          <form onSubmit={handleSubmit}>
+            <div className="mx-auto mt-8">
+              <span className={`p-float-label `}>
+                <InputText
+                  id="contact_first_name"
+                  name="contact_first_name"
+                  onChange={handleChange}
+                  value={editData?.contact_first_name}
+                  className={`border py-2 pl-2 ${getClassName(
+                    "contact_first_name"
+                  )}`}
+                />
+                <label htmlFor="contact_first_name">First Name</label>
+              </span>
+            </div>
+            <div className="mx-auto mt-7">
+              <span className={`p-float-label `}>
+                <InputText
+                  id="contact_last_name"
+                  name="contact_last_name"
+                  onChange={handleChange}
+                  value={editData?.contact_last_name}
+                  className={`border py-2 pl-2 ${getClassName(
+                    "contact_last_name"
+                  )}`}
+                />
+                <label htmlFor="contact_last_name">Last Name</label>
+              </span>
+            </div>
+            <div className="mx-auto mt-7">
+              <span className={`p-float-label`}>
+                <InputText
+                  id="contact_email"
+                  name="contact_email"
+                  type="email"
+                  onChange={handleChange}
+                  value={editData?.contact_email}
+                  className={`border py-2 pl-2 ${getClassName(
+                    "contact_email"
+                  )}`}
+                />
+                <label htmlFor="contact_email">Email</label>
+              </span>
+            </div>
+            <div className="mx-auto mt-7">
+              <span className={`p-float-label `}>
+                <InputText
+                  id="contact_mobile"
+                  name="contact_mobile"
+                  keyfilter="pint"
+                  onChange={handleChange}
+                  value={editData?.contact_mobile}
+                  className={`border py-2 pl-2 ${getClassName(
+                    "contact_mobile"
+                  )}`}
+                />
+                <label htmlFor="contact_mobile">Mobile Number</label>
+              </span>
+            </div>
+            <div className="mx-auto mt-7">
+              <span className="p-float-label">
+                <Dropdown
+                  id="status"
+                  name="contact_status"
+                  options={stateOptions}
+                  optionLabel="label"
+                  optionValue="value"
+                  onChange={(e) => {
+                    handleChange(e, "contact_status");
+                  }}
+                  value={editData?.contact_status}
+                  className="border"
+                />
+                <label htmlFor="status">Status</label>
+              </span>
+            </div>
+            <div className="p-field p-col-12 mt-7 flex justify-center">
+              <button
+                type="submit"
+                className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
+              >
+                Edit Contact
+              </button>
+            </div>
+          </form>
+        </Dialog>
+        {/* Delete vehicle Data */}
+        <Dialog
+          visible={deleteDialog}
+          onHide={closeDeleteDialog}
+          header="Confirm Delete"
+          footer={
+            <div>
+              <Button
+                label="Delete"
+                icon="pi pi-check"
+                className="mr-2 bg-red-500 px-3 py-2 text-white"
+                onClick={handleDelete}
               />
-              <label htmlFor="contact_first_name">First Name</label>
-            </span>
-          </div>
-          <div className="mx-auto mt-7">
-            <span className={`p-float-label `}>
-              <InputText
-                id="contact_last_name"
-                name="contact_last_name"
-                onChange={handleChange}
-                value={editData?.contact_last_name}
-                className="border py-2 pl-2"
+              <Button
+                label="Cancel"
+                icon="pi pi-times"
+                className="bg-gray-600 px-3 py-2 text-white dark:text-gray-850 "
+                onClick={closeDeleteDialog}
               />
-              <label htmlFor="contact_last_name">Last Name</label>
-            </span>
-          </div>
-          <div className="mx-auto mt-7">
-            <span className={`p-float-label`}>
-              <InputText
-                id="contact_email"
-                name="contact_email"
-                type="email"
-                onChange={handleChange}
-                value={editData?.contact_email}
-                className="border py-2 pl-2"
-              />
-              <label htmlFor="contact_email">Email</label>
-            </span>
-          </div>
-          <div className="mx-auto mt-7">
-            <span className={`p-float-label `}>
-              <InputText
-                id="contact_mobile"
-                name="contact_mobile"
-                keyfilter="pint"
-                onChange={handleChange}
-                value={editData?.contact_mobile}
-                className="border py-2 pl-2"
-              />
-              <label htmlFor="contact_mobile">Mobile Number</label>
-            </span>
-          </div>
-          <div className="mx-auto mt-7">
-            <span className="p-float-label">
-              <Dropdown
-                id="status"
-                name="contact_status"
-                options={stateOptions}
-                optionLabel="label"
-                optionValue="value"
-                onChange={(e) => {
-                  handleChange(e, "contact_status");
-                }}
-                value={editData?.contact_status}
-                className="border"
-              />
-              <label htmlFor="status">Status</label>
-            </span>
-          </div>
-          <div className="p-field p-col-12 mt-7 flex justify-center">
-            <button
-              type="submit"
-              className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
-            >
-              Edit Contact
-            </button>
-          </div>
-        </form>
-      </Dialog>
-      {/* Delete vehicle Data */}
-      <Dialog
-        visible={deleteDialog}
-        onHide={closeDeleteDialog}
-        header="Confirm Delete"
-        footer={
-          <div>
-            <Button
-              label="Delete"
-              icon="pi pi-check"
-              className="mr-2 bg-red-500 px-3 py-2 text-white"
-              onClick={handleDelete}
-            />
-            <Button
-              label="Cancel"
-              icon="pi pi-times"
-              className="bg-gray-600 px-3 py-2 text-white dark:text-gray-850 "
-              onClick={closeDeleteDialog}
-            />
-          </div>
-        }
-      >
-        <div>Are you sure you want to delete {deleteName}?</div>
-      </Dialog>
-    </div>
+            </div>
+          }
+        >
+          <div>Are you sure you want to delete {deleteName}?</div>
+        </Dialog>
+      </div>
+    </>
   );
 };
 

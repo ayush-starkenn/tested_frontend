@@ -244,7 +244,7 @@ const AlertTriggerList = ({
                     className="my-1 mr-2 bg-gray-200 text-gray-800"
                     icon="pi pi-user"
                     style={{
-                      width: "100px",
+                      width: "fit-content",
                       height: "25px",
                       lineHeight: "40px",
                     }}
@@ -359,6 +359,7 @@ const AlertTriggerList = ({
                 options={contactsOptions()}
                 onChange={handleChange}
                 value={editData?.recipients}
+                className="border"
               />
               <label htmlFor="recipients">Select Contact</label>
             </span>
