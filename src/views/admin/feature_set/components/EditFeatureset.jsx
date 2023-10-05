@@ -300,7 +300,9 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
       <form onSubmit={handleSubmit}>
         <div className="card">
           <div className="mt-2 flex" style={{ flexDirection: "column" }}>
-            <label htmlFor="username">Feature Set Name</label>
+            <label htmlFor="username" className="font-bold">
+              Feature Set Name
+            </label>
             <InputText
               id="username"
               style={{
@@ -314,10 +316,11 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
               onChange={handleChange}
               value={featuresetDetails?.featureset_name}
             />
-            <small id="username-help">Unique id to identify feature set</small>
           </div>
           <div className="mt-2 flex" style={{ flexDirection: "column" }}>
-            <label htmlFor="username">Featureset Version</label>
+            <label htmlFor="username" className="font-bold">
+              Featureset Version
+            </label>
             <InputText
               id="featuerset_version"
               keyfilter="pint"
@@ -330,24 +333,12 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
               placeholder="Featureset Version"
               value={featuresetDetails?.featureset_version}
             />
-            <small id="username-help">Featureset version</small>
-          </div>
-          <div className="mt-2 flex" style={{ flexDirection: "column" }}>
-            <label htmlFor="featureset_users">Featureset users</label>
-            <div>
-              {featuresetUsers?.map((el, ind) => (
-                <Tag
-                  key={ind}
-                  className="my-1 mr-2 bg-gray-200 text-gray-800"
-                  icon="pi pi-user"
-                  value={el.first_name + " " + el.last_name}
-                />
-              ))}
-            </div>
           </div>
 
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="active">Select Status</label>
+            <label htmlFor="active" className="font-bold">
+              Select Status
+            </label>
             <Dropdown
               name="featureset_status"
               id="active"
@@ -1925,7 +1916,7 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="sim">OSIM Card Absent</label>
+            <label htmlFor="sim">SIM Card Absent</label>
             <InputText
               id="sim"
               keyfilter="pint"
