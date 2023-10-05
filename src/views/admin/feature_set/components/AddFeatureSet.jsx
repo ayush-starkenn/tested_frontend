@@ -1890,7 +1890,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 width: "30vw",
                 borderRadius: "5px",
               }}
-              name="rfidAbsrfidAbsentent"
+              name="rfidAbsent"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("rfidAbsent") ? "p-invalid" : ""
               }`}
