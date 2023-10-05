@@ -6,6 +6,7 @@ import axios from "axios";
 import { AppContext } from "context/AppContext";
 import { Toast } from "primereact/toast";
 import Cookies from "js-cookie";
+import { Button } from "primereact/button";
 
 const AddFeatureSet = ({ onSuccess }) => {
   const [data, setData] = useState({});
@@ -2494,6 +2495,16 @@ const AddFeatureSet = ({ onSuccess }) => {
             onChange={handleData}
             placeholder="Enter a value"
             autoComplete="off"
+          />
+        </div>
+
+        <div className="text-right">
+          <Button
+            label="Add Feature Set"
+            icon="pi pi-check"
+            type="submit"
+            className="px-3 py-2 text-right hover:bg-none dark:hover:bg-gray-50"
+            style={{ width: "fit-content", background: "#2152FF" }}
           />
         </div>
 
