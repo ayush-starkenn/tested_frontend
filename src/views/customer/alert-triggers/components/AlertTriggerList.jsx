@@ -24,8 +24,7 @@ const AlertTriggerList = ({
   const [editVisible, setEditVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(false);
   const [editData, setEditData] = useState({});
-  const [recipient, setRecipient] = useState();
-  const [check, setCheck] = useState(false);
+
   const [deleteId, setDeleteId] = useState("");
   const [triggerName, setTriggerName] = useState("");
 
@@ -135,18 +134,11 @@ const AlertTriggerList = ({
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
+    console.log(name, value);
     setEditData((prevEditData) => ({
       ...prevEditData,
       [name]: value,
     }));
-  };
-
-  const handleRecipient = (e) => {
-    const { value } = e.target;
-
-    setRecipient(value);
-    setCheck(true);
   };
 
   const vehiclesOptions = () => {
@@ -159,30 +151,16 @@ const AlertTriggerList = ({
   const contactsOptions = () => {
     return contactsData?.map((el) => ({
       label: el.contact_first_name + " " + el.contact_last_name,
-      value: {
-        contact_mobile: el.contact_mobile,
-        contact_email: el.contact_email,
-      },
+      value: el.contact_uuid,
     }));
   };
-
-  const parsedRecipients = editData.recipients
-    ? JSON.parse(editData.recipients)
-    : null;
 
   //handle Submity function
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    let x;
-    if (check === true) {
-      x = { ...editData, ["recipients"]: recipient };
-    } else {
-      x = { ...editData, ["recipients"]: JSON.parse(editData?.recipients) };
-    }
-
-    editTrigger(editData?.trigger_id, x);
+    editTrigger(editData?.trigger_id, editData);
     setTimeout(() => {
       closeEditDialog();
     }, [500]);
@@ -191,26 +169,6 @@ const AlertTriggerList = ({
   const mapVehicleName = (vehicleUuid) => {
     const vehicle = vehiData?.find((v) => v.vehicle_uuid === vehicleUuid);
     return vehicle ? vehicle.vehicle_name : "";
-  };
-
-  const getRecipientFirstName = (recipients) => {
-    try {
-      const parsedRecipients = JSON.parse(recipients);
-      if (
-        parsedRecipients &&
-        typeof parsedRecipients === "object" &&
-        parsedRecipients.contact_email
-      ) {
-        const recipientEmail = parsedRecipients.contact_email;
-        const contact = contactsData.find(
-          (contact) => contact.contact_email === recipientEmail
-        );
-        return contact ? contact.contact_first_name : "N/A";
-      }
-    } catch (error) {
-      console.error("Error parsing recipients JSON", error);
-    }
-    return "N/A";
   };
 
   const handleDelete = () => {
@@ -273,18 +231,36 @@ const AlertTriggerList = ({
           sortable
           className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
-          body={(rowData) => (
-            <Tag
-              className="my-1 mr-2 bg-gray-200 text-gray-800"
-              icon="pi pi-user"
-              style={{ width: "100px", height: "25px", lineHeight: "40px" }}
-            >
-              <span style={{ fontSize: "13px" }}>
-                {getRecipientFirstName(rowData.recipients)}
-              </span>
-            </Tag>
-          )}
+          body={(rowData) => {
+            console.log(rowData);
+            const matchingContacts = contactsData.filter(
+              (el) => el.contact_uuid === rowData.recipients
+            );
+            return (
+              <>
+                {matchingContacts.map((contact) => (
+                  <Tag
+                    key={contact.contact_uuid}
+                    className="my-1 mr-2 bg-gray-200 text-gray-800"
+                    icon="pi pi-user"
+                    style={{
+                      width: "100px",
+                      height: "25px",
+                      lineHeight: "40px",
+                    }}
+                  >
+                    <span style={{ fontSize: "13px" }}>
+                      {contact.contact_first_name +
+                        " " +
+                        contact.contact_last_name}
+                    </span>
+                  </Tag>
+                ))}
+              </>
+            );
+          }}
         />
+
         <Column
           field="trigger_status"
           header="Status"
@@ -381,9 +357,8 @@ const AlertTriggerList = ({
                 optionLabel="label"
                 optionValue="value"
                 options={contactsOptions()}
-                onChange={handleRecipient}
-                value={check === false ? parsedRecipients : recipient}
-                className="border"
+                onChange={handleChange}
+                value={editData?.recipients}
               />
               <label htmlFor="recipients">Select Contact</label>
             </span>
@@ -400,7 +375,7 @@ const AlertTriggerList = ({
                 value={editData?.trigger_status}
                 className="border"
               />
-              <label htmlFor="recipients">Select Contact</label>
+              <label htmlFor="trigger_status">Select Status</label>
             </span>
           </div>
 

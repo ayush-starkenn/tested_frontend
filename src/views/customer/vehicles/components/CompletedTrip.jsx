@@ -42,6 +42,7 @@ import { ScrollPanel } from "primereact/scrollpanel";
 const containerStyle = {
   width: "100%",
   height: "350px",
+  borderRadius: "20px",
 };
 
 // customized marker icons
@@ -154,6 +155,11 @@ const CompletedTrip = () => {
     OVERSPEEDING: false,
     NO_DRIVER: false,
   });
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const showVideo = () => {
+    setActiveIndex(2);
+  };
 
   // Get trip summary data
   useEffect(() => {
@@ -1659,24 +1665,76 @@ const CompletedTrip = () => {
           </div>
         </Dialog>
       </div>
-      <div className="lg:max-w-screen mx-auto grid w-full grid-cols-1 gap-x-8 gap-y-8 rounded-[20px] sm:py-8 lg:grid-cols-2">
+      <div className="lg:max-w-screen mx-auto mt-4 grid w-full grid-cols-1 gap-x-8 gap-y-8 rounded-[20px] sm:py-8 lg:grid-cols-2">
         <div className="rounded-[20px] bg-white p-5 dark:bg-navy-700">
           <div className="">
-            <TabView>
+            <TabView
+              activeIndex={activeIndex}
+              onTabChange={(e) => setActiveIndex(e.index)}
+            >
               <TabPanel header="Summary" className="font-medium">
                 <SummaryContent />
               </TabPanel>
               <TabPanel header="CAS">
                 <CASContent />
               </TabPanel>
-              <TabPanel header="DMS">
+              <TabPanel header="DMS" onClick={showVideo}>
                 <DMSContent />
               </TabPanel>
             </TabView>
           </div>
         </div>
 
-        <div className="rounded-[20px] bg-white dark:bg-navy-700">
+        <div
+          className={`${
+            activeIndex === 2 ? "hidden" : ""
+          } rounded-[20px] bg-white dark:bg-navy-700`}
+        >
+          <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-8 lg:max-w-7xl lg:px-8">
+            <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+              Analytics
+            </h2>
+
+            <dl className="mb-4 mt-10 grid grid-cols-1 gap-x-6 gap-y-7 sm:grid-cols-2 sm:gap-y-12 lg:gap-x-8">
+              <TripInfoItem title="Braking Frequency" value="13 Mins" />
+              <div className="border-t border-gray-200 pt-4 dark:border-cyan-800">
+                <dt className="font-medium text-gray-900 dark:text-white">
+                  Feature Set
+                </dt>
+                <dd className="mt-2 text-sm text-gray-700">
+                  <button className="rounded-[4px] bg-gray-950 px-3 py-2 text-white">
+                    View
+                  </button>
+                </dd>
+              </div>
+            </dl>
+
+            <hr />
+
+            <div className="mt-4">
+              <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+                Vehicle Details
+              </h2>
+
+              <dl className="grid grid-cols-1 gap-x-6 gap-y-7 sm:grid-cols-2 sm:gap-y-12 lg:gap-x-8">
+                <dd className="mt-2 text-sm text-gray-700">
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    <strong>Vehicle Name :</strong> Testing vehicle
+                  </p>
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    <strong>Registration No. :</strong> MH 03 B 8239
+                  </p>
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <div
+          className={`${
+            activeIndex === 2 ? "" : "hidden"
+          } rounded-[20px] bg-white dark:bg-navy-700`}
+        >
           <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-8 lg:max-w-7xl lg:px-8">
             <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
               DMS Media

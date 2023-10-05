@@ -97,17 +97,12 @@ const MainDashboard = () => {
         /> */}
       </div>
 
-      <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-1 md:grid-cols-2">
-        <div className="my-3">
-          <MapOverview />
-        </div>
-        <div className="my-3">
-          <OngoingTable />
-        </div>
+      <div className="my-3">
+        <MapOverview />
       </div>
       <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-1 md:grid-cols-2">
         <div className="my-3">
-          <LogsTable />
+          <OngoingTable />
         </div>
         <div className="my-3">
           <LogsTable />
