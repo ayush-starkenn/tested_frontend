@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 import { Card } from "primereact/card";
 import { ScrollPanel } from "primereact/scrollpanel";
 import { useEffect, useState } from "react";
-import { BsArrowBarUp, BsInfoCircle } from "react-icons/bs";
+import { BsInfoCircle } from "react-icons/bs";
 
 const LogsTable = () => {
   const token = Cookies.get("token");
@@ -68,7 +68,7 @@ const LogsTable = () => {
                     ))} */}
                   </p>
                   <p className="font-base text-left text-xs text-gray-900 dark:text-white">
-                    {log.timestamp}
+                    {formatTimestamp(log.timestamp)}
                   </p>
                 </div>
               </div>

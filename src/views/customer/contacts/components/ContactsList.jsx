@@ -169,44 +169,44 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
           field="serialNo"
           header="Sr. No."
           sortable
-          className="border-none dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "4rem" }}
         ></Column>
         <Column
           field="full_name"
           header="Name"
           sortable
-          className="dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
         ></Column>
         <Column
           field="contact_email"
           header="Email"
-          className="dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
         ></Column>
         <Column
           field="contact_mobile"
           header="Mobile Number"
-          className="dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
         ></Column>
         <Column
           field="contact_status"
           header="Status"
           sortable
-          className="dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "6rem" }}
           body={renderStatusCell}
         ></Column>
         <Column
           body={actionBodyTemplate}
           header="Action"
-          className="dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "6rem" }}
         ></Column>
       </DataTable>
-      {/* dialog to Edit contact */}
+      {/* Dialog to Edit contact */}
       <Dialog
         visible={isDialog}
         onHide={closeDialog}
