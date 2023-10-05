@@ -7,23 +7,21 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 const OngoingTable = () => {
+  const user_uuid = Cookies.get("user_uuid");
   const token = Cookies.get("token");
 
   const [tripData, setTripData] = useState([]);
   const [dataLoaded, setDataLoaded] = useState(false);
 
-  let user_uuid = "2e48cda9-e194-4b0c-a42a-81936f47d1b8";
-
   const OngoingTripsHere = async () => {
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_API_URL}/dashboardCustomers/getOngoingTripDashboard/${user_uuid}`,
+        `${process.env.REACT_APP_API_URL}/dashboardCustomers/get-ongoing-trip-data/${user_uuid}`,
         { headers: { authorization: `bearer ${token}` } }
       );
 
-      console.log(res.data.data.trip_data);
-      if (res.data.data.trip_data.length > 0) {
-        setTripData(res.data.data.trip_data);
+      if (res.data.result.length > 0) {
+        setTripData(res.data.result);
         setDataLoaded(true);
       }
     } catch (err) {
@@ -148,7 +146,7 @@ const OngoingTable = () => {
                             </td>
                             <td className="whitespace-nowrap px-6 py-4 text-center text-sm font-medium">
                               <Link
-                                to={`ongoing-trip/${ele.trip_id}`}
+                                to={`${process.env.REACT_APP_BASE_URL}/customer/vehicles/ongoing-trip/${ele.trip_id}`}
                                 target="_blank"
                                 className="mx-auto"
                               >

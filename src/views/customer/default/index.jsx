@@ -22,7 +22,7 @@ const MainDashboard = () => {
   useEffect(() => {
     axios
       .get(
-        `http://localhost:8080/api/vehicles/get-user-vehiclelist/${user_uuid}`,
+        `${process.env.REACT_APP_API_URL}/vehicles/get-user-vehiclelist/${user_uuid}`,
         { headers: { authorization: `bearer ${token}` } }
       )
       .then((res) => {
@@ -36,7 +36,7 @@ const MainDashboard = () => {
   useEffect(() => {
     axios
       .get(
-        `http://localhost:8080/api/devices/get-user-devices-list/${user_uuid}`,
+        `${process.env.REACT_APP_API_URL}/devices/get-user-devices-list/${user_uuid}`,
         { headers: { authorization: `bearer ${token}` } }
       )
       .then((res) => {
