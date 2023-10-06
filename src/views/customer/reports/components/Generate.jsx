@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Calendar } from "primereact/calendar";
 // import { InputText } from "primereact/inputtext";
 import { MultiSelect } from "primereact/multiselect";
 // import { RadioButton } from "primereact/radiobutton";
-import { Link } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { InputText } from "primereact/inputtext";
+import { Toast } from "primereact/toast";
+import { Dropdown } from "primereact/dropdown";
 
 const Generate = ({ close }) => {
   const [selectedStartDate, setSelectedStartDate] = useState(null);
@@ -14,8 +16,19 @@ const Generate = ({ close }) => {
   const token = Cookies.get("token");
   const user_uuid = Cookies.get("user_uuid");
   const [selectedVehicles, setSelectedVehicles] = useState(null);
+  const [title, setTitle] = useState("");
   const [selectedEvents, setSelectedEvents] = useState(null);
   const [selectedContacts, setSelectedContacts] = useState(null);
+  const [titleValid, setTitleValid] = useState(true);
+  const [startDateValid, setStartDateValid] = useState(true);
+  const [endDateValid, setEndDateValid] = useState(true);
+  const [vehicleValid, setVehicleValid] = useState(true);
+  const [eventValid, setEventValid] = useState(true);
+  const [contactValid, setContactValid] = useState(true);
+  const toastRef = useRef(null);
+  const [selectedVehicleNames, setSelectedVehicleNames] = useState([]);
+  const [selectedEventNames, setSelectedEventNames] = useState([]);
+  const [reportData, setReportData] = useState([]);
   // const [vehicleParams, setVehicleParams] = useState([]);
   // const [driverParams, setDriverParams] = useState([]);
   const [contacts, setContacts] = useState([]);
@@ -57,7 +70,6 @@ const Generate = ({ close }) => {
         }
       )
       .then((res) => {
-        console.log(res.data.results);
         setVehicles(res.data.results);
         // console.log(res.data);
       })
@@ -68,17 +80,136 @@ const Generate = ({ close }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const today = new Date();
+
+    if (title.trim() === "") {
+      setTitleValid(false);
+    } else {
+      setTitleValid(true);
+    }
+
+    const startDate = selectedStartDate ? new Date(selectedStartDate) : null;
+    const endDate = selectedEndDate ? new Date(selectedEndDate) : null;
+
+    if (!startDate) {
+      setStartDateValid(false);
+    } else if (startDate > today) {
+      setStartDateValid(false);
+      toastRef.current.show({
+        severity: "error",
+        summary: "Invalid Start Date",
+        detail: "Start date cannot be in the future.",
+        life: 3000,
+      });
+      return;
+    } else {
+      setStartDateValid(true);
+    }
+
+    // Check and set the end date validity
+    if (!endDate) {
+      setEndDateValid(false);
+    } else if (endDate > today) {
+      setEndDateValid(false);
+      toastRef.current.show({
+        severity: "warn",
+        summary: "Invalid End Date",
+        detail: "End date cannot be in the future.",
+        life: 3000,
+      });
+      return;
+    } else {
+      setEndDateValid(true);
+    }
+
+    if (selectedStartDate > today) {
+      setStartDateValid(false);
+      toastRef.current.show({
+        severity: "warn",
+        summary: "Invalid Start Date",
+        detail: "Start date cannot be in the future.",
+        life: 3000,
+      });
+    } else {
+      setStartDateValid(true);
+    }
+
+    // Check and set the end date validity
+    if (selectedEndDate > today) {
+      setEndDateValid(false);
+      toastRef.current.show({
+        severity: "error",
+        summary: "Invalid End Date",
+        detail: "End date cannot be in the future.",
+        life: 3000,
+      });
+    } else {
+      setEndDateValid(true);
+    }
+    // Check and set the start date validity
+    if (!selectedStartDate) {
+      setStartDateValid(false);
+    } else {
+      setStartDateValid(true);
+    }
+
+    // Check and set the end date validity
+    if (!selectedEndDate) {
+      setEndDateValid(false);
+    } else {
+      setEndDateValid(true);
+    }
+
+    // Check and set the vehicle validity
+    if (!selectedVehicles || selectedVehicles.length === 0) {
+      setVehicleValid(false);
+    } else {
+      setVehicleValid(true);
+    }
+
+    // Check and set the event validity
+    if (!selectedEvents || selectedEvents.length === 0) {
+      setEventValid(false);
+    } else {
+      setEventValid(true);
+    }
+
+    // Check and set the contact validity
+    if (!selectedContacts || selectedContacts.length === 0) {
+      setContactValid(false);
+    } else {
+      setContactValid(true);
+    }
+
+    // Check if any field is invalid
+    if (
+      !titleValid ||
+      !startDateValid ||
+      !endDateValid ||
+      !vehicleValid ||
+      !eventValid ||
+      !contactValid
+    ) {
+      toastRef.current.show({
+        severity: "warn",
+        summary: "Fill Required Fields",
+        detail: "Please fill in all the required details.",
+        life: 3000,
+      });
+      return;
+    }
     const requestData = {
-      fromDate: selectedStartDate,
-      toDate: selectedEndDate,
-      vehicle_uuid: selectedVehicles,
-      event: selectedEvents,
+      title: title,
+      from_date: selectedStartDate,
+      to_date: selectedEndDate,
+      selected_vehicles: selectedVehicles,
+      selected_events: selectedEvents,
       contact_uuid: selectedContacts,
     };
-
     axios
       .post(
-        `${process.env.REACT_APP_API_URL}/reports/getreports-all`,
+        `${process.env.REACT_APP_API_URL}/reports/createReports-all/${user_uuid}`,
+
         requestData,
         {
           headers: { authorization: `bearer ${token}` },
@@ -86,11 +217,19 @@ const Generate = ({ close }) => {
       )
       .then((res) => {
         console.log(res);
+        setReportData(res);
         close();
-        window.location.href = "/customer/report";
+
+        window.open("/customer/report", "_blank");
       })
       .catch((error) => {
-        console.error(error);
+        console.log(error.response.data.message);
+        toastRef.current.show({
+          severity: "warn",
+          summary: "Fill Required Fields",
+          detail: error.response.data.message,
+          life: 3000,
+        });
       });
   };
 
@@ -108,11 +247,13 @@ const Generate = ({ close }) => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/contacts/getContacts-all/${user_uuid}`, {
-        headers: { authorization: `bearer ${token}` },
-      })
+      .get(
+        `${process.env.REACT_APP_API_URL}/contacts/getContacts-all/${user_uuid}`,
+        {
+          headers: { authorization: `bearer ${token}` },
+        }
+      )
       .then((res) => {
-        console.log(res.data.contacts);
         setContacts(res.data.contacts);
       })
       .catch((err) => {
@@ -132,63 +273,102 @@ const Generate = ({ close }) => {
     return optionsArray;
   };
   return (
-    <div>
-      <p className="text-right text-sm text-red-400">
-        All Fields Are Required<span className="text-red-500">**</span>
-      </p>
-      <form>
-        <div className="mb-6">
-          <div className="card p-fluid mt-6 flex w-[42vw] flex-wrap gap-3">
-            <div className="flex-auto">
+    <>
+      <Toast ref={toastRef} className="toast-custom" position="top-right" />
+      <div>
+        <p className="text-right text-sm text-red-400">
+          All Fields Are Required<span className="text-red-500">**</span>
+        </p>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-6">
+            <div className="mt-8">
               <span className="p-float-label">
-                <Calendar
-                  inputId="start_date"
-                  value={selectedStartDate}
-                  onChange={(e) =>
-                    setSelectedStartDate(
-                      e.value ? new Date(formatDateToYYYYMMDD(e.value)) : null
-                    )
-                  }
-                  className="rounded border"
+                <InputText
+                  id="title"
+                  name="title"
+                  value={title}
+                  onChange={(e) => {
+                    setTitle(e.target.value);
+                    setTitleValid(e.target.value.trim() !== "");
+                  }}
+                  className={`rounded-lg border border-gray-300 py-2 pl-2 shadow-sm dark:bg-gray-900 dark:placeholder-gray-50 ${
+                    !titleValid ? "border-red-600" : ""
+                  }`}
                 />
                 <label
-                  htmlFor="start_date"
-                  className="text-gray-700 dark:text-gray-150"
+                  htmlFor="title"
+                  className="text-gray-600 dark:text-gray-150"
                 >
-                  From
+                  Title
                 </label>
               </span>
-
-              <small className="text-gray-400 dark:text-gray-150">
-                Click to Select
-              </small>
+              {!titleValid && (
+                <small className="text-red-500">Title is required.</small>
+              )}
             </div>
-            <div className="flex-auto">
-              <span className="p-float-label">
-                <Calendar
-                  inputId="end_date"
-                  value={selectedEndDate}
-                  onChange={(e) =>
-                    setSelectedEndDate(
-                      e.value ? new Date(formatDateToYYYYMMDD(e.value)) : null
-                    )
-                  }
-                  className="rounded border dark:bg-gray-900"
-                />
+            <div className="card p-fluid mt-6 flex flex-wrap gap-3">
+              <div className="flex-auto">
+                <span className="p-float-label">
+                  <Calendar
+                    inputId="start_date"
+                    value={
+                      selectedStartDate ? new Date(selectedStartDate) : null
+                    }
+                    onChange={(e) => {
+                      const formattedDate = formatDateToYYYYMMDD(e.value);
+                      setSelectedStartDate(formattedDate);
+                      setStartDateValid(formattedDate !== null);
+                    }}
+                    className={`rounded-lg border ${
+                      !startDateValid ? "border-red-600" : ""
+                    }`}
+                  />
+                  <label
+                    htmlFor="start_date"
+                    className="text-gray-600 dark:text-gray-150"
+                  >
+                    From
+                  </label>
+                </span>
+                {!startDateValid ? (
+                  <small className="text-red-500">From date is required.</small>
+                ) : (
+                  <small className="text-gray-400 dark:text-gray-150">
+                    Click to Select
+                  </small>
+                )}
+              </div>
+              <div className="flex-auto">
+                <span className="p-float-label">
+                  <Calendar
+                    inputId="end_date"
+                    value={selectedEndDate ? new Date(selectedEndDate) : null}
+                    onChange={(e) => {
+                      const formattedDate = formatDateToYYYYMMDD(e.value);
+                      setSelectedEndDate(formattedDate);
+                      setEndDateValid(formattedDate !== null);
+                    }}
+                    className={`rounded-lg border ${
+                      !endDateValid ? "border-red-600" : ""
+                    }`}
+                  />
+                  <label
+                    htmlFor="start_date"
+                    className="text-gray-600  dark:text-gray-150"
+                  >
+                    To
+                  </label>
+                </span>
 
-                <label
-                  htmlFor="start_date"
-                  className="text-gray-700  dark:text-gray-150"
-                >
-                  To
-                </label>
-              </span>
-
-              <small className="text-gray-400 dark:text-gray-150">
-                Click to Select
-              </small>
-            </div>
-            {/* <div className="flex-auto">
+                {!endDateValid ? (
+                  <small className="text-red-500">To date is required.</small>
+                ) : (
+                  <small className="text-gray-400 dark:text-gray-150">
+                    Click to Select
+                  </small>
+                )}
+              </div>
+              {/* <div className="flex-auto">
               <div className="mt-2 flex flex-wrap gap-5">
                 <p className="text-gray-600">You want to generate report for</p>
                 <div className="align-items-center flex">
@@ -217,27 +397,39 @@ const Generate = ({ close }) => {
                 </div>
               </div>
             </div> */}
-            {/* {selectedOption === "Vehicle" && ( */}
-          </div>
-          <div>
-            <div className="mt-8 w-[42vw] flex-auto">
-              <span className="p-float-label">
-                <MultiSelect
-                  value={selectedVehicles}
-                  options={vehicleOptions()}
-                  onChange={(e) => setSelectedVehicles(e.value)}
-                  optionLabel="name"
-                  className="rounded-lg border border-gray-300 bg-gray-50 py-0 shadow-sm dark:bg-gray-900 dark:placeholder-gray-50"
-                />
+              {/* {selectedOption === "Vehicle" && ( */}
+            </div>
+            <div>
+              <div className="mt-8 flex-auto">
+                <span className="p-float-label">
+                  <MultiSelect
+                    value={selectedVehicleNames}
+                    options={vehicleOptions()}
+                    onChange={(e) => {
+                      setSelectedVehicleNames(e.value);
+                      setSelectedVehicles(
+                        e.target.value.map((vehicle) => vehicle.code)
+                      );
 
-                <label
-                  htmlFor="vehicle"
-                  className="text-gray-150 dark:text-gray-150"
-                >
-                  Select Vehicles
-                </label>
-              </span>
-              {/* <span className="p-float-label mt-8">
+                      setVehicleValid(e.target.value.length > 0);
+                    }}
+                    optionLabel="name"
+                    className={`rounded-lg border border-gray-300  shadow-sm dark:bg-gray-900 dark:placeholder-gray-50 ${
+                      !vehicleValid ? "border-red-600" : ""
+                    }`}
+                  />
+
+                  <label
+                    htmlFor="vehicle"
+                    className="text-gray-600 dark:text-gray-150"
+                  >
+                    Select Vehicles
+                  </label>
+                </span>
+                {!vehicleValid && (
+                  <small className="text-red-500">Vehicle is required.</small>
+                )}
+                {/* <span className="p-float-label mt-8">
                 <MultiSelect
                   value={vehicleParams}
                   options={vehicleparams}
@@ -253,24 +445,35 @@ const Generate = ({ close }) => {
                   Select Parameters
                 </label>
               </span> */}
-            </div>
-            <div className="mt-8 w-[42vw]">
-              <span className="p-float-label">
-                <MultiSelect
-                  value={selectedEvents}
-                  options={events}
-                  onChange={(e) => setSelectedEvents(e.value)}
-                  optionLabel="name"
-                  className="rounded-lg border border-gray-300 bg-gray-50 py-0 shadow-sm dark:bg-gray-900 dark:placeholder-gray-50"
-                />
-                <label
-                  htmlFor="vehicle"
-                  className="text-gray-150 dark:text-gray-150"
-                >
-                  Select Events
-                </label>
-              </span>
-              {/* <span className="p-float-label mt-8">
+              </div>
+              <div className="mt-8">
+                <span className="p-float-label">
+                  <MultiSelect
+                    value={selectedEventNames}
+                    options={events}
+                    onChange={(e) => {
+                      setSelectedEventNames(e.value);
+                      setSelectedEvents(
+                        e.target.value.map((event) => event.code)
+                      );
+                      setEventValid(e.target.value);
+                    }}
+                    optionLabel="name"
+                    className={`rounded-lg border border-gray-300 shadow-sm dark:bg-gray-900 dark:placeholder-gray-50 ${
+                      !eventValid ? "border-red-600" : ""
+                    }`}
+                  />
+                  <label
+                    htmlFor="vehicle"
+                    className="text-gray-600 dark:text-gray-150"
+                  >
+                    Select Events
+                  </label>
+                </span>
+                {!eventValid && (
+                  <small className="text-red-500">Event is required.</small>
+                )}
+                {/* <span className="p-float-label mt-8">
                 <MultiSelect
                   value={driverParams}
                   options={driverparams}
@@ -286,26 +489,34 @@ const Generate = ({ close }) => {
                   Select Parameters
                 </label>
               </span> */}
-            </div>
-            <div className="mt-8 w-[42vw]">
-              <span className="p-float-label">
-                <MultiSelect
-                  value={selectedContacts}
-                  options={contactOptions()}
-                  onChange={(e) => setSelectedContacts(e.value)}
-                  optionLabel="label"
-                  display="chip"
-                  className="rounded-lg  border border-gray-300 bg-gray-50 py-0 shadow-sm dark:bg-gray-900 dark:placeholder-gray-50"
-                />
-                <label
-                  htmlFor="vehicle"
-                  className="text-gray-150 dark:text-gray-150"
-                >
-                  Select Recipients
-                </label>
-              </span>
-            </div>
-            {/* <div className="mt-3 w-[42vw]">
+              </div>
+              <div className="mt-8">
+                <span className="p-float-label">
+                  <Dropdown
+                    value={selectedContacts}
+                    options={contactOptions()}
+                    onChange={(e) => {
+                      setSelectedContacts(e.target.value);
+                      setContactValid(e.target.value);
+                    }}
+                    optionLabel="label"
+                    optionValue="code"
+                    className={`rounded-lg  border border-gray-300 shadow-sm dark:bg-gray-900 dark:placeholder-gray-50 ${
+                      !contactValid ? "border-red-600" : ""
+                    }`}
+                  />
+                  <label
+                    htmlFor="vehicle"
+                    className="text-gray-600 dark:text-gray-150"
+                  >
+                    Select Recipients
+                  </label>
+                </span>
+                {!contactValid && (
+                  <small className="text-red-500">Recipient is required.</small>
+                )}
+              </div>
+              {/* <div className="mt-3 w-[42vw]">
               <p className="text-gray-600">Select Recipient</p>
               <span className="p-float-label mt-6">
                 <InputText name="name" />
@@ -317,7 +528,7 @@ const Generate = ({ close }) => {
                 </label>
               </span>
             </div> */}
-            {/* <div className="align-items-center mt-6 flex">
+              {/* <div className="align-items-center mt-6 flex">
               <RadioButton
                 inputId="mobile"
                 name="mobile"
@@ -329,12 +540,12 @@ const Generate = ({ close }) => {
                 Mobile
               </label>
             </div> */}
-            {/* {recipient === "Mobile" && (
+              {/* {recipient === "Mobile" && (
               <div className="mt-3">
                 <InputText name="name" placeholder="Enter mobile no." />
               </div>
             )} */}
-            {/* <div className="align-items-center mt-6 flex">
+              {/* <div className="align-items-center mt-6 flex">
               <RadioButton
                 inputId="email"
                 name="email"
@@ -346,7 +557,7 @@ const Generate = ({ close }) => {
                 Email
               </label>
             </div> */}
-            {/* {recipient === "Email" && (
+              {/* {recipient === "Email" && (
               <div className="mt-3">
                 <InputText
                   name="name"
@@ -355,21 +566,19 @@ const Generate = ({ close }) => {
                 />
               </div>
             )} */}
+            </div>
           </div>
-        </div>
-        <div className="text-center">
-          <Link to="/customer/report">
+          <div className="text-center">
             <button
               type="submit"
-              onClick={handleSubmit}
               className="rounded-lg bg-blue-700 px-4 py-1.5 text-lg font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
               Generate
             </button>
-          </Link>
-        </div>
-      </form>
-    </div>
+          </div>
+        </form>
+      </div>
+    </>
   );
 };
 

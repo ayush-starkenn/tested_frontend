@@ -173,32 +173,24 @@ export default function CustomersGrid({ data, onDelete, onUpdate }) {
           <div className="mt-auto px-6 py-3">
             <Button
               icon="pi pi-pencil"
-              className="edit mr-2 rounded-full dark:text-gray-100"
-              style={{
-                background: "none",
-                width: "2rem",
-                height: "2rem",
-              }}
+              rounded
+              className="mr-2 border border-gray-700 text-gray-700"
+              style={{ width: "2rem", height: "2rem" }}
               onClick={() => handleEdit(item)}
             />
             <Button
               icon="pi pi-trash"
               rounded
-              outlined
-              style={{
-                borderColor: "#F18080",
-                width: "2rem",
-                height: "2rem",
-              }}
-              className="p-button-rounded p-button-text p-button-danger"
+              style={{ width: "2rem", height: "2rem" }}
+              className="mr-2 border border-red-600 text-red-600"
               onClick={() => handleDelete(item)}
             />
             <Button
-              type="button"
-              className="text-bold setting ml-2 rounded-full text-gray-950 dark:text-white"
+              rounded
+              className="mr-2 border border-blue-500 text-blue-500 dark:text-blue-500"
               onClick={(event) => menuLeft.current.toggle(event)}
               style={{ padding: "0.4rem" }}
-              aria-controls="popup_menu_left"
+              aria-controls="popup_menu_right"
               aria-haspopup
             >
               <CiMenuKebab />
@@ -333,7 +325,7 @@ export default function CustomersGrid({ data, onDelete, onUpdate }) {
             <Button
               label={isUpdating ? "Updating..." : "Update"}
               icon={isUpdating ? "pi pi-spin pi-spinner" : "pi pi-check"}
-              className="p-button-primary px-3 py-2 hover:bg-none dark:hover:bg-gray-50"
+              className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
               disabled={isUpdating}
               onClick={onSave}
             />
@@ -349,7 +341,9 @@ export default function CustomersGrid({ data, onDelete, onUpdate }) {
                   name="first_name"
                   value={editedCustomerData?.first_name || ""}
                   onChange={handleInputChange}
-                  className={!editedCustomerData.first_name ? "p-invalid" : ""}
+                  className={`border py-2 pl-2 ${
+                    !editedCustomerData.first_name ? "border-red-600" : ""
+                  }`}
                 />
                 <label htmlFor="first_name">First Name</label>
               </span>
@@ -361,13 +355,15 @@ export default function CustomersGrid({ data, onDelete, onUpdate }) {
                   name="last_name"
                   value={editedCustomerData?.last_name || ""}
                   onChange={handleInputChange}
-                  className={!editedCustomerData.last_name ? "p-invalid" : ""}
+                  className={`border py-2 pl-2 ${
+                    !editedCustomerData.last_name ? "border-red-600" : ""
+                  }`}
                 />
                 <label htmlFor="last_name">Last Name</label>
               </span>
             </div>
           </div>
-          <div className="mx-auto mt-8 w-[34.5vw]">
+          <div className="mx-auto mt-8 w-[50.1vw]">
             <span className="p-float-label">
               <InputText
                 id="email"
@@ -375,12 +371,14 @@ export default function CustomersGrid({ data, onDelete, onUpdate }) {
                 name="email"
                 value={editedCustomerData?.email || ""}
                 onChange={handleInputChange}
-                className={!editedCustomerData.email ? "p-invalid" : ""}
+                className={`border py-2 pl-2 ${
+                  !editedCustomerData.email ? "border-red-600" : ""
+                }`}
               />
               <label htmlFor="email">Email</label>
             </span>
           </div>
-          <div className="mx-auto mt-8 w-[34.5vw]">
+          <div className="mx-auto mt-8 w-[50.1vw]">
             <span className="p-float-label">
               <InputText
                 id="company_name"
@@ -388,32 +386,38 @@ export default function CustomersGrid({ data, onDelete, onUpdate }) {
                 name="company_name"
                 value={editedCustomerData?.company_name || ""}
                 onChange={handleInputChange}
-                className={!editedCustomerData.company_name ? "p-invalid" : ""}
+                className={`border py-2 pl-2 ${
+                  !editedCustomerData.company_name ? "border-red-600" : ""
+                }`}
               />
               <label htmlFor="company_name">Company Name</label>
             </span>
           </div>
-          <div className="mx-auto mb-3 mt-8 w-[34.5vw]">
+          <div className="mx-auto mb-3 mt-8 w-[50.1vw]">
             <span className="p-float-label">
               <InputText
                 id="phone"
+                keyfilter="pint"
                 type="tel"
                 name="phone"
                 value={editedCustomerData?.phone || ""}
                 onChange={handleInputChange}
-                className={
+                className={`border py-2 pl-2 ${
                   isValidPhoneNumber(editedCustomerData?.phone || "")
                     ? ""
-                    : "p-invalid"
-                }
+                    : "border-red-600"
+                }`}
               />
               <label htmlFor="phone">Contact Number</label>
             </span>
+            {!isValidPhoneNumber(editedCustomerData.phone) && (
+              <p className="p-error">Contact number must contain 10 digits.</p>
+            )}
           </div>
-          <div className="mx-auto mt-6 w-[34.5vw]">
+          <div className="mx-auto mt-6 w-[50.1vw]">
             <span>Address:</span>
           </div>
-          <div className="mx-auto mt-6 w-[34.5vw]">
+          <div className="mx-auto mt-6 w-[50.1vw]">
             <span className="p-float-label">
               <InputText
                 id="address"
@@ -421,12 +425,14 @@ export default function CustomersGrid({ data, onDelete, onUpdate }) {
                 name="address"
                 value={editedCustomerData?.address || ""}
                 onChange={handleInputChange}
-                className={!editedCustomerData.address ? "p-invalid" : ""}
+                className={`border py-2 pl-2 ${
+                  !editedCustomerData.address ? "border-red-600" : ""
+                }`}
               />
               <label htmlFor="address">Flat No./ Plot No., Area/Society</label>
             </span>
           </div>
-          <div className="mx-auto mt-6 w-[34.5vw]">
+          <div className="mx-auto mt-6 w-[50.1vw]">
             <span className="p-float-label">
               <InputText
                 id="city"
@@ -434,12 +440,14 @@ export default function CustomersGrid({ data, onDelete, onUpdate }) {
                 name="city"
                 value={editedCustomerData?.city || ""}
                 onChange={handleInputChange}
-                className={!editedCustomerData.city ? "p-invalid" : ""}
+                className={`border py-2 pl-2 ${
+                  !editedCustomerData.city ? "border-red-600" : ""
+                }`}
               />
               <label htmlFor="city">City</label>
             </span>
           </div>
-          <div className="mx-auto mt-6 w-[34.5vw]">
+          <div className="mx-auto mt-6 w-[50.1vw]">
             <span className="p-float-label">
               <InputText
                 id="state"
@@ -447,12 +455,14 @@ export default function CustomersGrid({ data, onDelete, onUpdate }) {
                 name="state"
                 value={editedCustomerData?.state || ""}
                 onChange={handleInputChange}
-                className={!editedCustomerData.state ? "p-invalid" : ""}
+                className={`border py-2 pl-2 ${
+                  !editedCustomerData.state ? "border-red-600" : ""
+                }`}
               />
               <label htmlFor="state">State</label>
             </span>
           </div>
-          <div className="mx-auto mt-6 w-[34.5vw]">
+          <div className="mx-auto mt-6 w-[50.1vw]">
             <span className="p-float-label">
               <InputText
                 id="pincode"
@@ -460,11 +470,14 @@ export default function CustomersGrid({ data, onDelete, onUpdate }) {
                 name="pincode"
                 value={editedCustomerData?.pincode || ""}
                 onChange={handleInputChange}
-                className={!editedCustomerData.pincode ? "p-invalid" : ""}
+                className={`border py-2 pl-2 ${
+                  !editedCustomerData.pincode ? "border-red-600" : ""
+                }`}
               />
               <label htmlFor="pincode">Pincode</label>
             </span>
           </div>
+
           <div className="my-4">
             <input
               type="radio"
@@ -537,20 +550,23 @@ export default function CustomersGrid({ data, onDelete, onUpdate }) {
           <div>
             <Button
               label="Delete"
-              icon="pi pi-times"
-              className="p-button-danger"
+              icon="pi pi-check"
+              className="mr-2 bg-red-500 px-3 py-2 text-white"
               onClick={confirmDelete}
             />
             <Button
               label="Cancel"
-              icon="pi pi-check"
-              className="p-button-secondary"
+              icon="pi pi-times"
+              className="bg-gray-600 px-3 py-2 text-white dark:text-gray-850 "
               onClick={() => setIsDeleteDialogVisible(false)}
             />
           </div>
         }
       >
-        <div>Are you sure you want to delete this customer?</div>
+        <div>
+          {" "}
+          Are you sure you want to delete {selectedCustomer?.full_name}?
+        </div>
       </Dialog>
       <EditCustomerDialog
         visible={isEditDialogVisible}

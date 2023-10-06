@@ -27,6 +27,7 @@ export default function VehiclesGrid({
   const [editId, setEditId] = useState("");
   const [deleteId, setDeleteId] = useState("");
   const [viewDialog, setViewDialog] = useState(false);
+  const [deleteVehicleName, setDeleteVehicleName] = useState("");
   const [localEcuData, setLocalEcuData] = useState([]);
   const [localIoTData, setLocalIoTData] = useState([]);
   const [localDMSData, setLocalDMSData] = useState([]);
@@ -69,9 +70,10 @@ export default function VehiclesGrid({
     setEditId("");
   };
 
-  const DeleteDialog = (rowData) => {
+  const DeleteDialog = (item) => {
     setDeleteDialog(!deleteDialog);
-    setDeleteId(rowData?.vehicle_uuid);
+    setDeleteId(item?.vehicle_uuid);
+    setDeleteVehicleName(item?.vehicle_name);
   };
 
   const handleDelete = () => {
@@ -171,7 +173,7 @@ export default function VehiclesGrid({
           </div>
           <div className="p-card-footer mb-2">
             <div className="flex justify-center">
-              <Button
+              {/* <Button
                 icon="pi pi-map-marker"
                 rounded
                 outlined
@@ -181,42 +183,26 @@ export default function VehiclesGrid({
                   height: "2rem",
                 }}
                 severity="info"
-              />
+              /> */}
               <Button
                 icon="pi pi-pencil"
                 rounded
-                outlined
-                style={{
-                  width: "2rem",
-                  height: "2rem",
-                }}
-                className="mr-2"
+                className="mr-2 border border-gray-700 text-gray-700"
+                style={{ width: "2rem", height: "2rem" }}
                 onClick={() => openEditDialog(item)}
               />
-
               <Button
                 icon="pi pi-trash"
                 rounded
-                outlined
-                style={{
-                  width: "2rem",
-                  height: "2rem",
-                }}
-                className="mr-2"
-                severity="danger"
+                style={{ width: "2rem", height: "2rem" }}
+                className="mr-2 border border-red-600 text-red-600"
                 onClick={() => DeleteDialog(item)}
               />
-
               <Button
-                icon="pi pi-info-circle"
+                icon="pi pi-eye"
                 rounded
-                outlined
-                style={{
-                  width: "2rem",
-                  height: "2rem",
-                }}
-                className="mr-2"
-                severity="help"
+                className="border border-blue-500 text-blue-500 dark:text-blue-500"
+                style={{ width: "2rem", height: "2rem" }}
                 onClick={() => ViewDialog(item)}
               />
             </div>
@@ -260,12 +246,13 @@ export default function VehiclesGrid({
         emptyMessage="No vehicle found."
       />
       {/* Edit vehicle Data */}
+      {/* Edit vehicle Data */}
       <Dialog
         visible={editDialog}
         onHide={closeEditDialog}
         style={{ width: "45rem" }}
         breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-        header="Edit the Device"
+        header="Edit the Vehicle"
         modal
         className="p-fluid dark:bg-gray-900"
       >
@@ -292,48 +279,108 @@ export default function VehiclesGrid({
               <label htmlFor="vehicle_registration">Vehicle Registration</label>
             </span>
           </div>
-          <div className="mx-auto mt-8 w-[34.5vw]">
-            <span className="p-float-label">
-              <Dropdown
-                id="ecu"
-                name="ecu"
-                optionLabel="device_id"
-                optionValue="device_id"
-                options={localEcuData}
-                onChange={handleChange}
-                value={editData?.ecu}
-              />
-              <label htmlFor="ecu">Select ECU</label>
-            </span>
+          <div className="mx-auto mt-2 flex w-[34.5vw]">
+            <div className="flex-1">
+              <label
+                htmlFor="ecu"
+                style={{ color: "#808080", fontSize: "13px" }}
+                className=""
+              >
+                Select an ECU
+              </label>
+              <span className="p-float-label">
+                <select
+                  name="ecu"
+                  onChange={handleChange}
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "5px 28px",
+                    borderRadius: "5px",
+                    fontSize: "16px",
+                    outline: "none",
+                  }}
+                >
+                  <option>{editData?.ecu || ""}</option>
+                  <option value={null}>Unassign</option>
+                  {ecuData?.map((el) => {
+                    return (
+                      <option key={el.id} value={`${el.device_id}`}>
+                        {el.device_id}
+                      </option>
+                    );
+                  })}
+                </select>
+              </span>
+            </div>
+
+            <div className="flex-1">
+              <label
+                htmlFor="iot"
+                style={{ color: "#808080", fontSize: "13px" }}
+              >
+                Select an IoT
+              </label>
+              <span className="p-float-label">
+                <select
+                  name="iot"
+                  onChange={handleChange}
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "5px 28px",
+                    borderRadius: "5px",
+                    fontSize: "16px",
+                    outline: "none",
+                  }}
+                >
+                  <option>{editData?.iot || ""}</option>
+                  <option value={null}>Unassign</option>
+                  {iotData?.map((el) => {
+                    return (
+                      <option key={el.id} value={`${el.device_id}`}>
+                        {el.device_id}
+                      </option>
+                    );
+                  })}
+                </select>
+              </span>
+            </div>
+
+            <div className="flex-1">
+              <label
+                htmlFor="dms"
+                style={{
+                  color: "#808080",
+                  fontSize: "13px",
+                }}
+              >
+                Select a DMS
+              </label>
+              <span className="p-float-label">
+                <select
+                  name="dms"
+                  onChange={handleChange}
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "5px 28px",
+                    borderRadius: "5px",
+                    fontSize: "16px",
+                    outline: "none",
+                  }}
+                >
+                  <option>{editData?.dms || ""}</option>
+                  <option value={null}>Unassign</option>
+                  {dmsData?.map((el) => {
+                    return (
+                      <option key={el.id} value={`${el.device_id}`}>
+                        {el.device_id}
+                      </option>
+                    );
+                  })}
+                </select>
+              </span>
+            </div>
           </div>
-          <div className="mx-auto mt-8 w-[34.5vw]">
-            <span className="p-float-label">
-              <Dropdown
-                id="iot"
-                name="iot"
-                optionLabel="device_id"
-                optionValue="device_id"
-                options={localIoTData}
-                onChange={handleChange}
-                value={editData?.iot}
-              />
-              <label htmlFor="iot">Select IoT</label>
-            </span>
-          </div>
-          <div className="mx-auto mt-8 w-[34.5vw]">
-            <span className="p-float-label">
-              <Dropdown
-                id="dms"
-                name="dms"
-                optionLabel="device_id"
-                optionValue="device_id"
-                options={localDMSData}
-                onChange={handleChange}
-                value={editData?.dms || ""}
-              />
-              <label htmlFor="dms">Select DMS</label>
-            </span>
-          </div>
+
           <div className="mx-auto mt-8 w-[34.5vw]">
             <span className="p-float-label">
               <Dropdown
@@ -362,12 +409,12 @@ export default function VehiclesGrid({
               <label htmlFor="status">Select Status</label>
             </span>
           </div>
-          <div className="p-field p-col-12 flex justify-center">
+          <div className="p-field p-col-12 mt-7 flex justify-center">
             <button
               type="submit"
               className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
             >
-              Edit Vehicle
+              Update
             </button>
           </div>
         </form>
@@ -381,21 +428,22 @@ export default function VehiclesGrid({
           <div>
             <Button
               label="Delete"
-              icon="pi pi-times"
-              className="p-button-danger px-3 py-2 hover:bg-none dark:hover:bg-gray-50"
+              icon="pi pi-check"
+              className="mr-2 bg-red-500 px-3 py-2 text-white"
               onClick={handleDelete}
             />
             <Button
               label="Cancel"
-              icon="pi pi-check"
-              className="p-button-secondary px-3 py-2 hover:bg-none dark:hover:bg-gray-50"
+              icon="pi pi-times"
+              className="bg-gray-600 px-3 py-2 text-white dark:text-gray-850 "
               onClick={DeleteDialog}
             />
           </div>
         }
       >
-        <div>Are you sure you want to delete ?</div>
+        <div>Are you sure you want to delete {deleteVehicleName}?</div>
       </Dialog>
+
       {/* ViewDialog */}
       <Dialog
         visible={viewDialog}

@@ -51,6 +51,7 @@ const Triggers = () => {
   };
   const closeDialog = () => {
     setVisible(false);
+    setFormErrors({});
     setAddData({});
   };
 
@@ -279,7 +280,9 @@ const Triggers = () => {
                   optionValue="value"
                   options={triggerOptions}
                   onChange={handleChange}
-                  className={formErrors.trigger_type ? "p-invalid" : ""}
+                  className={`border ${
+                    formErrors.trigger_type ? "border-red-600" : ""
+                  }`}
                   value={addData.trigger_type}
                 />
                 <label htmlFor="trigger_type">Trigger Type</label>
@@ -294,7 +297,9 @@ const Triggers = () => {
                   id="trigger_name"
                   name="trigger_name"
                   onChange={handleChange}
-                  className={formErrors.trigger_name ? "p-invalid" : ""}
+                  className={`border py-2 pl-2 ${
+                    formErrors.trigger_name ? "border-red-600" : ""
+                  }`}
                 />
                 <label htmlFor="trigger_name">Trigger Name</label>
               </span>
@@ -311,7 +316,9 @@ const Triggers = () => {
                   optionValue="value"
                   options={vehiclesOptions()}
                   onChange={handleChange}
-                  className={formErrors.vehicle_uuid ? "p-invalid" : ""}
+                  className={`border ${
+                    formErrors.vehicle_uuid ? "border-red-600" : ""
+                  }`}
                   value={addData.vehicle_uuid}
                 />
                 <label htmlFor="vehicle_uuid">Select Vehicle</label>
@@ -326,7 +333,9 @@ const Triggers = () => {
                   id="trigger_description"
                   name="trigger_description"
                   onChange={handleChange}
-                  className={formErrors.trigger_description ? "p-invalid" : ""}
+                  className={`border py-2 pl-2 ${
+                    formErrors.trigger_description ? "border-red-600" : ""
+                  }`}
                 />
                 <label htmlFor="trigger_description">Trigger Description</label>
               </span>
@@ -345,7 +354,9 @@ const Triggers = () => {
                   optionValue="value"
                   options={contactsOptions()}
                   onChange={handleChange}
-                  className={formErrors.recipients ? "p-invalid" : ""}
+                  className={`border ${
+                    formErrors.recipients ? "border-red-600" : ""
+                  }`}
                   value={addData.recipients}
                 />
                 <label htmlFor="recipients">Select Contact</label>

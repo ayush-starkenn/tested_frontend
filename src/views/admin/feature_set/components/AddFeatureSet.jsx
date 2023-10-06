@@ -6,7 +6,6 @@ import axios from "axios";
 import { AppContext } from "context/AppContext";
 import { Toast } from "primereact/toast";
 import Cookies from "js-cookie";
-import { Button } from "primereact/button";
 
 const AddFeatureSet = ({ onSuccess }) => {
   const [data, setData] = useState({});
@@ -150,20 +149,20 @@ const AddFeatureSet = ({ onSuccess }) => {
       "rfidAbsent",
       "iotAbsent",
       "acc_board",
-      "drive_drow",
-      "alco_sens",
-      "temp_sens",
+      "SBE_dd",
+      "SBE_alcohol",
+      "SBE_temp",
       //Firmware OTA
       "firmwareOtaUpdate",
       "firewarereserver1",
       "firewarereserver2",
       //Alcohol Detection
-      "alco_sts",
-      "alco_intvl",
-      "alco_act_spd",
-      "alco_strt_tim",
-      "alco_stop_tim",
       "alcoholDetectionMode",
+      "alcoholinterval",
+      "alcoholact_spd",
+      "alcoholstart_time",
+      "alcoholstop_time",
+      "alcoholmode",
       //Driver Drowsiness
       "driverDrowsinessMode",
       "dd_act_spd",
@@ -172,8 +171,9 @@ const AddFeatureSet = ({ onSuccess }) => {
       "dd_stop_tim",
       "dd_res1",
       //Load Sensor
-      "load_sts",
       "load_tak_cap",
+      "load_sts",
+      "load_max_cap",
       "load_acc",
       //Fuel
       "fuelMode",
@@ -190,12 +190,11 @@ const AddFeatureSet = ({ onSuccess }) => {
       }
     }
     setInvalidFields(invalidFieldsArray);
-    console.log(invalidFields);
     // If there are invalid fields, show a toast and return
     if (invalidFieldsArray.length > 0) {
       toastErr.current.show({
-        severity: "error",
-        summary: "Error",
+        severity: "warn",
+        summary: "Warning",
         detail: "Please fill in all required fields.",
         life: 3000,
       });
@@ -266,11 +265,6 @@ const AddFeatureSet = ({ onSuccess }) => {
       label: "Strict",
       value: "Strict",
     },
-  ];
-
-  const Brakingoptions = [
-    { label: "Yes", value: "1" },
-    { label: "No", value: "0" },
   ];
 
   const VehicleTypeoptions = [{ label: "12V Pedal", value: "12V Pedal" }];
@@ -390,10 +384,17 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               placeholder="Feature Set Name"
               className={`border py-2 pl-2 ${
-                invalidFields.includes("featureset_name") ? "p-invalid" : ""
+                invalidFields.includes("featureset_name")
+                  ? "border-red-600"
+                  : ""
               }`}
               name="featureset_name"
-              onChange={handleChange}
+              onChange={(e) => {
+                handleChange(e);
+                setInvalidFields(
+                  invalidFields.filter((field) => field !== "featureset_name")
+                );
+              }}
               autoComplete="off"
             />
             <small id="username-help">Unique id to identify feature set</small>
@@ -413,7 +414,9 @@ const AddFeatureSet = ({ onSuccess }) => {
               optionValue="value"
               placeholder={selectedValue ? selectedValue : "Tap to Select"}
               className={`md:w-14rem mt-2 w-full border ${
-                invalidFields.includes("featureset_users") ? "p-invalid" : ""
+                invalidFields.includes("featureset_users")
+                  ? "border-red-600"
+                  : ""
               }`}
               value={selectedValue || ""}
             />
@@ -424,23 +427,13 @@ const AddFeatureSet = ({ onSuccess }) => {
           )}
           <div className="mb-3 mt-2 flex flex-wrap gap-3">
             <div className="align-items-center flex">
-              <input
-                type="radio"
-                name="mode"
-                onChange={handleData}
-                value="Online"
-              />
+              <input type="radio" name="mode" onChange={handleData} value={1} />
               <label htmlFor="ingredient2" className="ml-2">
                 Online Mode
               </label>
             </div>
             <div className="align-items-center flex">
-              <input
-                type="radio"
-                name="mode"
-                onChange={handleData}
-                value="Offline"
-              />
+              <input type="radio" name="mode" onChange={handleData} value={0} />
               <label htmlFor="ingredient1" className="ml-2">
                 Offline Mode
               </label>
@@ -449,7 +442,7 @@ const AddFeatureSet = ({ onSuccess }) => {
         </div>
         <hr style={{ borderColor: "#333" }} />
         <p className="mt-4 font-bold ">Collision Avoidance System</p>
-        {invalidFields.includes("mode") && (
+        {invalidFields.includes("CASMode") && (
           <span className="p-error">Please select any option.</span>
         )}
         <div className="card justify-content-center mb-3 mt-2 flex gap-4">
@@ -457,7 +450,7 @@ const AddFeatureSet = ({ onSuccess }) => {
             <input
               type="radio"
               name="CASMode"
-              value="Enable"
+              value={1}
               onChange={handleData}
             />
             <label htmlFor="ingredient2" className="ml-2">
@@ -468,7 +461,7 @@ const AddFeatureSet = ({ onSuccess }) => {
             <input
               type="radio"
               name="CASMode"
-              value="Disable"
+              value={0}
               onChange={handleData}
             />
             <label htmlFor="ingredient1" className="ml-2">
@@ -478,16 +471,18 @@ const AddFeatureSet = ({ onSuccess }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="as">Activation Speed</label>
+            <label htmlFor="activationSpeed">Activation Speed</label>
             <InputText
               keyfilter="pint"
-              id="as"
+              id="activationSpeed"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("activationSpeed") ? "p-invalid" : ""
+                invalidFields.includes("activationSpeed")
+                  ? "border-red-600"
+                  : ""
               }`}
               placeholder="Enter a value"
               name="activationSpeed"
@@ -496,17 +491,17 @@ const AddFeatureSet = ({ onSuccess }) => {
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="at">Alarm Threshold</label>
+            <label htmlFor="alarmThreshold">Alarm Threshold</label>
             <InputText
               keyfilter="pint"
-              id="at"
+              id="alarmThreshold"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               placeholder="Enter a value"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("alarmThreshold") ? "p-invalid" : ""
+                invalidFields.includes("alarmThreshold") ? "border-red-600" : ""
               }`}
               name="alarmThreshold"
               onChange={handleData}
@@ -516,17 +511,17 @@ const AddFeatureSet = ({ onSuccess }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="bt">Brake Threshold</label>
+            <label htmlFor="brakeThreshold">Brake Threshold</label>
             <InputText
               keyfilter="pint"
-              id="bt"
+              id="brakeThreshold"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               placeholder="Enter a value"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("brakeThreshold") ? "p-invalid" : ""
+                invalidFields.includes("brakeThreshold") ? "border-red-600" : ""
               }`}
               name="brakeThreshold"
               onChange={handleData}
@@ -545,7 +540,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               placeholder="Enter a value"
               name="brakeSpeed"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("brakeSpeed") ? "p-invalid" : ""
+                invalidFields.includes("brakeSpeed") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               autoComplete="off"
@@ -554,9 +549,11 @@ const AddFeatureSet = ({ onSuccess }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[63vw]">
-            <label htmlFor="stationaryobj">Detect Stationary Object</label>
+            <label htmlFor="detectStationaryObject">
+              Detect Stationary Object
+            </label>
             <Dropdown
-              id="stationaryobj"
+              id="detectStationaryObject"
               options={StationaryObjectoptions}
               optionLabel="label"
               optionValue="value"
@@ -570,17 +567,17 @@ const AddFeatureSet = ({ onSuccess }) => {
               value={values.detectStationaryObject}
               className={`md:w-14rem  $dark:bg-gray-900 mt-2 w-full border ${
                 invalidFields.includes("detectStationaryObject")
-                  ? "p-invalid"
+                  ? "border-red-600"
                   : ""
               }`}
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="combrake">Allow Complete Brake</label>
+            <label htmlFor="allowCompleteBrake">Allow Complete Brake</label>
             <Dropdown
               name="allowCompleteBrake"
               onChange={handleData}
-              id="combrake"
+              id="allowCompleteBrake"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
@@ -591,17 +588,21 @@ const AddFeatureSet = ({ onSuccess }) => {
               optionLabel="label"
               optionValue="value"
               className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
-                invalidFields.includes("allowCompleteBrake") ? "p-invalid" : ""
+                invalidFields.includes("allowCompleteBrake")
+                  ? "border-red-600"
+                  : ""
               }`}
             />
           </div>
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[63vw]">
-            <label htmlFor="obstacle">Detect Oncoming Obstacle</label>
+            <label htmlFor="detectOncomingObstacle">
+              Detect Oncoming Obstacle
+            </label>
             <Dropdown
               name="detectOncomingObstacle"
-              id="obstacle"
+              id="detectOncomingObstacle"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
@@ -614,16 +615,16 @@ const AddFeatureSet = ({ onSuccess }) => {
               onChange={handleData}
               className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
                 invalidFields.includes("detectOncomingObstacle")
-                  ? "p-invalid"
+                  ? "border-red-600"
                   : ""
               }`}
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="safety">Safety Mode</label>
+            <label htmlFor="safetyMode">Safety Mode</label>
             <Dropdown
               name="safetyMode"
-              id="safety"
+              id="safetyMode"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
@@ -635,24 +636,24 @@ const AddFeatureSet = ({ onSuccess }) => {
               optionLabel="label"
               optionValue="value"
               className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
-                invalidFields.includes("safetyMode") ? "p-invalid" : ""
+                invalidFields.includes("safetyMode") ? "border-red-600" : ""
               }`}
             />
           </div>
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="ttc_threshold">TTC Threshold</label>
+            <label htmlFor="ttcThreshold">TTC Threshold</label>
             <InputText
               keyfilter="pint"
-              id="ttc_threshold"
+              id="ttcThreshold"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               placeholder="Enter a value"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("ttcThreshold") ? "p-invalid" : ""
+                invalidFields.includes("ttcThreshold") ? "border-red-600" : ""
               }`}
               name="ttcThreshold"
               onChange={handleData}
@@ -660,17 +661,19 @@ const AddFeatureSet = ({ onSuccess }) => {
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="brake_on">Brake ON Duration</label>
+            <label htmlFor="brakeOnDuration">Brake ON Duration</label>
             <InputText
               keyfilter="pint"
-              id="brake_on"
+              id="brakeOnDuration"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="brakeOnDuration"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("brakeOnDuration") ? "p-invalid" : ""
+                invalidFields.includes("brakeOnDuration")
+                  ? "border-red-600"
+                  : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -680,17 +683,19 @@ const AddFeatureSet = ({ onSuccess }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="brake_off">Brake OFF Duration</label>
+            <label htmlFor="brakeOffDuration">Brake OFF Duration</label>
             <InputText
               keyfilter="pint"
-              id="brake_off"
+              id="brakeOffDuration"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="brakeOffDuration"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("brakeOffDuration") ? "p-invalid" : ""
+                invalidFields.includes("brakeOffDuration")
+                  ? "border-red-600"
+                  : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -707,8 +712,8 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="start_time"
-              className={`dark:bg-gray-900 ${
-                invalidFields.includes("start_time") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("start_time") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -718,7 +723,7 @@ const AddFeatureSet = ({ onSuccess }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="brake_off">Stop Time</label>
+            <label htmlFor="stop_time">Stop Time</label>
             <InputText
               keyfilter="pint"
               id="stop_time"
@@ -727,8 +732,8 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="stop_time"
-              className={`dark:bg-gray-900 ${
-                invalidFields.includes("stop_time") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("stop_time") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -749,7 +754,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="op2"
               name="sleepAlertMode"
               onChange={handleData}
-              value="Online"
+              value={1}
             />
             <label htmlFor="op2" className="ml-2">
               Enable
@@ -761,7 +766,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="op1"
               name="sleepAlertMode"
               onChange={handleData}
-              value="Offline"
+              value={0}
             />
             <label htmlFor="op1" className="ml-2">
               Disable
@@ -780,7 +785,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               placeholder="Enter a value"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("preWarning") ? "p-invalid" : ""
+                invalidFields.includes("preWarning") ? "border-red-600" : ""
               }`}
               name="preWarning"
               onChange={handleData}
@@ -788,17 +793,19 @@ const AddFeatureSet = ({ onSuccess }) => {
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="sleep_interval">Sleep Alert Interval</label>
+            <label htmlFor="sleepAlertInterval">Sleep Alert Interval</label>
             <InputText
               keyfilter="pint"
-              id="sleep_interval"
+              id="sleepAlertInterval"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="sleepAlertInterval"
               className={`border  py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("sleepAlertInterval") ? "p-invalid" : ""
+                invalidFields.includes("sleepAlertInterval")
+                  ? "border-red-600"
+                  : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -808,17 +815,19 @@ const AddFeatureSet = ({ onSuccess }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="act_speed">Activation Speed</label>
+            <label htmlFor="sa_activationSpeed">Activation Speed</label>
             <InputText
               keyfilter="pint"
-              id="act_speed"
+              id="sa_activationSpeed"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="sa_activationSpeed"
-              className={`dark:bg-gray-900 ${
-                invalidFields.includes("sa_activationSpeed") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("sa_activationSpeed")
+                  ? "border-red-600"
+                  : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -826,17 +835,17 @@ const AddFeatureSet = ({ onSuccess }) => {
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="start_time">Start Time</label>
+            <label htmlFor="startTime">Start Time</label>
             <InputText
               keyfilter="pint"
-              id="start_time"
+              id="startTime"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="startTime"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("startTime") ? "p-invalid" : ""
+                invalidFields.includes("startTime") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -846,17 +855,17 @@ const AddFeatureSet = ({ onSuccess }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="stop_time">Stop Time</label>
+            <label htmlFor="stopTime">Stop Time</label>
             <InputText
               keyfilter="pint"
-              id="stop_time"
+              id="stopTime"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="stopTime"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("stopTime") ? "p-invalid" : ""
+                invalidFields.includes("stopTime") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -864,17 +873,19 @@ const AddFeatureSet = ({ onSuccess }) => {
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="bat">Brake Activate Time</label>
+            <label htmlFor="brakeActivateTime">Brake Activate Time</label>
             <InputText
               keyfilter="pint"
-              id="bat"
+              id="brakeActivateTime"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="brakeActivateTime"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("brakeActivateTime") ? "p-invalid" : ""
+                invalidFields.includes("brakeActivateTime")
+                  ? "border-red-600"
+                  : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -894,12 +905,12 @@ const AddFeatureSet = ({ onSuccess }) => {
                 width: "30vw",
                 borderRadius: "5px",
               }}
-              options={Brakingoptions}
+              options={BrakingOptions}
               placeholder="Select an option"
               optionLabel="label"
               optionValue="value"
               className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
-                invalidFields.includes("braking") ? "p-invalid" : ""
+                invalidFields.includes("braking") ? "border-red-600" : ""
               }`}
             />
           </div>
@@ -913,9 +924,9 @@ const AddFeatureSet = ({ onSuccess }) => {
           <div className="align-items-center flex">
             <input
               type="radio"
-              id="ingredient2"
+              id="driverEvalMode"
               name="driverEvalMode"
-              value="Online"
+              value={1}
               onChange={handleData}
             />
             <label htmlFor="ingredient2" className="ml-2">
@@ -927,7 +938,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="ingredient1"
               name="driverEvalMode"
-              value="Offline"
+              value={0}
               onChange={handleData}
             />
             <label htmlFor="ingredient1" className="ml-2">
@@ -937,10 +948,12 @@ const AddFeatureSet = ({ onSuccess }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="maxlane">Max Lane Change Threshold</label>
+            <label htmlFor="maxLaneChangeThreshold">
+              Max Lane Change Threshold
+            </label>
             <InputText
               keyfilter="pint"
-              id="maxlane"
+              id="maxLaneChangeThreshold"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
@@ -948,7 +961,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               name="maxLaneChangeThreshold"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("maxLaneChangeThreshold")
-                  ? "p-invalid"
+                  ? "border-red-600"
                   : ""
               }`}
               onChange={handleData}
@@ -957,10 +970,12 @@ const AddFeatureSet = ({ onSuccess }) => {
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="minlane">Min Lane Change Threshold</label>
+            <label htmlFor="minLaneChangeThreshold">
+              Min Lane Change Threshold
+            </label>
             <InputText
               keyfilter="pint"
-              id="minlane"
+              id="minLaneChangeThreshold"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
@@ -968,7 +983,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               name="minLaneChangeThreshold"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("minLaneChangeThreshold")
-                  ? "p-invalid"
+                  ? "border-red-600"
                   : ""
               }`}
               onChange={handleData}
@@ -979,10 +994,12 @@ const AddFeatureSet = ({ onSuccess }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="maxharsh">Max Harsh Acceleration Threshold</label>
+            <label htmlFor="maxHarshAccelerationThreshold">
+              Max Harsh Acceleration Threshold
+            </label>
             <InputText
               keyfilter="pint"
-              id="maxharsh"
+              id="maxHarshAccelerationThreshold"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
@@ -990,7 +1007,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               name="maxHarshAccelerationThreshold"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("maxHarshAccelerationThreshold")
-                  ? "p-invalid"
+                  ? "border-red-600"
                   : ""
               }`}
               onChange={handleData}
@@ -999,10 +1016,12 @@ const AddFeatureSet = ({ onSuccess }) => {
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="minharsh">Min Harsh Acceleration Threshold</label>
+            <label htmlFor="minHarshAccelerationThreshold">
+              Min Harsh Acceleration Threshold
+            </label>
             <InputText
               keyfilter="pint"
-              id="minharsh"
+              id="minHarshAccelerationThreshold"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
@@ -1010,7 +1029,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               name="minHarshAccelerationThreshold"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("minHarshAccelerationThreshold")
-                  ? "p-invalid"
+                  ? "border-red-600"
                   : ""
               }`}
               onChange={handleData}
@@ -1021,10 +1040,12 @@ const AddFeatureSet = ({ onSuccess }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="sudden_brake">Sudden Braking Threshold</label>
+            <label htmlFor="suddenBrakingThreshold">
+              Sudden Braking Threshold
+            </label>
             <InputText
               keyfilter="pint"
-              id="sudden_brake"
+              id="suddenBrakingThreshold"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
@@ -1032,7 +1053,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               name="suddenBrakingThreshold"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("suddenBrakingThreshold")
-                  ? "p-invalid"
+                  ? "border-red-600"
                   : ""
               }`}
               onChange={handleData}
@@ -1041,10 +1062,12 @@ const AddFeatureSet = ({ onSuccess }) => {
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="maxspeed">Max Speed Bump Threshold</label>
+            <label htmlFor="maxSpeedBumpThreshold">
+              Max Speed Bump Threshold
+            </label>
             <InputText
               keyfilter="pint"
-              id="maxspeed"
+              id="maxSpeedBumpThreshold"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
@@ -1052,7 +1075,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               name="maxSpeedBumpThreshold"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("maxSpeedBumpThreshold")
-                  ? "p-invalid"
+                  ? "border-red-600"
                   : ""
               }`}
               onChange={handleData}
@@ -1063,10 +1086,12 @@ const AddFeatureSet = ({ onSuccess }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="minspeed">Min Speed Bump Threshold</label>
+            <label htmlFor="minSpeedBumpThreshold">
+              Min Speed Bump Threshold
+            </label>
             <InputText
               keyfilter="pint"
-              id="minspeed"
+              id="minSpeedBumpThreshold"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
@@ -1074,7 +1099,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               name="minSpeedBumpThreshold"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("minSpeedBumpThreshold")
-                  ? "p-invalid"
+                  ? "border-red-600"
                   : ""
               }`}
               onChange={handleData}
@@ -1092,10 +1117,10 @@ const AddFeatureSet = ({ onSuccess }) => {
           <div className="align-items-center flex">
             <input
               type="radio"
-              id="on"
+              id="GovernerMode"
               onChange={handleData}
               name="GovernerMode"
-              value="Online"
+              value={1}
             />
             <label htmlFor="ingredient2" className="ml-2">
               Enable
@@ -1104,9 +1129,9 @@ const AddFeatureSet = ({ onSuccess }) => {
           <div className="align-items-center flex">
             <input
               type="radio"
-              id="off"
+              id="GovernerMode"
               name="GovernerMode"
-              value="Offline"
+              value={0}
               onChange={handleData}
             />
             <label htmlFor="off" className="ml-2">
@@ -1116,17 +1141,17 @@ const AddFeatureSet = ({ onSuccess }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="speed_limit">Speed Limit</label>
+            <label htmlFor="speedLimit">Speed Limit</label>
             <InputText
               keyfilter="pint"
-              id="speed_limit"
+              id="speedLimit"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="speedLimit"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("speedLimit") ? "p-invalid" : ""
+                invalidFields.includes("speedLimit") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1143,9 +1168,9 @@ const AddFeatureSet = ({ onSuccess }) => {
           <div className="align-items-center flex">
             <input
               type="radio"
-              id="mode2"
+              id="cruiseMode"
               name="cruiseMode"
-              value="Online"
+              value={1}
               onChange={handleData}
             />
             <label htmlFor="mode2" className="ml-2">
@@ -1155,10 +1180,10 @@ const AddFeatureSet = ({ onSuccess }) => {
           <div className="align-items-center flex">
             <input
               type="radio"
-              id="mode1"
+              id="cruiseMode"
               onChange={handleData}
               name="cruiseMode"
-              value="Offline"
+              value={0}
             />
             <label htmlFor="mode1" className="ml-2">
               Disable
@@ -1166,17 +1191,19 @@ const AddFeatureSet = ({ onSuccess }) => {
           </div>
         </div>
         <div className="field my-3 w-[30vw]">
-          <label htmlFor="cruise_as">Activation Speed</label>
+          <label htmlFor="cruiseactivationSpeed">Activation Speed</label>
           <InputText
             keyfilter="pint"
-            id="cruise_as"
+            id="cruiseactivationSpeed"
             style={{
               width: "30vw",
               borderRadius: "5px",
             }}
             name="cruiseactivationSpeed"
             className={`border py-2 pl-2 dark:bg-gray-900 ${
-              invalidFields.includes("cruiseactivationSpeed") ? "p-invalid" : ""
+              invalidFields.includes("cruiseactivationSpeed")
+                ? "border-red-600"
+                : ""
             }`}
             onChange={handleData}
             placeholder="Enter a value"
@@ -1185,9 +1212,9 @@ const AddFeatureSet = ({ onSuccess }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="vehicle">Vehicle Type</label>
+            <label htmlFor="vehicleType">Vehicle Type</label>
             <Dropdown
-              id="vehicle"
+              id="vehicleType"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
@@ -1200,7 +1227,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               optionLabel="label"
               optionValue="value"
               className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
-                invalidFields.includes("vehicleType") ? "p-invalid" : ""
+                invalidFields.includes("vehicleType") ? "border-red-600" : ""
               }`}
             />
           </div>
@@ -1216,7 +1243,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="enable"
               name="obdMode"
-              value="Online"
+              value={1}
               onChange={handleData}
             />
             <label htmlFor="enable" className="ml-2">
@@ -1228,7 +1255,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="disable"
               name="obdMode"
-              value="Offline"
+              value={0}
               onChange={handleData}
             />
             <label htmlFor="disable" className="ml-2">
@@ -1239,9 +1266,9 @@ const AddFeatureSet = ({ onSuccess }) => {
 
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="protocol">Protocol Type</label>
+            <label htmlFor="protocolType">Protocol Type</label>
             <Dropdown
-              id="protocol"
+              id="protocolType"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
@@ -1254,7 +1281,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               optionLabel="label"
               optionValue="value"
               className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
-                invalidFields.includes("protocolType") ? "p-invalid" : ""
+                invalidFields.includes("protocolType") ? "border-red-600" : ""
               }`}
             />
           </div>
@@ -1268,9 +1295,9 @@ const AddFeatureSet = ({ onSuccess }) => {
           <div className="align-items-center flex">
             <input
               type="radio"
-              id="online"
+              id="tpmsMode"
               name="tpmsMode"
-              value="Online"
+              value={1}
               onChange={handleData}
             />
             <label htmlFor="online" className="ml-2">
@@ -1281,8 +1308,8 @@ const AddFeatureSet = ({ onSuccess }) => {
             <input
               type="radio"
               name="tpmsMode"
-              id="offline"
-              value="Offline"
+              id="tpmsMode"
+              value={0}
               onChange={handleData}
             />
             <label htmlFor="offline" className="ml-2">
@@ -1294,9 +1321,9 @@ const AddFeatureSet = ({ onSuccess }) => {
         <p className="mt-4 font-bold ">Vehicle Settings</p>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="acc">Accelerator Type</label>
+            <label htmlFor="acceleratorType">Accelerator Type</label>
             <Dropdown
-              id="acc"
+              id="acceleratorType"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
@@ -1309,7 +1336,9 @@ const AddFeatureSet = ({ onSuccess }) => {
               onChange={handleData}
               options={AcceleratorTypeoptions}
               className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
-                invalidFields.includes("acceleratorType") ? "p-invalid" : ""
+                invalidFields.includes("acceleratorType")
+                  ? "border-red-600"
+                  : ""
               }`}
             />
           </div>
@@ -1321,15 +1350,15 @@ const AddFeatureSet = ({ onSuccess }) => {
                 width: "30vw",
                 borderRadius: "5px",
               }}
-              value={values.acceleratorType}
+              value={values.VS_brk_typ}
               placeholder="Select an option"
               optionLabel="label"
               optionValue="value"
               name="VS_brk_typ"
               onChange={handleData}
               options={BrakingOptions}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
-                invalidFields.includes("VS_brk_typ") ? "p-invalid" : ""
+              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+                invalidFields.includes("VS_brk_typ") ? "border-red-600" : ""
               }`}
             />
           </div>
@@ -1342,15 +1371,15 @@ const AddFeatureSet = ({ onSuccess }) => {
               width: "30vw",
               borderRadius: "5px",
             }}
-            value={values.acceleratorType}
+            value={values.VS_gyro_type}
             placeholder="Select an option"
             optionLabel="label"
             optionValue="value"
             name="VS_gyro_type"
             onChange={handleData}
             options={GyroOptions}
-            className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
-              invalidFields.includes("VS_gyro_type") ? "p-invalid" : ""
+            className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+              invalidFields.includes("VS_gyro_type") ? "border-red-600" : ""
             }`}
           />
         </div>
@@ -1364,9 +1393,9 @@ const AddFeatureSet = ({ onSuccess }) => {
           <div className="align-items-center flex">
             <input
               type="radio"
-              id="lm_on"
+              id="lazerMode"
               name="lazerMode"
-              value="Online"
+              value={1}
               onChange={handleData}
             />
             <label htmlFor="lm_on" className="ml-2">
@@ -1378,10 +1407,10 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="lm_off"
               name="lazerMode"
-              value="Offline"
+              value={0}
               onChange={handleData}
             />
-            <label htmlFor="lm_off" className="ml-2">
+            <label htmlFor="lazerMode" className="ml-2">
               Disable
             </label>
           </div>
@@ -1394,12 +1423,12 @@ const AddFeatureSet = ({ onSuccess }) => {
           <div className="align-items-center flex">
             <input
               type="radio"
-              id="rf_en"
+              id="rfSensorMode"
               name="rfSensorMode"
-              value="Online"
+              value={1}
               onChange={handleData}
             />
-            <label htmlFor="rf_en" className="ml-2">
+            <label htmlFor="rfSensorMode" className="ml-2">
               Enable
             </label>
           </div>
@@ -1408,27 +1437,27 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="rf_dis"
               name="rfSensorMode"
-              value="Offline"
+              value={0}
               onChange={handleData}
             />
-            <label htmlFor="rf_dis" className="ml-2">
+            <label htmlFor="rfSensorMode" className="ml-2">
               Disable
             </label>
           </div>
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="rf_angle">RF Angle</label>
+            <label htmlFor="rfAngle">RF Angle</label>
             <InputText
               keyfilter="pint"
-              id="rf_angle"
+              id="rfAngle"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="rfAngle"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("rfAngle") ? "p-invalid" : ""
+                invalidFields.includes("rfAngle") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1436,7 +1465,7 @@ const AddFeatureSet = ({ onSuccess }) => {
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="res1">Radar activation speed</label>
+            <label htmlFor="rdr_act_spd">Radar activation speed</label>
             <InputText
               keyfilter="pint"
               id="rdr_act_spd"
@@ -1445,8 +1474,8 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="rdr_act_spd"
-              className={`dark:bg-gray-900 ${
-                invalidFields.includes("rdr_act_spd") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("rdr_act_spd") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1456,7 +1485,7 @@ const AddFeatureSet = ({ onSuccess }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="speed_src">Radar type</label>
+            <label htmlFor="rdr_type">Radar type</label>
             <Dropdown
               id="rdr_type"
               style={{
@@ -1470,13 +1499,13 @@ const AddFeatureSet = ({ onSuccess }) => {
               optionLabel="label"
               optionValue="value"
               onChange={handleData}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full ${
-                invalidFields.includes("rdr_type") ? "p-invalid" : ""
+              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+                invalidFields.includes("rdr_type") ? "border-red-600" : ""
               }`}
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="res3">Reserved 1</label>
+            <label htmlFor="Sensor_res1">Reserved 1</label>
             <InputText
               keyfilter="pint"
               id="Sensor_res1"
@@ -1485,8 +1514,8 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="Sensor_res1"
-              className={`dark:bg-gray-900 ${
-                invalidFields.includes("Sensor_res1") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("Sensor_res1") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1500,9 +1529,9 @@ const AddFeatureSet = ({ onSuccess }) => {
 
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="speed_src">Speed Source</label>
+            <label htmlFor="speedSource">Speed Source</label>
             <Dropdown
-              id="speed_src"
+              id="speedSource"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
@@ -1515,7 +1544,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               optionValue="value"
               onChange={handleData}
               className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
-                invalidFields.includes("speedSource") ? "p-invalid" : ""
+                invalidFields.includes("speedSource") ? "border-red-600" : ""
               }`}
             />
           </div>
@@ -1532,7 +1561,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="slope"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("slope") ? "p-invalid" : ""
+                invalidFields.includes("slope") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1550,7 +1579,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="offset"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("offset") ? "p-invalid" : ""
+                invalidFields.includes("offset") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1571,7 +1600,7 @@ const AddFeatureSet = ({ onSuccess }) => {
             }}
             name="delay"
             className={`border py-2 pl-2 dark:bg-gray-900 ${
-              invalidFields.includes("delay") ? "p-invalid" : ""
+              invalidFields.includes("delay") ? "border-red-600" : ""
             }`}
             onChange={handleData}
             placeholder="Enter a value"
@@ -1587,24 +1616,24 @@ const AddFeatureSet = ({ onSuccess }) => {
           <div className="align-items-center flex">
             <input
               type="radio"
-              id="rfname_en"
+              id="rfNameMode"
               name="rfNameMode"
-              value="Online"
+              value={1}
               onChange={handleData}
             />
-            <label htmlFor="rfname_en" className="ml-2">
+            <label htmlFor="rfNameMode" className="ml-2">
               Enable
             </label>
           </div>
           <div className="align-items-center flex">
             <input
               type="radio"
-              id="rfname_dis"
+              id="rfNameMode"
               name="rfNameMode"
-              value="Offline"
+              value={0}
               onChange={handleData}
             />
-            <label htmlFor="rfname_dis" className="ml-2">
+            <label htmlFor="rfNameMode" className="ml-2">
               Disable
             </label>
           </div>
@@ -1613,17 +1642,17 @@ const AddFeatureSet = ({ onSuccess }) => {
         <p className="mt-4 font-bold ">Time Based Errors</p>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="no_alarm">No Alarm</label>
+            <label htmlFor="noAlarm">No Alarm</label>
             <InputText
               keyfilter="pint"
-              id="no_alarm"
+              id="noAlarm"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="noAlarm"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("noAlarm") ? "p-invalid" : ""
+                invalidFields.includes("noAlarm") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1641,7 +1670,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               }}
               name="speed"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("speed") ? "p-invalid" : ""
+                invalidFields.includes("speed") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1651,17 +1680,19 @@ const AddFeatureSet = ({ onSuccess }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="acc_bypass">Acceleration Bypass</label>
+            <label htmlFor="accelerationBypass">Acceleration Bypass</label>
             <InputText
               keyfilter="pint"
-              id="acc_bypass"
+              id="accelerationBypass"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="accelerationBypass"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("accelerationBypass") ? "p-invalid" : ""
+                invalidFields.includes("accelerationBypass")
+                  ? "border-red-600"
+                  : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1678,8 +1709,8 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="tim_err_tpms"
-              className={`dark:bg-gray-900 ${
-                invalidFields.includes("tim_err_tpms") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("tim_err_tpms") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1691,17 +1722,17 @@ const AddFeatureSet = ({ onSuccess }) => {
         <p className="mt-4 font-bold ">Speed Based Errors</p>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="rf">RF Sensor Absent</label>
+            <label htmlFor="rfSensorAbsent">RF Sensor Absent</label>
             <InputText
               keyfilter="pint"
-              id="rf"
+              id="rfSensorAbsent"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="rfSensorAbsent"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("rfSensorAbsent") ? "p-invalid" : ""
+                invalidFields.includes("rfSensorAbsent") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1709,17 +1740,19 @@ const AddFeatureSet = ({ onSuccess }) => {
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="gyro">Gyroscope Absent</label>
+            <label htmlFor="gyroscopeAbsent">Gyroscope Absent</label>
             <InputText
               keyfilter="pint"
-              id="gyro"
+              id="gyroscopeAbsent"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="gyroscopeAbsent"
               className={`border  py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("gyroscopeAbsent") ? "p-invalid" : ""
+                invalidFields.includes("gyroscopeAbsent")
+                  ? "border-red-600"
+                  : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1729,17 +1762,17 @@ const AddFeatureSet = ({ onSuccess }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="hmi">HMI Absent</label>
+            <label htmlFor="hmiAbsent">HMI Absent</label>
             <InputText
               keyfilter="pint"
-              id="hmi"
+              id="hmiAbsent"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="hmiAbsent"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("hmiAbsent") ? "p-invalid" : ""
+                invalidFields.includes("hmiAbsent") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1747,17 +1780,17 @@ const AddFeatureSet = ({ onSuccess }) => {
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="tns">Time Not Set</label>
+            <label htmlFor="timeNotSet">Time Not Set</label>
             <InputText
               keyfilter="pint"
-              id="tns"
+              id="timeNotSet"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="timeNotSet"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("timeNotSet") ? "p-invalid" : ""
+                invalidFields.includes("timeNotSet") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1767,17 +1800,17 @@ const AddFeatureSet = ({ onSuccess }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="brake_err">Brake Error</label>
+            <label htmlFor="brakeError">Brake Error</label>
             <InputText
               keyfilter="pint"
-              id="brake_err"
+              id="brakeError"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="brakeError"
               className={`border  py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("brakeError") ? "p-invalid" : ""
+                invalidFields.includes("brakeError") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1786,17 +1819,17 @@ const AddFeatureSet = ({ onSuccess }) => {
           </div>
 
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="tpms_err">TPMS Error</label>
+            <label htmlFor="tpmsError">TPMS Error</label>
             <InputText
               keyfilter="pint"
-              id="tpms_err"
+              id="tpmsError"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="tpmsError"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("tpmsError") ? "p-invalid" : ""
+                invalidFields.includes("tpmsError") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1806,17 +1839,17 @@ const AddFeatureSet = ({ onSuccess }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="obd">OBD Absent</label>
+            <label htmlFor="obdAbsent">OBD Absent</label>
             <InputText
               keyfilter="pint"
-              id="obd"
+              id="obdAbsent"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="obdAbsent"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("obdAbsent") ? "p-invalid" : ""
+                invalidFields.includes("obdAbsent") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1824,17 +1857,17 @@ const AddFeatureSet = ({ onSuccess }) => {
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="no_alarm_sp">No Alarm</label>
+            <label htmlFor="noAlarmSpeed">No Alarm</label>
             <InputText
               keyfilter="pint"
-              id="no_alarm_sp"
+              id="noAlarmSpeed"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="noAlarmSpeed"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("noAlarmSpeed") ? "p-invalid" : ""
+                invalidFields.includes("noAlarmSpeed") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1844,17 +1877,19 @@ const AddFeatureSet = ({ onSuccess }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="laser">Laser Sensor Absent</label>
+            <label htmlFor="laserSensorAbsent">Laser Sensor Absent</label>
             <InputText
               keyfilter="pint"
-              id="laser"
+              id="laserSensorAbsent"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="laserSensorAbsent"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("laserSensorAbsent") ? "p-invalid" : ""
+                invalidFields.includes("laserSensorAbsent")
+                  ? "border-red-600"
+                  : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1862,17 +1897,17 @@ const AddFeatureSet = ({ onSuccess }) => {
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="rfid">RFID Absent</label>
+            <label htmlFor="rfidAbsent">RFID Absent</label>
             <InputText
               keyfilter="pint"
-              id="rfid"
+              id="rfidAbsent"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="rfidAbsent"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("rfidAbsent") ? "p-invalid" : ""
+                invalidFields.includes("rfidAbsent") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1882,17 +1917,17 @@ const AddFeatureSet = ({ onSuccess }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="iot_ab">IoT Absent</label>
+            <label htmlFor="iotAbsent">IoT Absent</label>
             <InputText
               keyfilter="pint"
-              id="iot_ab"
+              id="iotAbsent"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="iotAbsent"
-              className={`dark:bg-gray-900 ${
-                invalidFields.includes("iotAbsent") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("iotAbsent") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1909,8 +1944,8 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="acc_board"
-              className={`dark:bg-gray-900 ${
-                invalidFields.includes("acc_board") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("acc_board") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1930,8 +1965,8 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="SBE_dd"
-              className={`dark:bg-gray-900 ${
-                invalidFields.includes("SBE_dd") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("SBE_dd") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1948,8 +1983,8 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="SBE_alcohol"
-              className={`dark:bg-gray-900 ${
-                invalidFields.includes("SBE_alcohol") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("SBE_alcohol") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1968,8 +2003,8 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="SBE_temp"
-              className={`dark:bg-gray-900 ${
-                invalidFields.includes("SBE_temp") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("SBE_temp") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -1987,12 +2022,12 @@ const AddFeatureSet = ({ onSuccess }) => {
           <div className="align-items-center flex">
             <input
               type="radio"
-              id="ota_av"
+              id="firmwareOtaUpdate"
               name="firmwareOtaUpdate"
-              value="Online"
+              value={1}
               onChange={handleData}
             />
-            <label htmlFor="ota_av" className="ml-2">
+            <label htmlFor="firmwareOtaUpdate" className="ml-2">
               Available
             </label>
           </div>
@@ -2001,7 +2036,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="ota_nav"
               name="firmwareOtaUpdate"
-              value="Offline"
+              value={0}
               onChange={handleData}
             />
             <label htmlFor="ota_nav" className="ml-2">
@@ -2011,17 +2046,19 @@ const AddFeatureSet = ({ onSuccess }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="ecu">Reserved 1</label>
+            <label htmlFor="firewarereserver1">Reserved 1</label>
             <InputText
               keyfilter="pint"
-              id="username"
+              id="firewarereserver1"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="firewarereserver1"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("firewarereserver1") ? "p-invalid" : ""
+                invalidFields.includes("firewarereserver1")
+                  ? "border-red-600"
+                  : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2029,17 +2066,19 @@ const AddFeatureSet = ({ onSuccess }) => {
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="ecu">Reserved 2</label>
+            <label htmlFor="firewarereserver2">Reserved 2</label>
             <InputText
               keyfilter="pint"
-              id="username"
+              id="firewarereserver2"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="firewarereserver2"
-              className={`dark:bg-gray-900 ${
-                invalidFields.includes("firewarereserver2") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("firewarereserver2")
+                  ? "border-red-600"
+                  : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2058,7 +2097,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="alc_on"
               name="alcoholDetectionMode"
-              value="Online"
+              value={1}
               onChange={handleData}
             />
             <label htmlFor="alc_on" className="ml-2">
@@ -2070,7 +2109,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="alc_off"
               name="alcoholDetectionMode"
-              value="Offline"
+              value={0}
               onChange={handleData}
             />
             <label htmlFor="alc_off" className="ml-2">
@@ -2089,8 +2128,10 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="alcoholinterval"
-              className={`dark:bg-gray-900 ${
-                invalidFields.includes("alcoholinterval") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("alcoholinterval")
+                  ? "border-red-600"
+                  : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2107,8 +2148,8 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="alcoholact_spd"
-              className={`dark:bg-gray-900 ${
-                invalidFields.includes("alcoholact_spd") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("alcoholact_spd") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2127,8 +2168,10 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="alcoholstart_time"
-              className={`dark:bg-gray-900 ${
-                invalidFields.includes("alcoholstart_time") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("alcoholstart_time")
+                  ? "border-red-600"
+                  : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2145,8 +2188,10 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="alcoholstop_time"
-              className={`dark:bg-gray-900 ${
-                invalidFields.includes("alcoholstop_time") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("alcoholstop_time")
+                  ? "border-red-600"
+                  : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2170,8 +2215,8 @@ const AddFeatureSet = ({ onSuccess }) => {
               optionLabel="label"
               optionValue="value"
               onChange={handleData}
-              className={`dark:bg-gray-900 ${
-                invalidFields.includes("alcoholmode") ? "p-invalid" : ""
+              className={`border dark:bg-gray-900 ${
+                invalidFields.includes("alcoholmode") ? "border-red-600" : ""
               }`}
             />
           </div>
@@ -2185,21 +2230,21 @@ const AddFeatureSet = ({ onSuccess }) => {
           <div className="align-items-center flex">
             <input
               type="radio"
-              id="drowsi_on"
+              id="driverDrowsinessMode"
               name="driverDrowsinessMode"
-              value="Online"
+              value={1}
               onChange={handleData}
             />
-            <label htmlFor="drowsi_on" className="ml-2">
+            <label htmlFor="driverDrowsinessMode" className="ml-2">
               Enable
             </label>
           </div>
           <div className="align-items-center flex">
             <input
               type="radio"
-              id="drowsi_off"
+              id="driverDrowsinessMode"
               name="driverDrowsinessMode"
-              value="Offline"
+              value={0}
               onChange={handleData}
             />
             <label htmlFor="drowsi_off" className="ml-2">
@@ -2218,8 +2263,8 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="dd_act_spd"
-              className={`dark:bg-gray-900 ${
-                invalidFields.includes("dd_act_spd") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("dd_act_spd") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2236,8 +2281,8 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="dd_acc_cut"
-              className={`dark:bg-gray-900 ${
-                invalidFields.includes("dd_acc_cut") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("dd_acc_cut") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2256,8 +2301,8 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="dd_strt_tim"
-              className={`dark:bg-gray-900 ${
-                invalidFields.includes("dd_strt_tim") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("dd_strt_tim") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2274,8 +2319,8 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="dd_stop_tim"
-              className={`dark:bg-gray-900 ${
-                invalidFields.includes("dd_stop_tim") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("dd_stop_tim") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2294,8 +2339,8 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="dd_res1"
-              className={`dark:bg-gray-900 ${
-                invalidFields.includes("dd_res1") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("dd_res1") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2312,41 +2357,41 @@ const AddFeatureSet = ({ onSuccess }) => {
           <div className="align-items-center flex">
             <input
               type="radio"
-              id="ota_av"
+              id="load_sts"
               name="load_sts"
-              value="Online"
+              value={1}
               onChange={handleData}
             />
-            <label htmlFor="ota_av" className="ml-2">
+            <label htmlFor="load_sts" className="ml-2">
               Available
             </label>
           </div>
           <div className="align-items-center flex">
             <input
               type="radio"
-              id="ota_nav"
+              id="load_sts"
               name="load_sts"
-              value="Offline"
+              value={0}
               onChange={handleData}
             />
-            <label htmlFor="ota_nav" className="ml-2">
+            <label htmlFor="load_sts" className="ml-2">
               Not Available
             </label>
           </div>
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="max_cpt">Max Capacity</label>
+            <label htmlFor="load_max_cap">Max Capacity</label>
             <InputText
               keyfilter="pint"
-              id="max_cpt"
+              id="load_max_cap"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="load_tak_cap"
-              className={`dark:bg-gray-900 ${
-                invalidFields.includes("max_cpt") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("load_tak_cap") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2354,7 +2399,7 @@ const AddFeatureSet = ({ onSuccess }) => {
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="LS_acc">Accelerator</label>
+            <label htmlFor="load_acc">Accelerator</label>
             <InputText
               keyfilter="pint"
               id="load_acc"
@@ -2363,8 +2408,8 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="load_acc"
-              className={`dark:bg-gray-900 ${
-                invalidFields.includes("load_acc") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("load_acc") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2381,24 +2426,24 @@ const AddFeatureSet = ({ onSuccess }) => {
           <div className="align-items-center flex">
             <input
               type="radio"
-              id="ota_av"
+              id="fuelMode"
               name="fuelMode"
-              value="Online"
+              value={1}
               onChange={handleData}
             />
-            <label htmlFor="ota_av" className="ml-2">
+            <label htmlFor="fuelMode" className="ml-2">
               Available
             </label>
           </div>
           <div className="align-items-center flex">
             <input
               type="radio"
-              id="ota_nav"
+              id="fuelMode"
               name="fuelMode"
-              value="Offline"
+              value={0}
               onChange={handleData}
             />
-            <label htmlFor="ota_nav" className="ml-2">
+            <label htmlFor="fuelMode" className="ml-2">
               Not Available
             </label>
           </div>
@@ -2414,8 +2459,8 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="fuel_tnk_cap"
-              className={`dark:bg-gray-900 ${
-                invalidFields.includes("fuel_tnk_cap") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("fuel_tnk_cap") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2432,8 +2477,8 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="fuel_intvl1"
-              className={`dark:bg-gray-900 ${
-                invalidFields.includes("fuel_intvl1") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("fuel_intvl1") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2452,8 +2497,8 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="fuel_intvl2"
-              className={`dark:bg-gray-900 ${
-                invalidFields.includes("fuel_intvl2") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("fuel_intvl2") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2470,8 +2515,8 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="fuel_acc"
-              className={`dark:bg-gray-900 ${
-                invalidFields.includes("fuel_acc") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("fuel_acc") ? "border-red-600" : ""
               }`}
               onChange={handleData}
               placeholder="Enter a value"
@@ -2489,22 +2534,12 @@ const AddFeatureSet = ({ onSuccess }) => {
               borderRadius: "5px",
             }}
             name="fuel_thrsh"
-            className={`dark:bg-gray-900 ${
-              invalidFields.includes("fuel_thrsh") ? "p-invalid" : ""
+            className={`border py-2 pl-2 dark:bg-gray-900 ${
+              invalidFields.includes("fuel_thrsh") ? "border-red-600" : ""
             }`}
             onChange={handleData}
             placeholder="Enter a value"
             autoComplete="off"
-          />
-        </div>
-
-        <div className="text-right">
-          <Button
-            label="Add Feature Set"
-            icon="pi pi-check"
-            type="submit"
-            className="px-3 py-2 text-right hover:bg-none dark:hover:bg-gray-50"
-            style={{ width: "fit-content", background: "#2152FF" }}
           />
         </div>
 

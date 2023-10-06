@@ -33,9 +33,6 @@ export default function VehiclesList({
   const [editId, setEditId] = useState("");
   const [deleteId, setDeleteId] = useState("");
   const [deleteVehicleName, setDeleteVehicleName] = useState("");
-  const [localEcuData, setLocalEcuData] = useState([]);
-  const [localIoTData, setLocalIoTData] = useState([]);
-  const [localDMSData, setLocalDMSData] = useState([]);
   const [myData, setMyData] = useState();
 
   const onGlobalFilterChange = (e) => {
@@ -56,16 +53,17 @@ export default function VehiclesList({
   };
 
   useEffect(() => {
-    if (ecuData) {
-      setLocalEcuData(ecuData);
-    }
-    if (iotData) {
-      setLocalIoTData(iotData);
-    }
-    if (dmsData) {
-      setLocalDMSData(dmsData);
-    }
-  }, [ecuData, iotData, dmsData]);
+    // Initialize editData based on default values or props if needed
+    setEditData({
+      vehicle_name: "",
+      vehicle_registration: "",
+      ecu: null,
+      iot: null,
+      dms: null,
+      featureset_uuid: null,
+      vehicle_status: null,
+    });
+  }, []);
 
   const renderHeader = () => {
     return (
@@ -135,18 +133,6 @@ export default function VehiclesList({
   const openEditDialog = (rowData) => {
     setEditDialog(true);
     setEditData(rowData);
-    setLocalEcuData((prevData) => [
-      ...prevData,
-      { device_id: rowData.ecu, device_type: "ecu" },
-    ]);
-    setLocalIoTData((prevData) => [
-      ...prevData,
-      { device_id: rowData.iot, device_type: "iot" },
-    ]);
-    setLocalDMSData((prevData) => [
-      ...prevData,
-      { device_id: rowData.dms, device_type: "dms" },
-    ]);
     setEditId(rowData?.vehicle_uuid);
   };
 
@@ -176,10 +162,13 @@ export default function VehiclesList({
       DeleteDialog();
     }
   };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setEditData((prevData) => ({ ...prevData, [name]: value }));
+
+    setEditData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   //onSubmit function
@@ -339,105 +328,50 @@ export default function VehiclesList({
             </span>
           </div>
           <div className="mx-auto mt-2 flex w-[34.5vw]">
-            <div className="flex-1">
-              <label
-                htmlFor="ecu"
-                style={{ color: "#808080", fontSize: "13px" }}
-                className=""
-              >
-                Select an ECU
-              </label>
-              <span className="p-float-label">
-                <select
-                  name="ecu"
-                  onChange={handleChange}
-                  style={{
-                    border: "1px solid #ccc",
-                    padding: "5px 28px",
-                    borderRadius: "5px",
-                    fontSize: "16px",
-                    outline: "none",
-                  }}
-                >
-                  <option>{editData?.ecu || ""}</option>
-                  <option value={null}>Unassign</option>
-                  {ecuData?.map((el) => {
-                    return (
-                      <option key={el.id} value={`${el.device_id}`}>
-                        {el.device_id}
-                      </option>
-                    );
-                  })}
-                </select>
-              </span>
-            </div>
+            <select
+              id="ecu"
+              name="ecu"
+              onChange={handleChange}
+              value={editData.ecu || ""}
+              className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 shadow-sm focus:ring focus:ring-blue-200"
+            >
+              <option value="">Unassign</option>
+              {ecuData.map((el) => (
+                <option key={el.device_id} value={el.device_id}>
+                  {el.device_id}
+                </option>
+              ))}
+            </select>
 
-            <div className="flex-1">
-              <label
-                htmlFor="iot"
-                style={{ color: "#808080", fontSize: "13px" }}
-              >
-                Select an IoT
-              </label>
-              <span className="p-float-label">
-                <select
-                  name="iot"
-                  onChange={handleChange}
-                  style={{
-                    border: "1px solid #ccc",
-                    padding: "5px 28px",
-                    borderRadius: "5px",
-                    fontSize: "16px",
-                    outline: "none",
-                  }}
-                >
-                  <option>{editData?.iot || ""}</option>
-                  <option value={null}>Unassign</option>
-                  {iotData?.map((el) => {
-                    return (
-                      <option key={el.id} value={`${el.device_id}`}>
-                        {el.device_id}
-                      </option>
-                    );
-                  })}
-                </select>
-              </span>
-            </div>
+            <select
+              id="iot"
+              name="iot"
+              onChange={handleChange}
+              value={editData.iot || ""}
+              className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 shadow-sm focus:ring focus:ring-blue-200"
+            >
+              <option value="">Unassign</option>
+              {iotData.map((el) => (
+                <option key={el.device_id} value={el.device_id}>
+                  {el.device_id}
+                </option>
+              ))}
+            </select>
 
-            <div className="flex-1">
-              <label
-                htmlFor="dms"
-                style={{
-                  color: "#808080",
-                  fontSize: "13px",
-                }}
-              >
-                Select a DMS
-              </label>
-              <span className="p-float-label">
-                <select
-                  name="dms"
-                  onChange={handleChange}
-                  style={{
-                    border: "1px solid #ccc",
-                    padding: "5px 28px",
-                    borderRadius: "5px",
-                    fontSize: "16px",
-                    outline: "none",
-                  }}
-                >
-                  <option>{editData?.dms || ""}</option>
-                  <option value={null}>Unassign</option>
-                  {dmsData?.map((el) => {
-                    return (
-                      <option key={el.id} value={`${el.device_id}`}>
-                        {el.device_id}
-                      </option>
-                    );
-                  })}
-                </select>
-              </span>
-            </div>
+            <select
+              id="dms"
+              name="dms"
+              onChange={handleChange}
+              value={editData.dms || ""}
+              className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 shadow-sm focus:ring focus:ring-blue-200"
+            >
+              <option value="">Unassign</option>
+              {dmsData.map((el) => (
+                <option key={el.device_id} value={el.device_id}>
+                  {el.device_id}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="mx-auto mt-8 w-[34.5vw]">

@@ -426,7 +426,7 @@ const Customers = () => {
                   className={`border py-2 pl-2 
                     ${
                       formErrors.f_name
-                        ? "p-invalid p-error"
+                        ? "border-red-600"
                         : (data.f_name = "" ? "p-filled" : "")
                     }
                   `}
@@ -445,7 +445,7 @@ const Customers = () => {
                   name="l_name"
                   className={`border py-2 pl-2 ${
                     formErrors.l_name
-                      ? "p-invalid"
+                      ? "border-red-600"
                       : (data.l_name = "" ? "p-filled" : "")
                   }`}
                   onChange={(e) =>
@@ -465,7 +465,7 @@ const Customers = () => {
                 name="email"
                 className={`border py-2 pl-2 ${
                   formErrors.email
-                    ? "p-invalid"
+                    ? "border-red-600"
                     : (data.email = "" ? "p-filled" : "")
                 }`}
                 onChange={(e) =>
@@ -484,7 +484,7 @@ const Customers = () => {
                 name="password"
                 className={`border py-2 pl-2 ${
                   formErrors.password
-                    ? "p-invalid"
+                    ? "border-red-600"
                     : data.password !== ""
                     ? ""
                     : "p-filled"
@@ -518,8 +518,10 @@ const Customers = () => {
                 name="confirmPassword"
                 className={`border py-2 pl-2 ${
                   formErrors.confirmPassword
-                    ? "p-invalid"
-                    : (data.confirmPassword = "" ? "p-invalid p-filled" : "")
+                    ? "border-red-600"
+                    : (data.confirmPassword = ""
+                        ? "p-filled border-red-600"
+                        : "")
                 }`}
                 onChange={(e) =>
                   setFormErrors({ ...formErrors, [e.target.name]: false })
@@ -532,7 +534,7 @@ const Customers = () => {
           <div className="mx-auto mt-8">
             <span
               className={`p-float-label ${
-                formErrors.user_type ? "p-invalid" : ""
+                formErrors.user_type ? "border-red-600" : ""
               }`}
             >
               <Dropdown
@@ -543,7 +545,9 @@ const Customers = () => {
                 optionLabel="label"
                 optionValue="value"
                 onChange={handleChange}
-                className={`border ${formErrors.user_type ? "p-invalid" : ""}`}
+                className={`border ${
+                  formErrors.user_type ? "border-red-600" : ""
+                }`}
               />
               <label htmlFor="user_type">User Type</label>
             </span>
@@ -556,7 +560,7 @@ const Customers = () => {
                 name="company_name"
                 className={`border py-2 pl-2 ${
                   formErrors.company_name
-                    ? "p-invalid"
+                    ? "border-red-600"
                     : (data.company_name = "" ? "p-filled" : "")
                 }`}
                 onChange={(e) =>
@@ -575,7 +579,7 @@ const Customers = () => {
                 name="phone"
                 className={`border py-2 pl-2 ${
                   formErrors.phone
-                    ? "p-invalid"
+                    ? "border-red-600"
                     : (data.phone = "" ? "p-filled" : "")
                 }`}
                 onChange={(e) =>
@@ -597,7 +601,7 @@ const Customers = () => {
                 name="address"
                 className={`border py-2 pl-2 ${
                   formErrors.address
-                    ? "p-invalid"
+                    ? "border-red-600"
                     : (data.address = "" ? "p-filled" : "")
                 }`}
                 onChange={(e) =>
@@ -616,7 +620,7 @@ const Customers = () => {
                 name="city"
                 className={`border py-2 pl-2 ${
                   formErrors.city
-                    ? "p-invalid"
+                    ? "border-red-600"
                     : (data.city = "" ? "p-filled" : "")
                 }`}
                 onChange={(e) =>
@@ -635,7 +639,7 @@ const Customers = () => {
                 name="state"
                 className={`border py-2 pl-2 ${
                   formErrors.state
-                    ? "p-invalid"
+                    ? "border-red-600"
                     : (data.state = "" ? "p-filled" : "")
                 }`}
                 onChange={(e) =>
@@ -655,7 +659,7 @@ const Customers = () => {
                 keyfilter="pint"
                 className={`border py-2 pl-2 ${
                   formErrors.pincode
-                    ? "p-invalid"
+                    ? "border-red-600"
                     : (data.pincode = "" ? "p-filled" : "")
                 }`}
                 onChange={(e) => {

@@ -186,18 +186,18 @@ export const routes_customer = [
       </CustomerProtected>
     ),
   },
-  {
-    name: "Vehicle",
-    title: "Vehicle Logs",
-    layout: "/customer",
-    path: "vehicle-logs",
-    icon: <DiDatabase className="h-7 w-7" />,
-    component: (
-      <CustomerProtected>
-        <RFIDs />
-      </CustomerProtected>
-    ),
-  },
+  // {
+  //   name: "Vehicle",
+  //   title: "Vehicle Logs",
+  //   layout: "/customer",
+  //   path: "vehicle-logs",
+  //   icon: <DiDatabase className="h-7 w-7" />,
+  //   component: (
+  //     <CustomerProtected>
+  //       <RFIDs />
+  //     </CustomerProtected>
+  //   ),
+  // },
   {
     name: "Alert",
     title: "Alert Triggers",

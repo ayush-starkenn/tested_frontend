@@ -19,8 +19,7 @@ const LogsTable = () => {
         }
       )
       .then((res) => {
-        setLogs(res.data.data.trip_data[0].trip_data);
-        // console.log(res.data.data.trip_data[0].vehicle_name);
+        setLogs(res.data.trip_data);
       })
       .catch((err) => {
         console.log(err);
@@ -51,7 +50,7 @@ const LogsTable = () => {
         <div className="flex flex-col gap-3 dark:!bg-navy-700 dark:text-white dark:shadow-none ">
           <ScrollPanel
             style={{ width: "100%", height: "350px" }}
-            className="custombar1"
+            className="custombar1 dark:bg-navy-800"
           >
             {logs != "" ? (
               <>

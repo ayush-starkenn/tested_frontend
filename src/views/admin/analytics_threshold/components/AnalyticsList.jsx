@@ -352,7 +352,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                 onChange={(e) => handleChange(e, "title")}
                 value={editData?.title || ""}
                 className={`border py-2 pl-2 ${
-                  emptyFields.includes("title") ? "p-invalid" : ""
+                  emptyFields.includes("title") ? "border-red-600" : ""
                 }`}
               />
 
@@ -393,7 +393,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                   value={editData?.score.brake || ""}
                   className={`border py-2 pl-2 ${
                     emptyFields.includes("score") && !editData?.score.brake
-                      ? "p-invalid"
+                      ? "border-red-600"
                       : ""
                   }`}
                 />
@@ -418,7 +418,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                   value={editData?.score.tailgating || ""}
                   className={`border py-2 pl-2 ${
                     emptyFields.includes("score") && !editData?.score.tailgating
-                      ? "p-invalid"
+                      ? "border-red-600"
                       : ""
                   }`}
                 />
@@ -444,7 +444,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                   className={`border py-2 pl-2 ${
                     emptyFields.includes("score") &&
                     !editData?.score.rash_driving
-                      ? "p-invalid"
+                      ? "border-red-600"
                       : ""
                   }`}
                 />
@@ -470,7 +470,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                   className={`border py-2 pl-2 ${
                     emptyFields.includes("score") &&
                     !editData?.score.sleep_alert
-                      ? "p-invalid"
+                      ? "border-red-600"
                       : ""
                   }`}
                 />
@@ -495,7 +495,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                   value={editData?.score.over_speed || ""}
                   className={`border py-2 pl-2 ${
                     emptyFields.includes("score") && !editData?.score.over_speed
-                      ? "p-invalid"
+                      ? "border-red-600"
                       : ""
                   }`}
                 />
@@ -520,7 +520,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                   value={editData?.score.green_zone || ""}
                   className={`border py-2 pl-2 ${
                     emptyFields.includes("score") && !editData?.score.green_zone
-                      ? "p-invalid"
+                      ? "border-red-600"
                       : ""
                   }`}
                 />
@@ -554,7 +554,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                     className={`border py-2 pl-2 ${
                       emptyFields.includes("incentive") &&
                       !editData?.incentive.minimum_distance
-                        ? "p-invalid"
+                        ? "border-red-600"
                         : ""
                     }`}
                   />
@@ -582,7 +582,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                     className={`border py-2 pl-2 ${
                       emptyFields.includes("incentive") &&
                       !editData?.incentive.minimum_driver_rating
-                        ? "p-invalid"
+                        ? "border-red-600"
                         : ""
                     }`}
                   />
@@ -617,7 +617,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                     className={`border py-2 pl-2 ${
                       emptyFields.includes("accident") &&
                       !editData?.accident.ttc_difference_percentage
-                        ? "p-invalid"
+                        ? "border-red-600"
                         : ""
                     }`}
                   />
@@ -651,7 +651,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                   className={`border py-2 pl-2 ${
                     emptyFields.includes("leadership_board") &&
                     !editData?.leadership_board.total_distance
-                      ? "p-invalid"
+                      ? "border-red-600"
                       : ""
                   }`}
                 />
@@ -681,7 +681,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                   value={editData?.halt.duration || ""}
                   className={`border py-2 pl-2 ${
                     emptyFields.includes("halt") && !editData?.halt.duration
-                      ? "p-invalid"
+                      ? "border-red-600"
                       : ""
                   }`}
                 />
@@ -752,14 +752,14 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
         <Column
           field="serialNo"
           header="Sr. No."
-          className="border-none dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "3rem" }}
         ></Column>
         <Column
           field="title"
           header="Title"
           sortable
-          className="dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "14rem" }}
         ></Column>
 
@@ -767,7 +767,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
           field="customer_name"
           header="Customer"
           sortable
-          className="dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "14rem" }}
         ></Column>
 
@@ -776,14 +776,14 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
           header="Status"
           body={statusBodyTemplate}
           sortable
-          className="dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "14rem" }}
         ></Column>
 
         <Column
           body={actionBodyTemplate}
           header="Action"
-          className="dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "10rem" }}
         ></Column>
       </DataTable>
