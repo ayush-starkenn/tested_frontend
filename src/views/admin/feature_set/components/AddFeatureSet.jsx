@@ -171,6 +171,7 @@ const AddFeatureSet = ({ onSuccess }) => {
       "dd_stop_tim",
       "dd_res1",
       //Load Sensor
+      "load_tak_cap",
       "load_sts",
       "load_max_cap",
       "load_acc",
@@ -192,8 +193,8 @@ const AddFeatureSet = ({ onSuccess }) => {
     // If there are invalid fields, show a toast and return
     if (invalidFieldsArray.length > 0) {
       toastErr.current.show({
-        severity: "error",
-        summary: "Error",
+        severity: "warn",
+        summary: "Warning",
         detail: "Please fill in all required fields.",
         life: 3000,
       });
@@ -332,14 +333,14 @@ const AddFeatureSet = ({ onSuccess }) => {
     { label: "Strict", value: 3 },
   ];
 
-  const BrakeTypeoptions = [
-    { label: "Cylinder", value: "Cylinder" },
-    { label: "Internal Braking", value: "Internal Braking" },
-    {
-      label: "Electromagnetic",
-      value: "Electromagnetic",
-    },
-  ];
+  // const BrakeTypeoptions = [
+  //   { label: "Cylinder", value: "Cylinder" },
+  //   { label: "Internal Braking", value: "Internal Braking" },
+  //   {
+  //     label: "Electromagnetic",
+  //     value: "Electromagnetic",
+  //   },
+  // ];
 
   const SpeedSourceoptions = [
     { label: "Speed Wire", value: "Speed Wire" },
