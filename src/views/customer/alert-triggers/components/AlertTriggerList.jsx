@@ -249,7 +249,7 @@ const AlertTriggerList = ({
                       lineHeight: "40px",
                     }}
                   >
-                    <span style={{ fontSize: "13px" }}>
+                    <span style={{ fontSize: "12px" }}>
                       {contact.contact_first_name +
                         " " +
                         contact.contact_last_name}
