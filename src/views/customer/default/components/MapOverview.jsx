@@ -17,16 +17,16 @@ const CONTAINER_STYLE = {
   borderRadius: "1rem",
 };
 
-const token = Cookies.get("token");
-
 const MapOverview = () => {
+  const token = Cookies.get("token");
+  const user_uuid = Cookies.get("user_uuid");
+
   const center = {
     lat: 21.1466,
     lng: 79.0882,
   };
 
   const [markers, setMarkers] = useState([]);
-  let user_uuid = Cookies.get("user_uuid");
   const [markerInfo, setMarkerInfo] = useState([]);
   const [currentKey, setCurrentKey] = useState();
 
@@ -43,7 +43,7 @@ const MapOverview = () => {
         x.forEach((e) => {
           const lat_ = parseFloat(parseFloat(e.lat).toFixed(4));
           const lng_ = parseFloat(parseFloat(e.lng).toFixed(4));
-          console.log("lat lng while converting : ", lat_, ":", lng_);
+          // console.log("lat lng while converting : ", lat_, ":", lng_);
           y.push({
             lat: lat_,
             lng: lng_,
@@ -57,6 +57,7 @@ const MapOverview = () => {
 
   useEffect(() => {
     OngoingTripsOfUser();
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {

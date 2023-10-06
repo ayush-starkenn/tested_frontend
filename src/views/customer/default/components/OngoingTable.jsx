@@ -159,7 +159,7 @@ const OngoingTable = () => {
                         ))
                       ) : (
                         <tr>
-                          <td colSpan={4}>No record Found</td>
+                          <td colSpan={4}>No Records Found!</td>
                         </tr>
                       )}
                     </tbody>
