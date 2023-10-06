@@ -7,6 +7,7 @@ import { InputText } from "primereact/inputtext";
 import { Tag } from "primereact/tag";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { Link } from "react-router-dom";
 
 const VehicleTrips = ({ myData }) => {
   const [filters, setFilters] = useState({
@@ -59,13 +60,17 @@ const VehicleTrips = ({ myData }) => {
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-        <Button
+        <Link
+          to={`${process.env.REACT_APP_BASE_URL}/customer/vehicles/completed-trip/${rowData.trip_id}`}
           icon="pi pi-eye"
           rounded
           outlined
           className="border border-blue-500 text-blue-500 dark:text-blue-500"
           style={{ width: "2rem", height: "2rem" }}
-        />
+          target="_blank"
+        >
+          View
+        </Link>
       </React.Fragment>
     );
   };
