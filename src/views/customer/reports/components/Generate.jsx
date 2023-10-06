@@ -7,6 +7,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { InputText } from "primereact/inputtext";
 import { Toast } from "primereact/toast";
+import { Dropdown } from "primereact/dropdown";
 
 const Generate = ({ close }) => {
   const [selectedStartDate, setSelectedStartDate] = useState(null);
@@ -25,6 +26,9 @@ const Generate = ({ close }) => {
   const [eventValid, setEventValid] = useState(true);
   const [contactValid, setContactValid] = useState(true);
   const toastRef = useRef(null);
+  const [selectedVehicleNames, setSelectedVehicleNames] = useState([]);
+  const [selectedEventNames, setSelectedEventNames] = useState([]);
+  const [reportData, setReportData] = useState([]);
   // const [vehicleParams, setVehicleParams] = useState([]);
   // const [driverParams, setDriverParams] = useState([]);
   const [contacts, setContacts] = useState([]);
@@ -66,7 +70,6 @@ const Generate = ({ close }) => {
         }
       )
       .then((res) => {
-        console.log(res);
         setVehicles(res.data.results);
         // console.log(res.data);
       })
@@ -77,12 +80,72 @@ const Generate = ({ close }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const today = new Date();
+
     if (title.trim() === "") {
       setTitleValid(false);
     } else {
       setTitleValid(true);
     }
 
+    const startDate = selectedStartDate ? new Date(selectedStartDate) : null;
+    const endDate = selectedEndDate ? new Date(selectedEndDate) : null;
+
+    if (!startDate) {
+      setStartDateValid(false);
+    } else if (startDate > today) {
+      setStartDateValid(false);
+      toastRef.current.show({
+        severity: "error",
+        summary: "Invalid Start Date",
+        detail: "Start date cannot be in the future.",
+        life: 3000,
+      });
+      return;
+    } else {
+      setStartDateValid(true);
+    }
+
+    // Check and set the end date validity
+    if (!endDate) {
+      setEndDateValid(false);
+    } else if (endDate > today) {
+      setEndDateValid(false);
+      toastRef.current.show({
+        severity: "warn",
+        summary: "Invalid End Date",
+        detail: "End date cannot be in the future.",
+        life: 3000,
+      });
+      return;
+    } else {
+      setEndDateValid(true);
+    }
+
+    if (selectedStartDate > today) {
+      setStartDateValid(false);
+      toastRef.current.show({
+        severity: "warn",
+        summary: "Invalid Start Date",
+        detail: "Start date cannot be in the future.",
+        life: 3000,
+      });
+    } else {
+      setStartDateValid(true);
+    }
+
+    // Check and set the end date validity
+    if (selectedEndDate > today) {
+      setEndDateValid(false);
+      toastRef.current.show({
+        severity: "error",
+        summary: "Invalid End Date",
+        detail: "End date cannot be in the future.",
+        life: 3000,
+      });
+    } else {
+      setEndDateValid(true);
+    }
     // Check and set the start date validity
     if (!selectedStartDate) {
       setStartDateValid(false);
@@ -137,16 +200,16 @@ const Generate = ({ close }) => {
     }
     const requestData = {
       title: title,
-      fromDate: selectedStartDate,
-      toDate: selectedEndDate,
-      vehicle_uuid: selectedVehicles,
-      event: selectedEvents,
+      from_date: selectedStartDate,
+      to_date: selectedEndDate,
+      selected_vehicles: selectedVehicles,
+      selected_events: selectedEvents,
       contact_uuid: selectedContacts,
     };
-
     axios
       .post(
-        `${process.env.REACT_APP_API_URL}/reports/getreports-all/${user_uuid}`,
+        `${process.env.REACT_APP_API_URL}/reports/createReports-all/${user_uuid}`,
+
         requestData,
         {
           headers: { authorization: `bearer ${token}` },
@@ -154,11 +217,19 @@ const Generate = ({ close }) => {
       )
       .then((res) => {
         console.log(res);
+        setReportData(res);
         close();
-        window.location.href = "/customer/report";
+
+        window.open("/customer/report", "_blank");
       })
       .catch((error) => {
-        console.error(error);
+        console.log(error.response.data.message);
+        toastRef.current.show({
+          severity: "warn",
+          summary: "Fill Required Fields",
+          detail: error.response.data.message,
+          life: 3000,
+        });
       });
   };
 
@@ -176,11 +247,13 @@ const Generate = ({ close }) => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/contacts/getContacts-all/${user_uuid}`, {
-        headers: { authorization: `bearer ${token}` },
-      })
+      .get(
+        `${process.env.REACT_APP_API_URL}/contacts/getContacts-all/${user_uuid}`,
+        {
+          headers: { authorization: `bearer ${token}` },
+        }
+      )
       .then((res) => {
-        console.log(res.data.contacts);
         setContacts(res.data.contacts);
       })
       .catch((err) => {
@@ -238,12 +311,13 @@ const Generate = ({ close }) => {
                 <span className="p-float-label">
                   <Calendar
                     inputId="start_date"
-                    value={selectedStartDate}
+                    value={
+                      selectedStartDate ? new Date(selectedStartDate) : null
+                    }
                     onChange={(e) => {
-                      setSelectedStartDate(
-                        e.value ? new Date(formatDateToYYYYMMDD(e.value)) : null
-                      );
-                      setStartDateValid(e.target.value);
+                      const formattedDate = formatDateToYYYYMMDD(e.value);
+                      setSelectedStartDate(formattedDate);
+                      setStartDateValid(formattedDate !== null);
                     }}
                     className={`rounded-lg border ${
                       !startDateValid ? "border-red-600" : ""
@@ -268,18 +342,16 @@ const Generate = ({ close }) => {
                 <span className="p-float-label">
                   <Calendar
                     inputId="end_date"
-                    value={selectedEndDate}
+                    value={selectedEndDate ? new Date(selectedEndDate) : null}
                     onChange={(e) => {
-                      setSelectedEndDate(
-                        e.value ? new Date(formatDateToYYYYMMDD(e.value)) : null
-                      );
-                      setEndDateValid(e.target.value);
+                      const formattedDate = formatDateToYYYYMMDD(e.value);
+                      setSelectedEndDate(formattedDate);
+                      setEndDateValid(formattedDate !== null);
                     }}
                     className={`rounded-lg border ${
                       !endDateValid ? "border-red-600" : ""
                     }`}
                   />
-
                   <label
                     htmlFor="start_date"
                     className="text-gray-600  dark:text-gray-150"
@@ -331,11 +403,15 @@ const Generate = ({ close }) => {
               <div className="mt-8 flex-auto">
                 <span className="p-float-label">
                   <MultiSelect
-                    value={selectedVehicles}
+                    value={selectedVehicleNames}
                     options={vehicleOptions()}
                     onChange={(e) => {
-                      setSelectedVehicles(e.value);
-                      setVehicleValid(e.target.value);
+                      setSelectedVehicleNames(e.value);
+                      setSelectedVehicles(
+                        e.target.value.map((vehicle) => vehicle.code)
+                      );
+
+                      setVehicleValid(e.target.value.length > 0);
                     }}
                     optionLabel="name"
                     className={`rounded-lg border border-gray-300  shadow-sm dark:bg-gray-900 dark:placeholder-gray-50 ${
@@ -373,10 +449,13 @@ const Generate = ({ close }) => {
               <div className="mt-8">
                 <span className="p-float-label">
                   <MultiSelect
-                    value={selectedEvents}
+                    value={selectedEventNames}
                     options={events}
                     onChange={(e) => {
-                      setSelectedEvents(e.value);
+                      setSelectedEventNames(e.value);
+                      setSelectedEvents(
+                        e.target.value.map((event) => event.code)
+                      );
                       setEventValid(e.target.value);
                     }}
                     optionLabel="name"
@@ -413,15 +492,15 @@ const Generate = ({ close }) => {
               </div>
               <div className="mt-8">
                 <span className="p-float-label">
-                  <MultiSelect
+                  <Dropdown
                     value={selectedContacts}
                     options={contactOptions()}
                     onChange={(e) => {
-                      setSelectedContacts(e.value);
+                      setSelectedContacts(e.target.value);
                       setContactValid(e.target.value);
                     }}
                     optionLabel="label"
-                    display="chip"
+                    optionValue="code"
                     className={`rounded-lg  border border-gray-300 shadow-sm dark:bg-gray-900 dark:placeholder-gray-50 ${
                       !contactValid ? "border-red-600" : ""
                     }`}
