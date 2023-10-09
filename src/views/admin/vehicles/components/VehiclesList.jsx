@@ -218,10 +218,10 @@ export default function VehiclesList({ data }) {
         visible={visible}
         onHide={closeDialog}
         header="Vehicle Details"
-        style={{ width: "70vw" }}
+        style={{ width: "82vw" }}
       >
         <TabView>
-          <TabPanel header="Vehicle's Trips" leftIcon="pi pi-truck mr-2">
+          <TabPanel header="Completed Trips" leftIcon="pi pi-truck mr-2">
             <VehicleTrips myData={myData} />
           </TabPanel>
           <TabPanel header="Feature Set" leftIcon="pi pi-cog mr-2">

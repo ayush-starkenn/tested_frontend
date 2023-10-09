@@ -40,9 +40,12 @@ const Contacts = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/contacts/getContacts-all/${user_uuid}`, {
-        headers: { authorization: `bearer ${token}` },
-      })
+      .get(
+        `${process.env.REACT_APP_API_URL}/contacts/getContacts-all/${user_uuid}`,
+        {
+          headers: { authorization: `bearer ${token}` },
+        }
+      )
       .then((res) => {
         const formatedData = res.data.contacts.map((item, ind) => ({
           ...item,
@@ -86,7 +89,7 @@ const Contacts = () => {
     if (Object.keys(errors).length === 0) {
       axios
         .post(
-          `http://localhost:8080/api/contacts/savecontact/${user_uuid}`,
+          `${process.env.REACT_APP_API_URL}/contacts/savecontact/${user_uuid}`,
           addData,
           {
             headers: { authorization: `bearer ${token}` },
@@ -135,7 +138,7 @@ const Contacts = () => {
   const editContacts = (contact_uuid, editData) => {
     axios
       .put(
-        `http://localhost:8080/api/contacts/editcontact/${contact_uuid}`,
+        `${process.env.REACT_APP_API_URL}/contacts/editcontact/${contact_uuid}`,
         editData,
         {
           headers: { authorization: `bearer ${token}` },
@@ -172,7 +175,7 @@ const Contacts = () => {
   const deleteContact = (contact_uuid) => {
     axios
       .put(
-        `http://localhost:8080/api/contacts/deletecontact/${contact_uuid}`,
+        `${process.env.REACT_APP_API_URL}/contacts/deletecontact/${contact_uuid}`,
         { user_uuid },
         {
           headers: { authorization: `bearer ${token}` },

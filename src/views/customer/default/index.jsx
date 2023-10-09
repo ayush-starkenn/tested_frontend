@@ -49,11 +49,12 @@ const MainDashboard = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_API_URL}/drivers/get-driverslist/${user_uuid}`,
+        `${process.env.REACT_APP_API_URL}/contacts/getContacts-all/${user_uuid}`,
         { headers: { authorization: `bearer ${token}` } }
       )
       .then((res) => {
-        setDriversCount(res.data.results.length);
+        console.log(res);
+        setDriversCount(res.data.contacts.length);
       })
       .catch((err) => {
         console.log(err);
@@ -72,19 +73,19 @@ const MainDashboard = () => {
           subtitle={devicesCount}
           cardhref="/customer/devices"
         />
-        <Widget
-          icon={<RiContactsLine className="h-6 w-6" />}
-          title={"Drivers"}
-          subtitle={driversCount}
-          cardhref="/customer/drivers"
-        />
+
         <Widget
           icon={<BsTruck className="h-7 w-7" />}
           title={"Vehicles"}
           subtitle={vehiclesCount}
           cardhref="/customer/vehicles/*"
         />
-
+        <Widget
+          icon={<RiContactsLine className="h-6 w-6" />}
+          title={"Contacts"}
+          subtitle={driversCount}
+          cardhref="/customer/contacts"
+        />
         {/* <Widget
           icon={<MdWebhook className="h-7 w-7" />}
           title={"Ongoing Trips"}

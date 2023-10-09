@@ -13,6 +13,7 @@ export default function DevicesList({ data }) {
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     device_type: { value: null, matchMode: FilterMatchMode.IN },
   });
+  const [deviceTypeFilter, setDeviceTypeFilter] = useState([]);
   const [globalFilterValue, setGlobalFilterValue] = useState("");
   const toastRef = useRef(null);
   const onGlobalFilterChange = (e) => {
@@ -30,6 +31,55 @@ export default function DevicesList({ data }) {
     const _filters = { ...filters };
     _filters["global"].value = null; // Clear the global filter value
     setFilters(_filters);
+  };
+
+  const handleDeviceTypeFilterChange = (selectedDeviceTypes) => {
+    // Update the 'device_type' filter with the selected device types
+    const updatedFilters = { ...filters };
+    updatedFilters["device_type"].value = selectedDeviceTypes;
+    setFilters(updatedFilters);
+
+    // Update the device type filter state
+    setDeviceTypeFilter(selectedDeviceTypes);
+  };
+
+  const deviceTypeOptions = [
+    ...new Set(data.map((item) => item.device_type)),
+  ].map((deviceType) => ({
+    label: deviceType,
+    value: deviceType,
+  }));
+
+  const clearSelected = () => {
+    // Clear the selected device types
+    handleDeviceTypeFilterChange([]);
+  };
+
+  const representativeFilterTemplate = () => {
+    return (
+      <div className="my-4 flex justify-end">
+        <div className="justify-content-between align-items-center flex flex-wrap gap-2">
+          <span className="p-input-icon-left">
+            <i className="pi pi-filter" />
+            <MultiSelect
+              value={deviceTypeFilter}
+              options={deviceTypeOptions}
+              onChange={(e) => handleDeviceTypeFilterChange(e.value)}
+              className="filter-dropdown border px-6"
+              placeholder="Select any"
+            />
+          </span>
+          <span className="text-end">
+            <button
+              className="rounded bg-gray-300 px-2 py-1"
+              onClick={clearSelected}
+            >
+              Clear Selection
+            </button>
+          </span>
+        </div>
+      </div>
+    );
   };
   const renderHeader = () => {
     return (
@@ -52,38 +102,6 @@ export default function DevicesList({ data }) {
             )}
           </span>
         </div>
-      </div>
-    );
-  };
-
-  const deviceTypeOptions = [
-    ...new Set(data.map((item) => item.device_type)),
-  ].map((deviceType) => ({
-    label: deviceType,
-    value: deviceType,
-  }));
-  console.log(deviceTypeOptions);
-  const representativeFilterTemplate = (options) => {
-    return (
-      <React.Fragment>
-        <div className="mb-3 font-bold dark:text-white">Device Type</div>
-        <MultiSelect
-          value={options.value}
-          options={deviceTypeOptions}
-          onChange={(e) => options.filterCallback(e.value)}
-          optionLabel="label"
-          placeholder="Any"
-          className="p-column-filter"
-        />
-      </React.Fragment>
-    );
-  };
-
-  const representativesItemTemplate = (option) => {
-    return (
-      <div className="align-items-center flex gap-2">
-        <span>{option}</span>
-        <p>{option.device_type}</p>
       </div>
     );
   };
@@ -139,15 +157,8 @@ export default function DevicesList({ data }) {
           field="device_type"
           header="Device Type"
           sortField="device_type"
-          filterField="device_type"
-          showFilterMatchModes={false}
-          filterMenuStyle={{ width: "14rem" }}
           filter
           filterElement={representativeFilterTemplate}
-          filterHeaderClassName="p-text-center"
-          filterMatchMode="in"
-          filterOptions={deviceTypeOptions}
-          filterItemTemplate={representativesItemTemplate}
           className="border-b dark:bg-navy-800  dark:text-gray-200"
           style={{ minWidth: "10rem" }}
         ></Column>
