@@ -216,11 +216,11 @@ const Generate = ({ close }) => {
         }
       )
       .then((res) => {
-        console.log(res);
-        setReportData(res);
+        console.log(res.data.report_uuid);
+        setReportData(res.data.report_uuid);
         close();
 
-        window.open("/customer/report", "_blank");
+        window.open(`/customer/report/${res.data.report_uuid}`, "_blank");
       })
       .catch((error) => {
         console.log(error.response.data.message);

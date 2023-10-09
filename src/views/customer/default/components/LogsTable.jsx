@@ -19,6 +19,7 @@ const LogsTable = () => {
         }
       )
       .then((res) => {
+        console.log(res.data.trip_data);
         setLogs(res.data.trip_data);
       })
       .catch((err) => {
@@ -52,7 +53,7 @@ const LogsTable = () => {
             style={{ width: "100%", height: "350px" }}
             className="custombar1 dark:bg-navy-800"
           >
-            {logs != "" ? (
+            {logs !== "" ? (
               <>
                 {logs.map((log, index) => (
                   <div className="mb-5 flex w-full items-center" key={index}>
@@ -61,7 +62,8 @@ const LogsTable = () => {
                     </div>
                     <div className="ml-2 flex h-full w-full flex-col justify-center rounded-lg px-1 text-sm">
                       <p className="mb-1 text-left text-base font-bold text-gray-900 dark:text-white">
-                        Event Generated for Vehicle- {log.vehicle_name} at{" "}
+                        Event Generated for Vehicle- {log.vehicle_name} (
+                        {log.vehicle_registration})
                         {/* {log.trip_data.map((trip, tripIndex) => (
                       <span key={tripIndex}>
                         {formatTimestamp(trip.timestamp)}
