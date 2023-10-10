@@ -1,99 +1,49 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
-import { useState } from "react";
-import { Toast } from "primereact/toast";
-import { useContext } from "react";
-import { AppContext } from "context/AppContext";
-import Cookies from "js-cookie";
 import axios from "axios";
+import Cookies from "js-cookie";
+import { Toast } from "primereact/toast";
 
-// import { Tag } from "primereact/tag";
-
-const EditFeatureset = ({ parameters, onSuccess }) => {
-  const [featuresetDetails, setFeaturesetDetails] = useState({
-    featureset_name: "",
-  });
+const DefaultFeatureset = ({ closeFeatureset }) => {
+  const token = Cookies.get("token");
+  const user_uuid = Cookies.get("user_uuid");
+  const [featuresetName, setFeaturesetName] = useState();
   const [featuresetData, setFeaturesetData] = useState({});
-  // const [featuresetUsers, setFeaturesetUsers] = useState([]);
+  const [featuresetUUID, setFeaturesetUUID] = useState();
   const [invalidFields, setInvalidFields] = useState([]);
-  const { updateFunc } = useContext(AppContext);
-  const [selectedValue, setSelectedValue] = useState("");
-  const [customers, setCustomers] = useState([]);
-  const [listCustomers, setListCustomers] = useState([]);
   const toastErr = useRef(null);
   const toastRef = useRef(null);
 
-  const token = Cookies.get("token");
-  const user_uuid = Cookies.get("user_uuid");
-
-  //get featureset Deatils
-  useEffect(() => {
-    setFeaturesetDetails(parameters?.propValue);
-  }, [parameters.propValue]);
-  useEffect(() => {
-    if (featuresetDetails.featureset_data) {
-      try {
-        const featuresetDataParse = JSON.parse(
-          featuresetDetails.featureset_data
-        );
-        setFeaturesetData(featuresetDataParse);
-      } catch (error) {
-        console.error("Error parsing featureset_data:", error);
-      }
-    }
-    if (featuresetDetails.featureset_users) {
-      try {
-        const featuresetUsersParse = JSON.parse(
-          featuresetDetails.featureset_users
-        );
-        setCustomers(featuresetUsersParse);
-      } catch (err) {
-        console.log("Error in parsing the featureset users");
-      }
-    }
-  }, [featuresetDetails]);
-
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/customers/get-all-customer", {
-        headers: { authorization: `bearer ${token}` },
-      })
+      .get(
+        `http://localhost:8080/api/featuresets/get-user-featureset/${user_uuid}`,
+        {
+          headers: { authorization: `bearer ${token}` },
+        }
+      )
       .then((res) => {
-        setListCustomers(res.data.customers);
+        let featuresetAllData = JSON.parse(
+          res.data.results[0].featureset_data[0].featureset_data
+        );
+        setFeaturesetData(featuresetAllData);
+        let FeaturesetName =
+          res.data.results[0].featureset_data[0].featureset_name;
+        setFeaturesetName(FeaturesetName);
+        setFeaturesetUUID(
+          res.data.results[0].featureset_data[0].featureset_uuid
+        );
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [token]);
+  }, [token, user_uuid]);
 
-  useEffect(() => {
-    if (
-      featuresetDetails &&
-      featuresetDetails.featureset_users &&
-      listCustomers
-    ) {
-      let usersinFeatureset = JSON.parse(featuresetDetails?.featureset_users);
-
-      const mapfeaturesetusers = usersinFeatureset.map((el) => el.user_uuid);
-
-      const k = listCustomers?.filter((el) =>
-        mapfeaturesetusers.includes(el.user_uuid)
-      );
-      if (k.length > 0) {
-        // setFeaturesetUsers(k);
-      }
-    }
-  }, [listCustomers, featuresetDetails]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFeaturesetDetails({ ...featuresetDetails, [name]: value });
-  };
+  //Handle Change Function
 
   const handleDetails = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
     setFeaturesetData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
@@ -102,7 +52,7 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
 
   //validate form function
 
-  function validateForm(data, values) {
+  function validateForm(values) {
     const requiredFields = [
       "mode",
       "CASMode",
@@ -225,10 +175,6 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
       if (!values[field]) {
         invalidFieldsArray.push(field);
       }
-    }
-
-    if (!data.featureset_name) {
-      invalidFieldsArray.push("featureset_name");
     }
 
     if (values.activationSpeed < 0 || values.activationSpeed > 150) {
@@ -446,11 +392,10 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
     return invalidFieldsArray;
   }
 
-  //making api call to update FS
+  //handle Submit Function
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    const invalidFieldsArray = validateForm(featuresetDetails, featuresetData);
+    const invalidFieldsArray = validateForm(featuresetData);
 
     setInvalidFields(invalidFieldsArray);
 
@@ -464,32 +409,38 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
       });
       return;
     }
-    const editData = {
-      user_uuid,
-      featureset_name: featuresetDetails.featureset_name,
-      featureset_users: customers,
-      featuerset_version: featuresetDetails.featuerset_version || 1,
+
+    const postData = {
       featureset_data: featuresetData,
-      featureset_status: featuresetDetails.featureset_status,
+      user_uuid,
     };
 
     axios
       .put(
-        `http://localhost:8080/api/featuresets/edit-featureset/${featuresetDetails.featureset_uuid}`,
-        editData,
+        `http://localhost:8080/api/featuresets/edit-client-featureset/${featuresetUUID}`,
+        postData,
         {
           headers: { authorization: `bearer ${token}` },
         }
       )
       .then((res) => {
-        updateFunc();
-
-        if (onSuccess) {
-          onSuccess();
-        }
+        toastRef.current.show({
+          severity: "success",
+          summary: "Success",
+          detail: `Feature Set added successfully`,
+          life: 2000,
+        });
+        setTimeout(() => {
+          closeFeatureset();
+        }, 2300);
       })
       .catch((err) => {
-        console.log({ error: err });
+        toastRef.current.show({
+          severity: "error",
+          summary: "Error",
+          detail: "An error occurred. Please try again later.",
+          life: 3000,
+        });
       });
   };
 
@@ -518,6 +469,21 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
     },
   ];
 
+  const BrakingOptions = [
+    {
+      label: "Internal Braking",
+      value: "1",
+    },
+    {
+      label: "PWN Braking",
+      value: "2",
+    },
+    {
+      label: "Actuator Braking",
+      value: "3",
+    },
+  ];
+
   const VehicleTypeoptions = [{ label: "12V Pedal", value: "12V Pedal" }];
 
   const AcceleratorTypeoptions = [
@@ -535,36 +501,6 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
     },
   ];
 
-  const GyroOptions = [
-    {
-      label: "External Gyro",
-      value: "1",
-    },
-    {
-      label: "inbuild Gyro",
-      value: "2",
-    },
-    {
-      label: "Steering Gyro",
-      value: "3",
-    },
-  ];
-
-  const BrakingOptions = [
-    {
-      label: "Internal Braking",
-      value: "1",
-    },
-    {
-      label: "PWN Braking",
-      value: "2",
-    },
-    {
-      label: "Actuator Braking",
-      value: "3",
-    },
-  ];
-
   const ProtocolTypeoptions = [
     { label: "SAEJ1939", value: "SAEJ1939" },
     {
@@ -572,12 +508,32 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
       value: "CAN",
     },
   ];
+
+  const SpeedSourceoptions = [
+    { label: "Speed Wire", value: "Speed Wire" },
+    { label: "OBD", value: "OBD" },
+    { label: "GPS", value: "GPS" },
+  ];
+
+  const GyroOptions = [
+    {
+      label: "External Gyro",
+      value: 1,
+    },
+    {
+      label: "inbuild Gyro",
+      value: 2,
+    },
+    {
+      label: "Steering Gyro",
+      value: 3,
+    },
+  ];
   const radarOptions = [
     { label: "Radar 1", value: "1" },
     { label: "Radar 2", value: "2" },
     { label: "Radar 3", value: "3" },
   ];
-
   const alcothreshOptions = [
     { label: "Relaxed", value: "1" },
     { label: "Normal", value: "2" },
@@ -588,64 +544,6 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
     { label: "Yes", value: "1" },
     { label: "No", value: "0" },
   ];
-
-  const SpeedSourceoptions = [
-    { label: "Speed Wire", value: "Speed Wire" },
-    { label: "OBD", value: "OBD" },
-    { label: "GPS", value: "GPS" },
-  ];
-
-  const activeOption = [
-    { label: "Active", value: 1 },
-    { label: "Deactive", value: 2 },
-  ];
-
-  //fetching customers
-  useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_API_URL}/customers/get-all-customer`, {
-        headers: { authorization: `bearer ${token}` },
-      })
-      .then((res) => {
-        setListCustomers(res.data.customerData);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [token]);
-
-  const Customersoptions = () => {
-    return listCustomers?.map((el) => ({
-      key: el.user_uuid,
-      label: el.first_name + " " + el.last_name,
-      value: {
-        user_uuid: el.user_uuid,
-      },
-    }));
-  };
-
-  useEffect(() => {
-    let k = listCustomers?.filter((el) => {
-      return el.user_uuid.includes(customers[0]?.user_uuid);
-    });
-
-    if (k?.length > 0) {
-      setSelectedValue(k[0].first_name + " " + k[0].last_name);
-    }
-  }, [listCustomers, customers]);
-
-  const handleSelectCustomer = (e) => {
-    const { value } = e.target;
-    setCustomers([
-      {
-        user_uuid: value.user_uuid,
-      },
-    ]);
-  };
-
-  useEffect(() => {
-    console.log(featuresetDetails);
-  }, [featuresetDetails]);
 
   //edit dialog
   return (
@@ -669,68 +567,10 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                   ? "border-red-600"
                   : ""
               }`}
-              onChange={handleChange}
-              value={featuresetDetails?.featureset_name}
+              value={featuresetName}
             />
           </div>
-          <div className="mt-2 flex" style={{ flexDirection: "column" }}>
-            <label htmlFor="username" className="font-bold">
-              Featureset Version
-            </label>
-            <InputText
-              id="featuerset_version"
-              type="number"
-              style={{
-                borderRadius: "5px",
-              }}
-              name="featuerset_version"
-              onChange={handleChange}
-              placeholder="Featureset Version"
-              value={featuresetDetails?.featureset_version}
-              className="border py-2 pl-2"
-            />
-          </div>
-          <div className="field my-3 w-[30vw]">
-            <label htmlFor="ecu">Select Customer</label>
-            <Dropdown
-              name="featureset_users"
-              onChange={handleSelectCustomer}
-              id="featureset_users"
-              style={{
-                width: "30vw",
-                borderRadius: "5px",
-              }}
-              options={Customersoptions()}
-              optionLabel="label"
-              optionValue="value"
-              placeholder={selectedValue ? selectedValue : "Tap to Select"}
-              className={`md:w-14rem mt-2 w-full border ${
-                invalidFields.includes("featureset_users")
-                  ? "border-red-600"
-                  : ""
-              }`}
-              value={featuresetDetails?.featureset_users || selectedValue}
-            />
-          </div>
-          <div className="field my-3 w-[30vw]">
-            <label htmlFor="active" className="font-bold">
-              Select Status
-            </label>
-            <Dropdown
-              name="featureset_status"
-              id="active"
-              style={{
-                width: "30vw",
-                borderRadius: "5px",
-              }}
-              onChange={handleChange}
-              options={activeOption}
-              optionLabel="label"
-              optionValue="value"
-              className="md:w-14rem mt-2 w-full border"
-              value={featuresetDetails.featureset_status}
-            />
-          </div>
+
           <p className="mt-4 font-bold ">System Type</p>
           {invalidFields.includes("mode") && (
             <span className="p-error">Please select any option.</span>
@@ -3549,4 +3389,4 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
   );
 };
 
-export default EditFeatureset;
+export default DefaultFeatureset;

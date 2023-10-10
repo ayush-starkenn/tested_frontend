@@ -9,11 +9,14 @@ import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { Toast } from "primereact/toast";
 import { FiPlus } from "react-icons/fi";
+import DefaultFeatureset from "./components/DefaultFeatureset";
+import { MdOutlineFeaturedPlayList } from "react-icons/md";
 
 const Marketplace = () => {
   const [isListView, setIsListView] = useState(
     localStorage.getItem("viewPreference") === "grid" ? false : true
   );
+  const [featuresetDialog, setFeaturesetDialog] = useState(false);
   const [vehiData, setVehiData] = useState([]);
   const [dialog1, setDialog1] = useState(false);
   const [addData, setAddData] = useState({});
@@ -313,6 +316,14 @@ const Marketplace = () => {
     }));
   };
 
+  const openFeatureset = () => {
+    setFeaturesetDialog(true);
+  };
+
+  const closeFeatureset = () => {
+    setFeaturesetDialog(false);
+  };
+
   return (
     <>
       <Toast ref={toastRef} position="top-right" />
@@ -343,14 +354,34 @@ const Marketplace = () => {
           </button>
         </div>
       </div>
-      {/* button to add vehicle */}
-      <button
-        className="mt-2 flex h-10 items-center rounded-lg bg-blue-500 px-3 py-2 text-left font-semibold text-white hover:bg-blue-600"
-        onClick={openDialog1}
+      <div className="flex">
+        {/* button to add vehicle */}
+
+        <button
+          className="mx-2 mt-2 flex h-10 items-center rounded-lg bg-blue-500 px-3 py-2 text-left font-semibold text-white hover:bg-blue-600"
+          onClick={openDialog1}
+        >
+          <FiPlus className="mr-2" />
+          New Vehicle
+        </button>
+        {/* button to overwrite featureset */}
+        <button
+          className="mt-2 flex h-10 items-center rounded-lg bg-blue-500 px-3 py-2 text-left font-semibold text-white hover:bg-blue-600"
+          onClick={openFeatureset}
+        >
+          <MdOutlineFeaturedPlayList className="mr-2" />
+          Featureset
+        </button>
+      </div>
+      <Dialog
+        visible={featuresetDialog}
+        onHide={closeFeatureset}
+        header="Featureset Details"
+        style={{ width: "70vw" }}
       >
-        <FiPlus className="mr-2" />
-        New Vehicle
-      </button>
+        <DefaultFeatureset closeFeatureset={closeFeatureset} />
+      </Dialog>
+
       {/* dialog for adding vehicle */}
       <Dialog
         visible={dialog1}
