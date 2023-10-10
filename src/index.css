@@ -212,15 +212,15 @@ input:checked.defaultCheckbox::before {
   color: #fefefe;
 }
 .dark .p-fluid .p-dropdown {
-  background: #070d22;
+  background: #1b2559;
 }
 .dark .p-dropdown-items-wrapper {
-  background: #070d22;
-  color: #fefefe;
+  background: #888585;
+  color: #070d22;
 }
 
 .dark .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
-  color: #fefefe;
+  color: #070d22;
 }
 .dark .p-datatable .p-datatable-thead > tr > th {
   background-color: #1b2559;
@@ -315,6 +315,9 @@ body
   background: none;
   font-weight: 500;
 }
+.dark .p-tabview .p-tabview-nav li .p-tabview-nav-link {
+  color: #ccc;
+}
 
 .p-tabview .p-tabview-nav li .p-tabview-nav-link:not(.p-disabled):focus {
   box-shadow: none;
@@ -331,7 +334,6 @@ body
 }
 .p-highlight {
   background-color: #ccc;
-  border-radius: 15px;
   color: #070d22;
 }
 .p-tabview
@@ -340,6 +342,18 @@ body
   .p-tabview-nav-link {
   background: none;
   border-color: #adb5bd;
+}
+body
+  > div.p-column-filter-overlay.p-component.p-fluid.p-column-filter-overlay-menu.p-ripple-disabled.p-connected-overlay-enter-done
+  > div.p-column-filter-constraints
+  > div
+  > div.p-column-filter-matchmode-dropdown.p-dropdown.p-component.p-inputwrapper.p-inputwrapper-filled {
+  display: none;
+}
+body
+  > div.p-column-filter-overlay.p-component.p-fluid.p-column-filter-overlay-menu.p-ripple-disabled.p-connected-overlay-enter-done
+  > div.p-column-filter-buttonbar {
+  display: none;
 }
 .p-tabview .p-tabview-nav li .p-tabview-nav-link:hover {
   background: #ffffff;
@@ -361,6 +375,7 @@ body
 }
 .dark .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
   background: none;
+  color: #333;
 }
 .vehicle-card {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);

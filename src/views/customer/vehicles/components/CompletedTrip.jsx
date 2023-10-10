@@ -16,6 +16,7 @@ import { BsFillPlayCircleFill } from "react-icons/bs";
 import axios from "axios";
 // import Iframe from "react-iframe";
 import { Dialog } from "primereact/dialog";
+import simplify from "simplify-js";
 
 // All customized icons
 import drowsinessIcon from "../../../../assets/img/icons/drowsiness.png";
@@ -74,6 +75,8 @@ const CompletedTrip = () => {
 
   // const [isLoading, setIsLoading] = useState(true);
   const [path, setPath] = useState([]);
+  const [cvnPath, setCVNPath] = useState([]);
+  const [coordinates, setCoordinates] = useState([]);
   const [tripData, setTripData] = useState([]);
   const [center, setCenter] = useState({});
   const [startPoint, setStartPoint] = useState({});
@@ -102,8 +105,10 @@ const CompletedTrip = () => {
   const [suddenBrk, setSuddenBrk] = useState(0);
   const [tailgating, setTailgating] = useState(0);
   const [overspeed, setOverspeed] = useState(0);
-  const [engineOff, setEngineOff] = useState(0);
+  const [accCutTipper, setAccCutTipper] = useState(0);
   const [cvn, setCVN] = useState(0);
+  const [wrongCvn, setWrongCvn] = useState(0);
+  const [load, setLoad] = useState(0);
 
   // SET DMS data & Alerts
   // eslint-disable-next-line
@@ -140,7 +145,8 @@ const CompletedTrip = () => {
     AUTOMATIC_BRAKING: false,
     ACCIDENT_SAVED: false,
     ACC_Cut: false,
-    CVN: false,
+    WRONG_CVN: false,
+    Load: false,
     Harsh_Acceleration: false,
     Speed_Bump: false,
     Lane_Change: false,
@@ -188,8 +194,29 @@ const CompletedTrip = () => {
       });
   }, [trip_id, token]);
 
+  // Calculate distance between two coordinates using Haversine formula
+  function getDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Radius of the Earth in kilometers
+    const dLat = deg2rad(lat2 - lat1);
+    const dLon = deg2rad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) *
+        Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+    return distance;
+  }
+
+  // Convert degrees to radians
+  function deg2rad(deg) {
+    return deg * (Math.PI / 180);
+  }
+
   useEffect(() => {
-    console.log(markers);
+    // console.log(markers);
     console.log(filterMarker);
   }, [markers, filterMarker]);
 
@@ -219,8 +246,7 @@ const CompletedTrip = () => {
           lng: parseFloat(res.data.tripdata[0].lng),
         });
 
-        // Set path
-        setPath(
+        setCoordinates(
           res.data.tripdata.map((location) => ({
             lat: parseFloat(location.lat),
             lng: parseFloat(location.lng),
@@ -264,232 +290,317 @@ const CompletedTrip = () => {
 
   // Get fault counts data
   useEffect(() => {
-    axios
-      .get(
-        `${process.env.REACT_APP_API_URL}/trips/get-fault-counts/${trip_id}`,
-        {
-          headers: { authorization: `bearer ${token}` },
-        }
-      )
-      .then((response) => {
-        setFaultData(response.data.results);
-        let parameters = [];
-        let params = {};
-        let myData = response.data.results;
+    const timerId = setTimeout(() => {
+      axios
+        .get(
+          `${process.env.REACT_APP_API_URL}/trips/get-fault-counts/${trip_id}`,
+          {
+            headers: { authorization: `bearer ${token}` },
+          }
+        )
+        .then((response) => {
+          // console.log("ye wala", response.data.results);
+          setFaultData(response.data.results);
+          let parameters = [];
+          let params = {};
+          let myData = response.data.results;
 
-        // Set all notifications data
-        for (let i = 0; i < myData.length; i++) {
-          // Set Alarm data
-          if (myData[i].event === "ALM") {
-            let almData = myData[i].jsondata;
-            let almparse = JSON.parse(almData);
-            if (almparse.data.alarm === 2) {
-              setAlarm1((prev) => prev + 1);
+          for (let i = 0; i < myData.length; i++) {
+            let jsonDATA = myData[i].jsondata;
+            let parsejsonDATA = JSON.parse(jsonDATA);
+            // Set Alarm data
+            if (myData[i].event === "ALM") {
+              let almData = myData[i].jsondata;
+              let almparse = JSON.parse(almData);
+              if (almparse.data.alarm === 2) {
+                setAlarm1((prev) => prev + 1);
+              }
+              if (almparse.data.alarm === 3) {
+                setAlarm2((prev) => prev + 1);
+              }
             }
-            if (almparse.data.alarm === 3) {
-              setAlarm2((prev) => prev + 1);
+
+            // Set Notification data
+            if (myData[i].event === "NTF") {
+              let ntfData = myData[i].jsondata;
+              let ntfparse = JSON.parse(ntfData);
+
+              if (ntfparse.notification === 2) {
+                setHarshacc((prev) => prev + 1);
+              }
+              if (ntfparse.notification === 13) {
+                setSleepAlt((prev) => prev + 1);
+              }
+              if (ntfparse.notification === 5) {
+                setLaneChng((prev) => prev + 1);
+              }
+              if (ntfparse.notification === 4) {
+                setSpdBump((prev) => prev + 1);
+              }
+              if (ntfparse.notification === 3) {
+                setSuddenBrk((prev) => prev + 1);
+              }
+              if (ntfparse.notification === 6) {
+                setTailgating((prev) => prev + 1);
+              }
+              if (ntfparse.notification === 7) {
+                setOverspeed((prev) => prev + 1);
+              }
+              if (ntfparse.notification === 16) {
+                setAccCutTipper((prev) => prev + 1);
+              }
+              if (ntfparse.notification === 17) {
+                setWrongCvn((prev) => prev + 1);
+              }
+            }
+
+            // set CVN
+            if (myData[i].event === "CVN" && parsejsonDATA.data.status === 1) {
+              setCVN((prev) => prev + 1);
+
+              const cvnPathArray = [];
+              // Set CVN path
+              setCVNPath({
+                lat: parseFloat(parsejsonDATA.lat),
+                lng: parseFloat(parsejsonDATA.lng),
+              });
+              tripData.forEach((row) => {
+                if (row.timestamp > parsejsonDATA.timestamp) {
+                  cvnPathArray.push({
+                    lat: parseFloat(row.lat),
+                    lng: parseFloat(row.lng),
+                  });
+                }
+              });
+              // Set cvnPath to the array of lat/lng data
+              setCVNPath(cvnPathArray);
+            }
+
+            // Set LOAD
+            if (myData[i].event === "LDS") {
+              setLoad((prev) => prev + 1);
             }
           }
 
-          // Set Notification data
-          if (myData[i].event === "NTF") {
-            let ntfData = myData[i].jsondata;
-            let ntfparse = JSON.parse(ntfData);
+          // loop to set markers
+          for (let l = 0; l < myData.length; l++) {
+            // parsing break json
+            let parseJson = JSON.parse(myData[l].jsondata);
 
-            if (ntfparse.notification === 2) {
-              setHarshacc((prev) => prev + 1);
-            }
-            if (ntfparse.notification === 13) {
-              setSleepAlt((prev) => prev + 1);
-            }
-            if (ntfparse.notification === 5) {
-              setLaneChng((prev) => prev + 1);
-            }
-            if (ntfparse.notification === 4) {
-              setSpdBump((prev) => prev + 1);
-            }
-            if (ntfparse.notification === 3) {
-              setSuddenBrk((prev) => prev + 1);
-            }
-            if (ntfparse.notification === 6) {
-              setTailgating((prev) => prev + 1);
-            }
-            if (ntfparse.notification === 7) {
-              setOverspeed((prev) => prev + 1);
-            }
-            if (ntfparse.notification === 16) {
-              setEngineOff((prev) => prev + 1);
-            }
-          }
+            if (myData[l].event === "BRK") {
+              let ttcdiff = parseJson.data.on_ttc - parseJson.data.off_ttc;
+              let acd = ttcdiff / parseJson.data.off_ttc;
+              let accSvd = acd * 100;
+              let updatedTime = new Date(myData[l].timestamp * 1000);
+              let contentTime = updatedTime.toLocaleString();
 
-          // set CVN
-          if (myData[i].event === "CVN") {
-            setCVN((prev) => prev + 1);
-          }
-        }
-
-        // loop to set markers
-        for (let l = 0; l < myData.length; l++) {
-          // parsing break json
-          let parseJson = JSON.parse(myData[l].jsondata);
-
-          if (myData[l].event === "BRK") {
-            let ttcdiff = parseJson.data.on_ttc - parseJson.data.off_ttc;
-            let acd = ttcdiff / parseJson.data.off_ttc;
-            let accSvd = acd * 100;
-            let updatedTime = new Date(myData[l].timestamp * 1000);
-            let contentTime = updatedTime.toLocaleString();
-
-            // Set Accident save
-            if (accSvd > 50 && accSvd < 100) {
-              setAccident((prevCount) => prevCount + 1);
+              // Set Accident save
+              if (accSvd > 50 && accSvd < 100) {
+                setAccident((prevCount) => prevCount + 1);
+                params = {
+                  id: myData[l].id,
+                  lat: parseFloat(myData[l].lat),
+                  lng: parseFloat(myData[l].lng),
+                  title: "ACCIDENT_SAVED",
+                  content: contentTime,
+                  speed: parseFloat(myData[l].spd),
+                  event: myData[l].event,
+                  reason: parseJson.data.reason,
+                  brake_duration:
+                    parseJson.data.off_timestamp - parseJson.data.on_timestamp,
+                  icon: accidentCasIcon,
+                };
+                parameters.push(params);
+              }
+              setAutoBrk((prevCount) => prevCount + 1);
               params = {
                 id: myData[l].id,
                 lat: parseFloat(myData[l].lat),
                 lng: parseFloat(myData[l].lng),
-                title: "ACCIDENT_SAVED",
+                title: "AUTOMATIC_BRAKING",
                 content: contentTime,
+                bypass: parseJson.data.bypass,
                 speed: parseFloat(myData[l].spd),
                 event: myData[l].event,
                 reason: parseJson.data.reason,
                 brake_duration:
                   parseJson.data.off_timestamp - parseJson.data.on_timestamp,
-                icon: accidentCasIcon,
+                icon: automaticBrakingIcon,
               };
               parameters.push(params);
             }
-            setAutoBrk((prevCount) => prevCount + 1);
-            params = {
-              id: myData[l].id,
-              lat: parseFloat(myData[l].lat),
-              lng: parseFloat(myData[l].lng),
-              title: "AUTOMATIC_BRAKING",
-              content: contentTime,
-              bypass: parseJson.data.bypass,
-              speed: parseFloat(myData[l].spd),
-              event: myData[l].event,
-              reason: parseJson.data.reason,
-              brake_duration:
-                parseJson.data.off_timestamp - parseJson.data.on_timestamp,
-              icon: automaticBrakingIcon,
-            };
-            parameters.push(params);
-          }
 
-          // DMS markers
-          if (myData[l].event === "DMS") {
-            let updatedTime = new Date(myData[l].timestamp * 1000);
-            let contentTime = updatedTime.toLocaleString();
-            let dmsIcon = defaultIcon;
-            if (parseJson.data.alert_type === "DROWSINESS") {
-              dmsIcon = drowsinessIcon;
-            } else if (parseJson.data.alert_type === "DISTRACTION") {
-              dmsIcon = distractionIcon;
-            } else if (parseJson.data.alert_type === "TRIP_START") {
-              dmsIcon = tripstartIcon;
-            } else if (parseJson.data.alert_type === "NO_DRIVER") {
-              dmsIcon = nodriverIcon;
-            } else if (parseJson.data.alert_type === "OVERSPEEDING") {
-              dmsIcon = overspeedDMSIcon;
-            } else if (parseJson.data.alert_type === "ACCIDENT") {
-              dmsIcon = accidentdmsIcon;
+            // DMS markers
+            if (myData[l].event === "DMS") {
+              let updatedTime = new Date(myData[l].timestamp * 1000);
+              let contentTime = updatedTime.toLocaleString();
+              let dmsIcon = defaultIcon;
+              if (parseJson.data.alert_type === "DROWSINESS") {
+                dmsIcon = drowsinessIcon;
+              } else if (parseJson.data.alert_type === "DISTRACTION") {
+                dmsIcon = distractionIcon;
+              } else if (parseJson.data.alert_type === "TRIP_START") {
+                dmsIcon = tripstartIcon;
+              } else if (parseJson.data.alert_type === "NO_DRIVER") {
+                dmsIcon = nodriverIcon;
+              } else if (parseJson.data.alert_type === "OVERSPEEDING") {
+                dmsIcon = overspeedDMSIcon;
+              } else if (parseJson.data.alert_type === "ACCIDENT") {
+                dmsIcon = accidentdmsIcon;
+              }
+              params = {
+                id: myData[l].id,
+                lat: parseFloat(myData[l].lat),
+                lng: parseFloat(myData[l].lng),
+                title: parseJson.data.alert_type,
+                content: contentTime,
+                speed: parseJson.data.speed,
+                event: myData[l].event,
+                reason: parseJson.data.alert_type,
+                alert_type: parseJson.data.alert_type,
+                media: parseJson.data.media,
+                dashcam: parseJson.data.dashcam,
+                severity: parseJson.data.severity,
+                icon: dmsIcon,
+              };
+              parameters.push(params);
             }
-            params = {
-              id: myData[l].id,
-              lat: parseFloat(myData[l].lat),
-              lng: parseFloat(myData[l].lng),
-              title: parseJson.data.alert_type,
-              content: contentTime,
-              speed: parseJson.data.speed,
-              event: myData[l].event,
-              reason: parseJson.data.alert_type,
-              alert_type: parseJson.data.alert_type,
-              media: parseJson.data.media,
-              dashcam: parseJson.data.dashcam,
-              severity: parseJson.data.severity,
-              icon: dmsIcon,
-            };
-            parameters.push(params);
-          }
 
-          // adding brk json to markers
-          if (parseJson.notification !== undefined) {
-            let updatedTime = new Date(myData[l].timestamp * 1000);
-            let contentTime = updatedTime.toLocaleString();
-            let ntfIcons = defaultIcon;
-            if (parseJson.notification === 2) {
-              ntfIcons = harshAccIcon;
-            } else if (parseJson.notification === 3) {
-              ntfIcons = suddenBrkIcon;
-            } else if (parseJson.notification === 4) {
-              ntfIcons = spdBumpIcon;
-            } else if (parseJson.notification === 5) {
-              ntfIcons = laneChngIcon;
-            } else if (parseJson.notification === 6) {
-              ntfIcons = tailgatingIcon;
-            } else if (parseJson.notification === 7) {
-              ntfIcons = overspeedIcon;
+            // adding brk json to markers
+            if (parseJson.notification !== undefined) {
+              let updatedTime = new Date(myData[l].timestamp * 1000);
+              let contentTime = updatedTime.toLocaleString();
+              let ntfIcons = defaultIcon;
+              if (parseJson.notification === 2) {
+                ntfIcons = harshAccIcon;
+              } else if (parseJson.notification === 3) {
+                ntfIcons = suddenBrkIcon;
+              } else if (parseJson.notification === 4) {
+                ntfIcons = spdBumpIcon;
+              } else if (parseJson.notification === 5) {
+                ntfIcons = laneChngIcon;
+              } else if (parseJson.notification === 6) {
+                ntfIcons = tailgatingIcon;
+              } else if (parseJson.notification === 7) {
+                ntfIcons = overspeedIcon;
+              } else if (parseJson.notification === 16) {
+                ntfIcons = accCutIcon;
+              } else if (parseJson.notification === 17) {
+                ntfIcons = cvnIcon;
+              }
+              params = {
+                id: myData[l].id,
+                lat: parseFloat(myData[l].lat),
+                lng: parseFloat(myData[l].lng),
+                title: parseJson.notification,
+                content: contentTime,
+                speed: parseFloat(myData[l].spd),
+                event: myData[l].event,
+                reason: parseJson.notification,
+                icon: ntfIcons,
+              };
+              parameters.push(params);
             }
-            params = {
-              id: myData[l].id,
-              lat: parseFloat(myData[l].lat),
-              lng: parseFloat(myData[l].lng),
-              title: parseJson.notification,
-              content: contentTime,
-              speed: parseFloat(myData[l].spd),
-              event: myData[l].event,
-              reason: parseJson.notification,
-              icon: ntfIcons,
-            };
-            parameters.push(params);
-          }
-          if (parseJson.event === "BRK") {
-            params = {
-              id: myData[l].id,
-              lat: parseFloat(myData[l].lat),
-              lng: parseFloat(myData[l].lng),
-              title: myData[l].message,
-              event: myData[l].event,
-              reason: parseJson.data.reason,
-              bypass: parseJson.data.bypass,
-              speed: parseFloat(myData[l].spd),
-              brake_duration:
-                parseJson.data.off_timestamp - parseJson.data.on_timestamp,
-            };
-            parameters.push(params);
-          }
+            if (parseJson.event === "BRK") {
+              params = {
+                id: myData[l].id,
+                lat: parseFloat(myData[l].lat),
+                lng: parseFloat(myData[l].lng),
+                title: myData[l].message,
+                event: myData[l].event,
+                reason: parseJson.data.reason,
+                bypass: parseJson.data.bypass,
+                speed: parseFloat(myData[l].spd),
+                brake_duration:
+                  parseJson.data.off_timestamp - parseJson.data.on_timestamp,
+              };
+              parameters.push(params);
+            }
 
-          // ALM markers
-          if (myData[l].event === "ALM") {
-            let updatedTime = new Date(myData[l].timestamp * 1000);
-            let contentTime = updatedTime.toLocaleString();
-            let almIcon = defaultIcon;
-            if (parseJson.data.alarm === 2) {
-              almIcon = alarm2Icon;
-            } else {
-              almIcon = alarm3Icon;
+            // ALM markers
+            if (myData[l].event === "ALM") {
+              let updatedTime = new Date(myData[l].timestamp * 1000);
+              let contentTime = updatedTime.toLocaleString();
+              let almIcon = defaultIcon;
+              if (parseJson.data.alarm === 2) {
+                almIcon = alarm2Icon;
+              } else {
+                almIcon = alarm3Icon;
+              }
+              params = {
+                id: myData[l].id,
+                lat: parseFloat(myData[l].lat),
+                lng: parseFloat(myData[l].lng),
+                reason: myData[l].message,
+                title: myData[l].message,
+                speed: Math.round(myData[l].spd),
+                content: contentTime,
+                event: parseJson.data.alarm === 2 ? "ALM2" : "ALM3",
+                alarm_no: parseJson.data.alarm,
+                icon: almIcon,
+              };
+              parameters.push(params);
             }
-            params = {
-              id: myData[l].id,
-              lat: parseFloat(myData[l].lat),
-              lng: parseFloat(myData[l].lng),
-              reason: myData[l].message,
-              title: myData[l].message,
-              speed: Math.round(myData[l].spd),
-              content: contentTime,
-              event: parseJson.data.alarm === 2 ? "ALM2" : "ALM3",
-              alarm_no: parseJson.data.alarm,
-              icon: almIcon,
-            };
-            parameters.push(params);
+
+            // Set CVN data
+            if (myData[l].event === "CVN") {
+              let updatedTime = new Date(myData[l].timestamp * 1000);
+              let contentTime = updatedTime.toLocaleString();
+              params = {
+                id: myData[l].id,
+                lat: parseFloat(myData[l].lat),
+                lng: parseFloat(myData[l].lng),
+                reason: myData[l].message,
+                title: myData[l].message,
+                speed: Math.round(myData[l].spd),
+                content: contentTime,
+                event: myData[l].event,
+                icon: cvnIcon,
+              };
+              parameters.push(params);
+            }
+
+            // Set Load data
+            if (myData[l].event === "LDS") {
+              let updatedTime = new Date(myData[l].timestamp * 1000);
+              let contentTime = updatedTime.toLocaleString();
+              params = {
+                id: myData[l].id,
+                lat: parseFloat(myData[l].lat),
+                lng: parseFloat(myData[l].lng),
+                reason: myData[l].message,
+                title: myData[l].message,
+                speed: Math.round(myData[l].spd),
+                content: contentTime,
+                max_cap: parseJson.data.max_cap + "Kg",
+                percent: parseJson.data.percentage + "%",
+                event: myData[l].event,
+                icon: defaultIcon,
+              };
+              parameters.push(params);
+            }
           }
-        }
-        setMarkers(parameters);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [token, trip_id]);
+          setMarkers(parameters);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }, 5000);
+
+    // Clear the timer if the component unmounts before 2 seconds
+    return () => clearTimeout(timerId);
+  }, [token, trip_id, tripData]);
+
+  const polylineOptions = {
+    strokeWeight: 4,
+  };
+  const [cvnRoute, setCvnRoute] = useState(false);
+  // Set the stroke color based on whether it's a special route
+  if (cvnRoute) {
+    polylineOptions.strokeColor = "#FF5733"; // Change the color for the special route
+  } else {
+    polylineOptions.strokeColor = "#4252E0"; // Default color
+  }
 
   // Set DMS media
   useEffect(() => {
@@ -545,6 +656,43 @@ const CompletedTrip = () => {
       setMedia(mediaData);
     }
   }, [faultData]);
+
+  // Set optimized path that will eliminate jumping
+  useEffect(() => {
+    // Specify the maximum distance threshold in kilometers
+    const maxDistanceThreshold = 1; // Adjust as needed
+
+    // Specify the tolerance level to control the amount of simplification
+    const tolerance = 0.00005;
+
+    // Convert the fetched coordinates to a format that simplify-js accepts
+    const simplifiedPath = coordinates.map((coord) => ({
+      x: coord.lat,
+      y: coord.lng,
+    }));
+    // Simplify the path using the simplify function
+    const simplifiedCoordinates = simplify(simplifiedPath, tolerance).map(
+      (coord) => ({ lat: coord.x, lng: coord.y })
+    );
+
+    // Filter coordinates based on distance threshold
+    const filteredCoordinates = [simplifiedCoordinates[0]];
+    for (let i = 1; i < simplifiedCoordinates.length; i++) {
+      const prevCoord = simplifiedCoordinates[i - 1];
+      const currCoord = simplifiedCoordinates[i];
+      const distance = getDistance(
+        prevCoord.lat,
+        prevCoord.lng,
+        currCoord.lat,
+        currCoord.lng
+      );
+      if (distance <= maxDistanceThreshold) {
+        filteredCoordinates.push(currCoord);
+      }
+    }
+
+    setPath(filteredCoordinates);
+  }, [tripData]);
 
   const SummaryContent = () => (
     <div className="">
@@ -817,89 +965,61 @@ const CompletedTrip = () => {
   }
 
   const handlecheckbox = (e) => {
-    const { value, name } = e.target;
+    const { value, name, checked } = e.target;
 
+    // Create a mapping object for custom attributes
+    const customAttributes = {
+      AUTOMATIC_BRAKING: {
+        AUTOMATIC_BRAKING: "BRK",
+        ACCIDENT_SAVED: "BRK",
+        ACCIDENT_SAVED_6: "BRK", // If needed, you can specify different values for ACCIDENT_SAVED with value 6
+      },
+      ACC_Cut: { 16: "NTF" },
+      Harsh_Acceleration: { 2: "NTF" },
+      Sudden_Braking: { 3: "NTF" },
+      Speed_Bump: { 4: "NTF" },
+      Lane_Change: { 5: "NTF" },
+      Tailgating: { 3: "NTF" },
+      WRONG_CVN: { 17: "NTF" },
+      Overspeeding: { 7: "NTF" },
+      Alarm_2: { 5: "ALM2" },
+      Alarm_3: { 5: "ALM3" },
+      TRIP_START: { TRIP_START: "DMS" },
+      DROWSINESS: { DROWSINESS: "DMS" },
+      DISTRACTION: { DISTRACTION: "DMS" },
+      OVERSPEEDING: { OVERSPEEDING: "DMS" },
+      NO_DRIVER: { NO_DRIVER: "DMS" },
+      Load: { 34: "LDS" },
+      CVN: { 36: "CVN" },
+    };
+
+    // Get the custom attribute based on the name and value
+    const customAttribute = customAttributes[name]
+      ? customAttributes[name][value]
+      : undefined;
+
+    if (checked) {
+      const x = markers.filter(
+        (el) => el.title === value && el.event === customAttribute
+      );
+      setFilterMarker([...filterMarker, x]);
+    } else {
+      const y = []
+        .concat(...filterMarker)
+        .filter((el) => !(el.title === value && el.event === customAttribute));
+      setFilterMarker([y]);
+    }
+
+    // Handle specific actions based on customAttribute if needed
+    if (customAttribute === "CVN") {
+      setCvnRoute(true);
+    }
+
+    // Update checkboxes state
     setCheckboxes((prevCheckboxes) => ({
       ...prevCheckboxes,
       [name]: !prevCheckboxes[name],
     }));
-
-    let customAttribute;
-
-    if (name === "AUTOMATIC_BRAKING" && value === "AUTOMATIC_BRAKING") {
-      customAttribute = "BRK";
-    }
-    if (name === "ACCIDENT_SAVED" && value === "AUTOMATIC_BRAKING") {
-      customAttribute = "BRK";
-    }
-    if (name === "ACC_Cut" && value === 16) {
-      customAttribute = "NTF";
-    }
-    if (name === "Harsh_Acceleration" && value === 2) {
-      customAttribute = "NTF";
-    }
-    if (name === "Sudden_Braking" && value === 3) {
-      customAttribute = "NTF";
-    }
-    if (name === "Speed_Bump" && value === 4) {
-      customAttribute = "NTF";
-    }
-    if (name === "Lane_Change" && value === 5) {
-      customAttribute = "NTF";
-    }
-    if (name === "Tailgating" && value === 3) {
-      customAttribute = "NTF";
-    }
-    if (name === "ACCIDENT_SAVED" && value === 6) {
-      customAttribute = "BRK";
-    }
-    if (name === "Overspeeding" && value === 7) {
-      customAttribute = "NTF";
-    }
-    if (name === "Alarm_2" && value === 5) {
-      customAttribute = "ALM2";
-    }
-    if (name === "Alarm_3" && value === 5) {
-      customAttribute = "ALM3";
-    }
-    if (name === "TRIP_START" && value === "TRIP_START") {
-      customAttribute = "DMS";
-    }
-    if (name === "DROWSINESS" && value === "DROWSINESS") {
-      customAttribute = "DMS";
-    }
-    if (name === "DISTRACTION" && value === "DISTRACTION") {
-      customAttribute = "DMS";
-    }
-    if (name === "OVERSPEEDING" && value === "OVERSPEEDING") {
-      customAttribute = "DMS";
-    }
-    if (name === "NO_DRIVER" && value === "NO_DRIVER") {
-      customAttribute = "DMS";
-    }
-
-    if (e.target.checked) {
-      let x = [];
-      markers.map((el) => {
-        if (el.title === value && el.event === customAttribute) {
-          x.push(el);
-        }
-        return null;
-      });
-      setFilterMarker([...filterMarker, x]);
-    } else {
-      let y = [];
-
-      [].concat(...filterMarker)?.map((el) => {
-        if (el.title === value && el.event === customAttribute) {
-        } else {
-          y.push(el);
-        }
-        return null;
-      });
-
-      setFilterMarker([y]);
-    }
   };
 
   const handleMarkerClick = (marker) => {
@@ -1153,7 +1273,7 @@ const CompletedTrip = () => {
                   onChange={handlecheckbox}
                   name="ACC_Cut"
                   checked={checkboxes.ACC_Cut}
-                  disabled={engineOff === 0}
+                  disabled={accCutTipper === 0}
                 />
                 <label
                   htmlFor="CAScheckboxId3"
@@ -1163,14 +1283,14 @@ const CompletedTrip = () => {
                 </label>
               </div>
               <div className="flex-shrink-0">
-                {engineOff === 0 ? (
+                {accCutTipper === 0 ? (
                   <Badge
-                    value={engineOff}
+                    value={accCutTipper}
                     style={{ backgroundColor: "gray", color: "white" }}
                     className="mx-3"
                   />
                 ) : (
-                  <Badge value={engineOff} className="mx-3" />
+                  <Badge value={accCutTipper} className="mx-3" />
                 )}
               </div>
             </div>
@@ -1179,25 +1299,25 @@ const CompletedTrip = () => {
             <div className="my-3 flex justify-between">
               <div className="flex-shrink-0">
                 <Checkbox
-                  value={36}
+                  value={17}
                   onChange={handlecheckbox}
-                  name="CVN"
-                  checked={checkboxes.ACC_Cut}
-                  disabled={cvn === 0}
+                  name="WRONG_CVN"
+                  checked={checkboxes.WRONG_CVN}
+                  disabled={wrongCvn === 0}
                 />
                 <label htmlFor="cvn" className="ml-2 dark:text-white">
-                  CVN
+                  Wrong CVN
                 </label>
               </div>
               <div className="flex-shrink-0">
-                {engineOff === 0 ? (
+                {wrongCvn === 0 ? (
                   <Badge
-                    value={engineOff}
+                    value={wrongCvn}
                     style={{ backgroundColor: "gray", color: "white" }}
                     className="mx-3"
                   />
                 ) : (
-                  <Badge value={engineOff} className="mx-3" />
+                  <Badge value={wrongCvn} className="mx-3" />
                 )}
               </div>
             </div>
@@ -1209,25 +1329,25 @@ const CompletedTrip = () => {
             <div className="my-3 flex justify-between">
               <div className="flex-shrink-0">
                 <Checkbox
-                  value={16}
+                  value={34}
                   onChange={handlecheckbox}
                   name="Load"
-                  checked={checkboxes.load}
-                  disabled={engineOff === 0}
+                  checked={checkboxes.Load}
+                  disabled={load === 0}
                 />
                 <label htmlFor="load" className="ml-2 dark:text-white">
                   Load
                 </label>
               </div>
               <div className="flex-shrink-0">
-                {engineOff === 0 ? (
+                {load === 0 ? (
                   <Badge
-                    value={engineOff}
+                    value={load}
                     style={{ backgroundColor: "gray", color: "white" }}
                     className="mx-3"
                   />
                 ) : (
-                  <Badge value={engineOff} className="mx-3" />
+                  <Badge value={load} className="mx-3" />
                 )}
               </div>
             </div>
@@ -1240,23 +1360,62 @@ const CompletedTrip = () => {
                   onChange={handlecheckbox}
                   name="Fuel"
                   checked={checkboxes.ACC_Cut}
-                  disabled={cvn === 0}
+                  disabled={accCutTipper === 0}
                 />
                 <label htmlFor="cvn" className="ml-2 dark:text-white">
                   Fuel
                 </label>
               </div>
               <div className="flex-shrink-0">
-                {engineOff === 0 ? (
+                {accCutTipper === 0 ? (
                   <Badge
-                    value={engineOff}
+                    value={accCutTipper}
                     style={{ backgroundColor: "gray", color: "white" }}
                     className="mx-3"
                   />
                 ) : (
-                  <Badge value={engineOff} className="mx-3" />
+                  <Badge value={accCutTipper} className="mx-3" />
                 )}
               </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex gap-4">
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0">
+                <Checkbox
+                  value={36}
+                  onChange={handlecheckbox}
+                  name="CVN"
+                  checked={checkboxes.CVN}
+                  disabled={cvn === 0}
+                />
+                <label
+                  htmlFor="CAScheckboxId5"
+                  className="ml-2 dark:text-white"
+                >
+                  CVN
+                </label>
+              </div>
+              <div className="flex-shrink-0">
+                {cvn === 0 ? (
+                  <Badge
+                    value={cvn}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={cvn} className="mx-3" />
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0"></div>
+              <div className="flex-shrink-0"></div>
             </div>
           </div>
         </div>
@@ -1264,7 +1423,7 @@ const CompletedTrip = () => {
       </div>
 
       {/* Speed Governer */}
-      <div className="noti mt-4">
+      <div className="spdGov mt-4">
         <h4 className="font-semibold">Speed Governer</h4>
         <div className="flex gap-4">
           <div className="w-[50%]">
@@ -1506,6 +1665,28 @@ const CompletedTrip = () => {
                           </button>
                         </div>
                       </>
+                    ) : marker.event === "LDS" ? (
+                      <>
+                        <div>
+                          <h6>
+                            <strong>{marker.title === 34 ? "Load" : ""}</strong>
+                          </h6>
+                          <p className="mb-0">TimeStamp: {marker.content}</p>
+                          <p className="mb-0">Speed: {marker.speed}Kmph</p>
+                          <p className="mb-0">Max Capacity: {marker.max_cap}</p>
+                          <p className="mb-0">Percentage: {marker.percent}</p>
+                        </div>
+                      </>
+                    ) : marker.event === "CVN" ? (
+                      <>
+                        <div>
+                          <h6>
+                            <strong>{marker.title === 36 ? "CVN" : ""}</strong>
+                          </h6>
+                          <p className="mb-0">TimeStamp: {marker.content}</p>
+                          <p className="mb-0">Speed: {marker.speed}Kmph</p>
+                        </div>
+                      </>
                     ) : (
                       <div>
                         <>
@@ -1586,6 +1767,17 @@ const CompletedTrip = () => {
                           ) : (
                             ""
                           )}
+                          {marker.reason === 17 ? (
+                            <div>
+                              <b>Wrong CVN</b>
+                              <p className="mb-0">
+                                TimeStamp: {marker.content}
+                              </p>
+                              <p className="mb-0">Speed: {marker.speed}Kmph</p>
+                            </div>
+                          ) : (
+                            ""
+                          )}
                           {marker.reason === 5 &&
                           (marker.event === "ALM2" ||
                             marker.event === "ALM3") &&
@@ -1614,10 +1806,11 @@ const CompletedTrip = () => {
             <Polyline
               path={path}
               options={{
-                strokeColor: "#4252E0", // Set the color of the polyline path
-                strokeWeight: 4, // Set the stroke size of the polyline
+                strokeColor: "#4252E0", // Default color
+                strokeWeight: 4,
               }}
             />
+            <Polyline path={cvnPath} options={polylineOptions} />
             <Marker position={endPoint} icon={markerIcons.red} />
           </GoogleMap>
         </LoadScript>

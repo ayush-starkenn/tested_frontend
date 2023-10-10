@@ -19,7 +19,7 @@ const OngoingTable = () => {
         `${process.env.REACT_APP_API_URL}/dashboardCustomers/get-ongoing-trip-data/${user_uuid}`,
         { headers: { authorization: `bearer ${token}` } }
       );
-
+      console.log(res);
       if (res.data.result.length > 0) {
         setTripData(res.data.result);
         setDataLoaded(true);
@@ -159,7 +159,7 @@ const OngoingTable = () => {
                         ))
                       ) : (
                         <tr>
-                          <td colSpan={4}>No record Found</td>
+                          <td colSpan={4}>No Records Found!</td>
                         </tr>
                       )}
                     </tbody>

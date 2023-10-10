@@ -17,7 +17,7 @@ const AllRoutes = () => {
       <Route path="customer/*" element={<CustomerLayout />} />
 
       <Route
-        path="customer/report/"
+        path="customer/report/:report_uuid"
         element={
           <CustomerProtected>
             <Report />

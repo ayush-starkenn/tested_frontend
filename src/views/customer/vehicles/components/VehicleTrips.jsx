@@ -4,9 +4,9 @@ import { Column } from "primereact/column";
 import { FilterMatchMode } from "primereact/api";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { Tag } from "primereact/tag";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { Link } from "react-router-dom";
 
 const VehicleTrips = ({ myData }) => {
   const [filters, setFilters] = useState({
@@ -59,30 +59,18 @@ const VehicleTrips = ({ myData }) => {
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-        <Button
+        <Link
+          to={`${process.env.REACT_APP_BASE_URL}/customer/vehicles/completed-trip/${rowData.trip_id}`}
           icon="pi pi-eye"
           rounded
           outlined
-          className="border border-blue-500 text-blue-500 dark:text-blue-500"
+          className="rounded  border border-blue-500 px-2 text-blue-500 dark:text-blue-500"
           style={{ width: "2rem", height: "2rem" }}
-        />
+          target="_blank"
+        >
+          View
+        </Link>
       </React.Fragment>
-    );
-  };
-
-  const statusBodyTemplate = (rowData) => {
-    return rowData.trip_status === 1 ? (
-      <Tag
-        value={"Completed"}
-        severity={"success"}
-        style={{ width: "75px" }}
-      ></Tag>
-    ) : (
-      <Tag
-        value={"Ongoing"}
-        severity={"danger"}
-        style={{ width: "75px" }}
-      ></Tag>
     );
   };
 
@@ -142,14 +130,14 @@ const VehicleTrips = ({ myData }) => {
         <Column
           field="serialNo"
           header="Sr.No."
-          className="border-b dark:bg-navy-800 dark:text-gray-200"
+          className="border-b  bg-[#F2F2F2] dark:bg-gray-800 dark:text-gray-200"
           style={{ minWidth: "4rem", textAlign: "center" }}
         ></Column>
         <Column
           field="trip_id"
           header="Trip ID"
           sortable
-          className="border-b dark:bg-navy-800 dark:text-gray-200"
+          className="border-b  bg-[#F2F2F2] dark:bg-gray-800 dark:text-gray-200"
           style={{ minWidth: "10rem", border: "none !important" }}
           body={(rowData) => (
             <span
@@ -167,7 +155,7 @@ const VehicleTrips = ({ myData }) => {
           field="trip_start_time"
           header="Trip Start"
           sortable
-          className="border-b dark:bg-navy-800 dark:text-gray-200"
+          className="border-b  bg-[#F2F2F2] dark:bg-gray-800 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
           body={(rowData) => convertEpochToIST(rowData.trip_start_time)}
         ></Column>
@@ -175,7 +163,7 @@ const VehicleTrips = ({ myData }) => {
           field="trip_end_time"
           header="Trip End"
           sortable
-          className="border-b dark:bg-navy-800 dark:text-gray-200"
+          className="border-b  bg-[#F2F2F2] dark:bg-gray-800 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
           body={(rowData) => convertEpochToIST(rowData.trip_end_time)}
         ></Column>
@@ -183,7 +171,7 @@ const VehicleTrips = ({ myData }) => {
           field="total_distance"
           header="Distance Travelled"
           sortable
-          className="border-b dark:bg-navy-800 dark:text-gray-200"
+          className="border-b  bg-[#F2F2F2] dark:bg-gray-800 dark:text-gray-200"
           style={{ minWidth: "9rem" }}
           body={(rowData) => {
             const distance = parseFloat(rowData.total_distance);
@@ -196,23 +184,15 @@ const VehicleTrips = ({ myData }) => {
           field="duration"
           header="Duration"
           sortable
-          className="border-b dark:bg-navy-800 dark:text-gray-200"
+          className="border-b  bg-[#F2F2F2] dark:bg-gray-800 dark:text-gray-200"
           style={{ minWidth: "9rem" }}
-        ></Column>
-        <Column
-          field="trip_status"
-          header="Status"
-          body={statusBodyTemplate}
-          sortable
-          className="border-b dark:bg-navy-800 dark:text-gray-200"
-          style={{ minWidth: "7rem" }}
         ></Column>
         <Column
           key="action"
           body={actionBodyTemplate}
           header="Action"
           exportable={false}
-          className="border-b dark:bg-navy-800"
+          className="border-b  bg-[#F2F2F2] dark:bg-gray-800 dark:text-gray-200"
           style={{ minWidth: "6rem" }}
         ></Column>
       </DataTable>

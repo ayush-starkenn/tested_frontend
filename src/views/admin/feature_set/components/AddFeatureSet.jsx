@@ -275,6 +275,7 @@ const AddFeatureSet = ({ onSuccess }) => {
       "dd_stop_tim",
       "dd_res1",
       //Load Sensor
+      "load_tak_cap",
       "load_sts",
       "load_max_cap",
       "load_acc",

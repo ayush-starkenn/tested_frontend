@@ -4,7 +4,6 @@ import { Column } from "primereact/column";
 import { FilterMatchMode } from "primereact/api";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { Tag } from "primereact/tag";
 import axios from "axios";
 import Cookies from "js-cookie";
 
@@ -68,22 +67,6 @@ const VehicleTrips = ({ myData }) => {
     );
   };
 
-  const statusBodyTemplate = (rowData) => {
-    return rowData.trip_status === 1 ? (
-      <Tag
-        value={"Completed"}
-        severity={"success"}
-        style={{ width: "75px" }}
-      ></Tag>
-    ) : (
-      <Tag
-        value={"Ongoing"}
-        severity={"danger"}
-        style={{ width: "75px" }}
-      ></Tag>
-    );
-  };
-
   //vehicle trip data
 
   useEffect(() => {
@@ -139,15 +122,15 @@ const VehicleTrips = ({ myData }) => {
         <Column
           field="serialNo"
           header="Sr.No."
-          className="navk:text-gray-200  border-b bg-[#F2F2F2] dark:bg-gray-800"
+          className="border-b  bg-[#F2F2F2] dark:bg-gray-800 dark:text-gray-200"
           style={{ minWidth: "4rem", textAlign: "center" }}
         ></Column>
         <Column
           field="trip_id"
           header="Trip ID"
           sortable
-          className="navk:text-gray-200 border-b bg-[#F2F2F2] dark:bg-gray-800"
-          style={{ minWidth: "10rem", border: "none !important" }}
+          className="border-b bg-[#F2F2F2] dark:bg-gray-800 dark:text-gray-200"
+          style={{ minWidth: "8rem", border: "none !important" }}
           body={(rowData) => (
             <span
               onMouseEnter={() => setHoveredTripId(rowData.trip_id)}
@@ -164,7 +147,7 @@ const VehicleTrips = ({ myData }) => {
           field="trip_start_time"
           header="Trip Start"
           sortable
-          className="dark:bg-gnav-800 border-b bg-[#F2F2F2] dark:text-gray-200"
+          className="border-b bg-[#F2F2F2] dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
           body={(rowData) => convertEpochToIST(rowData.trip_start_time)}
         ></Column>
@@ -172,7 +155,7 @@ const VehicleTrips = ({ myData }) => {
           field="trip_end_time"
           header="Trip End"
           sortable
-          className="dark:bg-gnav-800 border-b bg-[#F2F2F2] dark:text-gray-200"
+          className="border-b bg-[#F2F2F2] dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
           body={(rowData) => convertEpochToIST(rowData.trip_end_time)}
         ></Column>
@@ -195,14 +178,6 @@ const VehicleTrips = ({ myData }) => {
           sortable
           className="border-b bg-[#F2F2F2] dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "9rem" }}
-        ></Column>
-        <Column
-          field="trip_status"
-          header="Status"
-          body={statusBodyTemplate}
-          sortable
-          className="border-b bg-[#F2F2F2] dark:bg-navy-800 dark:text-gray-200"
-          style={{ minWidth: "7rem" }}
         ></Column>
         <Column
           key="action"

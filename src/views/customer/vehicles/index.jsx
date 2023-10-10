@@ -173,7 +173,7 @@ const Marketplace = () => {
         toastRef.current.show({
           severity: "success",
           summary: "Success",
-          detail: "Vehicle added successfully!",
+          detail: "Vehicle updated successfully!",
           life: 3000,
         });
       })
@@ -232,6 +232,10 @@ const Marketplace = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    setFormErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: value ? undefined : `${name} is required`,
+    }));
     setAddData({ ...addData, [name]: value });
   };
 
@@ -394,45 +398,41 @@ const Marketplace = () => {
       >
         <form onSubmit={handleSubmit} className="flex flex-wrap">
           <div className="mx-auto mt-8 w-[34.5vw]">
-            <span
-              className={`p-float-label ${
-                formErrors.vehicle_name && "p-invalid"
-              }`}
-            >
+            <span className="p-float-label">
               <InputText
                 id="vehicle_name"
                 name="vehicle_name"
                 onChange={handleChange}
-                className="border py-2 pl-2"
+                className={`border py-2 pl-2 ${
+                  formErrors.vehicle_name && "border-red-600"
+                }`}
               />
               <label htmlFor="vehicle_name">Vehicle Name</label>
             </span>
             {formErrors.vehicle_name && (
-              <small className="p-error">{formErrors.vehicle_name}</small>
+              <small className="text-red-600">{formErrors.vehicle_name}</small>
             )}
           </div>
           <div className="mx-auto mt-7 w-[34.5vw]">
-            <span
-              className={`p-float-label ${
-                formErrors.vehicle_registration && "p-invalid"
-              }`}
-            >
+            <span className="p-float-label">
               <InputText
                 id="vehicle_registration"
                 name="vehicle_registration"
                 onChange={handleChange}
-                className="border py-2 pl-2"
+                className={`border py-2 pl-2 ${
+                  formErrors.vehicle_registration && "border-red-600"
+                }`}
               />
               <label htmlFor="vehicle_registration">Vehicle Registration</label>
             </span>
             {formErrors.vehicle_registration && (
-              <small className="p-error">
+              <small className="text-red-600">
                 {formErrors.vehicle_registration}
               </small>
             )}
           </div>
           <div className="mx-auto mt-7 w-[34.5vw]">
-            <span className={`p-float-label ${formErrors.dms && "p-invalid"}`}>
+            <span className="p-float-label">
               <Dropdown
                 id="ecu"
                 name="ecu"
@@ -441,16 +441,18 @@ const Marketplace = () => {
                 optionValue="value"
                 onChange={handleChange}
                 value={addData?.ecu}
-                className="border"
+                className={`border dark:bg-gray-800 ${
+                  formErrors.ecu && "border-red-600"
+                }`}
               />
               <label htmlFor="status">Select ECU</label>
             </span>
             {formErrors.ecu && (
-              <small className="p-error">{formErrors.ecu}</small>
+              <small className="text-red-600">{formErrors.ecu}</small>
             )}
           </div>
           <div className="mx-auto mt-7 w-[34.5vw]">
-            <span className={`p-float-label ${formErrors.dms && "p-invalid"}`}>
+            <span className="p-float-label">
               <Dropdown
                 id="iot"
                 name="iot"
@@ -459,12 +461,12 @@ const Marketplace = () => {
                 optionValue="value"
                 onChange={handleChange}
                 value={addData?.iot}
-                className="border"
+                className={`border ${formErrors.iot && "border-red-600"}`}
               />
               <label htmlFor="status">Select IoT</label>
             </span>
             {formErrors.iot && (
-              <small className="p-error">{formErrors.iot}</small>
+              <small className="text-red-600">{formErrors.iot}</small>
             )}
           </div>
           <div className="mx-auto mt-7 w-[34.5vw]">
@@ -477,13 +479,13 @@ const Marketplace = () => {
                 optionValue="value"
                 onChange={handleChange}
                 value={addData?.dms}
-                className="border"
+                className={`border ${formErrors.dms && "border-red-600"}`}
               />
               <label htmlFor="status">Select DMS</label>
             </span>
           </div>
           <div className="mx-auto mt-7 w-[34.5vw]">
-            <span className={`p-float-label ${formErrors.dms && "p-invalid"}`}>
+            <span className="p-float-label">
               <Dropdown
                 id="featureset_uuid"
                 name="featureset_uuid"
@@ -492,12 +494,16 @@ const Marketplace = () => {
                 optionValue="value"
                 onChange={handleChange}
                 value={addData?.featureset_uuid}
-                className="border"
+                className={`border ${
+                  formErrors.featureset_uuid ? "border-red-600" : ""
+                }`}
               />
               <label htmlFor="status">Select Featureset</label>
             </span>
             {formErrors.featureset_uuid && (
-              <small className="p-error">{formErrors.featureset_uuid}</small>
+              <small className="text-red-600">
+                {formErrors.featureset_uuid}
+              </small>
             )}
           </div>
 

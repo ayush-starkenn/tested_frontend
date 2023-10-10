@@ -212,24 +212,16 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
               <div>
                 <Button
                   icon="pi pi-pencil"
-                  className="p-button-rounded p-button-text mr-2"
-                  style={{
-                    borderColor: "#6E70F2",
-                    width: "2.2rem",
-                    height: "2.2rem",
-                  }}
+                  rounded
+                  className="mr-2 border border-gray-700 text-gray-700"
+                  style={{ width: "2rem", height: "2rem" }}
                   onClick={() => handleEdit(item)}
                 />
                 <Button
                   icon="pi pi-trash"
                   rounded
-                  outlined
-                  style={{
-                    borderColor: "#F18080",
-                    width: "2.2rem",
-                    height: "2.2rem",
-                  }}
-                  className="p-button-rounded p-button-text p-button-danger"
+                  style={{ width: "2rem", height: "2rem" }}
+                  className="mr-2 border border-red-600 text-red-600"
                   onClick={() => handleDelete(item)}
                 />
               </div>
@@ -315,9 +307,13 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
               name="device_id"
               onChange={(e) => handleInputChange(e, "device_id")}
               value={editedDeviceData?.device_id || ""}
-              className={
-                !editedDeviceData.device_id && !isFormValid ? "p-invalid" : ""
-              }
+              className={`border py-2 pl-2
+                ${
+                  !editedDeviceData.device_id && !isFormValid
+                    ? "border-red-600"
+                    : ""
+                }
+              `}
             />
             <label htmlFor="device_id">DeviceId</label>
           </span>
@@ -332,7 +328,7 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
               optionValue="value"
               value={editedDeviceData?.device_type || ""}
               placeholder={selectedDevice?.device_type}
-              className="p-dropdown"
+              className="p-dropdown border"
               onChange={(e) => handleInputChange(e, "device_type")}
             />
             <label htmlFor="device_type">Device_type</label>
@@ -347,7 +343,7 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
               options={Customersoptions()}
               optionLabel="label"
               optionValue="value"
-              className="p-dropdown"
+              className="p-dropdown border"
               value={editedDeviceData?.user_uuid || ""}
               onChange={(e) => handleInputChange(e, "user_uuid")}
             />
@@ -363,7 +359,7 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
               options={stateOptions}
               optionLabel="label"
               optionValue="value"
-              className="p-dropdown"
+              className="p-dropdown border"
               value={editedDeviceData?.device_status || ""}
               placeholder={selectedDevice?.device_status}
               onChange={(e) => handleInputChange(e, "device_status")}
@@ -380,9 +376,11 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
               value={editedDeviceData?.sim_number || ""}
               placeholder={selectedDevice?.sim_number}
               onChange={(e) => handleInputChange(e, "sim_number")}
-              className={
-                !editedDeviceData.sim_number && !isFormValid ? "p-invalid" : ""
-              }
+              className={`border py-2 pl-2 ${
+                !editedDeviceData.sim_number && !isFormValid
+                  ? "border-red-600"
+                  : ""
+              }`}
             />
             <label htmlFor="sim_number">Sim Number</label>
           </span>

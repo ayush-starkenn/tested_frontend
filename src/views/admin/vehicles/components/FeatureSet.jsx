@@ -716,7 +716,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="activationSpeed"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               className={`border py-2 pl-2 dark:bg-gray-900 ${
@@ -724,11 +724,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                   ? "border-red-600"
                   : ""
               }`}
-              placeholder={
-                featuresetData?.activationSpeed
-                  ? featuresetData?.activationSpeed
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.activationSpeed}
               name="activationSpeed"
               onChange={handleDetails}
               autoComplete="off"
@@ -746,14 +743,11 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="alarmThreshold"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
-              placeholder={
-                featuresetData.alarmThreshold
-                  ? featuresetData.alarmThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.alarmThreshold}
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("alarmThreshold") ? "border-red-600" : ""
               }`}
@@ -768,22 +762,17 @@ const FeatureSet = ({ myData, closeDialog }) => {
               </small>
             )}
           </div>
-        </div>
-        <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
             <label htmlFor="brakeThreshold">Brake Threshold</label>
             <InputText
               type="number"
               id="brakeThreshold"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
-              placeholder={
-                featuresetData.brakeThreshold
-                  ? featuresetData.brakeThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.brakeThreshold}
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("brakeThreshold") ? "border-red-600" : ""
               }`}
@@ -798,20 +787,20 @@ const FeatureSet = ({ myData, closeDialog }) => {
               </small>
             )}
           </div>
+        </div>
+
+        <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
             <label htmlFor="brake_speed">Brake Speed</label>
             <InputText
               type="number"
               id="brake_speed"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
-              placeholder={
-                featuresetData.brakeSpeed
-                  ? featuresetData.brakeSpeed
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.brakeSpeed}
               name="brakeSpeed"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("brakeSpeed") ? "border-red-600" : ""
@@ -826,24 +815,13 @@ const FeatureSet = ({ myData, closeDialog }) => {
               </small>
             )}
           </div>
-        </div>
-        <div className="flex justify-between">
-          <div className="field my-3 w-[63vw]">
-            <label htmlFor="detectStationaryObject">
-              Detect Stationary Object
-            </label>
-            <Dropdown
-              id="detectStationaryObject"
-              options={StationaryObjectoptions}
-              optionLabel="label"
-              optionValue="value"
-              placeholder={
-                featuresetData.detectStationaryObject
-                  ? `Selected: ${featuresetData.detectStationaryObject}`
-                  : "Select an option"
-              }
+          <div className="field my-3 w-[30vw]">
+            <label htmlFor="ttcThreshold">TTC Threshold</label>
+            <InputText
+              keyfilter="pint"
+              id="ttcThreshold"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="detectStationaryObject"
@@ -858,13 +836,12 @@ const FeatureSet = ({ myData, closeDialog }) => {
             />
           </div>
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="allowCompleteBrake">Allow Complete Brake</label>
-            <Dropdown
-              name="allowCompleteBrake"
-              onChange={handleDetails}
-              id="allowCompleteBrake"
+            <label htmlFor="brakeOnDuration">Brake ON Duration</label>
+            <InputText
+              keyfilter="pint"
+              id="brakeOnDuration"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               options={CompleteBrakeoptions}
@@ -886,7 +863,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
           </div>
         </div>
         <div className="flex justify-between">
-          <div className="field my-3 w-[63vw]">
+          <div className="field my-3 w-[30vw]">
             <label htmlFor="detectOncomingObstacle">
               Detect Oncoming Obstacle
             </label>
@@ -894,7 +871,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               name="detectOncomingObstacle"
               id="detectOncomingObstacle"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               options={OncomingObstacleptions}
@@ -915,13 +892,70 @@ const FeatureSet = ({ myData, closeDialog }) => {
               disabled={featuresetData.CASMode === "0"}
             />
           </div>
+
+          <div className="field my-3 w-[30vw]">
+            <label htmlFor="detectStationaryObject">
+              Detect Stationary Object
+            </label>
+            <Dropdown
+              id="detectStationaryObject"
+              options={StationaryObjectoptions}
+              optionLabel="label"
+              optionValue="value"
+              placeholder={
+                featuresetData.detectStationaryObject
+                  ? `Selected: ${featuresetData.detectStationaryObject}`
+                  : "Select an option"
+              }
+              style={{
+                width: "24vw",
+                borderRadius: "5px",
+              }}
+              name="detectStationaryObject"
+              onChange={handleDetails}
+              value={featuresetData.detectStationaryObject}
+              className={`md:w-14rem  $dark:bg-gray-900 mt-2 w-full border ${
+                invalidFields.includes("detectStationaryObject")
+                  ? "border-red-600"
+                  : ""
+              }`}
+            />
+          </div>
+          <div className="field my-3 w-[30vw]">
+            <label htmlFor="allowCompleteBrake">Allow Complete Brake</label>
+            <Dropdown
+              name="allowCompleteBrake"
+              onChange={handleDetails}
+              id="allowCompleteBrake"
+              style={{
+                width: "24vw",
+                borderRadius: "5px",
+              }}
+              options={CompleteBrakeoptions}
+              placeholder={
+                featuresetData.allowCompleteBrake
+                  ? featuresetData.allowCompleteBrake
+                  : "Select an option"
+              }
+              value={featuresetData.allowCompleteBrake}
+              optionLabel="label"
+              optionValue="value"
+              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+                invalidFields.includes("allowCompleteBrake")
+                  ? "border-red-600"
+                  : ""
+              }`}
+            />
+          </div>
+        </div>
+        <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
             <label htmlFor="safetyMode">Safety Mode</label>
             <Dropdown
               name="safetyMode"
               id="safetyMode"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               options={SafetyModeoptions}
@@ -1133,14 +1167,11 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="preWarning"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
-              placeholder={
-                featuresetData.preWarning
-                  ? featuresetData.preWarning
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.preWarning}
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("preWarning") ? "border-red-600" : ""
               }`}
@@ -1161,7 +1192,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="sleepAlertInterval"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="sleepAlertInterval"
@@ -1171,11 +1202,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.sleepAlertInterval
-                  ? featuresetData.sleepAlertInterval
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.sleepAlertInterval}
               autoComplete="off"
               disabled={featuresetData.sleepAlertMode === "0"}
             />
@@ -1185,15 +1213,13 @@ const FeatureSet = ({ myData, closeDialog }) => {
               </small>
             )}
           </div>
-        </div>
-        <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
             <label htmlFor="sa_activationSpeed">Activation Speed</label>
             <InputText
               type="number"
               id="sa_activationSpeed"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="sa_activationSpeed"
@@ -1248,12 +1274,31 @@ const FeatureSet = ({ myData, closeDialog }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
+            <label htmlFor="startTime">Start Time</label>
+            <InputText
+              keyfilter="pint"
+              id="startTime"
+              style={{
+                width: "24vw",
+                borderRadius: "5px",
+              }}
+              name="startTime"
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("startTime") ? "border-red-600" : ""
+              }`}
+              onChange={handleDetails}
+              placeholder="Enter a value"
+              value={featuresetData?.startTime}
+              autoComplete="off"
+            />
+          </div>
+          <div className="field my-3 w-[30vw]">
             <label htmlFor="stopTime">Stop Time</label>
             <InputText
               type="number"
               id="stopTime"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="stopTime"
@@ -1261,11 +1306,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("stopTime") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.stopTime
-                  ? featuresetData.stopTime
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.stopTime}
               autoComplete="off"
               disabled={featuresetData.sleepAlertMode === "0"}
             />
@@ -1281,7 +1323,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="brakeActivateTime"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="brakeActivateTime"
@@ -1291,11 +1333,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.brakeActivateTime
-                  ? featuresetData.brakeActivateTime
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.brakeActivateTime}
               autoComplete="off"
               disabled={featuresetData.sleepAlertMode === "0"}
             />
@@ -1308,14 +1347,16 @@ const FeatureSet = ({ myData, closeDialog }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="braking">Braking</label>
+            <label htmlFor="braking" className="mr-8">
+              Braking
+            </label>
             <Dropdown
               name="braking"
               value={featuresetData.braking}
               onChange={handleDetails}
               id="braking"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               options={Braking}
@@ -1375,7 +1416,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="maxLaneChangeThreshold"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="maxLaneChangeThreshold"
@@ -1385,11 +1426,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.maxLaneChangeThreshold
-                  ? featuresetData.maxLaneChangeThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.maxLaneChangeThreshold}
               autoComplete="off"
               disabled={featuresetData.driverEvalMode === "0"}
             />
@@ -1408,7 +1446,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="minLaneChangeThreshold"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="minLaneChangeThreshold"
@@ -1418,11 +1456,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.minLaneChangeThreshold
-                  ? featuresetData.minLaneChangeThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.minLaneChangeThreshold}
               autoComplete="off"
               disabled={featuresetData.driverEvalMode === "0"}
             />
@@ -1433,8 +1468,6 @@ const FeatureSet = ({ myData, closeDialog }) => {
               </small>
             )}
           </div>
-        </div>
-        <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
             <label htmlFor="maxHarshAccelerationThreshold">
               Max Harsh Acceleration Threshold
@@ -1443,7 +1476,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="maxHarshAccelerationThreshold"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="maxHarshAccelerationThreshold"
@@ -1453,11 +1486,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.maxHarshAccelerationThreshold
-                  ? featuresetData.maxHarshAccelerationThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.maxHarshAccelerationThreshold}
               autoComplete="off"
               disabled={featuresetData.driverEvalMode === "0"}
             />
@@ -1468,6 +1498,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
               </small>
             )}
           </div>
+        </div>
+        <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
             <label htmlFor="minHarshAccelerationThreshold">
               Min Harsh Acceleration Threshold
@@ -1476,7 +1508,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="minHarshAccelerationThreshold"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="minHarshAccelerationThreshold"
@@ -1486,11 +1518,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.minHarshAccelerationThreshold
-                  ? featuresetData.minHarshAccelerationThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.minHarshAccelerationThreshold}
               autoComplete="off"
               disabled={featuresetData.driverEvalMode === "0"}
             />
@@ -1501,8 +1530,6 @@ const FeatureSet = ({ myData, closeDialog }) => {
               </small>
             )}
           </div>
-        </div>
-        <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
             <label htmlFor="suddenBrakingThreshold">
               Sudden Braking Threshold
@@ -1511,21 +1538,18 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="suddenBrakingThreshold"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="suddenBrakingThreshold"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("suddenBrakingThreshold")
-                  ? "p-invalid"
+                  ? "border-red-600"
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.suddenBrakingThreshold
-                  ? featuresetData.suddenBrakingThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.suddenBrakingThreshold}
               autoComplete="off"
               disabled={featuresetData.driverEvalMode === "0"}
             />
@@ -1544,7 +1568,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="maxSpeedBumpThreshold"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="maxSpeedBumpThreshold"
@@ -1554,11 +1578,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.maxSpeedBumpThreshold
-                  ? featuresetData.maxSpeedBumpThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.maxSpeedBumpThreshold}
               autoComplete="off"
               disabled={featuresetData.driverEvalMode === "0"}
             />
@@ -1578,7 +1599,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="minSpeedBumpThreshold"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="minSpeedBumpThreshold"
@@ -1588,11 +1609,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.minSpeedBumpThreshold
-                  ? featuresetData.minSpeedBumpThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.minSpeedBumpThreshold}
               autoComplete="off"
               disabled={featuresetData.driverEvalMode === "0"}
             />
@@ -1643,7 +1661,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="speedLimit"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="speedLimit"
@@ -1651,11 +1669,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("speedLimit") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.speedLimit
-                  ? featuresetData.speedLimit
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.speedLimit}
               autoComplete="off"
               disabled={featuresetData.GovernerMode === "0"}
             />
@@ -1705,7 +1720,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
             type="number"
             id="cruiseactivationSpeed"
             style={{
-              width: "30vw",
+              width: "24vw",
               borderRadius: "5px",
             }}
             name="cruiseactivationSpeed"
@@ -1715,11 +1730,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 : ""
             }`}
             onChange={handleDetails}
-            placeholder={
-              featuresetData.cruiseactivationSpeed
-                ? featuresetData.cruiseactivationSpeed
-                : "Enter a value"
-            }
+            placeholder="Enter a value"
+            value={featuresetData?.cruiseactivationSpeed}
             autoComplete="off"
             disabled={featuresetData.cruiseMode === "0"}
           />
@@ -1735,18 +1747,14 @@ const FeatureSet = ({ myData, closeDialog }) => {
             <Dropdown
               id="vehicleType"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="vehicleType"
               onChange={handleDetails}
               options={VehicleTypeoptions}
               value={featuresetData.vehicleType}
-              placeholder={
-                featuresetData.vehicleType
-                  ? featuresetData.vehicleType
-                  : "Select an option"
-              }
+              placeholder="Select an option"
               optionLabel="label"
               optionValue="value"
               className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
@@ -1796,7 +1804,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
             <Dropdown
               id="protocolType"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="protocolType"
@@ -1858,15 +1866,11 @@ const FeatureSet = ({ myData, closeDialog }) => {
             <Dropdown
               id="acceleratorType"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               value={featuresetData.acceleratorType}
-              placeholder={
-                featuresetData.acceleratorType
-                  ? featuresetData.acceleratorType
-                  : "Select an option"
-              }
+              placeholder="Select an option"
               optionLabel="label"
               optionValue="value"
               name="acceleratorType"
@@ -1884,15 +1888,11 @@ const FeatureSet = ({ myData, closeDialog }) => {
             <Dropdown
               id="VS_brk_typ"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               value={featuresetData.VS_brk_typ}
-              placeholder={
-                featuresetData.VS_brk_typ
-                  ? featuresetData.VS_brk_typ
-                  : "Select an option"
-              }
+              placeholder="Select an option"
               optionLabel="label"
               optionValue="value"
               name="VS_brk_typ"
@@ -2001,7 +2001,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="rfAngle"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="rfAngle"
@@ -2009,11 +2009,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("rfAngle") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.rfAngle
-                  ? featuresetData.rfAngle
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.rfAngle}
               autoComplete="off"
             />
             {invalidFields.includes("rfAngle") && (
@@ -2028,7 +2025,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="rdr_act_spd"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="rdr_act_spd"
@@ -2036,11 +2033,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("rdr_act_spd") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.rdr_act_spd
-                  ? featuresetData.rdr_act_spd
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.rdr_act_spd}
               autoComplete="off"
             />
             {invalidFields.includes("rdr_act_spd") && (
@@ -2081,7 +2075,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="Sensor_res1"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="Sensor_res1"
@@ -2089,12 +2083,33 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("Sensor_res1") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.Sensor_res1
-                  ? featuresetData.Sensor_res1
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.Sensor_res1}
               autoComplete="off"
+            />
+          </div>
+        </div>
+        <div className="flex justify-between">
+          <div className="field my-3 w-[30vw]">
+            <label htmlFor="rdr_type" className="mr-2">
+              Radar type
+            </label>
+            <Dropdown
+              id="rdr_type"
+              style={{
+                width: "24vw",
+                borderRadius: "5px",
+              }}
+              name="rdr_type"
+              value={featuresetData.rdr_type}
+              placeholder="Select an option"
+              options={radarOptions}
+              optionLabel="label"
+              optionValue="value"
+              onChange={handleDetails}
+              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+                invalidFields.includes("rdr_type") ? "border-red-600" : ""
+              }`}
             />
           </div>
         </div>
@@ -2135,7 +2150,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="slope"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="slope"
@@ -2143,9 +2158,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("slope") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.slope ? featuresetData.slope : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.slope}
               autoComplete="off"
             />
             {invalidFields.includes("slope") && (
@@ -2160,7 +2174,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="offset"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="offset"
@@ -2168,9 +2182,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("offset") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.offset ? featuresetData.offset : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.offset}
               autoComplete="off"
             />
             {invalidFields.includes("offset") && (
@@ -2179,16 +2192,39 @@ const FeatureSet = ({ myData, closeDialog }) => {
               </small>
             )}
           </div>
+          <div className="field my-3 w-[30vw]">
+            <label htmlFor="speedSource">Speed Source</label>
+            <Dropdown
+              id="speedSource"
+              style={{
+                width: "24vw",
+                borderRadius: "5px",
+              }}
+              name="speedSource"
+              value={featuresetData.speedSource}
+              placeholder="Select an option"
+              options={SpeedSourceoptions}
+              optionLabel="label"
+              optionValue="value"
+              onChange={handleDetails}
+              className={`md:w-14rem $dark:bg-gray-900 h-10 w-full border ${
+                invalidFields.includes("speedSource") ? "border-red-600" : ""
+              }`}
+            />
+          </div>
         </div>
+        <div className="flex justify-between"></div>
         <hr style={{ borderColor: "#333" }} />
         <p className="mt-4 font-bold ">Shutdown Delay</p>
         <div className="field my-3 w-[30vw]">
-          <label htmlFor="delay">Delay</label>
+          <label htmlFor="delay" className="mr-12">
+            Delay
+          </label>
           <InputText
             type="number"
             id="delay"
             style={{
-              width: "30vw",
+              width: "24vw",
               borderRadius: "5px",
             }}
             name="delay"
@@ -2196,9 +2232,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
               invalidFields.includes("delay") ? "border-red-600" : ""
             }`}
             onChange={handleDetails}
-            placeholder={
-              featuresetData.delay ? featuresetData.delay : "Enter a value"
-            }
+            placeholder="Enter a value"
+            value={featuresetData?.delay}
             autoComplete="off"
           />
           {invalidFields.includes("delay") && (
@@ -2249,7 +2284,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="noAlarm"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="noAlarm"
@@ -2257,11 +2292,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("noAlarm") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.noAlarm
-                  ? featuresetData.noAlarm
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.noAlarm}
               autoComplete="off"
             />
             {invalidFields.includes("noAlarm") && (
@@ -2276,7 +2308,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="speed"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="speed"
@@ -2284,9 +2316,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("speed") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.speed ? featuresetData.speed : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.speed}
               autoComplete="off"
             />
             {invalidFields.includes("speed") && (
@@ -2295,15 +2326,13 @@ const FeatureSet = ({ myData, closeDialog }) => {
               </small>
             )}
           </div>
-        </div>
-        <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
             <label htmlFor="accelerationBypass">Acceleration Bypass</label>
             <InputText
               type="number"
               id="accelerationBypass"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="accelerationBypass"
@@ -2313,11 +2342,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.accelerationBypass
-                  ? featuresetData.accelerationBypass
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.accelerationBypass}
               autoComplete="off"
             />
             {invalidFields.includes("accelerationBypass") && (
@@ -2326,13 +2352,17 @@ const FeatureSet = ({ myData, closeDialog }) => {
               </small>
             )}
           </div>
+        </div>
+        <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="tim_err_tpms">TPMS</label>
+            <label htmlFor="tim_err_tpms" className="mr-12">
+              TPMS
+            </label>
             <InputText
               type="number"
               id="tim_err_tpms"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="tim_err_tpms"
@@ -2340,11 +2370,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("tim_err_tpms") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.tim_err_tpms
-                  ? featuresetData.tim_err_tpms
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.tim_err_tpms}
               autoComplete="off"
             />
             {invalidFields.includes("tim_err_tpms") && (
@@ -2363,7 +2390,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="rfSensorAbsent"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="rfSensorAbsent"
@@ -2371,11 +2398,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("rfSensorAbsent") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.rfSensorAbsent
-                  ? featuresetData.rfSensorAbsent
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.rfSensorAbsent}
               autoComplete="off"
             />
             {invalidFields.includes("rfSensorAbsent") && (
@@ -2390,7 +2414,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="gyroscopeAbsent"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="gyroscopeAbsent"
@@ -2400,11 +2424,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.gyroscopeAbsent
-                  ? featuresetData.gyroscopeAbsent
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.gyroscopeAbsent}
               autoComplete="off"
             />
             {invalidFields.includes("gyroscopeAbsent") && (
@@ -2413,15 +2434,13 @@ const FeatureSet = ({ myData, closeDialog }) => {
               </small>
             )}
           </div>
-        </div>
-        <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
             <label htmlFor="hmiAbsent">HMI Absent</label>
             <InputText
               type="number"
               id="hmiAbsent"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="hmiAbsent"
@@ -2472,12 +2491,31 @@ const FeatureSet = ({ myData, closeDialog }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
+            <label htmlFor="timeNotSet">Time Not Set</label>
+            <InputText
+              keyfilter="pint"
+              id="timeNotSet"
+              style={{
+                width: "24vw",
+                borderRadius: "5px",
+              }}
+              name="timeNotSet"
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("timeNotSet") ? "border-red-600" : ""
+              }`}
+              onChange={handleDetails}
+              placeholder="Enter a value"
+              value={featuresetData?.timeNotSet}
+              autoComplete="off"
+            />
+          </div>
+          <div className="field my-3 w-[30vw]">
             <label htmlFor="brakeError">Brake Error</label>
             <InputText
               type="number"
               id="brakeError"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="brakeError"
@@ -2485,11 +2523,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("brakeError") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.brakeError
-                  ? featuresetData.brakeError
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData.brakeError}
               autoComplete="off"
             />
             {invalidFields.includes("brakeError") && (
@@ -2505,7 +2540,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="tpmsError"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="tpmsError"
@@ -2513,11 +2548,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("tpmsError") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.tpmsError
-                  ? featuresetData.tpmsError
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.tpmsError}
               autoComplete="off"
             />
             {invalidFields.includes("tpmsError") && (
@@ -2534,7 +2566,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="obdAbsent"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="obdAbsent"
@@ -2542,11 +2574,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("obdAbsent") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.obdAbsent
-                  ? featuresetData.obdAbsent
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.obdAbsent}
               autoComplete="off"
             />
             {invalidFields.includes("obdAbsent") && (
@@ -2561,7 +2590,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="noAlarmSpeed"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="noAlarmSpeed"
@@ -2569,11 +2598,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("noAlarmSpeed") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.noAlarmSpeed
-                  ? featuresetData.noAlarmSpeed
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.noAlarmSpeed}
               autoComplete="off"
             />
             {invalidFields.includes("noAlarmSpeed") && (
@@ -2582,15 +2608,13 @@ const FeatureSet = ({ myData, closeDialog }) => {
               </small>
             )}
           </div>
-        </div>
-        <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
             <label htmlFor="laserSensorAbsent">Laser Sensor Absent</label>
             <InputText
               type="number"
               id="laserSensorAbsent"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="laserSensorAbsent"
@@ -2643,12 +2667,31 @@ const FeatureSet = ({ myData, closeDialog }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
+            <label htmlFor="rfidAbsent">RFID Absent</label>
+            <InputText
+              keyfilter="pint"
+              id="rfidAbsent"
+              style={{
+                width: "24vw",
+                borderRadius: "5px",
+              }}
+              name="rfidAbsent"
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("rfidAbsent") ? "border-red-600" : ""
+              }`}
+              onChange={handleDetails}
+              placeholder="Enter a value"
+              value={featuresetData?.rfidAbsent}
+              autoComplete="off"
+            />
+          </div>
+          <div className="field my-3 w-[30vw]">
             <label htmlFor="iotAbsent">IoT Absent</label>
             <InputText
               type="number"
               id="iotAbsent"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="iotAbsent"
@@ -2656,11 +2699,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("iotAbsent") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.iotAbsent
-                  ? featuresetData.iotAbsent
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.iotAbsent}
               autoComplete="off"
             />
             {invalidFields.includes("iotAbsent") && (
@@ -2675,7 +2715,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="acc_board"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="acc_board"
@@ -2683,11 +2723,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("acc_board") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.acc_board
-                  ? featuresetData.acc_board
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.acc_board}
               autoComplete="off"
             />
             {invalidFields.includes("acc_board") && (
@@ -2697,7 +2734,6 @@ const FeatureSet = ({ myData, closeDialog }) => {
             )}{" "}
           </div>
         </div>
-
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
             <label htmlFor="SBE_dd">Driver Drowsiness</label>
@@ -2705,7 +2741,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="SBE_dd"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="SBE_dd"
@@ -2713,9 +2749,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("SBE_dd") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.SBE_dd ? featuresetData.SBE_dd : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.SBE_dd}
               autoComplete="off"
             />
             {invalidFields.includes("SBE_dd") && (
@@ -2730,7 +2765,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="SBE_alcohol"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="SBE_alcohol"
@@ -2738,11 +2773,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("SBE_alcohol") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.SBE_alcohol
-                  ? featuresetData.SBE_alcohol
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.SBE_alcohol}
               autoComplete="off"
             />
             {invalidFields.includes("SBE_alcohol") && (
@@ -2751,15 +2783,13 @@ const FeatureSet = ({ myData, closeDialog }) => {
               </small>
             )}{" "}
           </div>
-        </div>
-        <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
             <label htmlFor="SBE_temp">Temperature Sensor</label>
             <InputText
               type="number"
               id="SBE_temp"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="SBE_temp"
@@ -2767,11 +2797,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("SBE_temp") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.SBE_temp
-                  ? featuresetData.SBE_temp
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.SBE_temp}
               autoComplete="off"
             />
             {invalidFields.includes("SBE_temp") && (
@@ -2822,7 +2849,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="firewarereserver1"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="firewarereserver1"
@@ -2832,22 +2859,21 @@ const FeatureSet = ({ myData, closeDialog }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.firewarereserver1
-                  ? featuresetData.firewarereserver1
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.firewarereserver1}
               autoComplete="off"
               disabled={featuresetData.firmwareOtaUpdate === "0"}
             />
           </div>
-          <div className="field my-3 w-[30vw]">
-            <label htmlFor="firewarereserver2">Reserved 2</label>
+          <div className="field my-3 w-[60vw]">
+            <label htmlFor="firewarereserver2" className="mr-80">
+              Reserved 2
+            </label>
             <InputText
               type="number"
               id="firewarereserver2"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="firewarereserver2"
@@ -2857,11 +2883,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.firewarereserver2
-                  ? featuresetData.firewarereserver2
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.firewarereserver2}
               autoComplete="off"
               disabled={featuresetData.firmwareOtaUpdate === "0"}
             />
@@ -2907,7 +2930,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="alcoholinterval"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="alcoholinterval"
@@ -2917,11 +2940,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.alcoholinterval
-                  ? featuresetData.alcoholinterval
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.alcoholinterval}
               autoComplete="off"
               disabled={featuresetData.alcoholDetectionMode === "0"}
             />
@@ -2937,7 +2957,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="alcoholact_spd"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="alcoholact_spd"
@@ -2945,11 +2965,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("alcoholact_spd") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.alcoholact_spd
-                  ? featuresetData.alcoholact_spd
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.alcoholact_spd}
               autoComplete="off"
               disabled={featuresetData.alcoholDetectionMode === "0"}
             />
@@ -2959,15 +2976,13 @@ const FeatureSet = ({ myData, closeDialog }) => {
               </small>
             )}{" "}
           </div>
-        </div>
-        <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
             <label htmlFor="alcoholstart_time">Start time</label>
             <InputText
               type="number"
               id="alcoholstart_time"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="alcoholstart_time"
@@ -3024,26 +3039,47 @@ const FeatureSet = ({ myData, closeDialog }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="alcoholmode">Alcohol Threshold Mode</label>
+            <label htmlFor="alcoholstop_time" className="mr-12">
+              Stop time
+            </label>
+            <InputText
+              keyfilter="pint"
+              id="alcoholstop_time"
+              style={{
+                width: "24vw",
+                borderRadius: "5px",
+              }}
+              name="alcoholstop_time"
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("alcoholstop_time")
+                  ? "border-red-600"
+                  : ""
+              }`}
+              onChange={handleDetails}
+              placeholder="Enter a value"
+              value={featuresetData?.alcoholstop_time}
+              autoComplete="off"
+            />
+          </div>
+          <div className="field my-3 w-[60vw]">
+            <label htmlFor="alcoholmode" className="mr-60">
+              Alcohol Threshold Mode
+            </label>
             <Dropdown
               id="alcoholmode"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="alcoholmode"
               value={featuresetData.alcoholmode}
-              placeholder={
-                featuresetData.alcoholmode
-                  ? featuresetData.alcoholmode
-                  : "Enter a value"
-              }
+              placeholder="Select an option"
               options={alcothreshOptions}
               optionLabel="label"
               optionValue="value"
               onChange={handleDetails}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
-                invalidFields.includes("alcoholmode") ? "p-invalid" : ""
+              className={`md:w-14rem $dark:bg-gray-900 h-11 w-full border ${
+                invalidFields.includes("alcoholmode") ? "border-red-600" : ""
               }`}
               disabled={featuresetData.alcoholDetectionMode === "0"}
             />
@@ -3089,7 +3125,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="dd_act_spd"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="dd_act_spd"
@@ -3097,11 +3133,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("dd_act_spd") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.dd_act_spd
-                  ? featuresetData.dd_act_spd
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.dd_act_spd}
               autoComplete="off"
               disabled={featuresetData.driverDrowsinessMode === "0"}
             />
@@ -3117,7 +3150,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="dd_acc_cut"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="dd_acc_cut"
@@ -3125,24 +3158,19 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("dd_acc_cut") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.dd_acc_cut
-                  ? featuresetData.dd_acc_cut
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.dd_acc_cut}
               autoComplete="off"
               disabled={featuresetData.driverDrowsinessMode === "0"}
             />
           </div>
-        </div>
-        <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
             <label htmlFor="dd_strt_tim">Start Time</label>
             <InputText
               type="number"
               id="dd_strt_tim"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="dd_strt_tim"
@@ -3195,12 +3223,33 @@ const FeatureSet = ({ myData, closeDialog }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="dd_res1">Reserved 1</label>
+            <label htmlFor="dd_stop_tim">Stop Time</label>
+            <InputText
+              keyfilter="pint"
+              id="dd_stop_tim"
+              style={{
+                width: "24vw",
+                borderRadius: "5px",
+              }}
+              name="dd_stop_tim"
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("dd_stop_tim") ? "border-red-600" : ""
+              }`}
+              onChange={handleDetails}
+              placeholder="Enter a value"
+              value={featuresetData?.dd_stop_tim}
+              autoComplete="off"
+            />
+          </div>
+          <div className="field my-3 w-[60vw]">
+            <label htmlFor="dd_res1" className="mr-80">
+              Reserved 1
+            </label>
             <InputText
               type="number"
               id="dd_res1"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="dd_res1"
@@ -3208,11 +3257,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("dd_res1") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.dd_res1
-                  ? featuresetData.dd_res1
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.dd_res1}
               autoComplete="off"
               disabled={featuresetData.driverDrowsinessMode === "0"}
             />
@@ -3258,7 +3304,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="load_max_cap"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="load_max_cap"
@@ -3266,22 +3312,21 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("load_max_cap") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.load_max_cap
-                  ? featuresetData.load_max_cap
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.load_max_cap}
               autoComplete="off"
               disabled={featuresetData.load_sts === "0"}
             />
           </div>
-          <div className="field my-3 w-[30vw]">
-            <label htmlFor="load_acc">Accelerator</label>
+          <div className="field my-3 w-[60vw]">
+            <label htmlFor="load_acc" className="mr-80">
+              Accelerator
+            </label>
             <InputText
               type="number"
               id="load_acc"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="load_acc"
@@ -3289,11 +3334,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("load_acc") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.load_acc
-                  ? featuresetData.load_acc
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.load_acc}
               autoComplete="off"
               disabled={featuresetData.load_sts === "0"}
             />
@@ -3339,7 +3381,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="fuel_tnk_cap"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="fuel_tnk_cap"
@@ -3347,11 +3389,8 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("fuel_tnk_cap") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.fuel_tnk_cap
-                  ? featuresetData.fuel_tnk_cap
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.fuel_tnk_cap}
               autoComplete="off"
               disabled={featuresetData.fuelMode === "0"}
             />
@@ -3362,7 +3401,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               type="number"
               id="fuel_intvl1"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="fuel_intvl1"
@@ -3370,24 +3409,20 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("fuel_intvl1") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.fuel_intvl1
-                  ? featuresetData.fuel_intvl1
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.fuel_intvl1}
               autoComplete="off"
               disabled={featuresetData.fuelMode === "0"}
             />
           </div>
-        </div>
-        <div className="flex justify-between">
+
           <div className="field my-3 w-[30vw]">
             <label htmlFor="fuel_intvl2">Interval 2</label>
             <InputText
               type="number"
               id="fuel_intvl2"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="fuel_intvl2"
@@ -3395,22 +3430,21 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("fuel_intvl2") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.fuel_intvl2
-                  ? featuresetData.fuel_intvl2
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.fuel_intvl2}
               autoComplete="off"
               disabled={featuresetData.fuelMode === "0"}
             />
           </div>
+        </div>
+        <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
             <label htmlFor="fuel_acc">Acc Cut</label>
             <InputText
               type="number"
               id="fuel_acc"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="fuel_acc"
@@ -3418,11 +3452,29 @@ const FeatureSet = ({ myData, closeDialog }) => {
                 invalidFields.includes("fuel_acc") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.fuel_acc
-                  ? featuresetData.fuel_acc
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.fuel_acc}
+              autoComplete="off"
+            />
+          </div>
+          <div className="field my-3 w-[60vw]">
+            <label htmlFor="fuel_thrsh" className="mr-80">
+              Threshold
+            </label>
+            <InputText
+              keyfilter="pint"
+              id="fuel_thrsh"
+              style={{
+                width: "24vw",
+                borderRadius: "5px",
+              }}
+              name="fuel_thrsh"
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("fuel_thrsh") ? "border-red-600" : ""
+              }`}
+              onChange={handleDetails}
+              placeholder="Enter a value"
+              value={featuresetData?.fuel_thrsh}
               autoComplete="off"
               disabled={featuresetData.fuelMode === "0"}
             />

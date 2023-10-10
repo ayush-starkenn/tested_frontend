@@ -175,6 +175,7 @@ const Triggers = () => {
         setRefresh(!refresh);
       })
       .catch((err) => {
+        console.log(err, "sapna");
         toastRef.current.show({
           severity: "error",
           summary: "Error",
