@@ -11,8 +11,6 @@ import EditFeatureset from "./EditFeatureset";
 import Cookies from "js-cookie";
 import { useContext } from "react";
 import { AppContext } from "context/AppContext";
-import AssignCustomer from "./AssignCustomer";
-import UnAssignCustomer from "./UnAssignCustomer";
 import { Toast } from "primereact/toast";
 import { Tag } from "primereact/tag";
 import { FiPlus } from "react-icons/fi";
@@ -20,8 +18,6 @@ import { FiPlus } from "react-icons/fi";
 const FeatureList = () => {
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [isDialogVisible1, setIsDialogVisible1] = useState(false);
-  const [isDialogVisible2, setIsDialogVisible2] = useState(false);
-  const [isDialogVisible3, setIsDialogVisible3] = useState(false);
   const [listCustomers, setListCustomers] = useState([]);
   const [isDeleteDialogVisible, setIsDeleteDialogVisible] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState(null);
@@ -194,28 +190,7 @@ const FeatureList = () => {
     });
     setFs(updateData); // Fetch the updated list of featuresets
   };
-  //assign FS success toast
-  const handleAssignSuccess = () => {
-    setIsDialogVisible2(false);
-    toastRef.current.show({
-      severity: "success",
-      summary: "Success",
-      detail: "Feature Set Assigned successfully",
-      life: 3000,
-    });
-    setFs(myData);
-  };
-  //unassign FS success toast
-  const handleUnAssignSuccess = () => {
-    setIsDialogVisible3(false);
-    toastRef.current.show({
-      severity: "success",
-      summary: "Success",
-      detail: "Feature Set unassigned successfully",
-      life: 3000,
-    });
-    setFs(myData);
-  };
+
   //edit FS success toast
   const handleEditSuccess = () => {
     setIsDialogVisible1(false);
@@ -244,26 +219,6 @@ const FeatureList = () => {
   //closes edit dialog
   const closeDialog1 = () => {
     setIsDialogVisible1(false);
-    resetState();
-  };
-  //open assign dialog
-  const openDialog2 = (rowData) => {
-    setMyData(rowData);
-    setIsDialogVisible2(true);
-  };
-  //closes assign dialog
-  const closeDialog2 = () => {
-    setIsDialogVisible2(false);
-    resetState();
-  };
-  //opens unassign dialog
-  const openDialog3 = (rowData) => {
-    setMyData(rowData);
-    setIsDialogVisible3(true);
-  };
-  //closes unassign dialog
-  const closeDialog3 = () => {
-    setIsDialogVisible3(false);
     resetState();
   };
 
@@ -309,20 +264,6 @@ const FeatureList = () => {
     return (
       <React.Fragment>
         <Button
-          icon="pi pi-file"
-          rounded
-          className="mr-2 border border-gray-700 text-gray-700"
-          style={{ width: "2rem", height: "2rem" }}
-          onClick={() => openDialog2(rowData)}
-        />
-        <Button
-          icon="pi pi-file-excel"
-          rounded
-          className="mr-2 border border-gray-700 text-gray-700"
-          style={{ width: "2rem", height: "2rem" }}
-          onClick={() => openDialog3(rowData)}
-        />
-        <Button
           icon="pi pi-pencil"
           rounded
           className="mr-2 border border-gray-700 text-gray-700"
@@ -350,36 +291,7 @@ const FeatureList = () => {
           New Feature Set
         </button>
       </div>
-      {/* assign dialog  */}
-      <Dialog
-        visible={isDialogVisible2}
-        onHide={closeDialog2}
-        style={{ width: "37vw" }}
-        breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-        header="Assign Feature-Set to Client Company"
-        modal
-        className="p-fluid dark:bg-gray-900"
-      >
-        <AssignCustomer
-          parameters={{ propValue: myData }}
-          onSuccess={handleAssignSuccess}
-        />
-      </Dialog>
-      {/* unassign dialog */}
-      <Dialog
-        visible={isDialogVisible3}
-        onHide={closeDialog3}
-        style={{ width: "37vw" }}
-        breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-        header="Unassign Client Company from Feature-Set"
-        modal
-        className="p-fluid dark:bg-gray-900"
-      >
-        <UnAssignCustomer
-          parameters={{ propValue: myData }}
-          onSuccess={handleUnAssignSuccess}
-        />
-      </Dialog>
+
       {/* edit dialog */}
       <Dialog
         visible={isDialogVisible1}
