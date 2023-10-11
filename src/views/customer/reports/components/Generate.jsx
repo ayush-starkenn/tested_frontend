@@ -28,7 +28,6 @@ const Generate = ({ close }) => {
   const toastRef = useRef(null);
   const [selectedVehicleNames, setSelectedVehicleNames] = useState([]);
   const [selectedEventNames, setSelectedEventNames] = useState([]);
-  const [reportData, setReportData] = useState([]);
   // const [vehicleParams, setVehicleParams] = useState([]);
   // const [driverParams, setDriverParams] = useState([]);
   const [contacts, setContacts] = useState([]);
@@ -40,15 +39,15 @@ const Generate = ({ close }) => {
   // ];
 
   const events = [
-    { name: "ALM-2", code: "ALM-2" },
+    { name: "Alarm", code: "ALM" },
     { name: "Break Data", code: "BRK" },
     { name: "Accelarator Cut Data", code: "ACC" },
     { name: "Limp Mode Data", code: "LMP" },
     { name: "Accident Data", code: "ACD" },
     { name: "Accelarator Cut Data", code: "ACC" },
-    { name: "ALM-3", code: "ALM-3" },
     { name: "DMS", code: "DMS" },
   ];
+
   // const driverparams = [
   //   { name: "Score", id: 1 },
   //   // Add more vehicles as needed
@@ -206,6 +205,7 @@ const Generate = ({ close }) => {
       selected_events: selectedEvents,
       contact_uuid: selectedContacts,
     };
+    console.log(requestData);
     axios
       .post(
         `${process.env.REACT_APP_API_URL}/reports/createReports-all/${user_uuid}`,
@@ -217,7 +217,6 @@ const Generate = ({ close }) => {
       )
       .then((res) => {
         console.log(res.data.report_uuid);
-        setReportData(res.data.report_uuid);
         close();
 
         window.open(`/customer/report/${res.data.report_uuid}`, "_blank");

@@ -10,7 +10,7 @@ import Customers from "views/admin/customers";
 // Customer Imports
 import MainDashboard from "views/customer/default";
 import Vehicles from "views/customer/vehicles";
-import RFIDs from "views/customer/rfids";
+// import RFIDs from "views/customer/rfids";
 import Devices from "views/customer/devices";
 import Triggers from "views/customer/alert-triggers";
 import Contacts from "views/customer/contacts";
@@ -29,7 +29,7 @@ import { TbReport, TbDeviceAnalytics } from "react-icons/tb";
 import { HiOutlineUsers } from "react-icons/hi";
 import AdminProtected from "authorization/AdminProteted";
 import CustomerProtected from "authorization/CustomerProtected";
-import { DiDatabase } from "react-icons/di";
+// import { DiDatabase } from "react-icons/di";
 // import Drivers from "views/customer/drivers";
 import OngoingTrip from "views/customer/vehicles/components/OngoingTrip";
 import CompletedTrip from "views/customer/vehicles/components/CompletedTrip";
