@@ -89,6 +89,17 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFeaturesetDetails({ ...featuresetDetails, [name]: value });
+
+    if (name === "featureset_name") {
+      setInvalidFields(
+        invalidFields.filter((field) => field !== "featureset_name")
+      );
+    }
+    if (name === "featureset_users") {
+      setInvalidFields(
+        invalidFields.filter((field) => field !== "featureset_users")
+      );
+    }
   };
 
   const handleDetails = (e) => {
@@ -641,6 +652,9 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
         user_uuid: value.user_uuid,
       },
     ]);
+    setInvalidFields(
+      invalidFields.filter((field) => field !== "featureset_users")
+    );
   };
 
   useEffect(() => {
