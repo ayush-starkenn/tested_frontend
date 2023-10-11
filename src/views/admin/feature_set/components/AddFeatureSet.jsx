@@ -165,6 +165,9 @@ const AddFeatureSet = ({ onSuccess }) => {
         user_uuid: value.user_uuid,
       },
     ]);
+    setInvalidFields(
+      invalidFields.filter((field) => field !== "featureset_users")
+    );
   };
 
   //validate form function
