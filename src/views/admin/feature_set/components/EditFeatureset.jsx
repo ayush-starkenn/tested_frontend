@@ -822,11 +822,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                   ? "border-red-600"
                   : ""
               }`}
-              placeholder={
-                featuresetData?.activationSpeed
-                  ? featuresetData?.activationSpeed
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.activationSpeed}
               name="activationSpeed"
               onChange={handleDetails}
               autoComplete="off"
@@ -847,11 +844,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 width: "30vw",
                 borderRadius: "5px",
               }}
-              placeholder={
-                featuresetData.alarmThreshold
-                  ? featuresetData.alarmThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.alarmThreshold}
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("alarmThreshold") ? "border-red-600" : ""
               }`}
@@ -877,11 +871,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 width: "30vw",
                 borderRadius: "5px",
               }}
-              placeholder={
-                featuresetData.brakeThreshold
-                  ? featuresetData.brakeThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.brakeThreshold}
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("brakeThreshold") ? "border-red-600" : ""
               }`}
@@ -905,11 +896,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 width: "30vw",
                 borderRadius: "5px",
               }}
-              placeholder={
-                featuresetData.brakeSpeed
-                  ? featuresetData.brakeSpeed
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.brakeSpeed}
               name="brakeSpeed"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("brakeSpeed") ? "border-red-600" : ""
@@ -1049,11 +1037,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 width: "30vw",
                 borderRadius: "5px",
               }}
-              placeholder={
-                featuresetData.ttcThreshold
-                  ? featuresetData.ttcThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.ttcThreshold}
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("ttcThreshold") ? "border-red-600" : ""
               }`}
@@ -1084,11 +1069,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.brakeOnDuration
-                  ? featuresetData.brakeOnDuration
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.brakeOnDuration}
               autoComplete="off"
               disabled={featuresetData.CASMode === "0"}
             />
@@ -1116,11 +1098,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.brakeOffDuration
-                  ? featuresetData.brakeOffDuration
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.brakeOffDuration}
               autoComplete="off"
               disabled={featuresetData.CASMode === "0"}
             />
@@ -1145,11 +1124,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("start_time") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.start_time
-                  ? featuresetData.start_time
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.start_time}
               autoComplete="off"
               disabled={featuresetData.CASMode === "0"}
             />
@@ -1175,11 +1151,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("stop_time") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.stop_time
-                  ? featuresetData.stop_time
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.stop_time}
               autoComplete="off"
               disabled={featuresetData.CASMode === "0"}
             />
@@ -1234,11 +1207,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 width: "30vw",
                 borderRadius: "5px",
               }}
-              placeholder={
-                featuresetData.preWarning
-                  ? featuresetData.preWarning
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.preWarning}
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("preWarning") ? "border-red-600" : ""
               }`}
@@ -1269,11 +1239,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.sleepAlertInterval
-                  ? featuresetData.sleepAlertInterval
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.sleepAlertInterval}
               autoComplete="off"
               disabled={featuresetData.sleepAlertMode === "0"}
             />
@@ -1301,11 +1268,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.activationSpeed
-                  ? featuresetData.activationSpeed
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.activationSpeed}
               autoComplete="off"
               disabled={featuresetData.sleepAlertMode === "0"}
             />
@@ -1329,11 +1293,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("startTime") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.startTime
-                  ? featuresetData.startTime
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.startTime}
               autoComplete="off"
               disabled={featuresetData.sleepAlertMode === "0"}
             />
@@ -1359,11 +1320,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("stopTime") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.stopTime
-                  ? featuresetData.stopTime
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.stopTime}
               autoComplete="off"
               disabled={featuresetData.sleepAlertMode === "0"}
             />
@@ -1389,11 +1347,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.brakeActivateTime
-                  ? featuresetData.brakeActivateTime
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.brakeActivateTime}
               autoComplete="off"
               disabled={featuresetData.sleepAlertMode === "0"}
             />
@@ -1483,11 +1438,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.maxLaneChangeThreshold
-                  ? featuresetData.maxLaneChangeThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.maxLaneChangeThreshold}
               autoComplete="off"
               disabled={featuresetData.driverEvalMode === "0"}
             />
@@ -1516,11 +1468,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.minLaneChangeThreshold
-                  ? featuresetData.minLaneChangeThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.minLaneChangeThreshold}
               autoComplete="off"
               disabled={featuresetData.driverEvalMode === "0"}
             />
@@ -1551,11 +1500,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.maxHarshAccelerationThreshold
-                  ? featuresetData.maxHarshAccelerationThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.maxHarshAccelerationThreshold}
               autoComplete="off"
               disabled={featuresetData.driverEvalMode === "0"}
             />
@@ -1584,11 +1530,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.minHarshAccelerationThreshold
-                  ? featuresetData.minHarshAccelerationThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.minHarshAccelerationThreshold}
               autoComplete="off"
               disabled={featuresetData.driverEvalMode === "0"}
             />
@@ -1619,11 +1562,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.suddenBrakingThreshold
-                  ? featuresetData.suddenBrakingThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.suddenBrakingThreshold}
               autoComplete="off"
               disabled={featuresetData.driverEvalMode === "0"}
             />
@@ -1652,11 +1592,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.maxSpeedBumpThreshold
-                  ? featuresetData.maxSpeedBumpThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.maxSpeedBumpThreshold}
               autoComplete="off"
               disabled={featuresetData.driverEvalMode === "0"}
             />
@@ -1686,11 +1623,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.minSpeedBumpThreshold
-                  ? featuresetData.minSpeedBumpThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.minSpeedBumpThreshold}
               autoComplete="off"
               disabled={featuresetData.driverEvalMode === "0"}
             />
@@ -1749,11 +1683,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("speedLimit") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.speedLimit
-                  ? featuresetData.speedLimit
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.speedLimit}
               autoComplete="off"
               disabled={featuresetData.GovernerMode === "0"}
             />
@@ -1813,11 +1744,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 : ""
             }`}
             onChange={handleDetails}
-            placeholder={
-              featuresetData.cruiseactivationSpeed
-                ? featuresetData.cruiseactivationSpeed
-                : "Enter a value"
-            }
+            placeholder="Enter a value"
+            value={featuresetData?.cruiseactivationSpeed}
             autoComplete="off"
             disabled={featuresetData.cruiseMode === "0"}
           />
@@ -2107,11 +2035,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("rfAngle") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.rfAngle
-                  ? featuresetData.rfAngle
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.rfAngle}
               autoComplete="off"
             />
             {invalidFields.includes("rfAngle") && (
@@ -2134,11 +2059,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("rdr_act_spd") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.rdr_act_spd
-                  ? featuresetData.rdr_act_spd
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.rdr_act_spd}
               autoComplete="off"
             />
             {invalidFields.includes("rdr_act_spd") && (
@@ -2187,11 +2109,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("Sensor_res1") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.Sensor_res1
-                  ? featuresetData.Sensor_res1
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.Sensor_res1}
               autoComplete="off"
             />
           </div>
@@ -2241,9 +2160,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("slope") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.slope ? featuresetData.slope : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.slope}
               autoComplete="off"
             />
             {invalidFields.includes("slope") && (
@@ -2266,9 +2184,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("offset") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.offset ? featuresetData.offset : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.offset}
               autoComplete="off"
             />
             {invalidFields.includes("offset") && (
@@ -2294,9 +2211,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
               invalidFields.includes("delay") ? "border-red-600" : ""
             }`}
             onChange={handleDetails}
-            placeholder={
-              featuresetData.delay ? featuresetData.delay : "Enter a value"
-            }
+            placeholder="Enter a value"
+            value={featuresetData?.delay}
             autoComplete="off"
           />
           {invalidFields.includes("delay") && (
@@ -2355,11 +2271,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("noAlarm") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.noAlarm
-                  ? featuresetData.noAlarm
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.noAlarm}
               autoComplete="off"
             />
             {invalidFields.includes("noAlarm") && (
@@ -2382,9 +2295,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("speed") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.speed ? featuresetData.speed : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.speed}
               autoComplete="off"
             />
             {invalidFields.includes("speed") && (
@@ -2411,11 +2323,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.accelerationBypass
-                  ? featuresetData.accelerationBypass
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.accelerationBypass}
               autoComplete="off"
             />
             {invalidFields.includes("accelerationBypass") && (
@@ -2438,11 +2347,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("tim_err_tpms") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.tim_err_tpms
-                  ? featuresetData.tim_err_tpms
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.tim_err_tpms}
               autoComplete="off"
             />
             {invalidFields.includes("tim_err_tpms") && (
@@ -2469,11 +2375,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("rfSensorAbsent") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.rfSensorAbsent
-                  ? featuresetData.rfSensorAbsent
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.rfSensorAbsent}
               autoComplete="off"
             />
             {invalidFields.includes("rfSensorAbsent") && (
@@ -2498,11 +2401,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.gyroscopeAbsent
-                  ? featuresetData.gyroscopeAbsent
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.gyroscopeAbsent}
               autoComplete="off"
             />
             {invalidFields.includes("gyroscopeAbsent") && (
@@ -2527,11 +2427,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("hmiAbsent") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.hmiAbsent
-                  ? featuresetData.hmiAbsent
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.hmiAbsent}
               autoComplete="off"
             />
             {invalidFields.includes("hmiAbsent") && (
@@ -2554,11 +2451,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("timeNotSet") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.timeNotSet
-                  ? featuresetData.timeNotSet
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.timeNotSet}
               autoComplete="off"
             />
             {invalidFields.includes("timeNotSet") && (
@@ -2583,11 +2477,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("brakeError") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.brakeError
-                  ? featuresetData.brakeError
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.brakeError}
               autoComplete="off"
             />
             {invalidFields.includes("brakeError") && (
@@ -2611,11 +2502,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("tpmsError") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.tpmsError
-                  ? featuresetData.tpmsError
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.tpmsError}
               autoComplete="off"
             />
             {invalidFields.includes("tpmsError") && (
@@ -2640,11 +2528,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("obdAbsent") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.obdAbsent
-                  ? featuresetData.obdAbsent
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.obdAbsent}
               autoComplete="off"
             />
             {invalidFields.includes("obdAbsent") && (
@@ -2667,11 +2552,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("noAlarmSpeed") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.noAlarmSpeed
-                  ? featuresetData.noAlarmSpeed
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.noAlarmSpeed}
               autoComplete="off"
             />
             {invalidFields.includes("noAlarmSpeed") && (
@@ -2698,11 +2580,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.laserSensorAbsent
-                  ? featuresetData.laserSensorAbsent
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.laserSensorAbsent}
               autoComplete="off"
             />
             {invalidFields.includes("laserSensorAbsent") && (
@@ -2725,11 +2604,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("rfidAbsent") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.rfidAbsent
-                  ? featuresetData.rfidAbsent
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.rfidAbsent}
               autoComplete="off"
             />
             {invalidFields.includes("rfidAbsent") && (
@@ -2754,11 +2630,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("iotAbsent") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.iotAbsent
-                  ? featuresetData.iotAbsent
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.iotAbsent}
               autoComplete="off"
             />
             {invalidFields.includes("iotAbsent") && (
@@ -2781,11 +2654,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("acc_board") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.acc_board
-                  ? featuresetData.acc_board
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.acc_board}
               autoComplete="off"
             />
             {invalidFields.includes("acc_board") && (
@@ -2811,9 +2681,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("SBE_dd") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.SBE_dd ? featuresetData.SBE_dd : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.SBE_dd}
               autoComplete="off"
             />
             {invalidFields.includes("SBE_dd") && (
@@ -2836,11 +2705,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("SBE_alcohol") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.SBE_alcohol
-                  ? featuresetData.SBE_alcohol
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.SBE_alcohol}
               autoComplete="off"
             />
             {invalidFields.includes("SBE_alcohol") && (
@@ -2865,11 +2731,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("SBE_temp") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.SBE_temp
-                  ? featuresetData.SBE_temp
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.SBE_temp}
               autoComplete="off"
             />
             {invalidFields.includes("SBE_temp") && (
@@ -2930,11 +2793,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.firewarereserver1
-                  ? featuresetData.firewarereserver1
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.firewarereserver1}
               autoComplete="off"
               disabled={featuresetData.firmwareOtaUpdate === "0"}
             />
@@ -2955,11 +2815,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.firewarereserver2
-                  ? featuresetData.firewarereserver2
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.firewarereserver2}
               autoComplete="off"
               disabled={featuresetData.firmwareOtaUpdate === "0"}
             />
@@ -3015,11 +2872,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.alcoholinterval
-                  ? featuresetData.alcoholinterval
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.alcoholinterval}
               autoComplete="off"
               disabled={featuresetData.alcoholDetectionMode === "0"}
             />
@@ -3043,11 +2897,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("alcoholact_spd") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.alcoholact_spd
-                  ? featuresetData.alcoholact_spd
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.alcoholact_spd}
               autoComplete="off"
               disabled={featuresetData.alcoholDetectionMode === "0"}
             />
@@ -3075,11 +2926,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.alcoholstart_time
-                  ? featuresetData.alcoholstart_time
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.alcoholstart_time}
               autoComplete="off"
               disabled={featuresetData.alcoholDetectionMode === "0"}
             />
@@ -3105,11 +2953,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.alcoholstop_time
-                  ? featuresetData.alcoholstop_time
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.alcoholstop_time}
               autoComplete="off"
               disabled={featuresetData.alcoholDetectionMode === "0"}
             />
@@ -3195,11 +3040,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("dd_act_spd") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.dd_act_spd
-                  ? featuresetData.dd_act_spd
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.dd_act_spd}
               autoComplete="off"
               disabled={featuresetData.driverDrowsinessMode === "0"}
             />
@@ -3223,11 +3065,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("dd_acc_cut") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.dd_acc_cut
-                  ? featuresetData.dd_acc_cut
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.dd_acc_cut}
               autoComplete="off"
               disabled={featuresetData.driverDrowsinessMode === "0"}
             />
@@ -3248,11 +3087,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("dd_strt_tim") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.dd_strt_tim
-                  ? featuresetData.dd_strt_tim
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.dd_strt_tim}
               autoComplete="off"
               disabled={featuresetData.driverDrowsinessMode === "0"}
             />
@@ -3276,11 +3112,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("dd_stop_tim") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.dd_stop_tim
-                  ? featuresetData.dd_stop_tim
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.dd_stop_tim}
               autoComplete="off"
               disabled={featuresetData.driverDrowsinessMode === "0"}
             />
@@ -3306,11 +3139,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("dd_res1") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.dd_res1
-                  ? featuresetData.dd_res1
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.dd_res1}
               autoComplete="off"
               disabled={featuresetData.driverDrowsinessMode === "0"}
             />
@@ -3364,11 +3194,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("load_max_cap") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.load_max_cap
-                  ? featuresetData.load_max_cap
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.load_max_cap}
               autoComplete="off"
               disabled={featuresetData.load_sts === "0"}
             />
@@ -3387,11 +3214,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("load_acc") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.load_acc
-                  ? featuresetData.load_acc
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.load_acc}
               autoComplete="off"
               disabled={featuresetData.load_sts === "0"}
             />
@@ -3445,11 +3269,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("fuel_tnk_cap") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.fuel_tnk_cap
-                  ? featuresetData.fuel_tnk_cap
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.fuel_tnk_cap}
               autoComplete="off"
               disabled={featuresetData.fuelMode === "0"}
             />
@@ -3468,11 +3289,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("fuel_intvl1") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.fuel_intvl1
-                  ? featuresetData.fuel_intvl1
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.fuel_intvl1}
               autoComplete="off"
               disabled={featuresetData.fuelMode === "0"}
             />
@@ -3493,11 +3311,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("fuel_intvl2") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.fuel_intvl2
-                  ? featuresetData.fuel_intvl2
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.fuel_intvl2}
               autoComplete="off"
               disabled={featuresetData.fuelMode === "0"}
             />
@@ -3516,11 +3331,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
                 invalidFields.includes("fuel_acc") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.fuel_acc
-                  ? featuresetData.fuel_acc
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.fuel_acc}
               autoComplete="off"
               disabled={featuresetData.fuelMode === "0"}
             />
@@ -3540,11 +3352,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
               invalidFields.includes("fuel_thrsh") ? "border-red-600" : ""
             }`}
             onChange={handleDetails}
-            placeholder={
-              featuresetData.fuel_thrsh
-                ? featuresetData.fuel_thrsh
-                : "Enter a value"
-            }
+            placeholder="Enter a value"
+            value={featuresetData?.fuel_thrsh}
             autoComplete="off"
             disabled={featuresetData.fuelMode === "0"}
           />
