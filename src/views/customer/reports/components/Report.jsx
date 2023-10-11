@@ -3,8 +3,6 @@ import { useParams } from "react-router-dom";
 import logo from "../../../../assets/img/logo.png";
 import { Fieldset } from "primereact/fieldset";
 import { Button } from "primereact/button";
-import { jsPDF } from "jspdf";
-import html2canvas from "html2canvas";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
