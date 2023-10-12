@@ -304,14 +304,15 @@ export default function VehiclesList({
         modal
         className="p-fluid dark:bg-gray-900"
       >
-        <form onSubmit={handleSubmit} className="flex flex-wrap">
+        <form onSubmit={handleSubmit} className="flex dark:text-gray-300 flex-wrap">
           <div className="mx-auto mt-8 w-[34.5vw]">
             <span className="p-float-label">
               <InputText
                 id="vehicle_name"
                 name="vehicle_name"
-                onChange={handleChange}
+                onChange={handleChange} 
                 value={editData?.vehicle_name}
+                className="pl-2 py-2 border"
               />
               <label htmlFor="vehicle_name">Vehicle Name</label>
             </span>
@@ -323,17 +324,19 @@ export default function VehiclesList({
                 name="vehicle_registration"
                 onChange={handleChange}
                 value={editData?.vehicle_registration}
+                className="pl-2 py-2 border"
               />
               <label htmlFor="vehicle_registration">Vehicle Registration</label>
             </span>
           </div>
-          <div className="mx-auto mt-2 flex w-[34.5vw]">
+          <div className="mx-auto mt-2 w-[34.5vw]">
+            <small>Select ECU</small>
             <select
               id="ecu"
               name="ecu"
               onChange={handleChange}
               value={editData.ecu || ""}
-              className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 shadow-sm focus:ring focus:ring-blue-200"
+              className="mt-2 w-full dark:bg-gray-900 rounded-md border px-4 py-2 shadow-sm focus:ring focus:ring-blue-200"
             >
               <option value="">Unassign</option>
               {ecuData.map((el) => (
@@ -342,13 +345,15 @@ export default function VehiclesList({
                 </option>
               ))}
             </select>
-
+          </div>
+          <div className="mx-auto mt-2 w-[34.5vw]">
+          <small>Select IoT</small>
             <select
               id="iot"
               name="iot"
               onChange={handleChange}
               value={editData.iot || ""}
-              className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 shadow-sm focus:ring focus:ring-blue-200"
+              className="mt-2 w-full dark:bg-gray-900 rounded-md border px-4 py-2 shadow-sm focus:ring focus:ring-blue-200"
             >
               <option value="">Unassign</option>
               {iotData.map((el) => (
@@ -357,13 +362,15 @@ export default function VehiclesList({
                 </option>
               ))}
             </select>
-
+          </div>
+          <div className="mx-auto mt-2 w-[34.5vw]">
+          <small>Select DMS</small>
             <select
               id="dms"
               name="dms"
               onChange={handleChange}
               value={editData.dms || ""}
-              className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 shadow-sm focus:ring focus:ring-blue-200"
+              className="mt-2 w-full dark:bg-gray-900 rounded-md border  px-4 py-2 shadow-sm focus:ring focus:ring-blue-200"
             >
               <option value="">Unassign</option>
               {dmsData.map((el) => (
@@ -384,6 +391,7 @@ export default function VehiclesList({
                 options={featuresetOptions()}
                 onChange={handleChange}
                 value={editData?.featureset_uuid}
+                className="border"
               />
               <label htmlFor="status">Select Featureset</label>
             </span>
@@ -398,6 +406,7 @@ export default function VehiclesList({
                 options={statusOptions}
                 onChange={handleChange}
                 value={editData?.vehicle_status}
+                className="border"
               />
               <label htmlFor="status">Select Status</label>
             </span>

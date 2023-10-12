@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 import { Card } from "primereact/card";
 import { ScrollPanel } from "primereact/scrollpanel";
 import { useEffect, useState } from "react";
-import { BsInfoCircle } from "react-icons/bs";
+import { BsInfoCircle } from "react-icons/bs"
 
 const LogsTable = () => {
   const token = Cookies.get("token");
