@@ -37,8 +37,9 @@ const MapOverview = () => {
         { headers: { authorization: `bearer ${token}` } }
       )
       .then((res) => {
-        setMarkerInfo(res.data.data.trip_data);
-        let x = res.data.data.trip_data;
+        console.log(res.data.Trip_data);
+        setMarkerInfo(res.data.Trip_data);
+        let x = res.data.Trip_data;
         let y = [];
         x.forEach((e) => {
           const lat_ = parseFloat(parseFloat(e.lat).toFixed(4));
@@ -81,13 +82,10 @@ const MapOverview = () => {
     setSelectedMarker(null);
   };
 
-  const getTimeStamp = (e) => {
-    var d = new Date(0);
-    d.setUTCSeconds(e);
-
-    var formattedDate = d.toISOString().slice(0, 19).replace("T", " ");
-
-    return formattedDate;
+  const getTimeStamp = (time) => {
+    let formattedDate = new Date(time * 1000);
+    let formatDta = formattedDate.toLocaleString();
+    return formatDta;
   };
 
   console.log(markerInfo);
@@ -96,7 +94,9 @@ const MapOverview = () => {
     <div>
       <Card className="!z-5 relative flex flex-col rounded-[20px] bg-white bg-clip-border shadow-3xl shadow-shadow-500 dark:!bg-navy-800 dark:text-white dark:shadow-none">
         <div className="mb-3 flex justify-between">
-          <h1 className="align-self-center font-bold sm:text-2xl">Overview</h1>
+          <h1 className="align-self-center font-bold sm:text-2xl">
+            Fleet Aware
+          </h1>
           <Dropdown
             value={filter}
             onChange={(e) => setFilter(e.value)}
@@ -136,15 +136,16 @@ const MapOverview = () => {
                 anchor={new window.google.maps.Point(0, -40)}
               >
                 <div>
-                  <h3>Marker Information</h3>
+                  <p>
+                    <strong>
+                      Vehicle Name: {markerInfo[currentKey].vehicle_name}
+                    </strong>
+                  </p>
                   <p>Latitude: {selectedMarker.lat}</p>
                   <p>Longitude: {selectedMarker.lng}</p>
                   <p>
-                    Timestamp:{" "}
-                    {getTimeStamp(markerInfo[currentKey].latest_timestamp)}
+                    Timestamp: {getTimeStamp(markerInfo[currentKey].timestamp)}
                   </p>
-                  <p>Vehicle Name: {markerInfo[currentKey].vehicle_name}</p>
-                  {/* Add more details here */}
                 </div>
               </InfoWindow>
             )}

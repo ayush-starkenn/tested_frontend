@@ -38,6 +38,7 @@ import spdBumpIcon from "../../../../assets/img/icons/spdBump.png";
 import suddenBrkIcon from "../../../../assets/img/icons/suddenBrk.png";
 import tailgatingIcon from "../../../../assets/img/icons/tailgating.png";
 import tripstartIcon from "../../../../assets/img/icons/tripstart.png";
+import truckGIF from "../../../../assets/img/truck.gif";
 import { ScrollPanel } from "primereact/scrollpanel";
 
 const containerStyle = {
@@ -109,6 +110,9 @@ const CompletedTrip = () => {
   const [cvn, setCVN] = useState(0);
   const [wrongCvn, setWrongCvn] = useState(0);
   const [load, setLoad] = useState(0);
+  const [actualLoad, setActualLoad] = useState(0);
+  const [fuel, setFuel] = useState(0);
+  const [actualFuel, setActualFuel] = useState(0);
 
   // SET DMS data & Alerts
   // eslint-disable-next-line
@@ -128,10 +132,10 @@ const CompletedTrip = () => {
   // eslint-disable-next-line
   // const [rashDrive, setRashDrive] = useState(0);
   // eslint-disable-next-line
-  const [dmsAccident, setDmsAccident] = useState(0);
+  // const [dmsAccident, setDmsAccident] = useState(0);
   const [tripStartAlert, setTripStartAlert] = useState(0);
   // eslint-disable-next-line
-  const [vehicle, setVehicle] = useState([]);
+  const [vehicleId, setVehicleId] = useState([]);
   const [autoBrk, setAutoBrk] = useState(0);
   const [faultData, setFaultData] = useState(0);
   const [alarm1, setAlarm1] = useState(0);
@@ -188,6 +192,7 @@ const CompletedTrip = () => {
         setEndTime(tripEndTime.toLocaleString());
         setEpochStart(resTripdata[0].trip_start_time);
         setEpochEnd(resTripdata[0].trip_end_time);
+        setVehicleId(resTripdata[0].vehicle_uuid);
       })
       .catch((err) => {
         console.log(err);
@@ -215,10 +220,10 @@ const CompletedTrip = () => {
     return deg * (Math.PI / 180);
   }
 
-  useEffect(() => {
-    // console.log(markers);
-    console.log(filterMarker);
-  }, [markers, filterMarker]);
+  // useEffect(() => {
+  //   // console.log(markers);
+  //   console.log(filterMarker);
+  // }, [markers, filterMarker]);
 
   useEffect(() => {
     axios
@@ -360,10 +365,10 @@ const CompletedTrip = () => {
 
               const cvnPathArray = [];
               // Set CVN path
-              setCVNPath({
-                lat: parseFloat(parsejsonDATA.lat),
-                lng: parseFloat(parsejsonDATA.lng),
-              });
+              // setCVNPath({
+              //   lat: parseFloat(parsejsonDATA.lat),
+              //   lng: parseFloat(parsejsonDATA.lng),
+              // });
               tripData.forEach((row) => {
                 if (row.timestamp > parsejsonDATA.timestamp) {
                   cvnPathArray.push({
@@ -379,6 +384,12 @@ const CompletedTrip = () => {
             // Set LOAD
             if (myData[i].event === "LDS") {
               setLoad((prev) => prev + 1);
+              setActualLoad(parsejsonDATA.data.actual_load);
+            }
+            // Set Fuel
+            if (myData[i].event === "FLS") {
+              setFuel((prev) => prev + 1);
+              setActualFuel(parsejsonDATA.data.current_fuel);
             }
           }
 
@@ -574,11 +585,34 @@ const CompletedTrip = () => {
                 content: contentTime,
                 max_cap: parseJson.data.max_cap + "Kg",
                 percent: parseJson.data.percentage + "%",
+                actual_load: parseJson.data.actual_load + "Kg",
                 event: myData[l].event,
                 icon: defaultIcon,
               };
               parameters.push(params);
             }
+
+            // Set Fuel data
+            if (myData[l].event === "FLS") {
+              let updatedTime = new Date(myData[l].timestamp * 1000);
+              let contentTime = updatedTime.toLocaleString();
+              params = {
+                id: myData[l].id,
+                lat: parseFloat(myData[l].lat),
+                lng: parseFloat(myData[l].lng),
+                reason: myData[l].message,
+                title: myData[l].message,
+                speed: Math.round(myData[l].spd),
+                content: contentTime,
+                current_fuel: parseJson.data.current_fuel + "Ltr",
+                percent: parseJson.data.percentage + "%",
+                event: myData[l].event,
+                icon: defaultIcon,
+              };
+              parameters.push(params);
+            }
+
+            // Set Alchohol data
           }
           setMarkers(parameters);
         })
@@ -647,9 +681,9 @@ const CompletedTrip = () => {
           // if (dmsData.data.alert_type === "RASH_DRIVING") {
           //   setRashDrive((prev) => prev + 1);
           // }
-          if (dmsData.data.alert_type === "ACCIDENT") {
-            setDmsAccident((prev) => prev + 1);
-          }
+          // if (dmsData.data.alert_type === "ACCIDENT") {
+          //   setDmsAccident((prev) => prev + 1);
+          // }
         }
       });
 
@@ -705,7 +739,7 @@ const CompletedTrip = () => {
           <p className="font-medium text-gray-900 dark:text-white">Fuel</p>
           <div className="card justify-content-center flex">
             <Knob
-              value="100"
+              value={actualFuel}
               valueTemplate={"{value}%"}
               strokeWidth={10}
               size={70}
@@ -713,7 +747,7 @@ const CompletedTrip = () => {
           </div>
         </div>
 
-        <TripInfoItem title="Load" value="12 Tons" />
+        <TripInfoItem title="Load" value={actualLoad + " Kg"} />
         <TripInfoItem title="Source" value={startAddress + " " + startTime} />
         <TripInfoItem title="Destination" value={endAddress + " " + endTime} />
       </dl>
@@ -874,53 +908,58 @@ const CompletedTrip = () => {
   );
 
   // Set Iframe for DMS
-  const dmsIframes = media.map((data, index) => {
-    // console.log(data.dms);
+  const dmsIframes = [].concat(...filterMarker).map((data, index) => {
+    // console.log("marker pahu", filterMarker);
     // const checkDriveUrl = "drive.google.com";
     // const isDriveUrl = data.dms.includes(checkDriveUrl);
-
-    return (
-      <div className="group relative" key={index}>
-        <div className="flex justify-between">
+    if (data.event === "DMS") {
+      return (
+        <div className="group relative" key={index}>
           <div>
-            <h3 className="text-gray-700">{data.alert}</h3>
-            <p className="mt-1 text-sm text-gray-500">{data?.timestamp}</p>
+            <div className="flex">
+              <h3 className="text-gray-700">{data.alert_type}</h3>
+              <img
+                src={data?.icon}
+                alt={data.alert_type + index}
+                className="img-fluid mx-2"
+              />
+            </div>
+            <p className="mt-1 text-sm text-gray-500">{data?.content}</p>
           </div>
-          <p className="text-5xl font-medium text-cyan-300">&#9900;</p>
-        </div>
-        <div className="aspect-h-1 aspect-w-1 lg:aspect-none lg:h-50 w-full overflow-hidden rounded-md bg-gray-200">
-          {data.dms && (
-            <video
-              className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-              width="100%"
-              controls
-            >
-              <source
-                src={`${process.env.REACT_APP_S3_URL}/${data.dms}`}
-                type="video/mp4"
-              ></source>
-              Your browser does not support the video tag.
-            </video>
-          )}
-
-          {data.dashcam && (
-            <>
+          <div className="aspect-h-1 aspect-w-1 lg:aspect-none lg:h-50 w-full overflow-hidden rounded-md bg-gray-200">
+            {data.media && (
               <video
                 className="h-full w-full object-cover object-center lg:h-full lg:w-full"
                 width="100%"
                 controls
               >
                 <source
-                  src={`${process.env.REACT_APP_S3_URL}/${data.dashcam}`}
+                  src={`${process.env.REACT_APP_S3_URL}/${data.media}`}
                   type="video/mp4"
                 ></source>
                 Your browser does not support the video tag.
               </video>
-            </>
-          )}
+            )}
+
+            {data.dashcam && (
+              <>
+                <video
+                  className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+                  width="100%"
+                  controls
+                >
+                  <source
+                    src={`${process.env.REACT_APP_S3_URL}/${data.dashcam}`}
+                    type="video/mp4"
+                  ></source>
+                  Your browser does not support the video tag.
+                </video>
+              </>
+            )}
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
   });
 
   const [visible, setVisible] = useState(false);
@@ -991,6 +1030,7 @@ const CompletedTrip = () => {
       NO_DRIVER: { NO_DRIVER: "DMS" },
       Load: { 34: "LDS" },
       CVN: { 36: "CVN" },
+      FLS: { 35: "FLS" },
     };
 
     // Get the custom attribute based on the name and value
@@ -1042,10 +1082,7 @@ const CompletedTrip = () => {
                   checked={checkboxes?.AUTOMATIC_BRAKING}
                   disabled={autoBrk === 0}
                 />
-                <label
-                  htmlFor="AUTOMATIC_BRAKING"
-                  className="ml-2 dark:text-white"
-                >
+                <label className="ml-2 dark:text-white">
                   Automatic Braking
                 </label>
               </div>
@@ -1072,12 +1109,7 @@ const CompletedTrip = () => {
                   checked={checkboxes.ACCIDENT_SAVED}
                   disabled={accident === 0}
                 />
-                <label
-                  htmlFor="ACCIDENT_SAVED"
-                  className="ml-2 dark:text-white"
-                >
-                  Accident Saved
-                </label>
+                <label className="ml-2 dark:text-white">Accident Saved</label>
               </div>
               <div className="flex-shrink-0">
                 {accident === 0 ? (
@@ -1110,10 +1142,7 @@ const CompletedTrip = () => {
                   checked={checkboxes.Harsh_Acceleration}
                   disabled={harshacc === 0}
                 />
-                <label
-                  htmlFor="CAScheckboxId4"
-                  className="ml-2 dark:text-white"
-                >
+                <label className="ml-2 dark:text-white">
                   Harsh Acceleration
                 </label>
               </div>
@@ -1140,12 +1169,7 @@ const CompletedTrip = () => {
                   checked={checkboxes.Speed_Bump}
                   disabled={spdBump === 0}
                 />
-                <label
-                  htmlFor="CAScheckboxId5"
-                  className="ml-2 dark:text-white"
-                >
-                  Speed Bump
-                </label>
+                <label className="ml-2 dark:text-white">Speed Bump</label>
               </div>
               <div className="flex-shrink-0">
                 {spdBump === 0 ? (
@@ -1173,12 +1197,7 @@ const CompletedTrip = () => {
                   checked={checkboxes.Lane_Change}
                   disabled={laneChng === 0}
                 />
-                <label
-                  htmlFor="CAScheckboxId5"
-                  className="ml-2 dark:text-white"
-                >
-                  Lane Change
-                </label>
+                <label className="ml-2 dark:text-white">Lane Change</label>
               </div>
               <div className="flex-shrink-0">
                 {spdBump === 0 ? (
@@ -1203,12 +1222,7 @@ const CompletedTrip = () => {
                   checked={checkboxes.Sudden_Braking}
                   disabled={suddenBrk === 0}
                 />
-                <label
-                  htmlFor="CAScheckboxId5"
-                  className="ml-2 dark:text-white"
-                >
-                  Sudden Braking
-                </label>
+                <label className="ml-2 dark:text-white">Sudden Braking</label>
               </div>
               <div className="flex-shrink-0">
                 {suddenBrk === 0 ? (
@@ -1275,12 +1289,7 @@ const CompletedTrip = () => {
                   checked={checkboxes.ACC_Cut}
                   disabled={accCutTipper === 0}
                 />
-                <label
-                  htmlFor="CAScheckboxId3"
-                  className="ml-2 dark:text-white"
-                >
-                  ACC Cut
-                </label>
+                <label className="ml-2 dark:text-white">ACC Cut</label>
               </div>
               <div className="flex-shrink-0">
                 {accCutTipper === 0 ? (
@@ -1305,9 +1314,7 @@ const CompletedTrip = () => {
                   checked={checkboxes.WRONG_CVN}
                   disabled={wrongCvn === 0}
                 />
-                <label htmlFor="cvn" className="ml-2 dark:text-white">
-                  Wrong CVN
-                </label>
+                <label className="ml-2 dark:text-white">Wrong CVN</label>
               </div>
               <div className="flex-shrink-0">
                 {wrongCvn === 0 ? (
@@ -1335,9 +1342,7 @@ const CompletedTrip = () => {
                   checked={checkboxes.Load}
                   disabled={load === 0}
                 />
-                <label htmlFor="load" className="ml-2 dark:text-white">
-                  Load
-                </label>
+                <label className="ml-2 dark:text-white">Load</label>
               </div>
               <div className="flex-shrink-0">
                 {load === 0 ? (
@@ -1356,25 +1361,23 @@ const CompletedTrip = () => {
             <div className="my-3 flex justify-between">
               <div className="flex-shrink-0">
                 <Checkbox
-                  value={36}
+                  value={35}
                   onChange={handlecheckbox}
-                  name="Fuel"
-                  checked={checkboxes.ACC_Cut}
-                  disabled={accCutTipper === 0}
+                  name="FLS"
+                  checked={checkboxes.FLS}
+                  disabled={fuel === 0}
                 />
-                <label htmlFor="cvn" className="ml-2 dark:text-white">
-                  Fuel
-                </label>
+                <label className="ml-2 dark:text-white">Fuel</label>
               </div>
               <div className="flex-shrink-0">
-                {accCutTipper === 0 ? (
+                {fuel === 0 ? (
                   <Badge
-                    value={accCutTipper}
+                    value={fuel}
                     style={{ backgroundColor: "gray", color: "white" }}
                     className="mx-3"
                   />
                 ) : (
-                  <Badge value={accCutTipper} className="mx-3" />
+                  <Badge value={fuel} className="mx-3" />
                 )}
               </div>
             </div>
@@ -1392,12 +1395,7 @@ const CompletedTrip = () => {
                   checked={checkboxes.CVN}
                   disabled={cvn === 0}
                 />
-                <label
-                  htmlFor="CAScheckboxId5"
-                  className="ml-2 dark:text-white"
-                >
-                  CVN
-                </label>
+                <label className="ml-2 dark:text-white">CVN</label>
               </div>
               <div className="flex-shrink-0">
                 {cvn === 0 ? (
@@ -1436,12 +1434,7 @@ const CompletedTrip = () => {
                   checked={checkboxes.Overspeeding}
                   disabled={overspeed === 0}
                 />
-                <label
-                  htmlFor="CAScheckboxId5"
-                  className="ml-2 dark:text-white"
-                >
-                  Overspeed
-                </label>
+                <label className="ml-2 dark:text-white">Overspeed</label>
               </div>
               <div className="flex-shrink-0">
                 {overspeed === 0 ? (
@@ -1480,12 +1473,7 @@ const CompletedTrip = () => {
                   checked={checkboxes.Alarm_2}
                   disabled={alarm1 === 0}
                 />
-                <label
-                  htmlFor="CAScheckboxId5"
-                  className="ml-2 dark:text-white"
-                >
-                  Alarm 2
-                </label>
+                <label className="ml-2 dark:text-white">Alarm 2</label>
               </div>
               <div className="flex-shrink-0">
                 {alarm1 === 0 ? (
@@ -1510,12 +1498,7 @@ const CompletedTrip = () => {
                   checked={checkboxes.Alarm_3}
                   disabled={alarm2 === 0}
                 />
-                <label
-                  htmlFor="CAScheckboxId5"
-                  className="ml-2 dark:text-white"
-                >
-                  Alarm 3
-                </label>
+                <label className="ml-2 dark:text-white">Alarm 3</label>
               </div>
               <div className="flex-shrink-0">
                 {alarm2 === 0 ? (
@@ -1531,10 +1514,11 @@ const CompletedTrip = () => {
             </div>
           </div>
         </div>
+        <hr />
       </div>
 
       {/* Alcohol data */}
-      {/* <div className="noti mt-4">
+      <div className="noti mt-4">
         <h4 className="font-semibold">Alcohol data</h4>
         <div className="flex gap-4">
           <div className="w-[50%]">
@@ -1564,10 +1548,169 @@ const CompletedTrip = () => {
             </div>
           </div>
         </div>
-        <hr />
-      </div> */}
+      </div>
     </>
   );
+
+  const [vehicleData, setVehicleData] = useState([]);
+  const getVehicleData = async () => {
+    await axios
+      .get(
+        `${process.env.REACT_APP_API_URL}/vehicles/get-vehicle-by-id/${vehicleId}`,
+        {
+          headers: { authorization: `bearer ${token}` },
+        }
+      )
+      .then((res) => {
+        setVehicleData(res.data.vehicleData[0]);
+        console.log(res.data.vehicleData[0]);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    getVehicleData();
+  }, [vehicleId]);
+
+  // Set the data table when event is selected
+  const eventTableData = [].concat(...filterMarker)?.map((event, index) => {
+    let tableContent = null;
+
+    if (event.event === "DMS") {
+      tableContent = (
+        <tr key={index}>
+          <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
+            {index + 1}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.event}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event?.alert_type === "DROWSINESS" ? "DROWSINESS" : ""}
+            {event?.alert_type === "DISTRACTION" ? "DISTRACTION" : ""}
+            {event?.alert_type === "TRIP_START" ? "TRIP_START" : ""}
+            {event?.alert_type === "OVERSPEED" ? "OVERSPEED" : ""}
+            {event?.alert_type === "NO_DRIVER" ? "NO_DRIVER" : ""}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.content}
+          </td>
+        </tr>
+      );
+    } else if (event.event === "BRK") {
+      tableContent = (
+        <tr key={index}>
+          <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
+            {index + 1}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.event === "BRK" ? "Automatic Braking" : "BRK"}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {
+              (event.reason = 0
+                ? `${event.title} Due to Collosion Avoidance System Brake Duration: ${event.brake_duration} Sec`
+                : event.title + "Due to Sleep Alert Missed")
+            }
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.content}
+          </td>
+        </tr>
+      );
+    } else if (event.event === "LDS") {
+      tableContent = (
+        <tr key={index}>
+          <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
+            {index + 1}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.event === "LDS" ? "Load" : "LDS"}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            <span>Max Capacity: {event.max_cap}</span>
+            <br />
+            <span>Percentage: {event.percent}</span>
+            <br />
+            <span>Actual: {event.actual_load}</span>
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.content}
+          </td>
+        </tr>
+      );
+    } else if (event.event === "FLS") {
+      tableContent = (
+        <tr key={index}>
+          <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
+            {index + 1}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.event === "FLS" ? "Fuel" : "FLS"}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            <span>Current Fuel: {event.current_fuel}</span>
+            <br />
+            <span>Percentage: {event.percent}</span>
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.content}
+          </td>
+        </tr>
+      );
+    } else if (event.event === "CVN") {
+      tableContent = (
+        <tr key={index}>
+          <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
+            {index + 1}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.event}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            --
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.content}
+          </td>
+        </tr>
+      );
+    } else {
+      tableContent = (
+        <tr key={index}>
+          <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
+            {index + 1}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.event}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.reason === 2 ? "Harsh Acceleration" : ""}
+            {event.reason === 3 ? "Sudden Braking" : ""}
+            {event.reason === 4 ? "Speed Bump" : ""}
+            {event.reason === 5 && event.event === "" ? "Lane change" : ""}
+            {event.reason === 6 ? "Tailgating" : ""}
+            {event.reason === 7 ? "Overspeed" : ""}
+            {event.reason === 6 ? "Tailgating" : ""}
+            {event.reason === 16 ? "ACC Cut due to Tipper ON" : ""}
+            {event.reason === 17 ? "Wrong CVN" : ""}
+            {event.reason === 5 &&
+            (event.event === "ALM2" || event.event === "ALM3") &&
+            event.alarm_no !== 0
+              ? " ALM " + event.alarm_no
+              : ""}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.content}
+          </td>
+        </tr>
+      );
+    }
+
+    return tableContent;
+  });
 
   return (
     <>
@@ -1674,6 +1817,21 @@ const CompletedTrip = () => {
                           <p className="mb-0">TimeStamp: {marker.content}</p>
                           <p className="mb-0">Speed: {marker.speed}Kmph</p>
                           <p className="mb-0">Max Capacity: {marker.max_cap}</p>
+                          <p className="mb-0">Percentage: {marker.percent}</p>
+                          <p className="mb-0">Actual: {marker.actual_load}</p>
+                        </div>
+                      </>
+                    ) : marker.event === "FLS" ? (
+                      <>
+                        <div>
+                          <h6>
+                            <strong>{marker.title === 34 ? "Load" : ""}</strong>
+                          </h6>
+                          <p className="mb-0">TimeStamp: {marker.content}</p>
+                          <p className="mb-0">Speed: {marker.speed}Kmph</p>
+                          <p className="mb-0">
+                            Current Fuel: {marker.current_fuel}
+                          </p>
                           <p className="mb-0">Percentage: {marker.percent}</p>
                         </div>
                       </>
@@ -1858,6 +2016,7 @@ const CompletedTrip = () => {
           </div>
         </Dialog>
       </div>
+
       <div className="lg:max-w-screen mx-auto mt-4 grid w-full grid-cols-1 gap-x-8 gap-y-8 rounded-[20px] sm:py-8 lg:grid-cols-2">
         <div className="rounded-[20px] bg-white p-5 dark:bg-navy-700">
           <div className="">
@@ -1880,7 +2039,7 @@ const CompletedTrip = () => {
 
         <div
           className={`${
-            activeIndex === 2 ? "hidden" : ""
+            activeIndex === 1 || activeIndex === 2 ? "hidden" : ""
           } rounded-[20px] bg-white dark:bg-navy-700`}
         >
           <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-8 lg:max-w-7xl lg:px-8">
@@ -1889,7 +2048,7 @@ const CompletedTrip = () => {
             </h2>
 
             <dl className="mb-4 mt-10 grid grid-cols-1 gap-x-6 gap-y-7 sm:grid-cols-2 sm:gap-y-12 lg:gap-x-8">
-              <TripInfoItem title="Braking Frequency" value="13 Mins" />
+              <TripInfoItem title="Braking Frequency" value="--" />
               <div className="border-t border-gray-200 pt-4 dark:border-cyan-800">
                 <dt className="font-medium text-gray-900 dark:text-white">
                   Feature Set
@@ -1910,14 +2069,33 @@ const CompletedTrip = () => {
               </h2>
 
               <dl className="grid grid-cols-1 gap-x-6 gap-y-7 sm:grid-cols-2 sm:gap-y-12 lg:gap-x-8">
-                <dd className="mt-2 text-sm text-gray-700">
-                  <p className="font-medium text-gray-900 dark:text-white">
-                    <strong>Vehicle Name :</strong> Testing vehicle
-                  </p>
-                  <p className="font-medium text-gray-900 dark:text-white">
-                    <strong>Registration No. :</strong> MH 03 B 8239
-                  </p>
-                </dd>
+                <div className="flex justify-center">
+                  <img src={truckGIF} alt="GIF" className="w-1/2" />
+                </div>
+                <div>
+                  <dd className="mt-2 text-sm text-gray-700">
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      <strong>Vehicle Name :</strong>{" "}
+                      {vehicleData?.vehicle_name}
+                    </p>
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      <strong>Registration No. :</strong>{" "}
+                      {vehicleData?.vehicle_registration}
+                    </p>
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      <strong>ECU :</strong>{" "}
+                      {!vehicleData?.ecu ? "--" : vehicleData.ecu}
+                    </p>
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      <strong>IoT :</strong>{" "}
+                      {!vehicleData?.iot ? "--" : vehicleData.iot}
+                    </p>
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      <strong>DMS :</strong>{" "}
+                      {!vehicleData?.dms ? "--" : vehicleData.dms}
+                    </p>
+                  </dd>
+                </div>
               </dl>
             </div>
           </div>
@@ -1937,6 +2115,56 @@ const CompletedTrip = () => {
               <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-2 xl:gap-x-8">
                 {dmsIframes}
               </div>
+            </ScrollPanel>
+          </div>
+        </div>
+
+        <div
+          className={`${
+            activeIndex === 0 ? "hidden" : ""
+          } rounded-[20px] bg-white dark:bg-navy-700`}
+        >
+          <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-8 lg:max-w-7xl lg:px-8">
+            <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+              Events
+            </h2>
+
+            <ScrollPanel style={{ width: "100%", height: "600px" }}>
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50 dark:bg-gray-900">
+                  <tr>
+                    <th
+                      scope="col"
+                      className="flex items-center px-3 py-3 text-left text-xs font-bold uppercase text-gray-750 dark:text-white"
+                    >
+                      #
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-bold uppercase text-gray-750 dark:text-white"
+                    >
+                      Event
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-bold uppercase text-gray-750 dark:text-white"
+                    >
+                      Data
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-bold uppercase text-gray-750 dark:text-white"
+                    >
+                      Timestamp
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {eventTableData.length > 0
+                    ? eventTableData
+                    : "No data found!"}
+                </tbody>
+              </table>
             </ScrollPanel>
           </div>
         </div>
