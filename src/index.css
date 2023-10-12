@@ -334,7 +334,6 @@ body
 }
 .p-highlight {
   background-color: #ccc;
-  border-radius: 15px;
   color: #070d22;
 }
 .p-tabview
@@ -343,6 +342,18 @@ body
   .p-tabview-nav-link {
   background: none;
   border-color: #adb5bd;
+}
+body
+  > div.p-column-filter-overlay.p-component.p-fluid.p-column-filter-overlay-menu.p-ripple-disabled.p-connected-overlay-enter-done
+  > div.p-column-filter-constraints
+  > div
+  > div.p-column-filter-matchmode-dropdown.p-dropdown.p-component.p-inputwrapper.p-inputwrapper-filled {
+  display: none;
+}
+body
+  > div.p-column-filter-overlay.p-component.p-fluid.p-column-filter-overlay-menu.p-ripple-disabled.p-connected-overlay-enter-done
+  > div.p-column-filter-buttonbar {
+  display: none;
 }
 .p-tabview .p-tabview-nav li .p-tabview-nav-link:hover {
   background: #ffffff;

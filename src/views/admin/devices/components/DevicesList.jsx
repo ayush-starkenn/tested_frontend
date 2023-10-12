@@ -5,7 +5,6 @@ import { Toast } from "primereact/toast";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import { MultiSelect } from "primereact/multiselect";
 import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
 import axios from "axios";
@@ -17,7 +16,6 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
 
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    device_type: { value: null, matchMode: FilterMatchMode.IN },
   });
   const [globalFilterValue, setGlobalFilterValue] = useState("");
   const [isDialogVisible, setIsDialogVisible] = useState(false);
@@ -76,40 +74,6 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
             )}
           </span>
         </div>
-      </div>
-    );
-  };
-
-  //device type options
-  const deviceTypeOptions = [
-    ...new Set(data.map((item) => item.device_type)),
-  ].map((deviceType) => ({
-    label: deviceType,
-    value: deviceType,
-  }));
-
-  //device type filter
-  const representativeFilterTemplate = (options) => {
-    return (
-      <>
-        <div className="mb-3 font-bold dark:text-white">Device Type</div>
-        <MultiSelect
-          value={options.value}
-          options={deviceTypeOptions}
-          onChange={(e) => options.filterCallback(e.value)}
-          optionLabel="label"
-          placeholder="Any"
-          className="p-column-filter"
-        />
-      </>
-    );
-  };
-
-  const representativesItemTemplate = (option) => {
-    return (
-      <div className="align-items-center flex gap-2">
-        <span>{option}</span>
-        <p>{option.device_type}</p>
       </div>
     );
   };
@@ -430,15 +394,7 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
           field="device_type"
           header="Device Type"
           sortField="device_type"
-          filterField="device_type"
-          showFilterMatchModes={false}
-          filterMenuStyle={{ width: "14rem" }}
-          filter
-          filterElement={representativeFilterTemplate}
-          filterHeaderClassName="p-text-center"
-          filterMatchMode="in"
-          filterOptions={deviceTypeOptions}
-          filterItemTemplate={representativesItemTemplate}
+          sortable
           className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "10rem" }}
         ></Column>

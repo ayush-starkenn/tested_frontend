@@ -1,178 +1,58 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
-import { useState } from "react";
 import axios from "axios";
-import { AppContext } from "context/AppContext";
-import { Toast } from "primereact/toast";
 import Cookies from "js-cookie";
+import { Toast } from "primereact/toast";
 
-const AddFeatureSet = ({ onSuccess }) => {
-  const [data, setData] = useState({});
-  const [values, setvalues] = useState({
-    mode: "1",
-    CASMode: "1",
-    activationSpeed: "10",
-    alarmThreshold: "2",
-    brakeThreshold: "0.5",
-    brakeSpeed: "40",
-    detectStationaryObject: "1",
-    allowCompleteBrake: "1",
-    detectOncomingObstacle: "1",
-    safetyMode: "Normal",
-    ttcThreshold: "10",
-    brakeOnDuration: "1000",
-    brakeOffDuration: "1000",
-    start_time: "12",
-    stop_time: "12",
-    // // sleep alert
-    sleepAlertMode: "1",
-    preWarning: "5",
-    sleepAlertInterval: "60",
-    sa_activationSpeed: "40",
-    startTime: "23",
-    stopTime: "6",
-    brakeActivateTime: "10",
-    braking: "1",
-    //Driver Evaluation
-    driverEvalMode: "1",
-    maxLaneChangeThreshold: "0.35",
-    minLaneChangeThreshold: "-0.35",
-    maxHarshAccelerationThreshold: "0.25",
-    minHarshAccelerationThreshold: "-0.4",
-    suddenBrakingThreshold: "-0.4",
-    maxSpeedBumpThreshold: "0.5",
-    minSpeedBumpThreshold: "-0.5",
-    //speed Governer
-    GovernerMode: "1",
-    speedLimit: "100",
-    //Cruize
-    cruiseMode: "1",
-    cruiseactivationSpeed: "40",
-    vehicleType: "12V Pedal",
-    //OBD
-    obdMode: "1",
-    protocolType: "SAEJ1939",
-    //TPMS
-    tpmsMode: "1",
-    //Vehicle settings
-    acceleratorType: "Sensor",
-    VS_brk_typ: "1",
-    VS_gyro_type: "1",
-    //SENSOR
-    lazerMode: "1",
-    rfSensorMode: "1",
-    rfAngle: "0",
-    rdr_act_spd: "40",
-    rdr_type: "1",
-    Sensor_res1: "1",
-    //speed settings
-    speedSource: "Speed Wire",
-    slope: "4.5",
-    offset: "0.5",
-    //shutdown delay
-    delay: "30",
-    //RF name
-    rfNameMode: "1",
-    //Time based errors
-    noAlarm: "30",
-    speed: "30",
-    accelerationBypass: "10",
-    tim_err_tpms: "1",
-    //spd based errors
-    rfSensorAbsent: "60",
-    gyroscopeAbsent: "60",
-    hmiAbsent: "60",
-    timeNotSet: "59",
-    brakeError: "60",
-    tpmsError: "60",
-    obdAbsent: "60",
-    noAlarmSpeed: "60",
-    laserSensorAbsent: "60",
-    rfidAbsent: "60",
-    iotAbsent: "60",
-    acc_board: "60",
-    SBE_dd: "60",
-    SBE_alcohol: "60",
-    SBE_temp: "60",
-    //Firmware OTA
-    firmwareOtaUpdate: "1",
-    firewarereserver1: "0",
-    firewarereserver2: "0",
-    //Alcohol Detection
-    alcoholDetectionMode: "1",
-    alcoholinterval: "10",
-    alcoholact_spd: "40",
-    alcoholstart_time: "12",
-    alcoholstop_time: "12",
-    alcoholmode: "1",
-    //Driver Drowsiness
-    driverDrowsinessMode: "1",
-    dd_act_spd: "40",
-    dd_acc_cut: "50",
-    dd_strt_tim: "12",
-    dd_stop_tim: "12",
-    dd_res1: "0",
-    //Load Sensor
-    load_sts: "1",
-    load_max_cap: "10",
-    load_acc: "10",
-    //Fuel
-    fuelMode: "1",
-    fuel_tnk_cap: "100",
-    fuel_intvl1: "0",
-    fuel_intvl2: "0",
-    fuel_acc: "10",
-    fuel_thrsh: "10",
-  });
-  const toastRef = useRef(null);
-  const toastErr = useRef(null);
-  const [customers, setCustomers] = useState([]);
-  const [listCustomers, setListCustomers] = useState([]);
-  const { updateFunc } = useContext(AppContext);
-  const [selectedValue, setSelectedValue] = useState("");
-  const [invalidFields, setInvalidFields] = useState([]);
+const DefaultFeatureset = ({ closeFeatureset }) => {
   const token = Cookies.get("token");
   const user_uuid = Cookies.get("user_uuid");
+  const [featuresetName, setFeaturesetName] = useState();
+  const [featuresetData, setFeaturesetData] = useState({});
+  const [featuresetUUID, setFeaturesetUUID] = useState();
+  const [invalidFields, setInvalidFields] = useState([]);
+  const toastErr = useRef(null);
+  const toastRef = useRef(null);
 
-  //fetching customers
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}/customers/get-all-customer`, {
-        headers: { authorization: `bearer ${token}` },
-      })
+      .get(
+        `http://localhost:8080/api/featuresets/get-user-featureset/${user_uuid}`,
+        {
+          headers: { authorization: `bearer ${token}` },
+        }
+      )
       .then((res) => {
-        setListCustomers(res.data.customerData);
+        let featuresetAllData = JSON.parse(
+          res.data.results[0].featureset_data[0].featureset_data
+        );
+        setFeaturesetData(featuresetAllData);
+        let FeaturesetName =
+          res.data.results[0].featureset_data[0].featureset_name;
+        setFeaturesetName(FeaturesetName);
+        setFeaturesetUUID(
+          res.data.results[0].featureset_data[0].featureset_uuid
+        );
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [token]);
+  }, [token, user_uuid]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setData({ ...data, [name]: value });
-  };
+  //Handle Change Function
 
-  const handleData = (e) => {
+  const handleDetails = (e) => {
     const { name, value } = e.target;
-    setvalues({ ...values, [name]: value });
-  };
-  const handleSelectCustomer = (e) => {
-    const { value } = e.target;
-    setCustomers([
-      {
-        user_uuid: value.user_uuid,
-      },
-    ]);
-    setInvalidFields(
-      invalidFields.filter((field) => field !== "featureset_users")
-    );
+    setFeaturesetData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
   };
 
   //validate form function
 
-  function validateForm(data, values) {
+  function validateForm(values) {
     const requiredFields = [
       "mode",
       "CASMode",
@@ -295,13 +175,6 @@ const AddFeatureSet = ({ onSuccess }) => {
       if (!values[field]) {
         invalidFieldsArray.push(field);
       }
-    }
-
-    if (!data.featureset_name) {
-      invalidFieldsArray.push("featureset_name");
-    }
-    if (!customers.length) {
-      invalidFieldsArray.push("featureset_users");
     }
 
     if (values.activationSpeed < 0 || values.activationSpeed > 150) {
@@ -519,62 +392,56 @@ const AddFeatureSet = ({ onSuccess }) => {
     return invalidFieldsArray;
   }
 
-  //add feature set api call
-  const handleSubmit = async (e) => {
+  //handle Submit Function
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const invalidFieldsArray = validateForm(data, values);
-    console.log(invalidFieldsArray);
+    const invalidFieldsArray = validateForm(featuresetData);
+
     setInvalidFields(invalidFieldsArray);
 
+    // If there are invalid fields, show a toast and return
     if (invalidFieldsArray.length > 0) {
       toastErr.current.show({
-        severity: "warn",
-        summary: "Warning",
+        severity: "error",
+        summary: "Error",
         detail: "Please fill in all required fields.",
         life: 3000,
       });
       return;
     }
-    const featuresetData = {
+
+    const postData = {
+      featureset_data: featuresetData,
       user_uuid,
-      featureset_name: data.featureset_name,
-      featureset_users: customers,
-      featuerset_version: 1,
-      featureset_data: values,
     };
 
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/featuresets/add-featureset`,
-        featuresetData,
+    axios
+      .put(
+        `http://localhost:8080/api/featuresets/edit-client-featureset/${featuresetUUID}`,
+        postData,
         {
           headers: { authorization: `bearer ${token}` },
         }
-      );
-      toastRef.current.show({
-        severity: "success",
-        summary: "Success",
-        detail: response.data.message || `Feature Set  added successfully`,
-        life: 3000,
+      )
+      .then((res) => {
+        toastRef.current.show({
+          severity: "success",
+          summary: "Success",
+          detail: `Feature Set added successfully`,
+          life: 2000,
+        });
+        setTimeout(() => {
+          closeFeatureset();
+        }, 2300);
+      })
+      .catch((err) => {
+        toastRef.current.show({
+          severity: "error",
+          summary: "Error",
+          detail: "An error occurred. Please try again later.",
+          life: 3000,
+        });
       });
-
-      updateFunc();
-
-      if (onSuccess) {
-        onSuccess();
-      }
-    } catch (err) {
-      toastRef.current.show({
-        severity: "error",
-        summary: "Error",
-        detail:
-          err.response?.data?.error ||
-          "An error occurred. Please try again later.",
-        life: 3000,
-      });
-
-      console.error("Error:", err);
-    }
   };
 
   //dropdown options
@@ -602,6 +469,21 @@ const AddFeatureSet = ({ onSuccess }) => {
     },
   ];
 
+  const BrakingOptions = [
+    {
+      label: "Internal Braking",
+      value: "1",
+    },
+    {
+      label: "PWN Braking",
+      value: "2",
+    },
+    {
+      label: "Actuator Braking",
+      value: "3",
+    },
+  ];
+
   const VehicleTypeoptions = [{ label: "12V Pedal", value: "12V Pedal" }];
 
   const AcceleratorTypeoptions = [
@@ -619,67 +501,12 @@ const AddFeatureSet = ({ onSuccess }) => {
     },
   ];
 
-  const GyroOptions = [
-    {
-      label: "External Gyro",
-      value: "1",
-    },
-    {
-      label: "inbuild Gyro",
-      value: "2",
-    },
-    {
-      label: "Steering Gyro",
-      value: "3",
-    },
-  ];
-
-  const BrakingOptions = [
-    {
-      label: "Internal Braking",
-      value: "1",
-    },
-    {
-      label: "PWN Braking",
-      value: "2",
-    },
-    {
-      label: "Actuator Braking",
-      value: "3",
-    },
-  ];
-
   const ProtocolTypeoptions = [
     { label: "SAEJ1939", value: "SAEJ1939" },
     {
       label: "CAN",
       value: "CAN",
     },
-  ];
-  const radarOptions = [
-    { label: "Radar 1", value: "1" },
-    { label: "Radar 2", value: "2" },
-    { label: "Radar 3", value: "3" },
-  ];
-
-  const alcothreshOptions = [
-    { label: "Relaxed", value: "1" },
-    { label: "Normal", value: "2" },
-    { label: "Strict", value: "3" },
-  ];
-
-  // const BrakeTypeoptions = [
-  //   { label: "Cylinder", value: "Cylinder" },
-  //   { label: "Internal Braking", value: "Internal Braking" },
-  //   {
-  //     label: "Electromagnetic",
-  //     value: "Electromagnetic",
-  //   },
-  // ];
-
-  const Braking = [
-    { label: "Yes", value: "1" },
-    { label: "No", value: "0" },
   ];
 
   const SpeedSourceoptions = [
@@ -688,27 +515,37 @@ const AddFeatureSet = ({ onSuccess }) => {
     { label: "GPS", value: "GPS" },
   ];
 
-  const Customersoptions = () => {
-    return listCustomers?.map((el) => ({
-      key: el.user_uuid,
-      label: el.first_name + " " + el.last_name,
-      value: {
-        user_uuid: el.user_uuid,
-      },
-    }));
-  };
+  const GyroOptions = [
+    {
+      label: "External Gyro",
+      value: 1,
+    },
+    {
+      label: "inbuild Gyro",
+      value: 2,
+    },
+    {
+      label: "Steering Gyro",
+      value: 3,
+    },
+  ];
+  const radarOptions = [
+    { label: "Radar 1", value: "1" },
+    { label: "Radar 2", value: "2" },
+    { label: "Radar 3", value: "3" },
+  ];
+  const alcothreshOptions = [
+    { label: "Relaxed", value: "1" },
+    { label: "Normal", value: "2" },
+    { label: "Strict", value: "3" },
+  ];
 
-  useEffect(() => {
-    let k = listCustomers?.filter((el) => {
-      return el.user_uuid.includes(customers[0]?.user_uuid);
-    });
+  const Braking = [
+    { label: "Yes", value: "1" },
+    { label: "No", value: "0" },
+  ];
 
-    if (k?.length > 0) {
-      setSelectedValue(k[0].first_name + " " + k[0].last_name);
-    }
-  }, [listCustomers, customers]);
-
-  //add FS dialog
+  //edit dialog
   return (
     <>
       <Toast ref={toastRef} className="toast-custom" position="top-right" />
@@ -716,63 +553,36 @@ const AddFeatureSet = ({ onSuccess }) => {
       <form onSubmit={handleSubmit}>
         <div className="card">
           <div className="mt-2 flex" style={{ flexDirection: "column" }}>
-            <label htmlFor="username">Feature Set Name</label>
+            <label htmlFor="username" className="font-bold ">
+              Feature Set Name
+            </label>
             <InputText
               id="username"
               style={{
                 borderRadius: "5px",
               }}
-              placeholder="Feature Set Name"
-              className={`border py-2 pl-2 ${
+              name="featureset_name"
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("featureset_name")
                   ? "border-red-600"
                   : ""
               }`}
-              name="featureset_name"
-              onChange={(e) => {
-                handleChange(e);
-                setInvalidFields(
-                  invalidFields.filter((field) => field !== "featureset_name")
-                );
-              }}
-              autoComplete="off"
-            />
-            <small id="username-help">Unique id to identify feature set</small>
-          </div>
-          <div className="field my-3 w-[30vw]">
-            <label htmlFor="ecu">Select Customer</label>
-            <Dropdown
-              name="featureset_users"
-              onChange={handleSelectCustomer}
-              id="featureset_users"
-              style={{
-                width: "30vw",
-                borderRadius: "5px",
-              }}
-              options={Customersoptions()}
-              optionLabel="label"
-              optionValue="value"
-              placeholder={selectedValue ? selectedValue : "Tap to Select"}
-              className={`md:w-14rem mt-2 w-full border ${
-                invalidFields.includes("featureset_users")
-                  ? "border-red-600"
-                  : ""
-              }`}
-              value={selectedValue || ""}
+              value={featuresetName}
             />
           </div>
+
           <p className="mt-4 font-bold ">System Type</p>
           {invalidFields.includes("mode") && (
             <span className="p-error">Please select any option.</span>
           )}
-          <div className="mb-3 mt-2 flex flex-wrap gap-3">
+          <div className="my-3 flex flex-wrap gap-3">
             <div className="align-items-center flex">
               <input
                 type="radio"
                 name="mode"
-                onChange={handleData}
-                checked={values.mode === "1"}
+                onChange={handleDetails}
                 value={1}
+                checked={featuresetData?.mode === "1"}
               />
               <label htmlFor="ingredient2" className="ml-2">
                 Online Mode
@@ -782,9 +592,9 @@ const AddFeatureSet = ({ onSuccess }) => {
               <input
                 type="radio"
                 name="mode"
-                onChange={handleData}
-                checked={values.mode === "0"}
+                onChange={handleDetails}
                 value={0}
+                checked={featuresetData?.mode === "0"}
               />
               <label htmlFor="ingredient1" className="ml-2">
                 Offline Mode
@@ -802,9 +612,9 @@ const AddFeatureSet = ({ onSuccess }) => {
             <input
               type="radio"
               name="CASMode"
-              value={"1"}
-              onChange={handleData}
-              checked={values.CASMode === "1"}
+              value={1}
+              checked={featuresetData?.CASMode === "1"}
+              onChange={handleDetails}
             />
             <label htmlFor="ingredient2" className="ml-2">
               Enable
@@ -814,9 +624,9 @@ const AddFeatureSet = ({ onSuccess }) => {
             <input
               type="radio"
               name="CASMode"
-              value={"0"}
-              onChange={handleData}
-              checked={values.CASMode === "0"}
+              value={0}
+              checked={featuresetData?.CASMode === "0"}
+              onChange={handleDetails}
             />
             <label htmlFor="ingredient1" className="ml-2">
               Disable
@@ -838,12 +648,15 @@ const AddFeatureSet = ({ onSuccess }) => {
                   ? "border-red-600"
                   : ""
               }`}
-              placeholder="Enter a value"
+              placeholder={
+                featuresetData?.activationSpeed
+                  ? featuresetData?.activationSpeed
+                  : "Enter a value"
+              }
               name="activationSpeed"
-              onChange={handleData}
+              onChange={handleDetails}
               autoComplete="off"
-              disabled={values.CASMode === "0"}
-              value={values.activationSpeed}
+              disabled={featuresetData.CASMode === "0"}
             />
             {invalidFields.includes("activationSpeed") && (
               <small className="text-red-600">
@@ -851,7 +664,6 @@ const AddFeatureSet = ({ onSuccess }) => {
               </small>
             )}
           </div>
-
           <div className="field my-3 w-[30vw]">
             <label htmlFor="alarmThreshold">Alarm Threshold</label>
             <InputText
@@ -861,15 +673,18 @@ const AddFeatureSet = ({ onSuccess }) => {
                 width: "30vw",
                 borderRadius: "5px",
               }}
-              placeholder="Enter a value"
+              placeholder={
+                featuresetData.alarmThreshold
+                  ? featuresetData.alarmThreshold
+                  : "Enter a value"
+              }
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("alarmThreshold") ? "border-red-600" : ""
               }`}
               name="alarmThreshold"
-              onChange={handleData}
+              onChange={handleDetails}
               autoComplete="off"
-              disabled={values.CASMode === "0"}
-              value={values.alarmThreshold}
+              disabled={featuresetData.CASMode === "0"}
             />
             {invalidFields.includes("alarmThreshold") && (
               <small className="text-red-600">
@@ -888,15 +703,18 @@ const AddFeatureSet = ({ onSuccess }) => {
                 width: "30vw",
                 borderRadius: "5px",
               }}
-              placeholder="Enter a value"
+              placeholder={
+                featuresetData.brakeThreshold
+                  ? featuresetData.brakeThreshold
+                  : "Enter a value"
+              }
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("brakeThreshold") ? "border-red-600" : ""
               }`}
               name="brakeThreshold"
-              onChange={handleData}
+              onChange={handleDetails}
               autoComplete="off"
-              disabled={values.CASMode === "0"}
-              value={values.brakeThreshold}
+              disabled={featuresetData.CASMode === "0"}
             />
             {invalidFields.includes("brakeThreshold") && (
               <small className="text-red-600">
@@ -913,15 +731,18 @@ const AddFeatureSet = ({ onSuccess }) => {
                 width: "30vw",
                 borderRadius: "5px",
               }}
-              placeholder="Enter a value"
+              placeholder={
+                featuresetData.brakeSpeed
+                  ? featuresetData.brakeSpeed
+                  : "Enter a value"
+              }
               name="brakeSpeed"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("brakeSpeed") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
+              onChange={handleDetails}
               autoComplete="off"
-              disabled={values.CASMode === "0"}
-              value={values.brakeSpeed}
+              disabled={featuresetData.CASMode === "0"}
             />
             {invalidFields.includes("brakeSpeed") && (
               <small className="text-red-600">
@@ -940,43 +761,51 @@ const AddFeatureSet = ({ onSuccess }) => {
               options={StationaryObjectoptions}
               optionLabel="label"
               optionValue="value"
-              placeholder="Select an option"
+              placeholder={
+                featuresetData.detectStationaryObject
+                  ? `Selected: ${featuresetData.detectStationaryObject}`
+                  : "Select an option"
+              }
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="detectStationaryObject"
-              onChange={handleData}
-              value={values.detectStationaryObject || "1"}
-              className={`md:w-14rem  $dark:bg-gray-900 mt-2 w-full border ${
+              onChange={handleDetails}
+              value={featuresetData.detectStationaryObject}
+              className={`md:w-14rem  mt-2 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("detectStationaryObject")
                   ? "border-red-600"
                   : ""
               }`}
-              disabled={values.CASMode === "0"}
+              disabled={featuresetData.CASMode === "0"}
             />
           </div>
           <div className="field my-3 w-[30vw]">
             <label htmlFor="allowCompleteBrake">Allow Complete Brake</label>
             <Dropdown
               name="allowCompleteBrake"
-              onChange={handleData}
+              onChange={handleDetails}
               id="allowCompleteBrake"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               options={CompleteBrakeoptions}
-              placeholder="Select an option"
-              value={values.allowCompleteBrake || "1"}
+              placeholder={
+                featuresetData.allowCompleteBrake
+                  ? featuresetData.allowCompleteBrake
+                  : "Select an option"
+              }
+              value={featuresetData.allowCompleteBrake}
               optionLabel="label"
               optionValue="value"
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("allowCompleteBrake")
                   ? "border-red-600"
                   : ""
               }`}
-              disabled={values.CASMode === "0"}
+              disabled={featuresetData.CASMode === "0"}
             />
           </div>
         </div>
@@ -993,17 +822,21 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               options={OncomingObstacleptions}
-              value={values.detectOncomingObstacle || "1"}
-              placeholder="Select an option"
+              value={featuresetData.detectOncomingObstacle}
+              placeholder={
+                featuresetData.detectOncomingObstacles
+                  ? featuresetData.detectOncomingObstacles
+                  : "Select an option"
+              }
               optionLabel="label"
               optionValue="value"
-              onChange={handleData}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+              onChange={handleDetails}
+              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("detectOncomingObstacle")
                   ? "border-red-600"
                   : ""
               }`}
-              disabled={values.CASMode === "0"}
+              disabled={featuresetData.CASMode === "0"}
             />
           </div>
           <div className="field my-3 w-[30vw]">
@@ -1016,15 +849,19 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               options={SafetyModeoptions}
-              value={values.safetyMode || "Normal"}
-              placeholder="Select an option"
-              onChange={handleData}
+              value={featuresetData.safetyMode}
+              placeholder={
+                featuresetData.safetyMode
+                  ? featuresetData.safetyMode
+                  : "Select an option"
+              }
+              onChange={handleDetails}
               optionLabel="label"
               optionValue="value"
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("safetyMode") ? "border-red-600" : ""
               }`}
-              disabled={values.CASMode === "0"}
+              disabled={featuresetData.CASMode === "0"}
             />
           </div>
         </div>
@@ -1038,15 +875,18 @@ const AddFeatureSet = ({ onSuccess }) => {
                 width: "30vw",
                 borderRadius: "5px",
               }}
-              placeholder="Enter a value"
+              placeholder={
+                featuresetData.ttcThreshold
+                  ? featuresetData.ttcThreshold
+                  : "Enter a value"
+              }
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("ttcThreshold") ? "border-red-600" : ""
               }`}
               name="ttcThreshold"
-              onChange={handleData}
+              onChange={handleDetails}
               autoComplete="off"
-              disabled={values.CASMode === "0"}
-              value={values.ttcThreshold}
+              disabled={featuresetData.CASMode === "0"}
             />
             {invalidFields.includes("ttcThreshold") && (
               <small className="text-red-600">
@@ -1069,11 +909,14 @@ const AddFeatureSet = ({ onSuccess }) => {
                   ? "border-red-600"
                   : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.brakeOnDuration
+                  ? featuresetData.brakeOnDuration
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.CASMode === "0"}
-              value={values.brakeOnDuration}
+              disabled={featuresetData.CASMode === "0"}
             />
             {invalidFields.includes("brakeOnDuration") && (
               <small className="text-red-600">
@@ -1098,11 +941,14 @@ const AddFeatureSet = ({ onSuccess }) => {
                   ? "border-red-600"
                   : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.brakeOffDuration
+                  ? featuresetData.brakeOffDuration
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.CASMode === "0"}
-              value={values.brakeOffDuration}
+              disabled={featuresetData.CASMode === "0"}
             />
             {invalidFields.includes("brakeOffDuration") && (
               <small className="text-red-600">
@@ -1124,11 +970,14 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("start_time") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.start_time
+                  ? featuresetData.start_time
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.CASMode === "0"}
-              value={values.start_time}
+              disabled={featuresetData.CASMode === "0"}
             />
             {invalidFields.includes("start_time") && (
               <small className="text-red-600">
@@ -1151,11 +1000,14 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("stop_time") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.stop_time
+                  ? featuresetData.stop_time
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.CASMode === "0"}
-              value={values.stop_time}
+              disabled={featuresetData.CASMode === "0"}
             />
             {invalidFields.includes("stop_time") && (
               <small className="text-red-600">
@@ -1176,9 +1028,9 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="op2"
               name="sleepAlertMode"
-              onChange={handleData}
+              onChange={handleDetails}
               value={1}
-              checked={values.sleepAlertMode === "1"}
+              checked={featuresetData.sleepAlertMode === "1"}
             />
             <label htmlFor="op2" className="ml-2">
               Enable
@@ -1189,9 +1041,9 @@ const AddFeatureSet = ({ onSuccess }) => {
               type="radio"
               id="op1"
               name="sleepAlertMode"
-              onChange={handleData}
+              onChange={handleDetails}
               value={0}
-              checked={values.sleepAlertMode === "0"}
+              checked={featuresetData.sleepAlertMode === "0"}
             />
             <label htmlFor="op1" className="ml-2">
               Disable
@@ -1208,15 +1060,18 @@ const AddFeatureSet = ({ onSuccess }) => {
                 width: "30vw",
                 borderRadius: "5px",
               }}
-              placeholder="Enter a value"
+              placeholder={
+                featuresetData.preWarning
+                  ? featuresetData.preWarning
+                  : "Enter a value"
+              }
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("preWarning") ? "border-red-600" : ""
               }`}
               name="preWarning"
-              onChange={handleData}
+              onChange={handleDetails}
               autoComplete="off"
-              disabled={values.sleepAlertMode === "0"}
-              value={values.preWarning}
+              disabled={featuresetData.sleepAlertMode === "0"}
             />
             {invalidFields.includes("preWarning") && (
               <small className="text-red-600">
@@ -1239,11 +1094,14 @@ const AddFeatureSet = ({ onSuccess }) => {
                   ? "border-red-600"
                   : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.sleepAlertInterval
+                  ? featuresetData.sleepAlertInterval
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.sleepAlertMode === "0"}
-              value={values.sleepAlertInterval}
+              disabled={featuresetData.sleepAlertMode === "0"}
             />
             {invalidFields.includes("sleepAlertInterval") && (
               <small className="text-red-600">
@@ -1268,11 +1126,14 @@ const AddFeatureSet = ({ onSuccess }) => {
                   ? "border-red-600"
                   : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.activationSpeed
+                  ? featuresetData.activationSpeed
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.sleepAlertMode === "0"}
-              value={values.sa_activationSpeed}
+              disabled={featuresetData.sleepAlertMode === "0"}
             />
             {invalidFields.includes("sa_activationSpeed") && (
               <small className="text-red-600">
@@ -1293,11 +1154,14 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("startTime") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.startTime
+                  ? featuresetData.startTime
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.sleepAlertMode === "0"}
-              value={values.startTime}
+              disabled={featuresetData.sleepAlertMode === "0"}
             />
             {invalidFields.includes("startTime") && (
               <small className="text-red-600">
@@ -1320,11 +1184,14 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("stopTime") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.stopTime
+                  ? featuresetData.stopTime
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.sleepAlertMode === "0"}
-              value={values.stopTime}
+              disabled={featuresetData.sleepAlertMode === "0"}
             />
             {invalidFields.includes("stopTime") && (
               <small className="text-red-600">
@@ -1347,11 +1214,14 @@ const AddFeatureSet = ({ onSuccess }) => {
                   ? "border-red-600"
                   : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.brakeActivateTime
+                  ? featuresetData.brakeActivateTime
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.sleepAlertMode === "0"}
-              value={values.brakeActivateTime}
+              disabled={featuresetData.sleepAlertMode === "0"}
             />
             {invalidFields.includes("brakeActivateTime") && (
               <small className="text-red-600">
@@ -1365,21 +1235,25 @@ const AddFeatureSet = ({ onSuccess }) => {
             <label htmlFor="braking">Braking</label>
             <Dropdown
               name="braking"
-              value={values.braking || "1"}
-              onChange={handleData}
+              value={featuresetData.braking}
+              onChange={handleDetails}
               id="braking"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               options={Braking}
-              placeholder="Select an option"
+              placeholder={
+                featuresetData.braking
+                  ? featuresetData.braking
+                  : "Select an option"
+              }
               optionLabel="label"
               optionValue="value"
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("braking") ? "border-red-600" : ""
               }`}
-              disabled={values.sleepAlertMode === "0"}
+              disabled={featuresetData.sleepAlertMode === "0"}
             />
           </div>
         </div>
@@ -1395,8 +1269,8 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="driverEvalMode"
               name="driverEvalMode"
               value={1}
-              onChange={handleData}
-              checked={values.driverEvalMode === "1"}
+              checked={featuresetData?.driverEvalMode === "1"}
+              onChange={handleDetails}
             />
             <label htmlFor="ingredient2" className="ml-2">
               Enable
@@ -1408,8 +1282,8 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="ingredient1"
               name="driverEvalMode"
               value={0}
-              onChange={handleData}
-              checked={values.driverEvalMode === "0"}
+              checked={featuresetData?.driverEvalMode === "0"}
+              onChange={handleDetails}
             />
             <label htmlFor="ingredient1" className="ml-2">
               Disable
@@ -1434,11 +1308,14 @@ const AddFeatureSet = ({ onSuccess }) => {
                   ? "border-red-600"
                   : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.maxLaneChangeThreshold
+                  ? featuresetData.maxLaneChangeThreshold
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.driverEvalMode === "0"}
-              value={values.maxLaneChangeThreshold}
+              disabled={featuresetData.driverEvalMode === "0"}
             />
             {invalidFields.includes("maxLaneChangeThreshold") && (
               <small className="text-red-600">
@@ -1464,11 +1341,14 @@ const AddFeatureSet = ({ onSuccess }) => {
                   ? "border-red-600"
                   : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.minLaneChangeThreshold
+                  ? featuresetData.minLaneChangeThreshold
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.driverEvalMode === "0"}
-              value={values.minLaneChangeThreshold}
+              disabled={featuresetData.driverEvalMode === "0"}
             />
             {invalidFields.includes("minLaneChangeThreshold") && (
               <small className="text-red-600">
@@ -1496,11 +1376,14 @@ const AddFeatureSet = ({ onSuccess }) => {
                   ? "border-red-600"
                   : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.maxHarshAccelerationThreshold
+                  ? featuresetData.maxHarshAccelerationThreshold
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.driverEvalMode === "0"}
-              value={values.maxHarshAccelerationThreshold}
+              disabled={featuresetData.driverEvalMode === "0"}
             />
             {invalidFields.includes("maxHarshAccelerationThreshold") && (
               <small className="text-red-600">
@@ -1526,11 +1409,14 @@ const AddFeatureSet = ({ onSuccess }) => {
                   ? "border-red-600"
                   : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.minHarshAccelerationThreshold
+                  ? featuresetData.minHarshAccelerationThreshold
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.driverEvalMode === "0"}
-              value={values.minHarshAccelerationThreshold}
+              disabled={featuresetData.driverEvalMode === "0"}
             />
             {invalidFields.includes("minHarshAccelerationThreshold") && (
               <small className="text-red-600">
@@ -1555,14 +1441,17 @@ const AddFeatureSet = ({ onSuccess }) => {
               name="suddenBrakingThreshold"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("suddenBrakingThreshold")
-                  ? "border-red-600"
+                  ? "p-invalid"
                   : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.suddenBrakingThreshold
+                  ? featuresetData.suddenBrakingThreshold
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.driverEvalMode === "0"}
-              value={values.suddenBrakingThreshold}
+              disabled={featuresetData.driverEvalMode === "0"}
             />
             {invalidFields.includes("suddenBrakingThreshold") && (
               <small className="text-red-600">
@@ -1588,11 +1477,14 @@ const AddFeatureSet = ({ onSuccess }) => {
                   ? "border-red-600"
                   : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.maxSpeedBumpThreshold
+                  ? featuresetData.maxSpeedBumpThreshold
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.driverEvalMode === "0"}
-              value={values.maxSpeedBumpThreshold}
+              disabled={featuresetData.driverEvalMode === "0"}
             />
             {invalidFields.includes("maxSpeedBumpThreshold") && (
               <small className="text-red-600">
@@ -1619,11 +1511,14 @@ const AddFeatureSet = ({ onSuccess }) => {
                   ? "border-red-600"
                   : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.minSpeedBumpThreshold
+                  ? featuresetData.minSpeedBumpThreshold
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.driverEvalMode === "0"}
-              value={values.minSpeedBumpThreshold}
+              disabled={featuresetData.driverEvalMode === "0"}
             />
             {invalidFields.includes("minSpeedBumpThreshold") && (
               <small className="text-red-600">
@@ -1642,10 +1537,10 @@ const AddFeatureSet = ({ onSuccess }) => {
             <input
               type="radio"
               id="GovernerMode"
-              onChange={handleData}
+              onChange={handleDetails}
               name="GovernerMode"
               value={1}
-              checked={values.GovernerMode === "1"}
+              checked={featuresetData.GovernerMode === "1"}
             />
             <label htmlFor="ingredient2" className="ml-2">
               Enable
@@ -1657,8 +1552,8 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="GovernerMode"
               name="GovernerMode"
               value={0}
-              onChange={handleData}
-              checked={values.GovernerMode === "0"}
+              checked={featuresetData?.GovernerMode === "0"}
+              onChange={handleDetails}
             />
             <label htmlFor="off" className="ml-2">
               Disable
@@ -1679,11 +1574,14 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("speedLimit") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.speedLimit
+                  ? featuresetData.speedLimit
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.GovernerMode === "0"}
-              value={values.speedLimit}
+              disabled={featuresetData.GovernerMode === "0"}
             />
             {invalidFields.includes("speedLimit") && (
               <small className="text-red-600">
@@ -1704,8 +1602,8 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="cruiseMode"
               name="cruiseMode"
               value={1}
-              onChange={handleData}
-              checked={values.cruiseMode === "1"}
+              onChange={handleDetails}
+              checked={featuresetData?.cruiseMode === "1"}
             />
             <label htmlFor="mode2" className="ml-2">
               Enable
@@ -1715,10 +1613,10 @@ const AddFeatureSet = ({ onSuccess }) => {
             <input
               type="radio"
               id="cruiseMode"
-              onChange={handleData}
+              onChange={handleDetails}
               name="cruiseMode"
               value={0}
-              checked={values.cruiseMode === "0"}
+              checked={featuresetData.cruiseMode === "0"}
             />
             <label htmlFor="mode1" className="ml-2">
               Disable
@@ -1740,11 +1638,14 @@ const AddFeatureSet = ({ onSuccess }) => {
                 ? "border-red-600"
                 : ""
             }`}
-            onChange={handleData}
-            placeholder="Enter a value"
+            onChange={handleDetails}
+            placeholder={
+              featuresetData.cruiseactivationSpeed
+                ? featuresetData.cruiseactivationSpeed
+                : "Enter a value"
+            }
             autoComplete="off"
-            disabled={values.cruiseMode === "0"}
-            value={values.cruiseactivationSpeed}
+            disabled={featuresetData.cruiseMode === "0"}
           />
           {invalidFields.includes("cruiseactivationSpeed") && (
             <small className="text-red-600">
@@ -1762,16 +1663,20 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="vehicleType"
-              onChange={handleData}
-              disabled={values.cruiseMode === "0"}
+              onChange={handleDetails}
               options={VehicleTypeoptions}
-              value={values.vehicleType || "12V Pedal"}
-              placeholder="Select an option"
+              value={featuresetData.vehicleType}
+              placeholder={
+                featuresetData.vehicleType
+                  ? featuresetData.vehicleType
+                  : "Select an option"
+              }
               optionLabel="label"
               optionValue="value"
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("vehicleType") ? "border-red-600" : ""
               }`}
+              disabled={featuresetData.cruiseMode === "0"}
             />
           </div>
         </div>
@@ -1787,8 +1692,8 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="enable"
               name="obdMode"
               value={1}
-              onChange={handleData}
-              checked={values.obdMode === "1"}
+              checked={featuresetData?.obdMode === "1"}
+              onChange={handleDetails}
             />
             <label htmlFor="enable" className="ml-2">
               Enable
@@ -1800,8 +1705,8 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="disable"
               name="obdMode"
               value={0}
-              onChange={handleData}
-              checked={values.obdMode === "0"}
+              checked={featuresetData?.obdMode === "0"}
+              onChange={handleDetails}
             />
             <label htmlFor="disable" className="ml-2">
               Disable
@@ -1819,16 +1724,20 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="protocolType"
-              onChange={handleData}
+              onChange={handleDetails}
               options={ProtocolTypeoptions}
-              disabled={values.obdMode === "0"}
-              placeholder="Select an option"
-              value={values.protocolType || "SAEJ1939"}
+              value={featuresetData.protocolType}
               optionLabel="label"
               optionValue="value"
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("protocolType") ? "border-red-600" : ""
               }`}
+              disabled={featuresetData.obdMode === "0"}
+              placeholder={
+                featuresetData.protocolType
+                  ? featuresetData.protocolType
+                  : "Select an option"
+              }
             />
           </div>
         </div>
@@ -1844,8 +1753,8 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="tpmsMode"
               name="tpmsMode"
               value={1}
-              onChange={handleData}
-              checked={values.tpmsMode === "1"}
+              onChange={handleDetails}
+              checked={featuresetData?.tpmsMode === "1"}
             />
             <label htmlFor="online" className="ml-2">
               Enable
@@ -1857,8 +1766,8 @@ const AddFeatureSet = ({ onSuccess }) => {
               name="tpmsMode"
               id="tpmsMode"
               value={0}
-              onChange={handleData}
-              checked={values.tpmsMode === "0"}
+              checked={featuresetData?.tpmsMode === "0"}
+              onChange={handleDetails}
             />
             <label htmlFor="offline" className="ml-2">
               Disable
@@ -1876,14 +1785,18 @@ const AddFeatureSet = ({ onSuccess }) => {
                 width: "30vw",
                 borderRadius: "5px",
               }}
-              value={values.acceleratorType || "Sensor"}
-              placeholder="Select an option"
+              value={featuresetData.acceleratorType}
+              placeholder={
+                featuresetData.acceleratorType
+                  ? featuresetData.acceleratorType
+                  : "Select an option"
+              }
               optionLabel="label"
               optionValue="value"
               name="acceleratorType"
-              onChange={handleData}
+              onChange={handleDetails}
               options={AcceleratorTypeoptions}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("acceleratorType")
                   ? "border-red-600"
                   : ""
@@ -1898,14 +1811,18 @@ const AddFeatureSet = ({ onSuccess }) => {
                 width: "30vw",
                 borderRadius: "5px",
               }}
-              value={values.VS_brk_typ || 1}
-              placeholder="Select an option"
+              value={featuresetData.VS_brk_typ}
+              placeholder={
+                featuresetData.VS_brk_typ
+                  ? featuresetData.VS_brk_typ
+                  : "Select an option"
+              }
               optionLabel="label"
               optionValue="value"
               name="VS_brk_typ"
-              onChange={handleData}
+              onChange={handleDetails}
               options={BrakingOptions}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("VS_brk_typ") ? "border-red-600" : ""
               }`}
             />
@@ -1919,14 +1836,18 @@ const AddFeatureSet = ({ onSuccess }) => {
               width: "30vw",
               borderRadius: "5px",
             }}
-            value={values.VS_gyro_type || 1}
-            placeholder="Select an option"
+            value={featuresetData.VS_gyro_type}
+            placeholder={
+              featuresetData.VS_gyro_type
+                ? featuresetData.VS_gyro_type
+                : "Select an option"
+            }
             optionLabel="label"
             optionValue="value"
             name="VS_gyro_type"
-            onChange={handleData}
+            onChange={handleDetails}
             options={GyroOptions}
-            className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+            className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
               invalidFields.includes("VS_gyro_type") ? "border-red-600" : ""
             }`}
           />
@@ -1944,8 +1865,8 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="lazerMode"
               name="lazerMode"
               value={1}
-              onChange={handleData}
-              checked={values.lazerMode === "1"}
+              checked={featuresetData?.lazerMode === "1"}
+              onChange={handleDetails}
             />
             <label htmlFor="lm_on" className="ml-2">
               Enable
@@ -1957,8 +1878,8 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="lm_off"
               name="lazerMode"
               value={0}
-              onChange={handleData}
-              checked={values.lazerMode === "0"}
+              checked={featuresetData?.lazerMode === "0"}
+              onChange={handleDetails}
             />
             <label htmlFor="lazerMode" className="ml-2">
               Disable
@@ -1976,8 +1897,8 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="rfSensorMode"
               name="rfSensorMode"
               value={1}
-              onChange={handleData}
-              checked={true}
+              checked={featuresetData?.rfSensorMode === "1"}
+              onChange={handleDetails}
             />
             <label htmlFor="rfSensorMode" className="ml-2">
               Enable
@@ -1989,7 +1910,8 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="rf_dis"
               name="rfSensorMode"
               value={0}
-              onChange={handleData}
+              checked={featuresetData?.rfSensorMode === "0"}
+              onChange={handleDetails}
             />
             <label htmlFor="rfSensorMode" className="ml-2">
               Disable
@@ -2010,10 +1932,13 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("rfAngle") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.rfAngle
+                  ? featuresetData.rfAngle
+                  : "Enter a value"
+              }
               autoComplete="off"
-              value={values.rfAngle}
             />
             {invalidFields.includes("rfAngle") && (
               <small className="text-red-600">
@@ -2034,10 +1959,13 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("rdr_act_spd") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.rdr_act_spd
+                  ? featuresetData.rdr_act_spd
+                  : "Enter a value"
+              }
               autoComplete="off"
-              value={values.rdr_act_spd}
             />
             {invalidFields.includes("rdr_act_spd") && (
               <small className="text-red-600">
@@ -2056,13 +1984,17 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="rdr_type"
-              value={values.rdr_type || "1"}
-              placeholder="Select an option"
+              value={featuresetData.rdr_type}
+              placeholder={
+                featuresetData.rdr_type
+                  ? featuresetData.rdr_type
+                  : "Enter a value"
+              }
               options={radarOptions}
               optionLabel="label"
               optionValue="value"
-              onChange={handleData}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+              onChange={handleDetails}
+              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("rdr_type") ? "border-red-600" : ""
               }`}
             />
@@ -2080,10 +2012,13 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("Sensor_res1") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.Sensor_res1
+                  ? featuresetData.Sensor_res1
+                  : "Enter a value"
+              }
               autoComplete="off"
-              value={values.Sensor_res1}
             />
           </div>
         </div>
@@ -2101,13 +2036,17 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="speedSource"
-              value={values.speedSource || "Speed Wire"}
-              placeholder="Select an option"
+              value={featuresetData.speedSource}
+              placeholder={
+                featuresetData.speedSource
+                  ? featuresetData.speedSource
+                  : "Enter a value"
+              }
               options={SpeedSourceoptions}
               optionLabel="label"
               optionValue="value"
-              onChange={handleData}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+              onChange={handleDetails}
+              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("speedSource") ? "border-red-600" : ""
               }`}
             />
@@ -2127,10 +2066,11 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("slope") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.slope ? featuresetData.slope : "Enter a value"
+              }
               autoComplete="off"
-              value={values.slope}
             />
             {invalidFields.includes("slope") && (
               <small className="text-red-600">
@@ -2151,10 +2091,11 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("offset") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.offset ? featuresetData.offset : "Enter a value"
+              }
               autoComplete="off"
-              value={values.offset}
             />
             {invalidFields.includes("offset") && (
               <small className="text-red-600">
@@ -2178,10 +2119,11 @@ const AddFeatureSet = ({ onSuccess }) => {
             className={`border py-2 pl-2 dark:bg-gray-900 ${
               invalidFields.includes("delay") ? "border-red-600" : ""
             }`}
-            onChange={handleData}
-            placeholder="Enter a value"
+            onChange={handleDetails}
+            placeholder={
+              featuresetData.delay ? featuresetData.delay : "Enter a value"
+            }
             autoComplete="off"
-            value={values.delay}
           />
           {invalidFields.includes("delay") && (
             <small className="text-red-600">
@@ -2201,8 +2143,8 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="rfNameMode"
               name="rfNameMode"
               value={1}
-              onChange={handleData}
-              checked={true}
+              checked={featuresetData?.rfNameMode === "1"}
+              onChange={handleDetails}
             />
             <label htmlFor="rfNameMode" className="ml-2">
               Enable
@@ -2214,7 +2156,8 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="rfNameMode"
               name="rfNameMode"
               value={0}
-              onChange={handleData}
+              checked={featuresetData?.rfNameMode === "0"}
+              onChange={handleDetails}
             />
             <label htmlFor="rfNameMode" className="ml-2">
               Disable
@@ -2237,10 +2180,13 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("noAlarm") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.noAlarm
+                  ? featuresetData.noAlarm
+                  : "Enter a value"
+              }
               autoComplete="off"
-              value={values.noAlarm}
             />
             {invalidFields.includes("noAlarm") && (
               <small className="text-red-600">
@@ -2261,10 +2207,11 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("speed") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.speed ? featuresetData.speed : "Enter a value"
+              }
               autoComplete="off"
-              value={values.speed}
             />
             {invalidFields.includes("speed") && (
               <small className="text-red-600">
@@ -2289,10 +2236,13 @@ const AddFeatureSet = ({ onSuccess }) => {
                   ? "border-red-600"
                   : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.accelerationBypass
+                  ? featuresetData.accelerationBypass
+                  : "Enter a value"
+              }
               autoComplete="off"
-              value={values.accelerationBypass}
             />
             {invalidFields.includes("accelerationBypass") && (
               <small className="text-red-600">
@@ -2313,10 +2263,13 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("tim_err_tpms") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.tim_err_tpms
+                  ? featuresetData.tim_err_tpms
+                  : "Enter a value"
+              }
               autoComplete="off"
-              value={values.tim_err_tpms}
             />
             {invalidFields.includes("tim_err_tpms") && (
               <small className="text-red-600">
@@ -2341,10 +2294,13 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("rfSensorAbsent") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.rfSensorAbsent
+                  ? featuresetData.rfSensorAbsent
+                  : "Enter a value"
+              }
               autoComplete="off"
-              value={values.rfSensorAbsent}
             />
             {invalidFields.includes("rfSensorAbsent") && (
               <small className="text-red-600">
@@ -2367,10 +2323,13 @@ const AddFeatureSet = ({ onSuccess }) => {
                   ? "border-red-600"
                   : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.gyroscopeAbsent
+                  ? featuresetData.gyroscopeAbsent
+                  : "Enter a value"
+              }
               autoComplete="off"
-              value={values.gyroscopeAbsent}
             />
             {invalidFields.includes("gyroscopeAbsent") && (
               <small className="text-red-600">
@@ -2393,10 +2352,13 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("hmiAbsent") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.hmiAbsent
+                  ? featuresetData.hmiAbsent
+                  : "Enter a value"
+              }
               autoComplete="off"
-              value={values.hmiAbsent}
             />
             {invalidFields.includes("hmiAbsent") && (
               <small className="text-red-600">
@@ -2417,10 +2379,13 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("timeNotSet") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.timeNotSet
+                  ? featuresetData.timeNotSet
+                  : "Enter a value"
+              }
               autoComplete="off"
-              value={values.timeNotSet}
             />
             {invalidFields.includes("timeNotSet") && (
               <small className="text-red-600">
@@ -2443,10 +2408,13 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border  py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("brakeError") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.brakeError
+                  ? featuresetData.brakeError
+                  : "Enter a value"
+              }
               autoComplete="off"
-              value={values.brakeError}
             />
             {invalidFields.includes("brakeError") && (
               <small className="text-red-600">
@@ -2468,10 +2436,13 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("tpmsError") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.tpmsError
+                  ? featuresetData.tpmsError
+                  : "Enter a value"
+              }
               autoComplete="off"
-              value={values.tpmsError}
             />
             {invalidFields.includes("tpmsError") && (
               <small className="text-red-600">
@@ -2494,10 +2465,13 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("obdAbsent") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.obdAbsent
+                  ? featuresetData.obdAbsent
+                  : "Enter a value"
+              }
               autoComplete="off"
-              value={values.obdAbsent}
             />
             {invalidFields.includes("obdAbsent") && (
               <small className="text-red-600">
@@ -2518,10 +2492,13 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("noAlarmSpeed") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.noAlarmSpeed
+                  ? featuresetData.noAlarmSpeed
+                  : "Enter a value"
+              }
               autoComplete="off"
-              value={values.noAlarmSpeed}
             />
             {invalidFields.includes("noAlarmSpeed") && (
               <small className="text-red-600">
@@ -2546,10 +2523,13 @@ const AddFeatureSet = ({ onSuccess }) => {
                   ? "border-red-600"
                   : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.laserSensorAbsent
+                  ? featuresetData.laserSensorAbsent
+                  : "Enter a value"
+              }
               autoComplete="off"
-              value={values.laserSensorAbsent}
             />
             {invalidFields.includes("laserSensorAbsent") && (
               <small className="text-red-600">
@@ -2570,10 +2550,13 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("rfidAbsent") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.rfidAbsent
+                  ? featuresetData.rfidAbsent
+                  : "Enter a value"
+              }
               autoComplete="off"
-              value={values.rfidAbsent}
             />
             {invalidFields.includes("rfidAbsent") && (
               <small className="text-red-600">
@@ -2596,10 +2579,13 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("iotAbsent") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.iotAbsent
+                  ? featuresetData.iotAbsent
+                  : "Enter a value"
+              }
               autoComplete="off"
-              value={values.iotAbsent}
             />
             {invalidFields.includes("iotAbsent") && (
               <small className="text-red-600">
@@ -2620,10 +2606,13 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("acc_board") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.acc_board
+                  ? featuresetData.acc_board
+                  : "Enter a value"
+              }
               autoComplete="off"
-              value={values.acc_board}
             />
             {invalidFields.includes("acc_board") && (
               <small className="text-red-600">
@@ -2647,10 +2636,11 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("SBE_dd") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.SBE_dd ? featuresetData.SBE_dd : "Enter a value"
+              }
               autoComplete="off"
-              value={values.SBE_dd}
             />
             {invalidFields.includes("SBE_dd") && (
               <small className="text-red-600">
@@ -2671,10 +2661,13 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("SBE_alcohol") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.SBE_alcohol
+                  ? featuresetData.SBE_alcohol
+                  : "Enter a value"
+              }
               autoComplete="off"
-              value={values.SBE_alcohol}
             />
             {invalidFields.includes("SBE_alcohol") && (
               <small className="text-red-600">
@@ -2697,10 +2690,13 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("SBE_temp") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.SBE_temp
+                  ? featuresetData.SBE_temp
+                  : "Enter a value"
+              }
               autoComplete="off"
-              value={values.SBE_temp}
             />
             {invalidFields.includes("SBE_temp") && (
               <small className="text-red-600">
@@ -2722,8 +2718,8 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="firmwareOtaUpdate"
               name="firmwareOtaUpdate"
               value={1}
-              onChange={handleData}
-              checked={values.firmwareOtaUpdate === "1"}
+              checked={featuresetData?.firmwareOtaUpdate === "1"}
+              onChange={handleDetails}
             />
             <label htmlFor="firmwareOtaUpdate" className="ml-2">
               Available
@@ -2735,8 +2731,8 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="ota_nav"
               name="firmwareOtaUpdate"
               value={0}
-              onChange={handleData}
-              checked={values.firmwareOtaUpdate === "0"}
+              checked={featuresetData?.firmwareOtaUpdate === "0"}
+              onChange={handleDetails}
             />
             <label htmlFor="ota_nav" className="ml-2">
               Not Available
@@ -2759,11 +2755,14 @@ const AddFeatureSet = ({ onSuccess }) => {
                   ? "border-red-600"
                   : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.firewarereserver1
+                  ? featuresetData.firewarereserver1
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.firmwareOtaUpdate === "0"}
-              value={values.firewarereserver1}
+              disabled={featuresetData.firmwareOtaUpdate === "0"}
             />
           </div>
           <div className="field my-3 w-[30vw]">
@@ -2781,11 +2780,14 @@ const AddFeatureSet = ({ onSuccess }) => {
                   ? "border-red-600"
                   : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.firewarereserver2
+                  ? featuresetData.firewarereserver2
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.firmwareOtaUpdate === "0"}
-              value={values.firewarereserver2}
+              disabled={featuresetData.firmwareOtaUpdate === "0"}
             />
           </div>
         </div>
@@ -2801,8 +2803,8 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="alc_on"
               name="alcoholDetectionMode"
               value={1}
-              onChange={handleData}
-              checked={values.alcoholDetectionMode === "1"}
+              checked={featuresetData?.alcoholDetectionMode === "1"}
+              onChange={handleDetails}
             />
             <label htmlFor="alc_on" className="ml-2">
               Enable
@@ -2814,8 +2816,8 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="alc_off"
               name="alcoholDetectionMode"
               value={0}
-              onChange={handleData}
-              checked={values.alcoholDetectionMode === "0"}
+              checked={featuresetData?.alcoholDetectionMode === "0"}
+              onChange={handleDetails}
             />
             <label htmlFor="alc_off" className="ml-2">
               Disable
@@ -2838,11 +2840,14 @@ const AddFeatureSet = ({ onSuccess }) => {
                   ? "border-red-600"
                   : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.alcoholinterval
+                  ? featuresetData.alcoholinterval
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.alcoholDetectionMode === "0"}
-              value={values.alcoholinterval}
+              disabled={featuresetData.alcoholDetectionMode === "0"}
             />
             {invalidFields.includes("alcoholinterval") && (
               <small className="text-red-600">
@@ -2863,11 +2868,14 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("alcoholact_spd") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.alcoholact_spd
+                  ? featuresetData.alcoholact_spd
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.alcoholDetectionMode === "0"}
-              value={values.alcoholact_spd}
+              disabled={featuresetData.alcoholDetectionMode === "0"}
             />
             {invalidFields.includes("alcoholact_spd") && (
               <small className="text-red-600">
@@ -2892,11 +2900,14 @@ const AddFeatureSet = ({ onSuccess }) => {
                   ? "border-red-600"
                   : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.alcoholstart_time
+                  ? featuresetData.alcoholstart_time
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.alcoholDetectionMode === "0"}
-              value={values.alcoholstart_time}
+              disabled={featuresetData.alcoholDetectionMode === "0"}
             />
             {invalidFields.includes("alcoholstart_time") && (
               <small className="text-red-600">
@@ -2919,11 +2930,14 @@ const AddFeatureSet = ({ onSuccess }) => {
                   ? "border-red-600"
                   : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.alcoholstop_time
+                  ? featuresetData.alcoholstop_time
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.alcoholDetectionMode === "0"}
-              value={values.alcoholstop_time}
+              disabled={featuresetData.alcoholDetectionMode === "0"}
             />
             {invalidFields.includes("alcoholstop_time") && (
               <small className="text-red-600">
@@ -2942,16 +2956,20 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="alcoholmode"
-              value={values.alcoholmode || "1"}
-              placeholder="Select an option"
+              value={featuresetData.alcoholmode}
+              placeholder={
+                featuresetData.alcoholmode
+                  ? featuresetData.alcoholmode
+                  : "Enter a value"
+              }
               options={alcothreshOptions}
               optionLabel="label"
               optionValue="value"
-              onChange={handleData}
-              disabled={values.alcoholDetectionMode === "0"}
-              className={`border dark:bg-gray-900 ${
-                invalidFields.includes("alcoholmode") ? "border-red-600" : ""
+              onChange={handleDetails}
+              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
+                invalidFields.includes("alcoholmode") ? "p-invalid" : ""
               }`}
+              disabled={featuresetData.alcoholDetectionMode === "0"}
             />
           </div>
         </div>
@@ -2967,8 +2985,8 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="driverDrowsinessMode"
               name="driverDrowsinessMode"
               value={1}
-              onChange={handleData}
-              checked={values.driverDrowsinessMode === "1"}
+              checked={featuresetData?.driverDrowsinessMode === "1"}
+              onChange={handleDetails}
             />
             <label htmlFor="driverDrowsinessMode" className="ml-2">
               Enable
@@ -2980,8 +2998,8 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="driverDrowsinessMode"
               name="driverDrowsinessMode"
               value={0}
-              onChange={handleData}
-              checked={values.driverDrowsinessMode === "0"}
+              checked={featuresetData?.driverDrowsinessMode === "0"}
+              onChange={handleDetails}
             />
             <label htmlFor="drowsi_off" className="ml-2">
               Disable
@@ -3002,11 +3020,14 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("dd_act_spd") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.dd_act_spd
+                  ? featuresetData.dd_act_spd
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.driverDrowsinessMode === "0"}
-              value={values.dd_act_spd}
+              disabled={featuresetData.driverDrowsinessMode === "0"}
             />
             {invalidFields.includes("dd_act_spd") && (
               <small className="text-red-600">
@@ -3027,11 +3048,14 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("dd_acc_cut") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.dd_acc_cut
+                  ? featuresetData.dd_acc_cut
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.driverDrowsinessMode === "0"}
-              value={values.dd_acc_cut}
+              disabled={featuresetData.driverDrowsinessMode === "0"}
             />
           </div>
         </div>
@@ -3049,11 +3073,14 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("dd_strt_tim") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.dd_strt_tim
+                  ? featuresetData.dd_strt_tim
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.driverDrowsinessMode === "0"}
-              value={values.dd_strt_tim}
+              disabled={featuresetData.driverDrowsinessMode === "0"}
             />
             {invalidFields.includes("dd_act_spd") && (
               <small className="text-red-600">
@@ -3074,10 +3101,14 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("dd_stop_tim") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.dd_stop_tim
+                  ? featuresetData.dd_stop_tim
+                  : "Enter a value"
+              }
               autoComplete="off"
-              value={values.dd_stop_tim}
+              disabled={featuresetData.driverDrowsinessMode === "0"}
             />
             {invalidFields.includes("dd_stop_tim") && (
               <small className="text-red-600">
@@ -3100,11 +3131,14 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("dd_res1") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.dd_res1
+                  ? featuresetData.dd_res1
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.driverDrowsinessMode === "0"}
-              value={values.dd_res1}
+              disabled={featuresetData.driverDrowsinessMode === "0"}
             />
           </div>
         </div>
@@ -3120,8 +3154,8 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="load_sts"
               name="load_sts"
               value={1}
-              onChange={handleData}
-              checked={values.load_sts === "1"}
+              checked={featuresetData?.load_sts === "1"}
+              onChange={handleDetails}
             />
             <label htmlFor="load_sts" className="ml-2">
               Available
@@ -3133,8 +3167,8 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="load_sts"
               name="load_sts"
               value={0}
-              onChange={handleData}
-              checked={values.load_sts === "0"}
+              checked={featuresetData?.load_sts === "0"}
+              onChange={handleDetails}
             />
             <label htmlFor="load_sts" className="ml-2">
               Not Available
@@ -3155,11 +3189,14 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("load_max_cap") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.load_max_cap
+                  ? featuresetData.load_max_cap
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.load_sts === "0"}
-              value={values.load_max_cap}
+              disabled={featuresetData.load_sts === "0"}
             />
           </div>
           <div className="field my-3 w-[30vw]">
@@ -3175,11 +3212,14 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("load_acc") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.load_acc
+                  ? featuresetData.load_acc
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.load_sts === "0"}
-              value={values.load_acc}
+              disabled={featuresetData.load_sts === "0"}
             />
           </div>
         </div>
@@ -3195,8 +3235,8 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="fuelMode"
               name="fuelMode"
               value={1}
-              onChange={handleData}
-              checked={values.fuelMode === "1"}
+              checked={featuresetData?.fuelMode === "1"}
+              onChange={handleDetails}
             />
             <label htmlFor="fuelMode" className="ml-2">
               Available
@@ -3208,8 +3248,8 @@ const AddFeatureSet = ({ onSuccess }) => {
               id="fuelMode"
               name="fuelMode"
               value={0}
-              onChange={handleData}
-              checked={values.fuelMode === "0"}
+              checked={featuresetData?.fuelMode === "0"}
+              onChange={handleDetails}
             />
             <label htmlFor="fuelMode" className="ml-2">
               Not Available
@@ -3230,11 +3270,14 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("fuel_tnk_cap") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.fuel_tnk_cap
+                  ? featuresetData.fuel_tnk_cap
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.fuelMode === "0"}
-              value={values.fuel_tnk_cap}
+              disabled={featuresetData.fuelMode === "0"}
             />
           </div>
           <div className="field my-3 w-[30vw]">
@@ -3250,11 +3293,14 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("fuel_intvl1") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.fuel_intvl1
+                  ? featuresetData.fuel_intvl1
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.fuelMode === "0"}
-              value={values.fuel_intvl1}
+              disabled={featuresetData.fuelMode === "0"}
             />
           </div>
         </div>
@@ -3272,11 +3318,14 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("fuel_intvl2") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.fuel_intvl2
+                  ? featuresetData.fuel_intvl2
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.fuelMode === "0"}
-              value={values.fuel_intvl2}
+              disabled={featuresetData.fuelMode === "0"}
             />
           </div>
           <div className="field my-3 w-[30vw]">
@@ -3292,11 +3341,14 @@ const AddFeatureSet = ({ onSuccess }) => {
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("fuel_acc") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
+              onChange={handleDetails}
+              placeholder={
+                featuresetData.fuel_acc
+                  ? featuresetData.fuel_acc
+                  : "Enter a value"
+              }
               autoComplete="off"
-              disabled={values.fuelMode === "0"}
-              value={values.fuel_acc}
+              disabled={featuresetData.fuelMode === "0"}
             />
           </div>
         </div>
@@ -3313,11 +3365,14 @@ const AddFeatureSet = ({ onSuccess }) => {
             className={`border py-2 pl-2 dark:bg-gray-900 ${
               invalidFields.includes("fuel_thrsh") ? "border-red-600" : ""
             }`}
-            onChange={handleData}
-            placeholder="Enter a value"
+            onChange={handleDetails}
+            placeholder={
+              featuresetData.fuel_thrsh
+                ? featuresetData.fuel_thrsh
+                : "Enter a value"
+            }
             autoComplete="off"
-            disabled={values.fuelMode === "0"}
-            value={values.fuel_thrsh}
+            disabled={featuresetData.fuelMode === "0"}
           />
         </div>
 
@@ -3326,7 +3381,7 @@ const AddFeatureSet = ({ onSuccess }) => {
             type="submit"
             className="rounded bg-blue-600 px-3 py-2 text-white dark:bg-gray-150 dark:font-bold dark:text-blue-800"
           >
-            Add Feature Set
+            Edit Feature Set
           </button>
         </div>
       </form>
@@ -3334,4 +3389,4 @@ const AddFeatureSet = ({ onSuccess }) => {
   );
 };
 
-export default AddFeatureSet;
+export default DefaultFeatureset;

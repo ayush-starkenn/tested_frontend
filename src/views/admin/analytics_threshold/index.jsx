@@ -85,48 +85,50 @@ const AnalyticsThreshold = () => {
   };
 
   // Edit analytic threshold
-  const handleUpdateAT = async (threshold_uuid, editedData) => {
-    try {
-      const response = await axios.put(
+  const handleUpdateAT = (threshold_uuid, editedData) => {
+    axios
+      .put(
         `${process.env.REACT_APP_API_URL}/analytics-threshold/update-analytic-threshold/${threshold_uuid}`,
         { ...editedData, userUUID },
         { headers: { authorization: `bearer ${token}` } }
-      );
-
-      if (response.status === 200) {
-        setAt(editedData);
-        toastRef.current.show({
-          severity: "success",
-          summary: "Success",
-          detail: `Analytics Threshold ${editedData.title} updated successfully`,
-          life: 3000,
-        });
-      } else {
-        toastRef.current.show({
-          severity: "danger",
-          summary: "Error",
-          detail: "Failed to update AT",
-          life: 3000,
-        });
-      }
-    } catch (error) {
-      if (error.response && error.response.status === 404) {
-        console.log(error.response.data.error);
-        toastRef.current.show({
-          severity: "warn",
-          summary: "Warning",
-          detail: "Analytic Threshold not found",
-          life: 3000,
-        });
-      } else {
-        toastRef.current.show({
-          severity: "danger",
-          summary: "Error",
-          detail: "Failed to update AT",
-          life: 3000,
-        });
-      }
-    }
+      )
+      .then((response) => {
+        if (response.status === 201) {
+          setAt(editedData);
+          toastRef.current.show({
+            severity: "success",
+            summary: "Success",
+            detail: `Analytics Threshold ${editedData.title} updated successfully`,
+            life: 3000,
+          });
+        } else {
+          toastRef.current.show({
+            severity: "danger",
+            summary: "Error",
+            detail: "Failed to update AT",
+            life: 3000,
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.response && error.response.status === 404) {
+          console.log(error.response.data.error);
+          toastRef.current.show({
+            severity: "warn",
+            summary: "Warning",
+            detail: "Analytic Threshold not found",
+            life: 3000,
+          });
+        } else {
+          toastRef.current.show({
+            severity: "danger",
+            summary: "Error",
+            detail: "Failed to update AT",
+            life: 3000,
+          });
+        }
+      });
   };
 
   const openDialog = () => {

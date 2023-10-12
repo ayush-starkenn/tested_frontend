@@ -19,6 +19,7 @@ const LogsTable = () => {
         }
       )
       .then((res) => {
+        console.log(res.data.trip_data);
         setLogs(res.data.trip_data);
       })
       .catch((err) => {
