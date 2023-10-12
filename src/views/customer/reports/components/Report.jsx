@@ -130,6 +130,15 @@ const Report = () => {
                               }
                           }
                           },
+                          dropShadow: {
+                            enabled: false,
+                            enabledOnSeries: undefined,
+                            top: 0,
+                            left: 0,
+                            blur: 3,
+                            color: '#000',
+                            opacity: 0.35
+                        },                                          
                           xaxis: {
                             categories: vehicleData.eventTypes,
                             title: {
