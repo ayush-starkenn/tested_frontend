@@ -15,8 +15,9 @@ const Triggers = () => {
   const [vehiData, setVehiData] = useState([]);
   const [contactsData, setContactsData] = useState([]);
   const [triggersData, setTriggersData] = useState([]);
-  const [addData, setAddData] = useState({});
+  const [addData, setAddData] = useState({ recipients: [] });
   const [formErrors, setFormErrors] = useState({});
+  const [selectedContacts, setSelectedContacts] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const toastRef = useRef(null);
 
@@ -52,7 +53,8 @@ const Triggers = () => {
   const closeDialog = () => {
     setVisible(false);
     setFormErrors({});
-    setAddData({});
+    setAddData({ recipients: [] });
+    setSelectedContacts([]);
   };
 
   //get vehicles list
@@ -77,7 +79,12 @@ const Triggers = () => {
         headers: { authorization: `bearer ${token}` },
       })
       .then((res) => {
-        setContactsData(res.data.contacts);
+        const updatedContacts = res.data.contacts.map((contact) => ({
+          ...contact,
+          hasEmail: contact.contact_email !== null,
+          hasMobile: contact.contact_mobile !== null,
+        }));
+        setContactsData(updatedContacts);
       })
       .catch((err) => {
         console.log(err);
@@ -111,15 +118,12 @@ const Triggers = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
-
     setAddData({ ...addData, [name]: value });
   };
 
   //onSubmit function
   const handleSubmit = (e) => {
     e.preventDefault();
-
     const errors = validateForm();
     setFormErrors(errors);
 
@@ -127,13 +131,12 @@ const Triggers = () => {
       axios
         .post(
           `http://localhost:8080/api/alert-triggers/save-alert-trigger/${user_uuid}`,
-          addData,
+          { ...addData, selectedContacts },
           {
             headers: { authorization: `bearer ${token}` },
           }
         )
         .then((res) => {
-          console.log(res);
           toastRef.current.show({
             severity: "success",
             summary: "Success",
@@ -235,16 +238,54 @@ const Triggers = () => {
     }));
   };
 
-  const contactsOptions = () => {
-    return contactsData?.map((el) => ({
-      label: el.contact_first_name + " " + el.contact_last_name,
-      value: el.contact_uuid,
-    }));
-  };
+  const handleContactChange = (contactId, type) => {
+    setSelectedContacts((prevSelectedContacts) => {
+      // Find the existing contact object for the recipient
+      const updatedContacts = [...prevSelectedContacts];
+      const existingContact = updatedContacts.find(
+        (contact) => contact.recipients === contactId
+      );
 
-  useEffect(() => {
-    console.log(contactsData);
-  }, [contactsData]);
+      if (existingContact) {
+        // Update the specific type (email or mobile)
+        if (type === "email") {
+          existingContact.email = existingContact.email
+            ? ""
+            : contactsData.find((c) => c.contact_uuid === contactId)
+                .contact_email;
+        } else if (type === "mobile") {
+          existingContact.mobile = existingContact.mobile
+            ? ""
+            : contactsData.find((c) => c.contact_uuid === contactId)
+                .contact_mobile;
+        }
+
+        // If both email and mobile are empty, remove the contact
+        if (!existingContact.email && !existingContact.mobile) {
+          return updatedContacts.filter(
+            (contact) => contact.recipients !== contactId
+          );
+        }
+        return updatedContacts;
+      } else {
+        // If the contact does not exist in selectedContacts, add it
+        const newContact = { recipients: contactId };
+
+        if (type === "email") {
+          newContact.email = contactsData.find(
+            (c) => c.contact_uuid === contactId
+          ).contact_email;
+        } else if (type === "mobile") {
+          newContact.mobile = contactsData.find(
+            (c) => c.contact_uuid === contactId
+          ).contact_mobile;
+        }
+
+        updatedContacts.push(newContact);
+        return updatedContacts;
+      }
+    });
+  };
 
   return (
     <>
@@ -271,7 +312,10 @@ const Triggers = () => {
           modal
           className="p-fluid dark:bg-gray-900"
         >
-          <form onSubmit={handleSubmit} className="flex dark:text-gray-300 flex-wrap">
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-wrap dark:text-gray-300"
+          >
             <div className="mx-auto mt-5 w-[34.5vw]">
               <span className="p-float-label">
                 <Dropdown
@@ -286,7 +330,9 @@ const Triggers = () => {
                   }`}
                   value={addData.trigger_type}
                 />
-                <label htmlFor="trigger_type" className="dark:text-gray-300">Trigger Type</label>
+                <label htmlFor="trigger_type" className="dark:text-gray-300">
+                  Trigger Type
+                </label>
               </span>
               {formErrors.trigger_type && (
                 <small className="p-error">{formErrors.trigger_type}</small>
@@ -302,7 +348,9 @@ const Triggers = () => {
                     formErrors.trigger_name ? "border-red-600" : ""
                   }`}
                 />
-                <label htmlFor="trigger_name" className="dark:text-gray-300">Trigger Name</label>
+                <label htmlFor="trigger_name" className="dark:text-gray-300">
+                  Trigger Name
+                </label>
               </span>
               {formErrors.trigger_name && (
                 <small className="p-error">{formErrors.trigger_name}</small>
@@ -322,7 +370,9 @@ const Triggers = () => {
                   }`}
                   value={addData.vehicle_uuid}
                 />
-                <label htmlFor="vehicle_uuid" className="dark:text-gray-300">Select Vehicle</label>
+                <label htmlFor="vehicle_uuid" className="dark:text-gray-300">
+                  Select Vehicle
+                </label>
               </span>
               {formErrors.vehicle_uuid && (
                 <small className="p-error">{formErrors.vehicle_uuid}</small>
@@ -338,7 +388,12 @@ const Triggers = () => {
                     formErrors.trigger_description ? "border-red-600" : ""
                   }`}
                 />
-                <label htmlFor="trigger_description" className="dark:text-gray-300">Trigger Description</label>
+                <label
+                  htmlFor="trigger_description"
+                  className="dark:text-gray-300"
+                >
+                  Trigger Description
+                </label>
               </span>
               {formErrors.trigger_description && (
                 <small className="p-error">
@@ -360,7 +415,7 @@ const Triggers = () => {
                   }`}
                   value={addData.recipients}
                 />
-                <label htmlFor="recipients" className="dark:text-gray-300">Select Contact</label>
+                <label htmlFor="recipients">Select Contact</label>
               </span>
               {formErrors.recipients && (
                 <small className="p-error">{formErrors.recipients}</small>
