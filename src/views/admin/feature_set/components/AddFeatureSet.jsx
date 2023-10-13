@@ -52,7 +52,7 @@ const AddFeatureSet = ({ onSuccess }) => {
     vehicleType: "1",
     //OBD
     obdMode: "1",
-    protocolType: "SAEJ1939",
+    protocolType: "0",
     //TPMS
     tpmsMode: "1",
     //Vehicle settings
@@ -109,20 +109,20 @@ const AddFeatureSet = ({ onSuccess }) => {
     //Driver Drowsiness
     driverDrowsinessMode: "1",
     dd_act_spd: "40",
-    dd_acc_cut: "50",
+    dd_acc_cut: "1",
     dd_strt_tim: "12",
     dd_stop_tim: "12",
     dd_res1: "0",
     //Load Sensor
     load_sts: "1",
     load_max_cap: "10",
-    load_acc: "10",
+    load_acc: "1",
     //Fuel
     fuelMode: "1",
     fuel_tnk_cap: "100",
     fuel_intvl1: "0",
     fuel_intvl2: "0",
-    fuel_acc: "10",
+    fuel_acc: "1",
     fuel_thrsh: "10",
   });
   const toastRef = useRef(null);
@@ -504,7 +504,7 @@ const AddFeatureSet = ({ onSuccess }) => {
       invalidFieldsArray.push("alcoholstop_time");
     }
 
-    //Driver monitoring
+    //Driver Drowsiness
 
     if (values.dd_act_spd < 0 || values.dd_act_spd > 150) {
       invalidFieldsArray.push("dd_act_spd");
@@ -514,6 +514,22 @@ const AddFeatureSet = ({ onSuccess }) => {
     }
     if (values.dd_stop_tim < 0 || values.dd_stop_tim > 24) {
       invalidFieldsArray.push("dd_stop_tim");
+    }
+
+    //load Sensor
+
+    if (values.load_max_cap < 0 || values.load_max_cap > 100) {
+      invalidFieldsArray.push("load_max_cap");
+    }
+
+    //Fuel Sensor
+
+    if (values.fuel_tnk_cap < 0 || values.fuel_tnk_cap > 500) {
+      invalidFieldsArray.push("fuel_tnk_cap");
+    }
+
+    if (values.fuel_thrsh < 0 || values.fuel_thrsh > 100) {
+      invalidFieldsArray.push("fuel_thrsh");
     }
 
     return invalidFieldsArray;
@@ -640,11 +656,11 @@ const AddFeatureSet = ({ onSuccess }) => {
 
   const BrakingOptions = [
     {
-      label: "Internal Braking",
+      label: "Non PWM Braking",
       value: "1",
     },
     {
-      label: "PWN Braking",
+      label: "PWM Braking",
       value: "2",
     },
     {
@@ -654,10 +670,10 @@ const AddFeatureSet = ({ onSuccess }) => {
   ];
 
   const ProtocolTypeoptions = [
-    { label: "SAEJ1939", value: "SAEJ1939" },
+    { label: "SAEJ1939", value: "0" },
     {
-      label: "CAN",
-      value: "CAN",
+      label: "ISO_15765_4",
+      value: "1",
     },
   ];
   const radarOptions = [
@@ -682,14 +698,29 @@ const AddFeatureSet = ({ onSuccess }) => {
   // ];
 
   const Braking = [
-    { label: "Yes", value: "1" },
-    { label: "No", value: "0" },
+    { label: "Enable", value: "1" },
+    { label: "Disable", value: "0" },
   ];
 
   const SpeedSourceoptions = [
-    { label: "Speed Wire", value: "Speed Wire" },
-    { label: "OBD", value: "OBD" },
-    { label: "GPS", value: "GPS" },
+    { label: "Speed Wire", value: "1" },
+    { label: "OBD", value: "2" },
+    { label: "GPS", value: "3" },
+  ];
+
+  const loadOptions = [
+    { label: "Enable", value: "1" },
+    { label: "Disable", value: "0" },
+  ];
+
+  const DDACCoptions = [
+    { label: "Enable", value: "1" },
+    { label: "Disable", value: "0" },
+  ];
+
+  const FuelACCoptions = [
+    { label: "Enable", value: "1" },
+    { label: "Disable", value: "0" },
   ];
 
   const Customersoptions = () => {
@@ -3020,22 +3051,23 @@ const AddFeatureSet = ({ onSuccess }) => {
           </div>
           <div className="field my-3 w-[30vw]">
             <label htmlFor="dd_acc_cut">ACC Cut Status</label>
-            <InputText
-              type="number"
+            <Dropdown
               id="dd_acc_cut"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="dd_acc_cut"
-              className={`border py-2 pl-2 dark:bg-gray-900 ${
+              value={values.dd_acc_cut || "1"}
+              placeholder="Select an option"
+              options={DDACCoptions}
+              optionLabel="label"
+              optionValue="value"
+              onChange={handleData}
+              disabled={values.driverDrowsinessMode === "0"}
+              className={`border dark:bg-gray-900 ${
                 invalidFields.includes("dd_acc_cut") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
-              autoComplete="off"
-              disabled={values.driverDrowsinessMode === "0"}
-              value={values.dd_acc_cut}
             />
           </div>
         </div>
@@ -3165,25 +3197,31 @@ const AddFeatureSet = ({ onSuccess }) => {
               disabled={values.load_sts === "0"}
               value={values.load_max_cap}
             />
+            {invalidFields.includes("load_max_cap") && (
+              <small className="text-red-600">
+                Maximum capacity should be greater than 0 and less than 100
+              </small>
+            )}
           </div>
           <div className="field my-3 w-[30vw]">
             <label htmlFor="load_acc">Accelerator</label>
-            <InputText
-              type="number"
+            <Dropdown
               id="load_acc"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="load_acc"
-              className={`border py-2 pl-2 dark:bg-gray-900 ${
+              value={values.load_acc || "1"}
+              placeholder="Select an option"
+              options={loadOptions}
+              optionLabel="label"
+              optionValue="value"
+              onChange={handleData}
+              disabled={values.load_sts === "0"}
+              className={`border dark:bg-gray-900 ${
                 invalidFields.includes("load_acc") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
-              autoComplete="off"
-              disabled={values.load_sts === "0"}
-              value={values.load_acc}
             />
           </div>
         </div>
@@ -3240,6 +3278,11 @@ const AddFeatureSet = ({ onSuccess }) => {
               disabled={values.fuelMode === "0"}
               value={values.fuel_tnk_cap}
             />
+            {invalidFields.includes("fuel_tnk_cap") && (
+              <small className="text-red-600">
+                Fuel tank should be greater than 0 and less than 500
+              </small>
+            )}
           </div>
           <div className="field my-3 w-[30vw]">
             <label htmlFor="fuel_intvl1">Interval 1</label>
@@ -3285,22 +3328,23 @@ const AddFeatureSet = ({ onSuccess }) => {
           </div>
           <div className="field my-3 w-[30vw]">
             <label htmlFor="fuel_acc">Acc Cut</label>
-            <InputText
-              type="number"
+            <Dropdown
               id="fuel_acc"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="fuel_acc"
-              className={`border py-2 pl-2 dark:bg-gray-900 ${
+              value={values.fuel_acc || "1"}
+              placeholder="Select an option"
+              options={FuelACCoptions}
+              optionLabel="label"
+              optionValue="value"
+              onChange={handleData}
+              disabled={values.fuelMode === "0"}
+              className={`border dark:bg-gray-900 ${
                 invalidFields.includes("fuel_acc") ? "border-red-600" : ""
               }`}
-              onChange={handleData}
-              placeholder="Enter a value"
-              autoComplete="off"
-              disabled={values.fuelMode === "0"}
-              value={values.fuel_acc}
             />
           </div>
         </div>
@@ -3323,6 +3367,11 @@ const AddFeatureSet = ({ onSuccess }) => {
             disabled={values.fuelMode === "0"}
             value={values.fuel_thrsh}
           />
+          {invalidFields.includes("fuel_thrsh") && (
+            <small className="text-red-600">
+              Threshold should be greater than 0 and less than 100
+            </small>
+          )}
         </div>
 
         <div className="text-right">
