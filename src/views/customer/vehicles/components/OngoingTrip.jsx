@@ -1758,31 +1758,31 @@ const CompletedTrip = () => {
     return tableContent;
   });
 
-  useEffect(() => {
-    const animateCar = () => {
-      let index = 0;
-      const animationInterval = setInterval(() => {
-        if (index < path.length - 1) {
-          const currentPos = path[index];
-          const nextPos = path[index + 1];
-          const rotation = calculateRotation(currentPos, nextPos);
-          setCarPosition(currentPos);
-          document.querySelector(
-            ".car-marker"
-          ).style.transform = `rotate(${rotation}deg)`;
-          index += 1;
-        } else {
-          clearInterval(animationInterval);
-        }
-      }, 10000); // Adjust the interval for car speed
-    };
+  // useEffect(() => {
+  //   const animateCar = () => {
+  //     let index = 0;
+  //     const animationInterval = setInterval(() => {
+  //       if (index < path.length - 1) {
+  //         const currentPos = path[index];
+  //         const nextPos = path[index + 1];
+  //         const rotation = calculateRotation(currentPos, nextPos);
+  //         setCarPosition(currentPos);
+  //         document.querySelector(
+  //           ".car-marker"
+  //         ).style.transform = `rotate(${rotation}deg)`;
+  //         index += 1;
+  //       } else {
+  //         clearInterval(animationInterval);
+  //       }
+  //     }, 10000); // Adjust the interval for car speed
+  //   };
 
-    animateCar();
+  //   animateCar();
 
-    return () => {
-      // Cleanup code if needed
-    };
-  }, []);
+  //   return () => {
+  //     // Cleanup code if needed
+  //   };
+  // }, []);
 
   const calculateRotation = (currentPos, nextPos) => {
     const dx = nextPos.lng - currentPos.lng;
