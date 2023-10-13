@@ -312,7 +312,10 @@ const Triggers = () => {
           modal
           className="p-fluid dark:bg-gray-900"
         >
-          <form onSubmit={handleSubmit} className="flex flex-wrap">
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-wrap dark:text-gray-300"
+          >
             <div className="mx-auto mt-5 w-[34.5vw]">
               <span className="p-float-label">
                 <Dropdown
@@ -327,7 +330,9 @@ const Triggers = () => {
                   }`}
                   value={addData.trigger_type}
                 />
-                <label htmlFor="trigger_type">Trigger Type</label>
+                <label htmlFor="trigger_type" className="dark:text-gray-300">
+                  Trigger Type
+                </label>
               </span>
               {formErrors.trigger_type && (
                 <small className="p-error">{formErrors.trigger_type}</small>
@@ -343,7 +348,9 @@ const Triggers = () => {
                     formErrors.trigger_name ? "border-red-600" : ""
                   }`}
                 />
-                <label htmlFor="trigger_name">Trigger Name</label>
+                <label htmlFor="trigger_name" className="dark:text-gray-300">
+                  Trigger Name
+                </label>
               </span>
               {formErrors.trigger_name && (
                 <small className="p-error">{formErrors.trigger_name}</small>
@@ -363,7 +370,9 @@ const Triggers = () => {
                   }`}
                   value={addData.vehicle_uuid}
                 />
-                <label htmlFor="vehicle_uuid">Select Vehicle</label>
+                <label htmlFor="vehicle_uuid" className="dark:text-gray-300">
+                  Select Vehicle
+                </label>
               </span>
               {formErrors.vehicle_uuid && (
                 <small className="p-error">{formErrors.vehicle_uuid}</small>
@@ -379,7 +388,12 @@ const Triggers = () => {
                     formErrors.trigger_description ? "border-red-600" : ""
                   }`}
                 />
-                <label htmlFor="trigger_description">Trigger Description</label>
+                <label
+                  htmlFor="trigger_description"
+                  className="dark:text-gray-300"
+                >
+                  Trigger Description
+                </label>
               </span>
               {formErrors.trigger_description && (
                 <small className="p-error">
@@ -388,62 +402,24 @@ const Triggers = () => {
               )}
             </div>
             <div className="mx-auto mt-8 w-[34.5vw]">
-              <table className="table w-full table-auto border-collapse border border-gray-300">
-                <thead>
-                  <tr>
-                    <th className="border px-4 py-2">Contact Name</th>
-                    <th className="border px-4 py-2">Email</th>
-                    <th className="border px-4 py-2">Mobile</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {contactsData.map((contact) => (
-                    <tr key={contact.contact_id}>
-                      <td className="border px-4 py-2">
-                        {contact.contact_first_name +
-                          " " +
-                          contact.contact_last_name}
-                      </td>
-                      <td className="border px-4 py-2 ">
-                        {contact.contact_email && (
-                          <>
-                            <label>
-                              <input
-                                type="checkbox"
-                                onChange={() =>
-                                  handleContactChange(
-                                    contact.contact_uuid,
-                                    "email"
-                                  )
-                                }
-                              />
-                              {contact.contact_email}
-                            </label>
-                          </>
-                        )}
-                      </td>
-                      <td className="border px-4 py-2">
-                        {contact.contact_mobile && (
-                          <>
-                            <label>
-                              <input
-                                type="checkbox"
-                                onChange={() =>
-                                  handleContactChange(
-                                    contact.contact_uuid,
-                                    "mobile"
-                                  )
-                                }
-                              />
-                              {contact.contact_mobile}
-                            </label>
-                          </>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <span className={"p-float-label"}>
+                <Dropdown
+                  id="recipients"
+                  name="recipients"
+                  optionLabel="label"
+                  optionValue="value"
+                  options={contactsOptions()}
+                  onChange={handleChange}
+                  className={`border ${
+                    formErrors.recipients ? "border-red-600" : ""
+                  }`}
+                  value={addData.recipients}
+                />
+                <label htmlFor="recipients">Select Contact</label>
+              </span>
+              {formErrors.recipients && (
+                <small className="p-error">{formErrors.recipients}</small>
+              )}
             </div>
 
             <div className="p-field p-col-12 mt-3 flex justify-center">

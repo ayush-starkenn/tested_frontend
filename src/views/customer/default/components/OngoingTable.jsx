@@ -33,13 +33,10 @@ const OngoingTable = () => {
     OngoingTripsHere();
   }, []);
 
-  const getTimeStamp = (e) => {
-    var d = new Date(0);
-    d.setUTCSeconds(e);
-
-    var formattedDate = d.toISOString().slice(0, 19).replace("T", " ");
-
-    return formattedDate;
+  const getTimeStamp = (time) => {
+    let formattedDate = new Date(time * 1000);
+    let formatDta = formattedDate.toLocaleString();
+    return formatDta;
   };
 
   return (

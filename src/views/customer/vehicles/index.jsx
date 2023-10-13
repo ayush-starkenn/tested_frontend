@@ -396,7 +396,7 @@ const Marketplace = () => {
         modal
         className="p-fluid dark:bg-gray-900"
       >
-        <form onSubmit={handleSubmit} className="flex flex-wrap">
+        <form onSubmit={handleSubmit} className="flex dark:text-gray-300 flex-wrap">
           <div className="mx-auto mt-8 w-[34.5vw]">
             <span className="p-float-label">
               <InputText
@@ -407,7 +407,7 @@ const Marketplace = () => {
                   formErrors.vehicle_name && "border-red-600"
                 }`}
               />
-              <label htmlFor="vehicle_name">Vehicle Name</label>
+              <label htmlFor="vehicle_name" className="dark:text-gray-300">Vehicle Name</label>
             </span>
             {formErrors.vehicle_name && (
               <small className="text-red-600">{formErrors.vehicle_name}</small>
@@ -423,7 +423,7 @@ const Marketplace = () => {
                   formErrors.vehicle_registration && "border-red-600"
                 }`}
               />
-              <label htmlFor="vehicle_registration">Vehicle Registration</label>
+              <label htmlFor="vehicle_registration" className="dark:text-gray-300">Vehicle Registration</label>
             </span>
             {formErrors.vehicle_registration && (
               <small className="text-red-600">
@@ -445,7 +445,7 @@ const Marketplace = () => {
                   formErrors.ecu && "border-red-600"
                 }`}
               />
-              <label htmlFor="status">Select ECU</label>
+              <label htmlFor="status" className="dark:text-gray-300">Select ECU</label>
             </span>
             {formErrors.ecu && (
               <small className="text-red-600">{formErrors.ecu}</small>
@@ -463,7 +463,7 @@ const Marketplace = () => {
                 value={addData?.iot}
                 className={`border ${formErrors.iot && "border-red-600"}`}
               />
-              <label htmlFor="status">Select IoT</label>
+              <label htmlFor="status" className="dark:text-gray-300">Select IoT</label>
             </span>
             {formErrors.iot && (
               <small className="text-red-600">{formErrors.iot}</small>
@@ -481,7 +481,7 @@ const Marketplace = () => {
                 value={addData?.dms}
                 className={`border ${formErrors.dms && "border-red-600"}`}
               />
-              <label htmlFor="status">Select DMS</label>
+              <label htmlFor="status" className="dark:text-gray-300">Select DMS</label>
             </span>
           </div>
           <div className="mx-auto mt-7 w-[34.5vw]">
@@ -498,7 +498,7 @@ const Marketplace = () => {
                   formErrors.featureset_uuid ? "border-red-600" : ""
                 }`}
               />
-              <label htmlFor="status">Select Featureset</label>
+              <label htmlFor="status" className="dark:text-gray-300">Select Featureset</label>
             </span>
             {formErrors.featureset_uuid && (
               <small className="text-red-600">

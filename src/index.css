@@ -505,3 +505,14 @@ body
 .p-scrollpanel-grabbed {
   background-color: #1b2559;
 }
+.p-scrollpanel .p-scrollpanel-bar {
+  background: #0b4d8e9e;
+}
+
+.p-checkbox .p-checkbox-box {
+  background: #cccccc;
+}
+
+.car-marker {
+  transform: rotate(70deg) !important;
+}

@@ -19,25 +19,27 @@ import { Dialog } from "primereact/dialog";
 import simplify from "simplify-js";
 
 // All customized icons
-// import drowsinessIcon from "../../../../assets/img/icons/drowsiness.png";
-// import accCutIcon from "../../../../assets/img/icons/accCut.png";
-// import accidentCasIcon from "../../../../assets/img/icons/accidentCas.png";
-// import accidentdmsIcon from "../../../../assets/img/icons/accidentdms.png";
-// import alarm2Icon from "../../../../assets/img/icons/alarm2.png";
-// import alarm3Icon from "../../../../assets/img/icons/alarm3.png";
-// import automaticBrakingIcon from "../../../../assets/img/icons/automaticBraking.png";
-// import cvnIcon from "../../../../assets/img/icons/cvn.png";
-// import defaultIcon from "../../../../assets/img/icons/default.png";
-// import distractionIcon from "../../../../assets/img/icons/distraction.png";
-// import harshAccIcon from "../../../../assets/img/icons/harshAcc.png";
-// import laneChngIcon from "../../../../assets/img/icons/laneChng.png";
-// import nodriverIcon from "../../../../assets/img/icons/nodriver.png";
-// import overspeedDMSIcon from "../../../../assets/img/icons/overspdDMS.png";
-// import overspeedIcon from "../../../../assets/img/icons/overspeed.png";
-// import spdBumpIcon from "../../../../assets/img/icons/spdBump.png";
-// import suddenBrkIcon from "../../../../assets/img/icons/suddenBrk.png";
-// import tailgatingIcon from "../../../../assets/img/icons/tailgating.png";
-// import tripstartIcon from "../../../../assets/img/icons/tripstart.png";
+import drowsinessIcon from "../../../../assets/img/icons/drowsiness.png";
+import accCutIcon from "../../../../assets/img/icons/accCut.png";
+import accidentCasIcon from "../../../../assets/img/icons/accidentCas.png";
+import accidentdmsIcon from "../../../../assets/img/icons/accidentdms.png";
+import alarm2Icon from "../../../../assets/img/icons/alarm2.png";
+import alarm3Icon from "../../../../assets/img/icons/alarm3.png";
+import automaticBrakingIcon from "../../../../assets/img/icons/automaticBraking.png";
+import cvnIcon from "../../../../assets/img/icons/cvn.png";
+import defaultIcon from "../../../../assets/img/icons/default.png";
+import distractionIcon from "../../../../assets/img/icons/distraction.png";
+import harshAccIcon from "../../../../assets/img/icons/harshAcc.png";
+import laneChngIcon from "../../../../assets/img/icons/laneChng.png";
+import nodriverIcon from "../../../../assets/img/icons/nodriver.png";
+import overspeedDMSIcon from "../../../../assets/img/icons/overspdDMS.png";
+import overspeedIcon from "../../../../assets/img/icons/overspeed.png";
+import spdBumpIcon from "../../../../assets/img/icons/spdBump.png";
+import suddenBrkIcon from "../../../../assets/img/icons/suddenBrk.png";
+import tailgatingIcon from "../../../../assets/img/icons/tailgating.png";
+import tripstartIcon from "../../../../assets/img/icons/tripstart.png";
+import truckGIF from "../../../../assets/img/truck.gif";
+import liveCar from "../../../../assets/img/car.png";
 import { ScrollPanel } from "primereact/scrollpanel";
 
 const containerStyle = {
@@ -69,12 +71,13 @@ const TripInfoItem = ({ title, value }) => (
   </div>
 );
 
-const OngoingTrip = () => {
+const CompletedTrip = () => {
   const token = Cookies.get("token");
   const { trip_id } = useParams();
 
   // const [isLoading, setIsLoading] = useState(true);
   const [path, setPath] = useState([]);
+  const [cvnPath, setCVNPath] = useState([]);
   const [coordinates, setCoordinates] = useState([]);
   const [tripData, setTripData] = useState([]);
   const [center, setCenter] = useState({});
@@ -85,6 +88,7 @@ const OngoingTrip = () => {
   const [startTime, setStartTime] = useState();
   const [currentTime, setCurrentTime] = useState();
   const [endTime, setEndTime] = useState();
+  const [carPosition, setCarPosition] = useState([]);
 
   const [distance, setDistance] = useState("");
   const [maxSpd, setMaxSpd] = useState("");
@@ -96,6 +100,7 @@ const OngoingTrip = () => {
   const [epochEnd, setEpochEnd] = useState();
 
   // CAS faults
+  const [accident, setAccident] = useState(0);
   const [harshacc, setHarshacc] = useState(0);
   // eslint-disable-next-line
   const [sleeptAlt, setSleepAlt] = useState(0);
@@ -104,9 +109,13 @@ const OngoingTrip = () => {
   const [suddenBrk, setSuddenBrk] = useState(0);
   const [tailgating, setTailgating] = useState(0);
   const [overspeed, setOverspeed] = useState(0);
-  const [accidentSaved, setAccidentSaved] = useState(0);
-  const [engineOff, setEngineOff] = useState(0);
+  const [accCutTipper, setAccCutTipper] = useState(0);
   const [cvn, setCVN] = useState(0);
+  const [wrongCvn, setWrongCvn] = useState(0);
+  const [load, setLoad] = useState(0);
+  const [actualLoad, setActualLoad] = useState(0);
+  const [fuel, setFuel] = useState(0);
+  const [actualFuel, setActualFuel] = useState(0);
 
   // SET DMS data & Alerts
   // eslint-disable-next-line
@@ -126,10 +135,10 @@ const OngoingTrip = () => {
   // eslint-disable-next-line
   // const [rashDrive, setRashDrive] = useState(0);
   // eslint-disable-next-line
-  const [dmsAccident, setDmsAccident] = useState(0);
+  // const [dmsAccident, setDmsAccident] = useState(0);
   const [tripStartAlert, setTripStartAlert] = useState(0);
   // eslint-disable-next-line
-  const [vehicle, setVehicle] = useState([]);
+  const [vehicleId, setVehicleId] = useState([]);
   const [autoBrk, setAutoBrk] = useState(0);
   const [faultData, setFaultData] = useState(0);
   const [alarm1, setAlarm1] = useState(0);
@@ -143,7 +152,8 @@ const OngoingTrip = () => {
     AUTOMATIC_BRAKING: false,
     ACCIDENT_SAVED: false,
     ACC_Cut: false,
-    CVN: false,
+    WRONG_CVN: false,
+    Load: false,
     Harsh_Acceleration: false,
     Speed_Bump: false,
     Lane_Change: false,
@@ -185,19 +195,40 @@ const OngoingTrip = () => {
         setEndTime(tripEndTime.toLocaleString());
         setEpochStart(resTripdata[0].trip_start_time);
         setEpochEnd(resTripdata[0].trip_end_time);
+        setVehicleId(resTripdata[0].vehicle_uuid);
       })
       .catch((err) => {
         console.log(err);
       });
   }, [trip_id, token]);
 
-  useEffect(() => {
-    console.log(markers);
-    console.log(filterMarker);
-  }, [markers, filterMarker]);
+  // Calculate distance between two coordinates using Haversine formula
+  function getDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Radius of the Earth in kilometers
+    const dLat = deg2rad(lat2 - lat1);
+    const dLon = deg2rad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) *
+        Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+    return distance;
+  }
+
+  // Convert degrees to radians
+  function deg2rad(deg) {
+    return deg * (Math.PI / 180);
+  }
+
+  // useEffect(() => {
+  //   // console.log(markers);
+  //   console.log(filterMarker);
+  // }, [markers, filterMarker]);
 
   useEffect(() => {
-    console.log("fetching trip data...");
     const fetchData = async () => {
       try {
         axios
@@ -215,6 +246,18 @@ const OngoingTrip = () => {
 
             // Set Map center
             setCenter({
+              lat: parseFloat(res.data.tripdata[dataLength].lat),
+              lng: parseFloat(res.data.tripdata[dataLength].lng),
+            });
+
+            // Set Map center
+            setCenter({
+              lat: parseFloat(res.data.tripdata[dataLength].lat),
+              lng: parseFloat(res.data.tripdata[dataLength].lng),
+            });
+
+            // Set car position
+            setCarPosition({
               lat: parseFloat(res.data.tripdata[dataLength].lat),
               lng: parseFloat(res.data.tripdata[dataLength].lng),
             });
@@ -258,34 +301,431 @@ const OngoingTrip = () => {
         console.log(error);
       }
     };
+
     // Fetch the initial data immediately
     fetchData();
     // Fetch subsequent data at the specified interval
-    const interval = setInterval(fetchData, 5000);
-    return () => clearInterval(interval);
+    // const interval = setInterval(fetchData, 5000);
+    // return () => clearInterval(interval);
   }, [trip_id, token]);
 
-  // Calculate distance between two coordinates using Haversine formula
-  function getDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371; // Radius of the Earth in kilometers
-    const dLat = deg2rad(lat2 - lat1);
-    const dLon = deg2rad(lon2 - lon1);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(deg2rad(lat1)) *
-        Math.cos(deg2rad(lat2)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c;
-    return distance;
+  // Set Address
+  useEffect(() => {
+    if (tripData.length > 0 && startPoint !== "" && endPoint !== "") {
+      const getAddress = async (lat, lng, setAddress) => {
+        const response = await fetch(
+          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyCk6RovwH7aF8gjy1svTPJvITZsWGA_roU`
+        );
+        if (response) {
+          // setIsLoading(false);
+        }
+        const data = await response.json();
+        setAddress(data.results[0].formatted_address);
+      };
+
+      getAddress(startPoint.lat, startPoint.lng, setStartAddress);
+      getAddress(endPoint.lat, endPoint.lng, setEndAddress);
+    }
+  }, [tripData, endPoint, startPoint]);
+
+  // Get fault counts data
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      axios
+        .get(
+          `${process.env.REACT_APP_API_URL}/trips/get-ongoing-fault-counts/${trip_id}/${epochStart}/${epochEnd}`,
+          {
+            headers: { authorization: `bearer ${token}` },
+          }
+        )
+        .then((response) => {
+          setFaultData(response.data.results);
+          let parameters = [];
+          let params = {};
+          let myData = response.data.results;
+
+          for (let i = 0; i < myData.length; i++) {
+            let jsonDATA = myData[i].jsondata;
+            let parsejsonDATA = JSON.parse(jsonDATA);
+            // Set Alarm data
+            if (myData[i].event === "ALM") {
+              let almData = myData[i].jsondata;
+              let almparse = JSON.parse(almData);
+              if (almparse.data.alarm === 2) {
+                setAlarm1((prev) => prev + 1);
+              }
+              if (almparse.data.alarm === 3) {
+                setAlarm2((prev) => prev + 1);
+              }
+            }
+
+            // Set Notification data
+            if (myData[i].event === "NTF") {
+              let ntfData = myData[i].jsondata;
+              let ntfparse = JSON.parse(ntfData);
+
+              if (ntfparse.notification === 2) {
+                setHarshacc((prev) => prev + 1);
+              }
+              if (ntfparse.notification === 13) {
+                setSleepAlt((prev) => prev + 1);
+              }
+              if (ntfparse.notification === 5) {
+                setLaneChng((prev) => prev + 1);
+              }
+              if (ntfparse.notification === 4) {
+                setSpdBump((prev) => prev + 1);
+              }
+              if (ntfparse.notification === 3) {
+                setSuddenBrk((prev) => prev + 1);
+              }
+              if (ntfparse.notification === 6) {
+                setTailgating((prev) => prev + 1);
+              }
+              if (ntfparse.notification === 7) {
+                setOverspeed((prev) => prev + 1);
+              }
+              if (ntfparse.notification === 16) {
+                setAccCutTipper((prev) => prev + 1);
+              }
+              if (ntfparse.notification === 17) {
+                setWrongCvn((prev) => prev + 1);
+              }
+            }
+
+            // set CVN
+            if (myData[i].event === "CVN" && parsejsonDATA.data.status === 1) {
+              setCVN((prev) => prev + 1);
+
+              const cvnPathArray = [];
+              // Set CVN path
+              // setCVNPath({
+              //   lat: parseFloat(parsejsonDATA.lat),
+              //   lng: parseFloat(parsejsonDATA.lng),
+              // });
+              tripData.forEach((row) => {
+                if (row.timestamp > parsejsonDATA.timestamp) {
+                  cvnPathArray.push({
+                    lat: parseFloat(row.lat),
+                    lng: parseFloat(row.lng),
+                  });
+                }
+              });
+              // Set cvnPath to the array of lat/lng data
+              setCVNPath(cvnPathArray);
+            }
+
+            // Set LOAD
+            if (myData[i].event === "LDS") {
+              setLoad((prev) => prev + 1);
+              setActualLoad(parsejsonDATA.data.actual_load);
+            }
+            // Set Fuel
+            if (myData[i].event === "FLS") {
+              setFuel((prev) => prev + 1);
+              setActualFuel(parsejsonDATA.data.current_fuel);
+            }
+          }
+
+          // loop to set markers
+          for (let l = 0; l < myData.length; l++) {
+            // parsing break json
+            let parseJson = JSON.parse(myData[l].jsondata);
+
+            if (myData[l].event === "BRK") {
+              let ttcdiff = parseJson.data.on_ttc - parseJson.data.off_ttc;
+              let acd = ttcdiff / parseJson.data.off_ttc;
+              let accSvd = acd * 100;
+              let updatedTime = new Date(myData[l].timestamp * 1000);
+              let contentTime = updatedTime.toLocaleString();
+
+              // Set Accident save
+              if (accSvd > 50 && accSvd < 100) {
+                setAccident((prevCount) => prevCount + 1);
+                params = {
+                  id: myData[l].id,
+                  lat: parseFloat(myData[l].lat),
+                  lng: parseFloat(myData[l].lng),
+                  title: "ACCIDENT_SAVED",
+                  content: contentTime,
+                  speed: parseFloat(myData[l].spd),
+                  event: myData[l].event,
+                  reason: parseJson.data.reason,
+                  brake_duration:
+                    parseJson.data.off_timestamp - parseJson.data.on_timestamp,
+                  icon: accidentCasIcon,
+                };
+                parameters.push(params);
+              }
+              setAutoBrk((prevCount) => prevCount + 1);
+              params = {
+                id: myData[l].id,
+                lat: parseFloat(myData[l].lat),
+                lng: parseFloat(myData[l].lng),
+                title: "AUTOMATIC_BRAKING",
+                content: contentTime,
+                bypass: parseJson.data.bypass,
+                speed: parseFloat(myData[l].spd),
+                event: myData[l].event,
+                reason: parseJson.data.reason,
+                brake_duration:
+                  parseJson.data.off_timestamp - parseJson.data.on_timestamp,
+                icon: automaticBrakingIcon,
+              };
+              parameters.push(params);
+            }
+
+            // DMS markers
+            if (myData[l].event === "DMS") {
+              let updatedTime = new Date(myData[l].timestamp * 1000);
+              let contentTime = updatedTime.toLocaleString();
+              let dmsIcon = defaultIcon;
+              if (parseJson.data.alert_type === "DROWSINESS") {
+                dmsIcon = drowsinessIcon;
+              } else if (parseJson.data.alert_type === "DISTRACTION") {
+                dmsIcon = distractionIcon;
+              } else if (parseJson.data.alert_type === "TRIP_START") {
+                dmsIcon = tripstartIcon;
+              } else if (parseJson.data.alert_type === "NO_DRIVER") {
+                dmsIcon = nodriverIcon;
+              } else if (parseJson.data.alert_type === "OVERSPEEDING") {
+                dmsIcon = overspeedDMSIcon;
+              } else if (parseJson.data.alert_type === "ACCIDENT") {
+                dmsIcon = accidentdmsIcon;
+              }
+              params = {
+                id: myData[l].id,
+                lat: parseFloat(myData[l].lat),
+                lng: parseFloat(myData[l].lng),
+                title: parseJson.data.alert_type,
+                content: contentTime,
+                speed: parseJson.data.speed,
+                event: myData[l].event,
+                reason: parseJson.data.alert_type,
+                alert_type: parseJson.data.alert_type,
+                media: parseJson.data.media,
+                dashcam: parseJson.data.dashcam,
+                severity: parseJson.data.severity,
+                icon: dmsIcon,
+              };
+              parameters.push(params);
+            }
+
+            // adding brk json to markers
+            if (parseJson.notification !== undefined) {
+              let updatedTime = new Date(myData[l].timestamp * 1000);
+              let contentTime = updatedTime.toLocaleString();
+              let ntfIcons = defaultIcon;
+              if (parseJson.notification === 2) {
+                ntfIcons = harshAccIcon;
+              } else if (parseJson.notification === 3) {
+                ntfIcons = suddenBrkIcon;
+              } else if (parseJson.notification === 4) {
+                ntfIcons = spdBumpIcon;
+              } else if (parseJson.notification === 5) {
+                ntfIcons = laneChngIcon;
+              } else if (parseJson.notification === 6) {
+                ntfIcons = tailgatingIcon;
+              } else if (parseJson.notification === 7) {
+                ntfIcons = overspeedIcon;
+              } else if (parseJson.notification === 16) {
+                ntfIcons = accCutIcon;
+              } else if (parseJson.notification === 17) {
+                ntfIcons = cvnIcon;
+              }
+              params = {
+                id: myData[l].id,
+                lat: parseFloat(myData[l].lat),
+                lng: parseFloat(myData[l].lng),
+                title: parseJson.notification,
+                content: contentTime,
+                speed: parseFloat(myData[l].spd),
+                event: myData[l].event,
+                reason: parseJson.notification,
+                icon: ntfIcons,
+              };
+              parameters.push(params);
+            }
+            if (parseJson.event === "BRK") {
+              params = {
+                id: myData[l].id,
+                lat: parseFloat(myData[l].lat),
+                lng: parseFloat(myData[l].lng),
+                title: myData[l].message,
+                event: myData[l].event,
+                reason: parseJson.data.reason,
+                bypass: parseJson.data.bypass,
+                speed: parseFloat(myData[l].spd),
+                brake_duration:
+                  parseJson.data.off_timestamp - parseJson.data.on_timestamp,
+              };
+              parameters.push(params);
+            }
+
+            // ALM markers
+            if (myData[l].event === "ALM") {
+              let updatedTime = new Date(myData[l].timestamp * 1000);
+              let contentTime = updatedTime.toLocaleString();
+              let almIcon = defaultIcon;
+              if (parseJson.data.alarm === 2) {
+                almIcon = alarm2Icon;
+              } else {
+                almIcon = alarm3Icon;
+              }
+              params = {
+                id: myData[l].id,
+                lat: parseFloat(myData[l].lat),
+                lng: parseFloat(myData[l].lng),
+                reason: myData[l].message,
+                title: myData[l].message,
+                speed: Math.round(myData[l].spd),
+                content: contentTime,
+                event: parseJson.data.alarm === 2 ? "ALM2" : "ALM3",
+                alarm_no: parseJson.data.alarm,
+                icon: almIcon,
+              };
+              parameters.push(params);
+            }
+
+            // Set CVN data
+            if (myData[l].event === "CVN") {
+              let updatedTime = new Date(myData[l].timestamp * 1000);
+              let contentTime = updatedTime.toLocaleString();
+              params = {
+                id: myData[l].id,
+                lat: parseFloat(myData[l].lat),
+                lng: parseFloat(myData[l].lng),
+                reason: myData[l].message,
+                title: myData[l].message,
+                speed: Math.round(myData[l].spd),
+                content: contentTime,
+                event: myData[l].event,
+                icon: cvnIcon,
+              };
+              parameters.push(params);
+            }
+
+            // Set Load data
+            if (myData[l].event === "LDS") {
+              let updatedTime = new Date(myData[l].timestamp * 1000);
+              let contentTime = updatedTime.toLocaleString();
+              params = {
+                id: myData[l].id,
+                lat: parseFloat(myData[l].lat),
+                lng: parseFloat(myData[l].lng),
+                reason: myData[l].message,
+                title: myData[l].message,
+                speed: Math.round(myData[l].spd),
+                content: contentTime,
+                max_cap: parseJson.data.max_cap + "Kg",
+                percent: parseJson.data.percentage + "%",
+                actual_load: parseJson.data.actual_load + "Kg",
+                event: myData[l].event,
+                icon: defaultIcon,
+              };
+              parameters.push(params);
+            }
+
+            // Set Fuel data
+            if (myData[l].event === "FLS") {
+              let updatedTime = new Date(myData[l].timestamp * 1000);
+              let contentTime = updatedTime.toLocaleString();
+              params = {
+                id: myData[l].id,
+                lat: parseFloat(myData[l].lat),
+                lng: parseFloat(myData[l].lng),
+                reason: myData[l].message,
+                title: myData[l].message,
+                speed: Math.round(myData[l].spd),
+                content: contentTime,
+                current_fuel: parseJson.data.current_fuel + "Ltr",
+                percent: parseJson.data.percentage + "%",
+                event: myData[l].event,
+                icon: defaultIcon,
+              };
+              parameters.push(params);
+            }
+
+            // Set Alchohol data
+          }
+          setMarkers(parameters);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }, 5000);
+
+    // Clear the timer if the component unmounts before 2 seconds
+    return () => clearTimeout(timerId);
+  }, [token, trip_id, tripData]);
+
+  const polylineOptions = {
+    strokeWeight: 4,
+  };
+  const [cvnRoute, setCvnRoute] = useState(false);
+  // Set the stroke color based on whether it's a special route
+  if (cvnRoute) {
+    polylineOptions.strokeColor = "#FF5733"; // Change the color for the special route
+  } else {
+    polylineOptions.strokeColor = "#4252E0"; // Default color
   }
 
-  // Convert degrees to radians
-  function deg2rad(deg) {
-    return deg * (Math.PI / 180);
-  }
+  // Set DMS media
+  useEffect(() => {
+    if (faultData.length > 0) {
+      let mediaData = [];
+      faultData.forEach((item) => {
+        if (item.event === "DMS") {
+          let dmsData = JSON.parse(item.jsondata);
+          let dmsTimeStamp = item.timestamp;
+          let updatedmsTimeStamp = new Date(dmsTimeStamp * 1000);
+          mediaData.push({
+            dms: dmsData.data.media,
+            dashcam: dmsData.data.dashcam,
+            alert: dmsData.data.alert_type,
+            timestamp: updatedmsTimeStamp.toLocaleString(),
+          });
+          if (dmsData.data.alert_type === "DROWSINESS") {
+            setDrowsiness((prev) => prev + 1);
+          }
+          if (dmsData.data.alert_type === "TRIP_START") {
+            setTripStartAlert((prev) => prev + 1);
+          }
+          if (dmsData.data.alert_type === "DISTRACTION") {
+            setDistraction((prev) => prev + 1);
+          }
+          if (dmsData.data.alert_type === "OVERSPEEDING") {
+            setDmsoverSpd((prev) => prev + 1);
+          }
+          // if (dmsData.data.alert_type === "NO_SEATBELT") {
+          //   setNotSeatBelt((prev) => prev + 1);
+          // }
+          // if (dmsData.data.alert_type === "USING_PHONE") {
+          //   setUsePhone((prev) => prev + 1);
+          // }
+          // if (dmsData.data.alert_type === "UNKNOWN_DRIVER") {
+          //   setUnknownDriver((prev) => prev + 1);
+          // }
+          if (dmsData.data.alert_type === "NO_DRIVER") {
+            setNoDriver((prev) => prev + 1);
+          }
+          // if (dmsData.data.alert_type === "SMOKING") {
+          //   setSmoking((prev) => prev + 1);
+          // }
+          // if (dmsData.data.alert_type === "RASH_DRIVING") {
+          //   setRashDrive((prev) => prev + 1);
+          // }
+          // if (dmsData.data.alert_type === "ACCIDENT") {
+          //   setDmsAccident((prev) => prev + 1);
+          // }
+        }
+      });
 
+      setMedia(mediaData);
+    }
+  }, [faultData]);
+
+  // Set optimized path that will eliminate jumping
   useEffect(() => {
     // Specify the maximum distance threshold in kilometers
     const maxDistanceThreshold = 1; // Adjust as needed
@@ -322,244 +762,27 @@ const OngoingTrip = () => {
     setPath(filteredCoordinates);
   }, [tripData]);
 
-  // Set Address
-  useEffect(() => {
-    if (tripData.length > 0 && startPoint !== "" && endPoint !== "") {
-      const getAddress = async (lat, lng, setAddress) => {
-        const response = await fetch(
-          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyCk6RovwH7aF8gjy1svTPJvITZsWGA_roU`
-        );
-        if (response) {
-          // setIsLoading(false);
-        }
-        const data = await response.json();
-        setAddress(data.results[0].formatted_address);
-      };
-
-      getAddress(startPoint.lat, startPoint.lng, setStartAddress);
-      getAddress(endPoint.lat, endPoint.lng, setEndAddress);
-    }
-  }, [tripData, endPoint, startPoint]);
-
-  // Get fault counts data
-  useEffect(() => {
-    // Set CAS Count
-    let autoBrkCount = 0;
-    let harshAccCount = 0;
-    let sleepAltCount = 0;
-    let laneChngCount = 0;
-    let spdBumpCount = 0;
-    let suddenBrkCount = 0;
-    let tailgatingCount = 0;
-    let overspeedCount = 0;
-    let accSavedCount = 0;
-    let alarm1Count = 0;
-    let alarm2Count = 0;
-    let engineOffCount = 0;
-
-    // DMS data
-    let drowsinessCount = 0;
-    let tripstartCount = 0;
-    let distractionCount = 0;
-    let overspdCount = 0;
-    // let noSeatbeltCount = 0;
-    let usingMobCount = 0;
-    // let unknownDriverCount = 0;
-    let noDriverCount = 0;
-    // let smokingCount = 0;
-    // let rashDrivingCount = 0;
-    let accidentCount = 0;
-
-    axios
-      .get(
-        `${process.env.REACT_APP_API_URL}/trips/get-ongoing-fault-counts/${trip_id}/${epochStart}/${epochEnd}`,
-        {
-          headers: { authorization: `bearer ${token}` },
-        }
-      )
-      .then((response) => {
-        const faultData = response.data.faultdata;
-
-        let mediaData = []; // dms media data
-
-        faultData.forEach((item) => {
-          let jsonDataa = JSON.parse(item.jsondata);
-
-          // Braking data
-          if (item.event === "BRK") {
-            autoBrkCount++; // Set automatic braking count
-
-            let ttcdiff = jsonDataa.data.on_ttc - jsonDataa.data.off_ttc;
-            let acd = ttcdiff / jsonDataa.data.off_ttc;
-            let accSvd = acd * 100;
-            if (accSvd > 50 && accSvd < 100) {
-              accSavedCount++; // Set accident saved count
-            }
-          }
-
-          // Notification data
-          if (item.event === "NTF" && jsonDataa.notification === 2) {
-            harshAccCount++;
-          }
-          if (item.event === "NTF" && jsonDataa.notification === 13) {
-            sleepAltCount++;
-          }
-          if (item.event === "NTF" && jsonDataa.notification === 5) {
-            laneChngCount++;
-          }
-          if (item.event === "NTF" && jsonDataa.notification === 4) {
-            spdBumpCount++;
-          }
-          if (item.event === "NTF" && jsonDataa.notification === 3) {
-            suddenBrkCount++;
-          }
-          if (item.event === "NTF" && jsonDataa.notification === 6) {
-            tailgatingCount++;
-          }
-          if (item.event === "NTF" && jsonDataa.notification === 7) {
-            overspeedCount++;
-          }
-          if (item.event === "NTF" && jsonDataa.notification === 16) {
-            engineOffCount++;
-          }
-
-          // Set Alarm data
-          if (item.event === "ALM" && jsonDataa.data.alarm === 2) {
-            alarm1Count++;
-          }
-          if (item.event === "ALM" && jsonDataa.data.alarm === 3) {
-            alarm2Count++;
-          }
-
-          // DMS data
-          if (item.event === "DMS") {
-            let dmsTimeStamp = item.timestamp;
-            let updatedmsTimeStamp = new Date(dmsTimeStamp * 1000);
-            mediaData.push({
-              dms: jsonDataa.data.media,
-              dashcam: jsonDataa.data.dashcam,
-              alert: jsonDataa.data.alert_type,
-              timestamp: updatedmsTimeStamp.toLocaleString(),
-            });
-          }
-          if (
-            item.event === "DMS" &&
-            jsonDataa.data.alert_type === "DROWSINESS"
-          ) {
-            drowsinessCount++;
-          }
-          if (
-            item.event === "DMS" &&
-            jsonDataa.data.alert_type === "TRIP_START"
-          ) {
-            tripstartCount++;
-          }
-          if (
-            item.event === "DMS" &&
-            jsonDataa.data.alert_type === "DISTRACTION"
-          ) {
-            distractionCount++;
-          }
-          if (
-            item.event === "DMS" &&
-            jsonDataa.data.alert_type === "OVERSPEEDING"
-          ) {
-            overspdCount++;
-          }
-          if (
-            item.event === "DMS" &&
-            jsonDataa.data.alert_type === "USING_PHONE"
-          ) {
-            usingMobCount++;
-          }
-          // if (
-          //   item.event === "DMS" &&
-          //   jsonDataa.data.alert_type === "NO_SEATBELT"
-          // ) {
-          //   noSeatbeltCount++;
-          // }
-          // if (
-          //   item.event === "DMS" &&
-          //   jsonDataa.data.alert_type === "UNKNOWN_DRIVER"
-          // ) {
-          //   unknownDriverCount++;
-          // }
-          if (
-            item.event === "DMS" &&
-            jsonDataa.data.alert_type === "NO_DRIVER"
-          ) {
-            noDriverCount++;
-          }
-          // if (item.event === "DMS" && jsonDataa.data.alert_type === "SMOKING") {
-          //   smokingCount++;
-          // }
-          // if (
-          //   item.event === "DMS" &&
-          //   jsonDataa.data.alert_type === "RASH_DRIVING"
-          // ) {
-          //   rashDrivingCount++;
-          // }
-          if (
-            item.event === "DMS" &&
-            jsonDataa.data.alert_type === "ACCIDENT"
-          ) {
-            accidentCount++;
-          }
-        });
-        // Set CAS Count
-        setAutoBrk(autoBrkCount);
-        setHarshacc(harshAccCount);
-        // setSleepAlt(sleepAltCount);
-        setLaneChng(laneChngCount);
-        setSpdBump(spdBumpCount);
-        setSuddenBrk(suddenBrkCount);
-        setTailgating(tailgatingCount);
-        setOverspeed(overspeedCount);
-        setAccidentSaved(accSavedCount);
-        setAlarm1(alarm1Count);
-        setAlarm2(alarm2Count);
-        setEngineOff(engineOffCount);
-
-        // Set DMS count
-        setMedia(mediaData);
-        setDrowsiness(drowsinessCount);
-        setDistraction(distractionCount);
-        setDmsoverSpd(overspdCount);
-        // setNotSeatBelt(noSeatbeltCount);
-        // setUsePhone(usingMobCount);
-        // setUnknownDriver(unknownDriverCount);
-        setNoDriver(noDriverCount);
-        // setSmoking(smokingCount);
-        // setRashDrive(rashDrivingCount);
-        setDmsAccident(accidentCount);
-        setTripStartAlert(tripstartCount);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [token, tripData, epochStart]);
-
   const SummaryContent = () => (
     <div className="">
       <dl className="mt-4 grid grid-cols-1 gap-x-6 gap-y-7 sm:grid-cols-2 sm:gap-y-12 lg:gap-x-8">
         <TripInfoItem
           title="Distance"
-          value={(distance && distance + " KM ") || "--"}
+          value={!distance ? "--" : distance + " KM "}
         />
-        <TripInfoItem title="Duration" value={(duration && duration) || "--"} />
+        <TripInfoItem title="Duration" value={!duration ? "--" : duration} />
         <TripInfoItem
           title="Average Speed"
-          value={(avgSpd && avgSpd + " Kmph ") || "--"}
+          value={!avgSpd ? "--" : avgSpd + " Kmph "}
         />
         <TripInfoItem
           title="Max Speed"
-          value={(maxSpd && maxSpd + " Kmph ") || "--"}
+          value={!maxSpd ? "--" : maxSpd + " Kmph "}
         />
         <div className="border-t border-gray-200 pt-4 dark:border-cyan-800">
           <p className="font-medium text-gray-900 dark:text-white">Fuel</p>
           <div className="card justify-content-center flex">
             <Knob
-              value="100"
+              value={actualFuel}
               valueTemplate={"{value}%"}
               strokeWidth={10}
               size={70}
@@ -567,14 +790,11 @@ const OngoingTrip = () => {
           </div>
         </div>
 
-        <TripInfoItem title="Load" value="12 Tons" />
+        <TripInfoItem title="Load" value={actualLoad + " Kg"} />
+        <TripInfoItem title="Source" value={startAddress + " " + startTime} />
         <TripInfoItem
-          title="Source"
-          value={(startTime && startAddress + " " + startTime) || "--"}
-        />
-        <TripInfoItem
-          title="Current Location"
-          value={(endTime && endAddress + " " + currentTime) || "--"}
+          title="Destination"
+          value={endAddress + " " + currentTime}
         />
       </dl>
     </div>
@@ -734,53 +954,58 @@ const OngoingTrip = () => {
   );
 
   // Set Iframe for DMS
-  const dmsIframes = media.map((data, index) => {
-    // console.log(data.dms);
+  const dmsIframes = [].concat(...filterMarker).map((data, index) => {
+    // console.log("marker pahu", filterMarker);
     // const checkDriveUrl = "drive.google.com";
     // const isDriveUrl = data.dms.includes(checkDriveUrl);
-
-    return (
-      <div className="group relative" key={index}>
-        <div className="flex justify-between">
+    if (data.event === "DMS") {
+      return (
+        <div className="group relative" key={index}>
           <div>
-            <h3 className="text-gray-700">{data.alert}</h3>
-            <p className="mt-1 text-sm text-gray-500">{data?.timestamp}</p>
+            <div className="flex">
+              <h3 className="text-gray-700">{data.alert_type}</h3>
+              <img
+                src={data?.icon}
+                alt={data.alert_type + index}
+                className="img-fluid mx-2"
+              />
+            </div>
+            <p className="mt-1 text-sm text-gray-500">{data?.content}</p>
           </div>
-          <p className="text-5xl font-medium text-cyan-300">&#9900;</p>
-        </div>
-        <div className="aspect-h-1 aspect-w-1 lg:aspect-none lg:h-50 w-full overflow-hidden rounded-md bg-gray-200">
-          {data.dms && (
-            <video
-              className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-              width="100%"
-              controls
-            >
-              <source
-                src={`${process.env.REACT_APP_S3_URL}/${data.dms}`}
-                type="video/mp4"
-              ></source>
-              Your browser does not support the video tag.
-            </video>
-          )}
-
-          {data.dashcam && (
-            <>
+          <div className="aspect-h-1 aspect-w-1 lg:aspect-none lg:h-50 w-full overflow-hidden rounded-md bg-gray-200">
+            {data.media && (
               <video
                 className="h-full w-full object-cover object-center lg:h-full lg:w-full"
                 width="100%"
                 controls
               >
                 <source
-                  src={`${process.env.REACT_APP_S3_URL}/${data.dashcam}`}
+                  src={`${process.env.REACT_APP_S3_URL}/${data.media}`}
                   type="video/mp4"
                 ></source>
                 Your browser does not support the video tag.
               </video>
-            </>
-          )}
+            )}
+
+            {data.dashcam && (
+              <>
+                <video
+                  className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+                  width="100%"
+                  controls
+                >
+                  <source
+                    src={`${process.env.REACT_APP_S3_URL}/${data.dashcam}`}
+                    type="video/mp4"
+                  ></source>
+                  Your browser does not support the video tag.
+                </video>
+              </>
+            )}
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
   });
 
   const [visible, setVisible] = useState(false);
@@ -825,89 +1050,62 @@ const OngoingTrip = () => {
   }
 
   const handlecheckbox = (e) => {
-    const { value, name } = e.target;
+    const { value, name, checked } = e.target;
 
+    // Create a mapping object for custom attributes
+    const customAttributes = {
+      AUTOMATIC_BRAKING: {
+        AUTOMATIC_BRAKING: "BRK",
+        ACCIDENT_SAVED: "BRK",
+        ACCIDENT_SAVED_6: "BRK", // If needed, you can specify different values for ACCIDENT_SAVED with value 6
+      },
+      ACC_Cut: { 16: "NTF" },
+      Harsh_Acceleration: { 2: "NTF" },
+      Sudden_Braking: { 3: "NTF" },
+      Speed_Bump: { 4: "NTF" },
+      Lane_Change: { 5: "NTF" },
+      Tailgating: { 3: "NTF" },
+      WRONG_CVN: { 17: "NTF" },
+      Overspeeding: { 7: "NTF" },
+      Alarm_2: { 5: "ALM2" },
+      Alarm_3: { 5: "ALM3" },
+      TRIP_START: { TRIP_START: "DMS" },
+      DROWSINESS: { DROWSINESS: "DMS" },
+      DISTRACTION: { DISTRACTION: "DMS" },
+      OVERSPEEDING: { OVERSPEEDING: "DMS" },
+      NO_DRIVER: { NO_DRIVER: "DMS" },
+      Load: { 34: "LDS" },
+      CVN: { 36: "CVN" },
+      FLS: { 35: "FLS" },
+    };
+
+    // Get the custom attribute based on the name and value
+    const customAttribute = customAttributes[name]
+      ? customAttributes[name][value]
+      : undefined;
+
+    if (checked) {
+      const x = markers.filter(
+        (el) => el.title === value && el.event === customAttribute
+      );
+      setFilterMarker([...filterMarker, x]);
+    } else {
+      const y = []
+        .concat(...filterMarker)
+        .filter((el) => !(el.title === value && el.event === customAttribute));
+      setFilterMarker([y]);
+    }
+
+    // Handle specific actions based on customAttribute if needed
+    if (customAttribute === "CVN") {
+      setCvnRoute(true);
+    }
+
+    // Update checkboxes state
     setCheckboxes((prevCheckboxes) => ({
       ...prevCheckboxes,
       [name]: !prevCheckboxes[name],
     }));
-
-    let customAttribute;
-
-    if (name === "AUTOMATIC_BRAKING" && value === "AUTOMATIC_BRAKING") {
-      customAttribute = "BRK";
-    }
-    if (name === "ACCIDENT_SAVED" && value === "AUTOMATIC_BRAKING") {
-      customAttribute = "BRK";
-    }
-    if (name === "ACC_Cut" && value === 16) {
-      customAttribute = "NTF";
-    }
-    if (name === "Harsh_Acceleration" && value === 2) {
-      customAttribute = "NTF";
-    }
-    if (name === "Sudden_Braking" && value === 3) {
-      customAttribute = "NTF";
-    }
-    if (name === "Speed_Bump" && value === 4) {
-      customAttribute = "NTF";
-    }
-    if (name === "Lane_Change" && value === 5) {
-      customAttribute = "NTF";
-    }
-    if (name === "Tailgating" && value === 3) {
-      customAttribute = "NTF";
-    }
-    if (name === "ACCIDENT_SAVED" && value === 6) {
-      customAttribute = "BRK";
-    }
-    if (name === "Overspeeding" && value === 7) {
-      customAttribute = "NTF";
-    }
-    if (name === "Alarm_2" && value === 5) {
-      customAttribute = "ALM2";
-    }
-    if (name === "Alarm_3" && value === 5) {
-      customAttribute = "ALM3";
-    }
-    if (name === "TRIP_START" && value === "TRIP_START") {
-      customAttribute = "DMS";
-    }
-    if (name === "DROWSINESS" && value === "DROWSINESS") {
-      customAttribute = "DMS";
-    }
-    if (name === "DISTRACTION" && value === "DISTRACTION") {
-      customAttribute = "DMS";
-    }
-    if (name === "OVERSPEEDING" && value === "OVERSPEEDING") {
-      customAttribute = "DMS";
-    }
-    if (name === "NO_DRIVER" && value === "NO_DRIVER") {
-      customAttribute = "DMS";
-    }
-
-    if (e.target.checked) {
-      let x = [];
-      markers.map((el) => {
-        if (el.title === value && el.event === customAttribute) {
-          x.push(el);
-        }
-        return null;
-      });
-      setFilterMarker([...filterMarker, x]);
-    } else {
-      let y = [];
-
-      [].concat(...filterMarker)?.map((el) => {
-        if (el.title === value && el.event === customAttribute) {
-        } else {
-          y.push(el);
-        }
-        return null;
-      });
-
-      setFilterMarker([y]);
-    }
   };
 
   const handleMarkerClick = (marker) => {
@@ -930,10 +1128,7 @@ const OngoingTrip = () => {
                   checked={checkboxes?.AUTOMATIC_BRAKING}
                   disabled={autoBrk === 0}
                 />
-                <label
-                  htmlFor="AUTOMATIC_BRAKING"
-                  className="ml-2 dark:text-white"
-                >
+                <label className="ml-2 dark:text-white">
                   Automatic Braking
                 </label>
               </div>
@@ -958,24 +1153,19 @@ const OngoingTrip = () => {
                   onChange={handlecheckbox}
                   name="ACCIDENT_SAVED"
                   checked={checkboxes.ACCIDENT_SAVED}
-                  disabled={accidentSaved === 0}
+                  disabled={accident === 0}
                 />
-                <label
-                  htmlFor="ACCIDENT_SAVED"
-                  className="ml-2 dark:text-white"
-                >
-                  Accident Saved
-                </label>
+                <label className="ml-2 dark:text-white">Accident Saved</label>
               </div>
               <div className="flex-shrink-0">
-                {accidentSaved === 0 ? (
+                {accident === 0 ? (
                   <Badge
-                    value={accidentSaved}
+                    value={accident}
                     style={{ backgroundColor: "gray", color: "white" }}
                     className="mx-3"
                   />
                 ) : (
-                  <Badge value={accidentSaved} className="mx-3" />
+                  <Badge value={accident} className="mx-3" />
                 )}
               </div>
             </div>
@@ -998,10 +1188,7 @@ const OngoingTrip = () => {
                   checked={checkboxes.Harsh_Acceleration}
                   disabled={harshacc === 0}
                 />
-                <label
-                  htmlFor="CAScheckboxId4"
-                  className="ml-2 dark:text-white"
-                >
+                <label className="ml-2 dark:text-white">
                   Harsh Acceleration
                 </label>
               </div>
@@ -1028,12 +1215,7 @@ const OngoingTrip = () => {
                   checked={checkboxes.Speed_Bump}
                   disabled={spdBump === 0}
                 />
-                <label
-                  htmlFor="CAScheckboxId5"
-                  className="ml-2 dark:text-white"
-                >
-                  Speed Bump
-                </label>
+                <label className="ml-2 dark:text-white">Speed Bump</label>
               </div>
               <div className="flex-shrink-0">
                 {spdBump === 0 ? (
@@ -1061,12 +1243,7 @@ const OngoingTrip = () => {
                   checked={checkboxes.Lane_Change}
                   disabled={laneChng === 0}
                 />
-                <label
-                  htmlFor="CAScheckboxId5"
-                  className="ml-2 dark:text-white"
-                >
-                  Lane Change
-                </label>
+                <label className="ml-2 dark:text-white">Lane Change</label>
               </div>
               <div className="flex-shrink-0">
                 {spdBump === 0 ? (
@@ -1091,12 +1268,7 @@ const OngoingTrip = () => {
                   checked={checkboxes.Sudden_Braking}
                   disabled={suddenBrk === 0}
                 />
-                <label
-                  htmlFor="CAScheckboxId5"
-                  className="ml-2 dark:text-white"
-                >
-                  Sudden Braking
-                </label>
+                <label className="ml-2 dark:text-white">Sudden Braking</label>
               </div>
               <div className="flex-shrink-0">
                 {suddenBrk === 0 ? (
@@ -1161,24 +1333,19 @@ const OngoingTrip = () => {
                   onChange={handlecheckbox}
                   name="ACC_Cut"
                   checked={checkboxes.ACC_Cut}
-                  disabled={engineOff === 0}
+                  disabled={accCutTipper === 0}
                 />
-                <label
-                  htmlFor="CAScheckboxId3"
-                  className="ml-2 dark:text-white"
-                >
-                  ACC Cut
-                </label>
+                <label className="ml-2 dark:text-white">ACC Cut</label>
               </div>
               <div className="flex-shrink-0">
-                {engineOff === 0 ? (
+                {accCutTipper === 0 ? (
                   <Badge
-                    value={engineOff}
+                    value={accCutTipper}
                     style={{ backgroundColor: "gray", color: "white" }}
                     className="mx-3"
                   />
                 ) : (
-                  <Badge value={engineOff} className="mx-3" />
+                  <Badge value={accCutTipper} className="mx-3" />
                 )}
               </div>
             </div>
@@ -1187,25 +1354,23 @@ const OngoingTrip = () => {
             <div className="my-3 flex justify-between">
               <div className="flex-shrink-0">
                 <Checkbox
-                  value={36}
+                  value={17}
                   onChange={handlecheckbox}
-                  name="CVN"
-                  checked={checkboxes.ACC_Cut}
-                  disabled={cvn === 0}
+                  name="WRONG_CVN"
+                  checked={checkboxes.WRONG_CVN}
+                  disabled={wrongCvn === 0}
                 />
-                <label htmlFor="cvn" className="ml-2 dark:text-white">
-                  CVN
-                </label>
+                <label className="ml-2 dark:text-white">Wrong CVN</label>
               </div>
               <div className="flex-shrink-0">
-                {engineOff === 0 ? (
+                {wrongCvn === 0 ? (
                   <Badge
-                    value={engineOff}
+                    value={wrongCvn}
                     style={{ backgroundColor: "gray", color: "white" }}
                     className="mx-3"
                   />
                 ) : (
-                  <Badge value={engineOff} className="mx-3" />
+                  <Badge value={wrongCvn} className="mx-3" />
                 )}
               </div>
             </div>
@@ -1217,25 +1382,23 @@ const OngoingTrip = () => {
             <div className="my-3 flex justify-between">
               <div className="flex-shrink-0">
                 <Checkbox
-                  value={16}
+                  value={34}
                   onChange={handlecheckbox}
                   name="Load"
-                  checked={checkboxes.load}
-                  disabled={engineOff === 0}
+                  checked={checkboxes.Load}
+                  disabled={load === 0}
                 />
-                <label htmlFor="load" className="ml-2 dark:text-white">
-                  Load
-                </label>
+                <label className="ml-2 dark:text-white">Load</label>
               </div>
               <div className="flex-shrink-0">
-                {engineOff === 0 ? (
+                {load === 0 ? (
                   <Badge
-                    value={engineOff}
+                    value={load}
                     style={{ backgroundColor: "gray", color: "white" }}
                     className="mx-3"
                   />
                 ) : (
-                  <Badge value={engineOff} className="mx-3" />
+                  <Badge value={load} className="mx-3" />
                 )}
               </div>
             </div>
@@ -1244,27 +1407,59 @@ const OngoingTrip = () => {
             <div className="my-3 flex justify-between">
               <div className="flex-shrink-0">
                 <Checkbox
-                  value={36}
+                  value={35}
                   onChange={handlecheckbox}
-                  name="Fuel"
-                  checked={checkboxes.ACC_Cut}
-                  disabled={cvn === 0}
+                  name="FLS"
+                  checked={checkboxes.FLS}
+                  disabled={fuel === 0}
                 />
-                <label htmlFor="cvn" className="ml-2 dark:text-white">
-                  Fuel
-                </label>
+                <label className="ml-2 dark:text-white">Fuel</label>
               </div>
               <div className="flex-shrink-0">
-                {engineOff === 0 ? (
+                {fuel === 0 ? (
                   <Badge
-                    value={engineOff}
+                    value={fuel}
                     style={{ backgroundColor: "gray", color: "white" }}
                     className="mx-3"
                   />
                 ) : (
-                  <Badge value={engineOff} className="mx-3" />
+                  <Badge value={fuel} className="mx-3" />
                 )}
               </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex gap-4">
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0">
+                <Checkbox
+                  value={36}
+                  onChange={handlecheckbox}
+                  name="CVN"
+                  checked={checkboxes.CVN}
+                  disabled={cvn === 0}
+                />
+                <label className="ml-2 dark:text-white">CVN</label>
+              </div>
+              <div className="flex-shrink-0">
+                {cvn === 0 ? (
+                  <Badge
+                    value={cvn}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={cvn} className="mx-3" />
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0"></div>
+              <div className="flex-shrink-0"></div>
             </div>
           </div>
         </div>
@@ -1272,7 +1467,7 @@ const OngoingTrip = () => {
       </div>
 
       {/* Speed Governer */}
-      <div className="noti mt-4">
+      <div className="spdGov mt-4">
         <h4 className="font-semibold">Speed Governer</h4>
         <div className="flex gap-4">
           <div className="w-[50%]">
@@ -1285,12 +1480,7 @@ const OngoingTrip = () => {
                   checked={checkboxes.Overspeeding}
                   disabled={overspeed === 0}
                 />
-                <label
-                  htmlFor="CAScheckboxId5"
-                  className="ml-2 dark:text-white"
-                >
-                  Overspeed
-                </label>
+                <label className="ml-2 dark:text-white">Overspeed</label>
               </div>
               <div className="flex-shrink-0">
                 {overspeed === 0 ? (
@@ -1329,12 +1519,7 @@ const OngoingTrip = () => {
                   checked={checkboxes.Alarm_2}
                   disabled={alarm1 === 0}
                 />
-                <label
-                  htmlFor="CAScheckboxId5"
-                  className="ml-2 dark:text-white"
-                >
-                  Alarm 2
-                </label>
+                <label className="ml-2 dark:text-white">Alarm 2</label>
               </div>
               <div className="flex-shrink-0">
                 {alarm1 === 0 ? (
@@ -1359,12 +1544,7 @@ const OngoingTrip = () => {
                   checked={checkboxes.Alarm_3}
                   disabled={alarm2 === 0}
                 />
-                <label
-                  htmlFor="CAScheckboxId5"
-                  className="ml-2 dark:text-white"
-                >
-                  Alarm 3
-                </label>
+                <label className="ml-2 dark:text-white">Alarm 3</label>
               </div>
               <div className="flex-shrink-0">
                 {alarm2 === 0 ? (
@@ -1380,10 +1560,11 @@ const OngoingTrip = () => {
             </div>
           </div>
         </div>
+        <hr />
       </div>
 
       {/* Alcohol data */}
-      {/* <div className="noti mt-4">
+      <div className="noti mt-4">
         <h4 className="font-semibold">Alcohol data</h4>
         <div className="flex gap-4">
           <div className="w-[50%]">
@@ -1413,17 +1594,208 @@ const OngoingTrip = () => {
             </div>
           </div>
         </div>
-        <hr />
-      </div> */}
+      </div>
     </>
   );
+
+  const [vehicleData, setVehicleData] = useState([]);
+  const getVehicleData = async () => {
+    await axios
+      .get(
+        `${process.env.REACT_APP_API_URL}/vehicles/get-vehicle-by-id/${vehicleId}`,
+        {
+          headers: { authorization: `bearer ${token}` },
+        }
+      )
+      .then((res) => {
+        setVehicleData(res.data.vehicleData[0]);
+        console.log(res.data.vehicleData[0]);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    getVehicleData();
+  }, [vehicleId]);
+
+  // Set the data table when event is selected
+  const eventTableData = [].concat(...filterMarker)?.map((event, index) => {
+    let tableContent = null;
+
+    if (event.event === "DMS") {
+      tableContent = (
+        <tr key={index}>
+          <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
+            {index + 1}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.event}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event?.alert_type === "DROWSINESS" ? "DROWSINESS" : ""}
+            {event?.alert_type === "DISTRACTION" ? "DISTRACTION" : ""}
+            {event?.alert_type === "TRIP_START" ? "TRIP_START" : ""}
+            {event?.alert_type === "OVERSPEED" ? "OVERSPEED" : ""}
+            {event?.alert_type === "NO_DRIVER" ? "NO_DRIVER" : ""}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.content}
+          </td>
+        </tr>
+      );
+    } else if (event.event === "BRK") {
+      tableContent = (
+        <tr key={index}>
+          <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
+            {index + 1}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.event === "BRK" ? "Automatic Braking" : "BRK"}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {
+              (event.reason = 0
+                ? `${event.title} Due to Collosion Avoidance System Brake Duration: ${event.brake_duration} Sec`
+                : event.title + "Due to Sleep Alert Missed")
+            }
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.content}
+          </td>
+        </tr>
+      );
+    } else if (event.event === "LDS") {
+      tableContent = (
+        <tr key={index}>
+          <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
+            {index + 1}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.event === "LDS" ? "Load" : "LDS"}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            <span>Max Capacity: {event.max_cap}</span>
+            <br />
+            <span>Percentage: {event.percent}</span>
+            <br />
+            <span>Actual: {event.actual_load}</span>
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.content}
+          </td>
+        </tr>
+      );
+    } else if (event.event === "FLS") {
+      tableContent = (
+        <tr key={index}>
+          <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
+            {index + 1}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.event === "FLS" ? "Fuel" : "FLS"}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            <span>Current Fuel: {event.current_fuel}</span>
+            <br />
+            <span>Percentage: {event.percent}</span>
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.content}
+          </td>
+        </tr>
+      );
+    } else if (event.event === "CVN") {
+      tableContent = (
+        <tr key={index}>
+          <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
+            {index + 1}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.event}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            --
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.content}
+          </td>
+        </tr>
+      );
+    } else {
+      tableContent = (
+        <tr key={index}>
+          <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
+            {index + 1}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.event}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.reason === 2 ? "Harsh Acceleration" : ""}
+            {event.reason === 3 ? "Sudden Braking" : ""}
+            {event.reason === 4 ? "Speed Bump" : ""}
+            {event.reason === 5 && event.event === "" ? "Lane change" : ""}
+            {event.reason === 6 ? "Tailgating" : ""}
+            {event.reason === 7 ? "Overspeed" : ""}
+            {event.reason === 6 ? "Tailgating" : ""}
+            {event.reason === 16 ? "ACC Cut due to Tipper ON" : ""}
+            {event.reason === 17 ? "Wrong CVN" : ""}
+            {event.reason === 5 &&
+            (event.event === "ALM2" || event.event === "ALM3") &&
+            event.alarm_no !== 0
+              ? " ALM " + event.alarm_no
+              : ""}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.content}
+          </td>
+        </tr>
+      );
+    }
+
+    return tableContent;
+  });
+
+  // useEffect(() => {
+  //   const animateCar = () => {
+  //     let index = 0;
+  //     const animationInterval = setInterval(() => {
+  //       if (index < path.length - 1) {
+  //         const currentPos = path[index];
+  //         const nextPos = path[index + 1];
+  //         const rotation = calculateRotation(currentPos, nextPos);
+  //         setCarPosition(currentPos);
+  //         document.querySelector(
+  //           ".car-marker"
+  //         ).style.transform = `rotate(${rotation}deg)`;
+  //         index += 1;
+  //       } else {
+  //         clearInterval(animationInterval);
+  //       }
+  //     }, 10000); // Adjust the interval for car speed
+  //   };
+
+  //   animateCar();
+
+  //   return () => {
+  //     // Cleanup code if needed
+  //   };
+  // }, []);
+
+  const calculateRotation = (currentPos, nextPos) => {
+    const dx = nextPos.lng - currentPos.lng;
+    const dy = nextPos.lat - currentPos.lat;
+    return (Math.atan2(dy, dx) * 180) / Math.PI;
+  };
 
   return (
     <>
       <div>
         <div className="page-title pb-4">
           <h2 className="text-gray-900 dark:text-white sm:text-2xl">
-            Completed-Trip
+            Ongoing-Trip
           </h2>
           <p className="text-gray-700">TRIP-ID: {trip_id}</p>
         </div>
@@ -1514,6 +1886,43 @@ const OngoingTrip = () => {
                           </button>
                         </div>
                       </>
+                    ) : marker.event === "LDS" ? (
+                      <>
+                        <div>
+                          <h6>
+                            <strong>{marker.title === 34 ? "Load" : ""}</strong>
+                          </h6>
+                          <p className="mb-0">TimeStamp: {marker.content}</p>
+                          <p className="mb-0">Speed: {marker.speed}Kmph</p>
+                          <p className="mb-0">Max Capacity: {marker.max_cap}</p>
+                          <p className="mb-0">Percentage: {marker.percent}</p>
+                          <p className="mb-0">Actual: {marker.actual_load}</p>
+                        </div>
+                      </>
+                    ) : marker.event === "FLS" ? (
+                      <>
+                        <div>
+                          <h6>
+                            <strong>{marker.title === 34 ? "Load" : ""}</strong>
+                          </h6>
+                          <p className="mb-0">TimeStamp: {marker.content}</p>
+                          <p className="mb-0">Speed: {marker.speed}Kmph</p>
+                          <p className="mb-0">
+                            Current Fuel: {marker.current_fuel}
+                          </p>
+                          <p className="mb-0">Percentage: {marker.percent}</p>
+                        </div>
+                      </>
+                    ) : marker.event === "CVN" ? (
+                      <>
+                        <div>
+                          <h6>
+                            <strong>{marker.title === 36 ? "CVN" : ""}</strong>
+                          </h6>
+                          <p className="mb-0">TimeStamp: {marker.content}</p>
+                          <p className="mb-0">Speed: {marker.speed}Kmph</p>
+                        </div>
+                      </>
                     ) : (
                       <div>
                         <>
@@ -1594,6 +2003,17 @@ const OngoingTrip = () => {
                           ) : (
                             ""
                           )}
+                          {marker.reason === 17 ? (
+                            <div>
+                              <b>Wrong CVN</b>
+                              <p className="mb-0">
+                                TimeStamp: {marker.content}
+                              </p>
+                              <p className="mb-0">Speed: {marker.speed}Kmph</p>
+                            </div>
+                          ) : (
+                            ""
+                          )}
                           {marker.reason === 5 &&
                           (marker.event === "ALM2" ||
                             marker.event === "ALM3") &&
@@ -1622,11 +2042,21 @@ const OngoingTrip = () => {
             <Polyline
               path={path}
               options={{
-                strokeColor: "#4252E0", // Set the color of the polyline path
-                strokeWeight: 4, // Set the stroke size of the polyline
+                strokeColor: "#4252E0", // Default color
+                strokeWeight: 4,
               }}
             />
-            <Marker position={endPoint} icon={markerIcons.red} />
+            <Polyline path={cvnPath} options={polylineOptions} />
+            <Marker
+              position={carPosition}
+              icon={{
+                url: liveCar,
+                scaledSize: { width: 50, height: 50 }, // Adjust the width and height
+                origin: { x: 0, y: 0 },
+                anchor: { x: 25, y: 50 }, // Adjust the anchor point
+              }}
+              className="car-marker"
+            />
           </GoogleMap>
         </LoadScript>
 
@@ -1673,6 +2103,7 @@ const OngoingTrip = () => {
           </div>
         </Dialog>
       </div>
+
       <div className="lg:max-w-screen mx-auto mt-4 grid w-full grid-cols-1 gap-x-8 gap-y-8 rounded-[20px] sm:py-8 lg:grid-cols-2">
         <div className="rounded-[20px] bg-white p-5 dark:bg-navy-700">
           <div className="">
@@ -1695,7 +2126,7 @@ const OngoingTrip = () => {
 
         <div
           className={`${
-            activeIndex === 2 ? "hidden" : ""
+            activeIndex === 1 || activeIndex === 2 ? "hidden" : ""
           } rounded-[20px] bg-white dark:bg-navy-700`}
         >
           <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-8 lg:max-w-7xl lg:px-8">
@@ -1704,7 +2135,7 @@ const OngoingTrip = () => {
             </h2>
 
             <dl className="mb-4 mt-10 grid grid-cols-1 gap-x-6 gap-y-7 sm:grid-cols-2 sm:gap-y-12 lg:gap-x-8">
-              <TripInfoItem title="Braking Frequency" value="13 Mins" />
+              <TripInfoItem title="Braking Frequency" value="--" />
               <div className="border-t border-gray-200 pt-4 dark:border-cyan-800">
                 <dt className="font-medium text-gray-900 dark:text-white">
                   Feature Set
@@ -1725,14 +2156,33 @@ const OngoingTrip = () => {
               </h2>
 
               <dl className="grid grid-cols-1 gap-x-6 gap-y-7 sm:grid-cols-2 sm:gap-y-12 lg:gap-x-8">
-                <dd className="mt-2 text-sm text-gray-700">
-                  <p className="font-medium text-gray-900 dark:text-white">
-                    <strong>Vehicle Name :</strong> Testing vehicle
-                  </p>
-                  <p className="font-medium text-gray-900 dark:text-white">
-                    <strong>Registration No. :</strong> MH 03 B 8239
-                  </p>
-                </dd>
+                <div className="flex justify-center">
+                  <img src={truckGIF} alt="GIF" className="w-1/2" />
+                </div>
+                <div>
+                  <dd className="mt-2 text-sm text-gray-700">
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      <strong>Vehicle Name :</strong>{" "}
+                      {vehicleData?.vehicle_name}
+                    </p>
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      <strong>Registration No. :</strong>{" "}
+                      {vehicleData?.vehicle_registration}
+                    </p>
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      <strong>ECU :</strong>{" "}
+                      {!vehicleData?.ecu ? "--" : vehicleData.ecu}
+                    </p>
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      <strong>IoT :</strong>{" "}
+                      {!vehicleData?.iot ? "--" : vehicleData.iot}
+                    </p>
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      <strong>DMS :</strong>{" "}
+                      {!vehicleData?.dms ? "--" : vehicleData.dms}
+                    </p>
+                  </dd>
+                </div>
               </dl>
             </div>
           </div>
@@ -1755,9 +2205,59 @@ const OngoingTrip = () => {
             </ScrollPanel>
           </div>
         </div>
+
+        <div
+          className={`${
+            activeIndex === 0 ? "hidden" : ""
+          } rounded-[20px] bg-white dark:bg-navy-700`}
+        >
+          <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-8 lg:max-w-7xl lg:px-8">
+            <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+              Events
+            </h2>
+
+            <ScrollPanel style={{ width: "100%", height: "600px" }}>
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50 dark:bg-gray-900">
+                  <tr>
+                    <th
+                      scope="col"
+                      className="flex items-center px-3 py-3 text-left text-xs font-bold uppercase text-gray-750 dark:text-white"
+                    >
+                      #
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-bold uppercase text-gray-750 dark:text-white"
+                    >
+                      Event
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-bold uppercase text-gray-750 dark:text-white"
+                    >
+                      Data
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-bold uppercase text-gray-750 dark:text-white"
+                    >
+                      Timestamp
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {eventTableData.length > 0
+                    ? eventTableData
+                    : "No data found!"}
+                </tbody>
+              </table>
+            </ScrollPanel>
+          </div>
+        </div>
       </div>
     </>
   );
 };
 
-export default OngoingTrip;
+export default CompletedTrip;

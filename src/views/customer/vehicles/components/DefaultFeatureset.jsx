@@ -553,7 +553,7 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
       <form onSubmit={handleSubmit}>
         <div className="card">
           <div className="mt-2 flex" style={{ flexDirection: "column" }}>
-            <label htmlFor="username" className="font-bold">
+            <label htmlFor="username" className="font-bold ">
               Feature Set Name
             </label>
             <InputText
@@ -562,7 +562,7 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
                 borderRadius: "5px",
               }}
               name="featureset_name"
-              className={`border py-2 pl-2 ${
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("featureset_name")
                   ? "border-red-600"
                   : ""
@@ -773,7 +773,7 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
               name="detectStationaryObject"
               onChange={handleDetails}
               value={featuresetData.detectStationaryObject}
-              className={`md:w-14rem  $dark:bg-gray-900 mt-2 w-full border ${
+              className={`md:w-14rem  mt-2 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("detectStationaryObject")
                   ? "border-red-600"
                   : ""
@@ -800,7 +800,7 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
               value={featuresetData.allowCompleteBrake}
               optionLabel="label"
               optionValue="value"
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("allowCompleteBrake")
                   ? "border-red-600"
                   : ""
@@ -831,7 +831,7 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
               optionLabel="label"
               optionValue="value"
               onChange={handleDetails}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("detectOncomingObstacle")
                   ? "border-red-600"
                   : ""
@@ -858,7 +858,7 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
               onChange={handleDetails}
               optionLabel="label"
               optionValue="value"
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("safetyMode") ? "border-red-600" : ""
               }`}
               disabled={featuresetData.CASMode === "0"}
@@ -1250,7 +1250,7 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
               }
               optionLabel="label"
               optionValue="value"
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("braking") ? "border-red-600" : ""
               }`}
               disabled={featuresetData.sleepAlertMode === "0"}
@@ -1673,7 +1673,7 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
               }
               optionLabel="label"
               optionValue="value"
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("vehicleType") ? "border-red-600" : ""
               }`}
               disabled={featuresetData.cruiseMode === "0"}
@@ -1729,7 +1729,7 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
               value={featuresetData.protocolType}
               optionLabel="label"
               optionValue="value"
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("protocolType") ? "border-red-600" : ""
               }`}
               disabled={featuresetData.obdMode === "0"}
@@ -1796,7 +1796,7 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
               name="acceleratorType"
               onChange={handleDetails}
               options={AcceleratorTypeoptions}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("acceleratorType")
                   ? "border-red-600"
                   : ""
@@ -1822,7 +1822,7 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
               name="VS_brk_typ"
               onChange={handleDetails}
               options={BrakingOptions}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("VS_brk_typ") ? "border-red-600" : ""
               }`}
             />
@@ -1847,7 +1847,7 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
             name="VS_gyro_type"
             onChange={handleDetails}
             options={GyroOptions}
-            className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+            className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
               invalidFields.includes("VS_gyro_type") ? "border-red-600" : ""
             }`}
           />
@@ -1994,7 +1994,7 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
               optionLabel="label"
               optionValue="value"
               onChange={handleDetails}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("rdr_type") ? "border-red-600" : ""
               }`}
             />
@@ -2046,7 +2046,7 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
               optionLabel="label"
               optionValue="value"
               onChange={handleDetails}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("speedSource") ? "border-red-600" : ""
               }`}
             />
@@ -2966,7 +2966,7 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
               optionLabel="label"
               optionValue="value"
               onChange={handleDetails}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
+              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("alcoholmode") ? "p-invalid" : ""
               }`}
               disabled={featuresetData.alcoholDetectionMode === "0"}
