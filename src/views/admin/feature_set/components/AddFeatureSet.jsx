@@ -19,7 +19,7 @@ const AddFeatureSet = ({ onSuccess }) => {
     detectStationaryObject: "1",
     allowCompleteBrake: "1",
     detectOncomingObstacle: "1",
-    safetyMode: "Normal",
+    safetyMode: "1",
     ttcThreshold: "10",
     brakeOnDuration: "1000",
     brakeOffDuration: "1000",
@@ -49,14 +49,14 @@ const AddFeatureSet = ({ onSuccess }) => {
     //Cruize
     cruiseMode: "1",
     cruiseactivationSpeed: "40",
-    vehicleType: "12V Pedal",
+    vehicleType: "1",
     //OBD
     obdMode: "1",
     protocolType: "SAEJ1939",
     //TPMS
     tpmsMode: "1",
     //Vehicle settings
-    acceleratorType: "Sensor",
+    acceleratorType: "1",
     VS_brk_typ: "1",
     VS_gyro_type: "1",
     //SENSOR
@@ -594,28 +594,32 @@ const AddFeatureSet = ({ onSuccess }) => {
   ];
 
   const SafetyModeoptions = [
-    { label: "Normal", value: "Normal" },
-    { label: "Relaxed", value: "Relaxed" },
+    { label: "Normal", value: "1" },
     {
       label: "Strict",
-      value: "Strict",
+      value: "2",
     },
   ];
 
-  const VehicleTypeoptions = [{ label: "12V Pedal", value: "12V Pedal" }];
+  const VehicleTypeoptions = [
+    { label: "12V Pedal", value: "1" },
+    { label: "24V Pedal", value: "2" },
+    { label: "Truck", value: "3" },
+    { label: "Car", value: "4" },
+  ];
 
   const AcceleratorTypeoptions = [
     {
       label: "Sensor",
-      value: "Sensor",
+      value: "1",
     },
     {
       label: "Cylinder",
-      value: "Cylinder",
+      value: "2",
     },
     {
       label: "Solenoid",
-      value: "Solenoid",
+      value: "3",
     },
   ];
 
@@ -1765,7 +1769,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               onChange={handleData}
               disabled={values.cruiseMode === "0"}
               options={VehicleTypeoptions}
-              value={values.vehicleType || "12V Pedal"}
+              value={values.vehicleType || "1"}
               placeholder="Select an option"
               optionLabel="label"
               optionValue="value"
@@ -1823,7 +1827,7 @@ const AddFeatureSet = ({ onSuccess }) => {
               options={ProtocolTypeoptions}
               disabled={values.obdMode === "0"}
               placeholder="Select an option"
-              value={values.protocolType || "SAEJ1939"}
+              value={values.protocolType || "1"}
               optionLabel="label"
               optionValue="value"
               className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
@@ -1876,7 +1880,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 width: "30vw",
                 borderRadius: "5px",
               }}
-              value={values.acceleratorType || "Sensor"}
+              value={values.acceleratorType || "1"}
               placeholder="Select an option"
               optionLabel="label"
               optionValue="value"

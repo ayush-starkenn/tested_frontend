@@ -15,8 +15,9 @@ const Triggers = () => {
   const [vehiData, setVehiData] = useState([]);
   const [contactsData, setContactsData] = useState([]);
   const [triggersData, setTriggersData] = useState([]);
-  const [addData, setAddData] = useState({});
+  const [addData, setAddData] = useState({ recipients: [] });
   const [formErrors, setFormErrors] = useState({});
+  const [selectedContacts, setSelectedContacts] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const toastRef = useRef(null);
 
@@ -52,7 +53,8 @@ const Triggers = () => {
   const closeDialog = () => {
     setVisible(false);
     setFormErrors({});
-    setAddData({});
+    setAddData({ recipients: [] });
+    setSelectedContacts([]);
   };
 
   //get vehicles list
@@ -77,7 +79,12 @@ const Triggers = () => {
         headers: { authorization: `bearer ${token}` },
       })
       .then((res) => {
-        setContactsData(res.data.contacts);
+        const updatedContacts = res.data.contacts.map((contact) => ({
+          ...contact,
+          hasEmail: contact.contact_email !== null,
+          hasMobile: contact.contact_mobile !== null,
+        }));
+        setContactsData(updatedContacts);
       })
       .catch((err) => {
         console.log(err);
@@ -111,15 +118,12 @@ const Triggers = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
-
     setAddData({ ...addData, [name]: value });
   };
 
   //onSubmit function
   const handleSubmit = (e) => {
     e.preventDefault();
-
     const errors = validateForm();
     setFormErrors(errors);
 
@@ -127,13 +131,12 @@ const Triggers = () => {
       axios
         .post(
           `http://localhost:8080/api/alert-triggers/save-alert-trigger/${user_uuid}`,
-          addData,
+          { ...addData, selectedContacts },
           {
             headers: { authorization: `bearer ${token}` },
           }
         )
         .then((res) => {
-          console.log(res);
           toastRef.current.show({
             severity: "success",
             summary: "Success",
@@ -235,16 +238,54 @@ const Triggers = () => {
     }));
   };
 
-  const contactsOptions = () => {
-    return contactsData?.map((el) => ({
-      label: el.contact_first_name + " " + el.contact_last_name,
-      value: el.contact_uuid,
-    }));
-  };
+  const handleContactChange = (contactId, type) => {
+    setSelectedContacts((prevSelectedContacts) => {
+      // Find the existing contact object for the recipient
+      const updatedContacts = [...prevSelectedContacts];
+      const existingContact = updatedContacts.find(
+        (contact) => contact.recipients === contactId
+      );
 
-  useEffect(() => {
-    console.log(contactsData);
-  }, [contactsData]);
+      if (existingContact) {
+        // Update the specific type (email or mobile)
+        if (type === "email") {
+          existingContact.email = existingContact.email
+            ? ""
+            : contactsData.find((c) => c.contact_uuid === contactId)
+                .contact_email;
+        } else if (type === "mobile") {
+          existingContact.mobile = existingContact.mobile
+            ? ""
+            : contactsData.find((c) => c.contact_uuid === contactId)
+                .contact_mobile;
+        }
+
+        // If both email and mobile are empty, remove the contact
+        if (!existingContact.email && !existingContact.mobile) {
+          return updatedContacts.filter(
+            (contact) => contact.recipients !== contactId
+          );
+        }
+        return updatedContacts;
+      } else {
+        // If the contact does not exist in selectedContacts, add it
+        const newContact = { recipients: contactId };
+
+        if (type === "email") {
+          newContact.email = contactsData.find(
+            (c) => c.contact_uuid === contactId
+          ).contact_email;
+        } else if (type === "mobile") {
+          newContact.mobile = contactsData.find(
+            (c) => c.contact_uuid === contactId
+          ).contact_mobile;
+        }
+
+        updatedContacts.push(newContact);
+        return updatedContacts;
+      }
+    });
+  };
 
   return (
     <>
@@ -347,24 +388,62 @@ const Triggers = () => {
               )}
             </div>
             <div className="mx-auto mt-8 w-[34.5vw]">
-              <span className={"p-float-label"}>
-                <Dropdown
-                  id="recipients"
-                  name="recipients"
-                  optionLabel="label"
-                  optionValue="value"
-                  options={contactsOptions()}
-                  onChange={handleChange}
-                  className={`border ${
-                    formErrors.recipients ? "border-red-600" : ""
-                  }`}
-                  value={addData.recipients}
-                />
-                <label htmlFor="recipients">Select Contact</label>
-              </span>
-              {formErrors.recipients && (
-                <small className="p-error">{formErrors.recipients}</small>
-              )}
+              <table className="table w-full table-auto border-collapse border border-gray-300">
+                <thead>
+                  <tr>
+                    <th className="border px-4 py-2">Contact Name</th>
+                    <th className="border px-4 py-2">Email</th>
+                    <th className="border px-4 py-2">Mobile</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {contactsData.map((contact) => (
+                    <tr key={contact.contact_id}>
+                      <td className="border px-4 py-2">
+                        {contact.contact_first_name +
+                          " " +
+                          contact.contact_last_name}
+                      </td>
+                      <td className="border px-4 py-2 ">
+                        {contact.contact_email && (
+                          <>
+                            <label>
+                              <input
+                                type="checkbox"
+                                onChange={() =>
+                                  handleContactChange(
+                                    contact.contact_uuid,
+                                    "email"
+                                  )
+                                }
+                              />
+                              {contact.contact_email}
+                            </label>
+                          </>
+                        )}
+                      </td>
+                      <td className="border px-4 py-2">
+                        {contact.contact_mobile && (
+                          <>
+                            <label>
+                              <input
+                                type="checkbox"
+                                onChange={() =>
+                                  handleContactChange(
+                                    contact.contact_uuid,
+                                    "mobile"
+                                  )
+                                }
+                              />
+                              {contact.contact_mobile}
+                            </label>
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
 
             <div className="p-field p-col-12 mt-3 flex justify-center">

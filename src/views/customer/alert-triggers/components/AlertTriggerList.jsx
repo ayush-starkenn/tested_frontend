@@ -17,6 +17,7 @@ const AlertTriggerList = ({
   vehiData,
 }) => {
   const token = Cookies.get("token");
+  const user_uuid = Cookies.get("user_uuid");
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
@@ -24,9 +25,10 @@ const AlertTriggerList = ({
   const [editVisible, setEditVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(false);
   const [editData, setEditData] = useState({});
-
+  const [selectedContacts, setSelectedContacts] = useState([]);
   const [deleteId, setDeleteId] = useState("");
   const [triggerName, setTriggerName] = useState("");
+  const [recipientsData, setRecipientsData] = useState([]);
 
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
@@ -96,6 +98,8 @@ const AlertTriggerList = ({
 
   const openEditDialog = (rowData) => {
     setEditData(rowData);
+    let x = JSON.parse(rowData.recipients);
+    setRecipientsData(x);
     setEditVisible(true);
   };
 
@@ -134,7 +138,6 @@ const AlertTriggerList = ({
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
     setEditData((prevEditData) => ({
       ...prevEditData,
       [name]: value,
@@ -148,19 +151,23 @@ const AlertTriggerList = ({
     }));
   };
 
-  const contactsOptions = () => {
-    return contactsData?.map((el) => ({
-      label: el.contact_first_name + " " + el.contact_last_name,
-      value: el.contact_uuid,
-    }));
-  };
-
   //handle Submity function
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(selectedContacts);
 
-    editTrigger(editData?.trigger_id, editData);
+    const updateData = {
+      trigger_name: editData.trigger_name,
+      trigger_description: editData.trigger_description,
+      vehicle_uuid: editData.vehicle_uuid,
+      trigger_type: editData.trigger_type,
+      recipients: JSON.stringify(selectedContacts),
+      trigger_status: editData.trigger_status,
+      user_uuid: user_uuid,
+    };
+
+    editTrigger(editData?.trigger_id, updateData);
     setTimeout(() => {
       closeEditDialog();
     }, [500]);
@@ -174,6 +181,79 @@ const AlertTriggerList = ({
   const handleDelete = () => {
     deleteTrigger(deleteId, token);
     closeDeleteDialog();
+  };
+
+  const handleContactChange = (contactId, type) => {
+    setRecipientsData((prevRecipientsData) => {
+      // Clone the previous recipients data
+      const updatedRecipientsData = [...prevRecipientsData];
+
+      // Find the recipient data for the specific contact
+      const recipientIndex = updatedRecipientsData.findIndex(
+        (recipient) => recipient.recipients === contactId
+      );
+
+      if (recipientIndex !== -1) {
+        // If the recipient exists in the list, toggle the type
+        updatedRecipientsData[recipientIndex][type] =
+          !updatedRecipientsData[recipientIndex][type];
+      } else {
+        // If the recipient doesn't exist, add it to the list
+        updatedRecipientsData.push({
+          recipients: contactId,
+          [type]: true,
+          [type === "email" ? "mobile" : "email"]: false,
+        });
+      }
+      return updatedRecipientsData;
+    });
+
+    // Collect selected contacts, excluding those with empty values and recipients key
+    const selectedContacts = contactsData
+      .map((contact) => {
+        const email = recipientsData.some(
+          (recipient) =>
+            recipient.recipients === contact.contact_uuid && recipient.email
+        );
+        const mobile = recipientsData.some(
+          (recipient) =>
+            recipient.recipients === contact.contact_uuid && recipient.mobile
+        );
+
+        if (email || mobile) {
+          const selectedContact = { recipients: contact.contact_uuid };
+
+          if (email) {
+            selectedContact.email = getContactEmailFromData(
+              contact.contact_uuid
+            );
+          }
+          if (mobile) {
+            selectedContact.mobile = getContactMobileFromData(
+              contact.contact_uuid
+            );
+          }
+
+          return selectedContact;
+        } else {
+          return null; // Exclude objects with empty values and recipients key
+        }
+      })
+      .filter(Boolean); // Remove null values
+
+    setSelectedContacts(selectedContacts);
+  };
+
+  const getContactEmailFromData = (contactId) => {
+    // Find the contact in contactsData by contactId and return the email
+    const contact = contactsData.find((c) => c.contact_uuid === contactId);
+    return contact ? contact.contact_email : "";
+  };
+
+  const getContactMobileFromData = (contactId) => {
+    // Find the contact in contactsData by contactId and return the mobile
+    const contact = contactsData.find((c) => c.contact_uuid === contactId);
+    return contact ? contact.contact_mobile : "";
   };
 
   return (
@@ -232,30 +312,40 @@ const AlertTriggerList = ({
           className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
           body={(rowData) => {
-            console.log(rowData);
-            const matchingContacts = contactsData.filter(
-              (el) => el.contact_uuid === rowData.recipients
-            );
+            // Parse the recipients string into an array of objects
+            const recipientsArray = JSON.parse(rowData.recipients);
+
             return (
               <>
-                {matchingContacts.map((contact) => (
-                  <Tag
-                    key={contact.contact_uuid}
-                    className="my-1 mr-2 bg-gray-200 text-gray-800"
-                    icon="pi pi-user"
-                    style={{
-                      width: "fit-content",
-                      height: "25px",
-                      lineHeight: "40px",
-                    }}
-                  >
-                    <span style={{ fontSize: "12px" }}>
-                      {contact.contact_first_name +
-                        " " +
-                        contact.contact_last_name}
-                    </span>
-                  </Tag>
-                ))}
+                {recipientsArray.map((recipient, index) => {
+                  // Find the matching contact based on contact_uuid
+                  const matchingContact = contactsData.find(
+                    (contact) => contact.contact_uuid === recipient.recipients
+                  );
+
+                  if (matchingContact) {
+                    return (
+                      <Tag
+                        key={index}
+                        className="my-1 mr-2 bg-gray-200 text-gray-800"
+                        icon="pi pi-user"
+                        style={{
+                          width: "fit-content",
+                          height: "25px",
+                          lineHeight: "40px",
+                        }}
+                      >
+                        <span style={{ fontSize: "12px" }}>
+                          {matchingContact.contact_first_name +
+                            " " +
+                            matchingContact.contact_last_name}
+                        </span>
+                      </Tag>
+                    );
+                  } else {
+                    return null;
+                  }
+                })}
               </>
             );
           }}
@@ -352,21 +442,6 @@ const AlertTriggerList = ({
           <div className="mx-auto mt-8 w-[34.5vw]">
             <span className={"p-float-label"}>
               <Dropdown
-                id="recipients"
-                name="recipients"
-                optionLabel="label"
-                optionValue="value"
-                options={contactsOptions()}
-                onChange={handleChange}
-                value={editData?.recipients}
-                className="border"
-              />
-              <label htmlFor="recipients">Select Contact</label>
-            </span>
-          </div>
-          <div className="mx-auto mt-8 w-[34.5vw]">
-            <span className={"p-float-label"}>
-              <Dropdown
                 id="trigger_status"
                 name="trigger_status"
                 optionLabel="label"
@@ -378,6 +453,61 @@ const AlertTriggerList = ({
               />
               <label htmlFor="trigger_status">Select Status</label>
             </span>
+          </div>
+
+          <div className="mx-auto mt-8 w-[34.5vw]">
+            <table className="w-full table-auto border-collapse border border-gray-300">
+              <thead>
+                <tr>
+                  <th className="border px-4 py-2">Contact Name</th>
+                  <th className="border px-4 py-2">Email</th>
+                  <th className="border px-4 py-2">Mobile</th>
+                </tr>
+              </thead>
+              <tbody>
+                {contactsData.map((contact) => (
+                  <tr key={contact.contact_id}>
+                    <td className="border px-4 py-2">
+                      {contact.contact_first_name +
+                        " " +
+                        contact.contact_last_name}
+                    </td>
+                    <td className="border px-4 py-2">
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={recipientsData.some(
+                            (recipient) =>
+                              recipient.recipients === contact.contact_uuid &&
+                              recipient.email
+                          )}
+                          onChange={() =>
+                            handleContactChange(contact.contact_uuid, "email")
+                          }
+                        />
+                        {contact.contact_email}
+                      </label>
+                    </td>
+                    <td className="border px-4 py-2">
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={recipientsData.some(
+                            (recipient) =>
+                              recipient.recipients === contact.contact_uuid &&
+                              recipient.mobile
+                          )}
+                          onChange={() =>
+                            handleContactChange(contact.contact_uuid, "mobile")
+                          }
+                        />
+                        {contact.contact_mobile}
+                      </label>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
 
           <div className="p-field p-col-12 mt-3 flex justify-center">
