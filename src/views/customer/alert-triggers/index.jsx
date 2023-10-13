@@ -408,7 +408,7 @@ const Triggers = () => {
                   name="recipients"
                   optionLabel="label"
                   optionValue="value"
-                  options={contactsOptions()}
+                  // options={contactsOptions()}
                   onChange={handleChange}
                   className={`border ${
                     formErrors.recipients ? "border-red-600" : ""

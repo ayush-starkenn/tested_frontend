@@ -18,7 +18,7 @@ const Report = () => {
   const [todate, setToDate] = useState();
   const [vehicles, setVehicles] = useState({});
   const [chartData, setChartData] = useState([]);
-  const [tableData, setTableData] = useState([])
+  const [tableData, setTableData] = useState([]);
   const tableRef = useRef(null);
 
   useEffect(() => {
@@ -56,7 +56,7 @@ const Report = () => {
         name: vehicle_name,
         eventTypes,
         eventCounts,
-        reg : vehicle_registration
+        reg: vehicle_registration,
       };
     });
     setChartData(parsedChartData);
@@ -81,7 +81,7 @@ const Report = () => {
 
   const downloadPDF = useReactToPrint({
     content: () => tableRef.current,
-    documentTitle: title+"@"+formatTimestamp(date).formattedDate,
+    documentTitle: title + "@" + formatTimestamp(date).formattedDate,
   });
 
   return (
@@ -95,40 +95,57 @@ const Report = () => {
           </div>
         </div>
         <div className="card bg-white">
-         <div className="text-center">
-         <p className="text-2xl pt-4 font-medium" style={{textShadow: "1px 1px 1px #ddd"}}>{title}</p>
-          <i><p className="font-normal  py-2">{formatTimestamp(fromdate).formattedDate} to{" "}
-                    {formatTimestamp(todate).formattedDate}</p></i>
-         </div>
-        
+          <div className="text-center">
+            <p
+              className="pt-4 text-2xl font-medium"
+              style={{ textShadow: "1px 1px 1px #ddd" }}
+            >
+              {title}
+            </p>
+            <i>
+              <p className="py-2  font-normal">
+                {formatTimestamp(fromdate).formattedDate} to{" "}
+                {formatTimestamp(todate).formattedDate}
+              </p>
+            </i>
+          </div>
+
           <div>
             <div className="bg-gray-500 px-4 py-2">
-              <p className="text-xl font-medium" style={{textShadow: "1px 1px 1px #ddd"}}>Trip Event Statistics</p>
+              <p
+                className="text-xl font-medium"
+                style={{ textShadow: "1px 1px 1px #ddd" }}
+              >
+                Trip Event Statistics
+              </p>
             </div>
             <div className="relative overflow-x-auto">
-             
               <div className="flex justify-around">
                 {chartData.map((vehicleData, index) => (
                   <div className="card p-8" key={index}>
                     <div>
-                      <p className="flex items-center"><BiLogoSlackOld className="text-blue-600"/>&nbsp;&nbsp;Analytical Graph for {vehicleData.name}{" "}({vehicleData.reg})</p>
+                      <p className="flex items-center">
+                        <BiLogoSlackOld className="text-blue-600" />
+                        &nbsp;&nbsp;Analytical Graph for {vehicleData.name} (
+                        {vehicleData.reg})
+                      </p>
                       <ReactApexChart
                         options={{
                           chart: {
                             type: "bar",
                             animations: {
                               enabled: true,
-                              easing: 'easeinout',
+                              easing: "easeinout",
                               speed: 800,
                               animateGradually: {
-                                  enabled: true,
-                                  delay: 150
+                                enabled: true,
+                                delay: 150,
                               },
                               dynamicAnimation: {
-                                  enabled: true,
-                                  speed: 350
-                              }
-                          }
+                                enabled: true,
+                                speed: 350,
+                              },
+                            },
                           },
                           dropShadow: {
                             enabled: false,
@@ -136,9 +153,9 @@ const Report = () => {
                             top: 0,
                             left: 0,
                             blur: 3,
-                            color: '#000',
-                            opacity: 0.35
-                        },                                          
+                            color: "#000",
+                            opacity: 0.35,
+                          },
                           xaxis: {
                             categories: vehicleData.eventTypes,
                             title: {
@@ -164,47 +181,85 @@ const Report = () => {
                             name: "Event Count",
                             data: vehicleData.eventCounts,
                           },
-                          
                         ]}
                         type="bar"
                         height={350}
                         width={550}
                       />
-                        
                     </div>
                   </div>
                 ))}
               </div>
             </div>
           </div>
-      
+
           <div className="bg-gray-500 px-4 py-2">
-            <p className="text-xl font-medium" style={{textShadow: "1px 1px 1px #ddd"}}>Trip Event Details</p>
-            </div>
+            <p
+              className="text-xl font-medium"
+              style={{ textShadow: "1px 1px 1px #ddd" }}
+            >
+              Trip Event Details
+            </p>
+          </div>
           {tableData.map((trip, index) => (
             <div key={index} className="p-8">
-              <p className="flex items-center"><BiLogoSlackOld className="text-blue-600"/>&nbsp;&nbsp;{trip.vehicle_name}</p>
-              <table className="text-center mx-6 my-4 text-sm font-light" style={{ width: '-webkit-fill-available' }}>
-              <thead
-                className="border-b bg-gray-100 border font-medium dark:border-neutral-500 dark:text-neutral-800">
-                <tr>
-                  <th scope="col" className="border px-6 py-4">#</th>
-                  <th scope="col" className="border px-6 py-4">Trip ID</th>
-                  <th scope="col" className="border px-6 py-4">Event</th>
-                  <th scope="col" className="border px-6 py-4">Count</th>
-                  <th scope="col" className="border px-6 py-4">Date</th>
-                  <th scope="col" className="border px-6 py-4">View</th>
-                </tr>
-              </thead>
-              <tbody className="bg-gray-50">
-              {trip.tripdata.map((tripItem, tripIndex) => (
-                <tr className="border-b dark:border-neutral-500"  key={tripIndex}>
-                  <td className="whitespace-nowrap border px-6 py-4 font-medium"> {tripIndex + 1}</td>
-                  <td className="whitespace-nowrap border px-6 py-4"> {tripItem.trip_id}</td>
-                  <td className="whitespace-nowrap border px-6 py-4">{tripItem.event}</td>
-                  <td className="whitespace-nowrap border px-6 py-4">{tripItem.eventCount}</td>
-                  <td className="whitespace-nowrap border px-6 py-4"> {formatTimestamp(tripItem.date).formattedDate}</td>
-                  <td className="px-6 py-4"> <a
+              <p className="flex items-center">
+                <BiLogoSlackOld className="text-blue-600" />
+                &nbsp;&nbsp;{trip.vehicle_name}
+              </p>
+              <table
+                className="mx-6 my-4 text-center text-sm font-light"
+                style={{ width: "-webkit-fill-available" }}
+              >
+                <thead className="dark:border-neutral-500 dark:text-neutral-800 border border-b bg-gray-100 font-medium">
+                  <tr>
+                    <th scope="col" className="border px-6 py-4">
+                      #
+                    </th>
+                    <th scope="col" className="border px-6 py-4">
+                      Trip ID
+                    </th>
+                    <th scope="col" className="border px-6 py-4">
+                      Event
+                    </th>
+                    <th scope="col" className="border px-6 py-4">
+                      Count
+                    </th>
+                    <th scope="col" className="border px-6 py-4">
+                      Date
+                    </th>
+                    <th scope="col" className="border px-6 py-4">
+                      View
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-gray-50">
+                  {trip.tripdata.map((tripItem, tripIndex) => (
+                    <tr
+                      className="dark:border-neutral-500 border-b"
+                      key={tripIndex}
+                    >
+                      <td className="whitespace-nowrap border px-6 py-4 font-medium">
+                        {" "}
+                        {tripIndex + 1}
+                      </td>
+                      <td className="whitespace-nowrap border px-6 py-4">
+                        {" "}
+                        {tripItem.trip_id}
+                      </td>
+                      <td className="whitespace-nowrap border px-6 py-4">
+                        {tripItem.event}
+                      </td>
+                      <td className="whitespace-nowrap border px-6 py-4">
+                        {tripItem.eventCount}
+                      </td>
+                      <td className="whitespace-nowrap border px-6 py-4">
+                        {" "}
+                        {formatTimestamp(tripItem.date).formattedDate}
+                      </td>
+                      <td className="px-6 py-4">
+                        {" "}
+                        <a
                           href={`http://localhost:3000/customer/vehicles/completed-trip/${tripItem.trip_id}`}
                           target="_blank"
                           className="text-blue-600 underline"
@@ -212,16 +267,16 @@ const Report = () => {
                         >
                           http://localhost:3000/customer/vehicles/completed-trip/
                           {tripItem.trip_id}
-                        </a></td>
-                </tr>
+                        </a>
+                      </td>
+                    </tr>
                   ))}
-              </tbody>
-            </table>
-              
+                </tbody>
+              </table>
             </div>
-            ))}
+          ))}
         </div>
-        </div>
+      </div>
       <div className="text-center">
         <Button
           label="Download"

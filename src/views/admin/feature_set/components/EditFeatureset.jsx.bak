@@ -454,22 +454,6 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
       invalidFieldsArray.push("dd_stop_tim");
     }
 
-    //load Sensor
-
-    if (values.load_max_cap < 0 || values.load_max_cap > 100) {
-      invalidFieldsArray.push("load_max_cap");
-    }
-
-    //Fuel Sensor
-
-    if (values.fuel_tnk_cap < 0 || values.fuel_tnk_cap > 500) {
-      invalidFieldsArray.push("fuel_tnk_cap");
-    }
-
-    if (values.fuel_thrsh < 0 || values.fuel_thrsh > 100) {
-      invalidFieldsArray.push("fuel_thrsh");
-    }
-
     return invalidFieldsArray;
   }
 
@@ -537,32 +521,28 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
   ];
 
   const SafetyModeoptions = [
-    { label: "Normal", value: "1" },
+    { label: "Normal", value: "Normal" },
+    { label: "Relaxed", value: "Relaxed" },
     {
       label: "Strict",
-      value: "2",
+      value: "Strict",
     },
   ];
 
-  const VehicleTypeoptions = [
-    { label: "12V Pedal", value: "1" },
-    { label: "24V Pedal", value: "2" },
-    { label: "Truck", value: "3" },
-    { label: "Car", value: "4" },
-  ];
+  const VehicleTypeoptions = [{ label: "12V Pedal", value: "12V Pedal" }];
 
   const AcceleratorTypeoptions = [
     {
       label: "Sensor",
-      value: "1",
+      value: "Sensor",
     },
     {
       label: "Cylinder",
-      value: "2",
+      value: "Cylinder",
     },
     {
       label: "Solenoid",
-      value: "3",
+      value: "Solenoid",
     },
   ];
 
@@ -583,11 +563,11 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
 
   const BrakingOptions = [
     {
-      label: "Non PWM Braking",
+      label: "Internal Braking",
       value: "1",
     },
     {
-      label: "PWM Braking",
+      label: "PWN Braking",
       value: "2",
     },
     {
@@ -597,10 +577,10 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
   ];
 
   const ProtocolTypeoptions = [
-    { label: "SAEJ1939", value: "0" },
+    { label: "SAEJ1939", value: "SAEJ1939" },
     {
-      label: "ISO_15765_4",
-      value: "1",
+      label: "CAN",
+      value: "CAN",
     },
   ];
   const radarOptions = [
@@ -615,44 +595,20 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
     { label: "Strict", value: "3" },
   ];
 
-  // const BrakeTypeoptions = [
-  //   { label: "Cylinder", value: "Cylinder" },
-  //   { label: "Internal Braking", value: "Internal Braking" },
-  //   {
-  //     label: "Electromagnetic",
-  //     value: "Electromagnetic",
-  //   },
-  // ];
-
   const Braking = [
-    { label: "Enable", value: "1" },
-    { label: "Disable", value: "0" },
+    { label: "Yes", value: "1" },
+    { label: "No", value: "0" },
   ];
 
   const SpeedSourceoptions = [
-    { label: "Speed Wire", value: "1" },
-    { label: "OBD", value: "2" },
-    { label: "GPS", value: "3" },
-  ];
-
-  const loadOptions = [
-    { label: "Enable", value: "1" },
-    { label: "Disable", value: "0" },
-  ];
-
-  const DDACCoptions = [
-    { label: "Enable", value: "1" },
-    { label: "Disable", value: "0" },
-  ];
-
-  const FuelACCoptions = [
-    { label: "Enable", value: "1" },
-    { label: "Disable", value: "0" },
+    { label: "Speed Wire", value: "Speed Wire" },
+    { label: "OBD", value: "OBD" },
+    { label: "GPS", value: "GPS" },
   ];
 
   const activeOption = [
-    { label: "Active", value: "1" },
-    { label: "Deactive", value: "0" },
+    { label: "Active", value: 1 },
+    { label: "Deactive", value: 2 },
   ];
 
   //fetching customers
@@ -786,7 +742,7 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
               optionLabel="label"
               optionValue="value"
               className="md:w-14rem mt-2 w-full border"
-              value={featuresetDetails.featureset_status || "1"}
+              value={featuresetDetails.featureset_status}
             />
           </div>
           <p className="mt-4 font-bold ">System Type</p>
@@ -3097,26 +3053,21 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
           </div>
           <div className="field my-3 w-[30vw]">
             <label htmlFor="dd_acc_cut">ACC Cut Status</label>
-            <Dropdown
+            <InputText
+              type="number"
               id="dd_acc_cut"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="dd_acc_cut"
-              value={featuresetData.dd_acc_cut}
-              placeholder={
-                featuresetData.dd_acc_cut
-                  ? featuresetData.dd_acc_cut
-                  : "Enter a value"
-              }
-              options={DDACCoptions}
-              optionLabel="label"
-              optionValue="value"
-              onChange={handleDetails}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
-                invalidFields.includes("dd_acc_cut") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("dd_acc_cut") ? "border-red-600" : ""
               }`}
+              onChange={handleDetails}
+              placeholder="Enter a value"
+              value={featuresetData?.dd_acc_cut}
+              autoComplete="off"
               disabled={featuresetData.driverDrowsinessMode === "0"}
             />
           </div>
@@ -3251,26 +3202,21 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
           </div>
           <div className="field my-3 w-[30vw]">
             <label htmlFor="load_acc">Accelerator</label>
-            <Dropdown
+            <InputText
+              type="number"
               id="load_acc"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="load_acc"
-              value={featuresetData.load_acc}
-              placeholder={
-                featuresetData.load_acc
-                  ? featuresetData.load_acc
-                  : "Enter a value"
-              }
-              options={loadOptions}
-              optionLabel="label"
-              optionValue="value"
-              onChange={handleDetails}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
-                invalidFields.includes("load_acc") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("load_acc") ? "border-red-600" : ""
               }`}
+              onChange={handleDetails}
+              placeholder="Enter a value"
+              value={featuresetData?.load_acc}
+              autoComplete="off"
               disabled={featuresetData.load_sts === "0"}
             />
           </div>
@@ -3373,26 +3319,21 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
           </div>
           <div className="field my-3 w-[30vw]">
             <label htmlFor="fuel_acc">Acc Cut</label>
-            <Dropdown
+            <InputText
+              type="number"
               id="fuel_acc"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="fuel_acc"
-              value={featuresetData.fuel_acc}
-              placeholder={
-                featuresetData.fuel_acc
-                  ? featuresetData.fuel_acc
-                  : "Enter a value"
-              }
-              options={FuelACCoptions}
-              optionLabel="label"
-              optionValue="value"
-              onChange={handleDetails}
-              className={`md:w-14rem $dark:bg-gray-900 mt-2 w-full border ${
-                invalidFields.includes("fuel_acc") ? "p-invalid" : ""
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("fuel_acc") ? "border-red-600" : ""
               }`}
+              onChange={handleDetails}
+              placeholder="Enter a value"
+              value={featuresetData?.fuel_acc}
+              autoComplete="off"
               disabled={featuresetData.fuelMode === "0"}
             />
           </div>
