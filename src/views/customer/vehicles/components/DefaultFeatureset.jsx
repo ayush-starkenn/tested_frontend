@@ -52,6 +52,7 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
 
   //validate form function
 
+  
   function validateForm(values) {
     const requiredFields = [
       "mode",
@@ -377,7 +378,7 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
       invalidFieldsArray.push("alcoholstop_time");
     }
 
-    //Driver monitoring
+    //Driver Drowsiness
 
     if (values.dd_act_spd < 0 || values.dd_act_spd > 150) {
       invalidFieldsArray.push("dd_act_spd");
@@ -387,6 +388,22 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
     }
     if (values.dd_stop_tim < 0 || values.dd_stop_tim > 24) {
       invalidFieldsArray.push("dd_stop_tim");
+    }
+
+    //load Sensor
+
+    if (values.load_max_cap < 0 || values.load_max_cap > 100) {
+      invalidFieldsArray.push("load_max_cap");
+    }
+
+    //Fuel Sensor
+
+    if (values.fuel_tnk_cap < 0 || values.fuel_tnk_cap > 500) {
+      invalidFieldsArray.push("fuel_tnk_cap");
+    }
+
+    if (values.fuel_thrsh < 0 || values.fuel_thrsh > 100) {
+      invalidFieldsArray.push("fuel_thrsh");
     }
 
     return invalidFieldsArray;
@@ -444,106 +461,135 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
       });
   };
 
-  //dropdown options
-  const StationaryObjectoptions = [
-    { label: "Yes", value: "1" },
-    { label: "No", value: "0" },
-  ];
+//dropdown options
+const StationaryObjectoptions = [
+  { label: "Yes", value: "1" },
+  { label: "No", value: "0" },
+];
 
-  const CompleteBrakeoptions = [
-    { label: "Yes", value: "1" },
-    { label: "No", value: "0" },
-  ];
+const CompleteBrakeoptions = [
+  { label: "Yes", value: "1" },
+  { label: "No", value: "0" },
+];
 
-  const OncomingObstacleptions = [
-    { label: "Yes", value: "1" },
-    { label: "No", value: "0" },
-  ];
+const OncomingObstacleptions = [
+  { label: "Yes", value: "1" },
+  { label: "No", value: "0" },
+];
 
-  const SafetyModeoptions = [
-    { label: "Normal", value: "Normal" },
-    { label: "Relaxed", value: "Relaxed" },
-    {
-      label: "Strict",
-      value: "Strict",
-    },
-  ];
+const SafetyModeoptions = [
+  { label: "Normal", value: "1" },
+  {
+    label: "Strict",
+    value: "2",
+  },
+];
 
-  const BrakingOptions = [
-    {
-      label: "Internal Braking",
-      value: "1",
-    },
-    {
-      label: "PWN Braking",
-      value: "2",
-    },
-    {
-      label: "Actuator Braking",
-      value: "3",
-    },
-  ];
+const VehicleTypeoptions = [
+  { label: "12V Pedal", value: "1" },
+  { label: "24V Pedal", value: "2" },
+  { label: "Truck", value: "3" },
+  { label: "Car", value: "4" },
+];
 
-  const VehicleTypeoptions = [{ label: "12V Pedal", value: "12V Pedal" }];
+const AcceleratorTypeoptions = [
+  {
+    label: "Sensor",
+    value: "1",
+  },
+  {
+    label: "Cylinder",
+    value: "2",
+  },
+  {
+    label: "Solenoid",
+    value: "3",
+  },
+];
 
-  const AcceleratorTypeoptions = [
-    {
-      label: "Sensor",
-      value: "Sensor",
-    },
-    {
-      label: "Cylinder",
-      value: "Cylinder",
-    },
-    {
-      label: "Solenoid",
-      value: "Solenoid",
-    },
-  ];
+const GyroOptions = [
+  {
+    label: "External Gyro",
+    value: "1",
+  },
+  {
+    label: "inbuild Gyro",
+    value: "2",
+  },
+  {
+    label: "Steering Gyro",
+    value: "3",
+  },
+];
 
-  const ProtocolTypeoptions = [
-    { label: "SAEJ1939", value: "SAEJ1939" },
-    {
-      label: "CAN",
-      value: "CAN",
-    },
-  ];
+const BrakingOptions = [
+  {
+    label: "Non PWM Braking",
+    value: "1",
+  },
+  {
+    label: "PWM Braking",
+    value: "2",
+  },
+  {
+    label: "Actuator Braking",
+    value: "3",
+  },
+];
 
-  const SpeedSourceoptions = [
-    { label: "Speed Wire", value: "Speed Wire" },
-    { label: "OBD", value: "OBD" },
-    { label: "GPS", value: "GPS" },
-  ];
+const ProtocolTypeoptions = [
+  { label: "SAEJ1939", value: "0" },
+  {
+    label: "ISO_15765_4",
+    value: "1",
+  },
+];
+const radarOptions = [
+  { label: "Radar 1", value: "1" },
+  { label: "Radar 2", value: "2" },
+  { label: "Radar 3", value: "3" },
+];
 
-  const GyroOptions = [
-    {
-      label: "External Gyro",
-      value: 1,
-    },
-    {
-      label: "inbuild Gyro",
-      value: 2,
-    },
-    {
-      label: "Steering Gyro",
-      value: 3,
-    },
-  ];
-  const radarOptions = [
-    { label: "Radar 1", value: "1" },
-    { label: "Radar 2", value: "2" },
-    { label: "Radar 3", value: "3" },
-  ];
-  const alcothreshOptions = [
-    { label: "Relaxed", value: "1" },
-    { label: "Normal", value: "2" },
-    { label: "Strict", value: "3" },
-  ];
+const alcothreshOptions = [
+  { label: "Relaxed", value: "1" },
+  { label: "Normal", value: "2" },
+  { label: "Strict", value: "3" },
+];
 
-  const Braking = [
-    { label: "Yes", value: "1" },
-    { label: "No", value: "0" },
-  ];
+// const BrakeTypeoptions = [
+//   { label: "Cylinder", value: "Cylinder" },
+//   { label: "Internal Braking", value: "Internal Braking" },
+//   {
+//     label: "Electromagnetic",
+//     value: "Electromagnetic",
+//   },
+// ];
+
+const Braking = [
+  { label: "Enable", value: "1" },
+  { label: "Disable", value: "0" },
+];
+
+const SpeedSourceoptions = [
+  { label: "Speed Wire", value: "1" },
+  { label: "OBD", value: "2" },
+  { label: "GPS", value: "3" },
+];
+
+const loadOptions = [
+  { label: "Enable", value: "1" },
+  { label: "Disable", value: "0" },
+];
+
+const DDACCoptions = [
+  { label: "Enable", value: "1" },
+  { label: "Disable", value: "0" },
+];
+
+const FuelACCoptions = [
+  { label: "Enable", value: "1" },
+  { label: "Disable", value: "0" },
+];
 
   //edit dialog
   return (
@@ -3036,27 +3082,28 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
             )}
           </div>
           <div className="field my-3 w-[30vw]">
+          <div className="field my-3 w-[30vw]">
             <label htmlFor="dd_acc_cut">ACC Cut Status</label>
-            <InputText
-              type="number"
+            <Dropdown
               id="dd_acc_cut"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="dd_acc_cut"
-              className={`border py-2 pl-2 dark:bg-gray-900 ${
+              value={featuresetData.dd_acc_cut || "1"}
+              placeholder="Select an option"
+              options={DDACCoptions}
+              optionLabel="label"
+              optionValue="value"
+              onChange={handleDetails}
+              disabled={featuresetData.driverDrowsinessMode === "0"}
+              className={`border dark:bg-gray-900 ${
                 invalidFields.includes("dd_acc_cut") ? "border-red-600" : ""
               }`}
-              onChange={handleDetails}
-              placeholder={
-                featuresetData.dd_acc_cut
-                  ? featuresetData.dd_acc_cut
-                  : "Enter a value"
-              }
-              autoComplete="off"
-              disabled={featuresetData.driverDrowsinessMode === "0"}
             />
+          </div>
+     
           </div>
         </div>
         <div className="flex justify-between">
@@ -3201,24 +3248,26 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
           </div>
           <div className="field my-3 w-[30vw]">
             <label htmlFor="load_acc">Accelerator</label>
-            <InputText
-              type="number"
+            <Dropdown
               id="load_acc"
               style={{
                 width: "30vw",
                 borderRadius: "5px",
               }}
               name="load_acc"
-              className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("load_acc") ? "border-red-600" : ""
-              }`}
-              onChange={handleDetails}
+              value={featuresetData.load_acc}
               placeholder={
                 featuresetData.load_acc
                   ? featuresetData.load_acc
                   : "Enter a value"
               }
-              autoComplete="off"
+              options={loadOptions}
+              optionLabel="label"
+              optionValue="value"
+              onChange={handleDetails}
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("load_acc") ? "border-red-600" : ""
+              }`}
               disabled={featuresetData.load_sts === "0"}
             />
           </div>
@@ -3330,24 +3379,27 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
           </div>
           <div className="field my-3 w-[30vw]">
             <label htmlFor="fuel_acc">Acc Cut</label>
-            <InputText
-              type="number"
+            <Dropdown
               id="fuel_acc"
               style={{
                 width: "30vw",
+                height: "50px",
                 borderRadius: "5px",
               }}
               name="fuel_acc"
-              className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("fuel_acc") ? "border-red-600" : ""
-              }`}
-              onChange={handleDetails}
+              value={featuresetData.fuel_acc}
               placeholder={
                 featuresetData.fuel_acc
                   ? featuresetData.fuel_acc
                   : "Enter a value"
               }
-              autoComplete="off"
+              options={FuelACCoptions}
+              optionLabel="label"
+              optionValue="value"
+              onChange={handleDetails}
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("fuel_acc") ? "border-red-600" : ""
+              }`}
               disabled={featuresetData.fuelMode === "0"}
             />
           </div>
