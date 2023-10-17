@@ -8,6 +8,7 @@ import { useContext } from "react";
 import { AppContext } from "context/AppContext";
 
 const UnAssignCustomer = ({ parameters, onSuccess }) => {
+  //this component is not in use
   const [user, setUser] = useState({});
   const [currentUsers, setCurrentUsers] = useState();
   const [listCustomers, setListCustomers] = useState([]);

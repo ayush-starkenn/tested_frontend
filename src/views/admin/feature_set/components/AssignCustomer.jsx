@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 import { AppContext } from "context/AppContext";
 
 const AssignCustomer = ({ parameters, onSuccess }) => {
+  //this component not in use
   const [currentUsers, setCurrentUsers] = useState([]);
   const [newUser, setNewUser] = useState();
   const [listCustomers, setListCustomers] = useState([]);
