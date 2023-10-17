@@ -11,6 +11,7 @@ import axios from "axios";
 // import { Tag } from "primereact/tag";
 
 const EditFeatureset = ({ parameters, onSuccess }) => {
+  //this is the edit featureset component
   const [featuresetDetails, setFeaturesetDetails] = useState({
     featureset_name: "",
   });

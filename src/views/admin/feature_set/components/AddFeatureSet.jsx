@@ -8,6 +8,7 @@ import { Toast } from "primereact/toast";
 import Cookies from "js-cookie";
 
 const AddFeatureSet = ({ onSuccess }) => {
+  //this is add featureset component
   const [data, setData] = useState({});
   const [values, setvalues] = useState({
     mode: "1",
