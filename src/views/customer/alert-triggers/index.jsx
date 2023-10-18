@@ -387,63 +387,75 @@ const Triggers = () => {
                 </small>
               )}
             </div>
-            <div className="mx-auto mt-8 w-[34.5vw]">
-              <table className="table w-full table-auto border-collapse border border-gray-300">
-                <thead>
-                  <tr>
-                    <th className="border px-4 py-2">Contact Name</th>
-                    <th className="border px-4 py-2">Email</th>
-                    <th className="border px-4 py-2">Mobile</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {contactsData.map((contact) => (
-                    <tr key={contact.contact_id}>
-                      <td className="border px-4 py-2">
-                        {contact.contact_first_name +
-                          " " +
-                          contact.contact_last_name}
-                      </td>
-                      <td className="border px-4 py-2 ">
-                        {contact.contact_email && (
-                          <>
-                            <label>
-                              <input
-                                type="checkbox"
-                                onChange={() =>
-                                  handleContactChange(
-                                    contact.contact_uuid,
-                                    "email"
-                                  )
-                                }
-                              />
-                              {contact.contact_email}
-                            </label>
-                          </>
-                        )}
-                      </td>
-                      <td className="border px-4 py-2">
-                        {contact.contact_mobile && (
-                          <>
-                            <label>
-                              <input
-                                type="checkbox"
-                                onChange={() =>
-                                  handleContactChange(
-                                    contact.contact_uuid,
-                                    "mobile"
-                                  )
-                                }
-                              />
-                              {contact.contact_mobile}
-                            </label>
-                          </>
-                        )}
-                      </td>
+            <div className="mx-auto mt-6 w-[34.5vw]">
+              <p className="mb-2 pl-2">Select Contacts</p>
+              <div
+                className="table-container rounded"
+                style={{ maxHeight: "70%", overflowY: "auto" }}
+              >
+                <table className="table w-full table-auto border-collapse border border-gray-300">
+                  <thead>
+                    <tr>
+                      <th className="border py-1 text-[0.95rem] font-semibold">
+                        Contact Name
+                      </th>
+                      <th className="border py-1 text-[0.95rem] font-semibold">
+                        Email
+                      </th>
+                      <th className="border py-1 text-[0.95rem] font-semibold">
+                        Mobile
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {contactsData.map((contact) => (
+                      <tr key={contact.contact_id}>
+                        <td className="border px-4 py-2 text-sm">
+                          {contact.contact_first_name +
+                            " " +
+                            contact.contact_last_name}
+                        </td>
+                        <td className="whitespace-nowrap border px-4 py-2 text-sm ">
+                          {contact.contact_email && (
+                            <>
+                              <label>
+                                <input
+                                  type="checkbox"
+                                  onChange={() =>
+                                    handleContactChange(
+                                      contact.contact_uuid,
+                                      "email"
+                                    )
+                                  }
+                                />
+                                &nbsp;{contact.contact_email}
+                              </label>
+                            </>
+                          )}
+                        </td>
+                        <td className="whitespace-nowrap border px-4 py-2 text-sm">
+                          {contact.contact_mobile && (
+                            <>
+                              <label>
+                                <input
+                                  type="checkbox"
+                                  onChange={() =>
+                                    handleContactChange(
+                                      contact.contact_uuid,
+                                      "mobile"
+                                    )
+                                  }
+                                />
+                                &nbsp;{contact.contact_mobile}
+                              </label>
+                            </>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
 
             <div className="p-field p-col-12 mt-3 flex justify-center">

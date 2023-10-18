@@ -142,7 +142,7 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
             {globalFilterValue && (
               <Button
                 icon="pi pi-times"
-                className="p-button-rounded p-button-text"
+                className="p-button-rounded p-button-text dark:text-gray-50 dark:hover:text-gray-50"
                 onClick={clearSearch}
               />
             )}
@@ -270,7 +270,12 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
                     "contact_first_name"
                   )}`}
                 />
-                <label htmlFor="contact_first_name" className="dark:text-gray-300">First Name</label>
+                <label
+                  htmlFor="contact_first_name"
+                  className="dark:text-gray-300"
+                >
+                  First Name
+                </label>
               </span>
             </div>
             <div className="mx-auto mt-7">
@@ -284,7 +289,12 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
                     "contact_last_name"
                   )}`}
                 />
-                <label htmlFor="contact_last_name" className="dark:text-gray-300">Last Name</label>
+                <label
+                  htmlFor="contact_last_name"
+                  className="dark:text-gray-300"
+                >
+                  Last Name
+                </label>
               </span>
             </div>
             <div className="mx-auto mt-7">
@@ -299,7 +309,9 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
                     "contact_email"
                   )}`}
                 />
-                <label htmlFor="contact_email" className="dark:text-gray-300">Email</label>
+                <label htmlFor="contact_email" className="dark:text-gray-300">
+                  Email
+                </label>
               </span>
             </div>
             <div className="mx-auto mt-7">
@@ -314,7 +326,9 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
                     "contact_mobile"
                   )}`}
                 />
-                <label htmlFor="contact_mobile" className="dark:text-gray-300">Mobile Number</label>
+                <label htmlFor="contact_mobile" className="dark:text-gray-300">
+                  Mobile Number
+                </label>
               </span>
             </div>
             <div className="mx-auto mt-7">
@@ -331,7 +345,9 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
                   value={editData?.contact_status}
                   className="border"
                 />
-                <label htmlFor="status" className="dark:text-gray-300">Status</label>
+                <label htmlFor="status" className="dark:text-gray-300">
+                  Status
+                </label>
               </span>
             </div>
             <div className="p-field p-col-12 mt-7 flex justify-center">

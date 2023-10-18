@@ -52,7 +52,6 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
 
   //validate form function
 
-  
   function validateForm(values) {
     const requiredFields = [
       "mode",
@@ -461,135 +460,135 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
       });
   };
 
-//dropdown options
-const StationaryObjectoptions = [
-  { label: "Yes", value: "1" },
-  { label: "No", value: "0" },
-];
+  //dropdown options
+  const StationaryObjectoptions = [
+    { label: "Yes", value: "1" },
+    { label: "No", value: "0" },
+  ];
 
-const CompleteBrakeoptions = [
-  { label: "Yes", value: "1" },
-  { label: "No", value: "0" },
-];
+  const CompleteBrakeoptions = [
+    { label: "Yes", value: "1" },
+    { label: "No", value: "0" },
+  ];
 
-const OncomingObstacleptions = [
-  { label: "Yes", value: "1" },
-  { label: "No", value: "0" },
-];
+  const OncomingObstacleptions = [
+    { label: "Yes", value: "1" },
+    { label: "No", value: "0" },
+  ];
 
-const SafetyModeoptions = [
-  { label: "Normal", value: "1" },
-  {
-    label: "Strict",
-    value: "2",
-  },
-];
+  const SafetyModeoptions = [
+    { label: "Normal", value: "1" },
+    {
+      label: "Strict",
+      value: "2",
+    },
+  ];
 
-const VehicleTypeoptions = [
-  { label: "12V Pedal", value: "1" },
-  { label: "24V Pedal", value: "2" },
-  { label: "Truck", value: "3" },
-  { label: "Car", value: "4" },
-];
+  const VehicleTypeoptions = [
+    { label: "12V Pedal", value: "1" },
+    { label: "24V Pedal", value: "2" },
+    { label: "Truck", value: "3" },
+    { label: "Car", value: "4" },
+  ];
 
-const AcceleratorTypeoptions = [
-  {
-    label: "Sensor",
-    value: "1",
-  },
-  {
-    label: "Cylinder",
-    value: "2",
-  },
-  {
-    label: "Solenoid",
-    value: "3",
-  },
-];
+  const AcceleratorTypeoptions = [
+    {
+      label: "Sensor",
+      value: "1",
+    },
+    {
+      label: "Cylinder",
+      value: "2",
+    },
+    {
+      label: "Solenoid",
+      value: "3",
+    },
+  ];
 
-const GyroOptions = [
-  {
-    label: "External Gyro",
-    value: "1",
-  },
-  {
-    label: "inbuild Gyro",
-    value: "2",
-  },
-  {
-    label: "Steering Gyro",
-    value: "3",
-  },
-];
+  const GyroOptions = [
+    {
+      label: "External Gyro",
+      value: "1",
+    },
+    {
+      label: "inbuild Gyro",
+      value: "2",
+    },
+    {
+      label: "Steering Gyro",
+      value: "3",
+    },
+  ];
 
-const BrakingOptions = [
-  {
-    label: "Non PWM Braking",
-    value: "1",
-  },
-  {
-    label: "PWM Braking",
-    value: "2",
-  },
-  {
-    label: "Actuator Braking",
-    value: "3",
-  },
-];
+  const BrakingOptions = [
+    {
+      label: "Non PWM Braking",
+      value: "1",
+    },
+    {
+      label: "PWM Braking",
+      value: "2",
+    },
+    {
+      label: "Actuator Braking",
+      value: "3",
+    },
+  ];
 
-const ProtocolTypeoptions = [
-  { label: "SAEJ1939", value: "0" },
-  {
-    label: "ISO_15765_4",
-    value: "1",
-  },
-];
-const radarOptions = [
-  { label: "Radar 1", value: "1" },
-  { label: "Radar 2", value: "2" },
-  { label: "Radar 3", value: "3" },
-];
+  const ProtocolTypeoptions = [
+    { label: "SAEJ1939", value: "0" },
+    {
+      label: "ISO_15765_4",
+      value: "1",
+    },
+  ];
+  const radarOptions = [
+    { label: "Radar 1", value: "1" },
+    { label: "Radar 2", value: "2" },
+    { label: "Radar 3", value: "3" },
+  ];
 
-const alcothreshOptions = [
-  { label: "Relaxed", value: "1" },
-  { label: "Normal", value: "2" },
-  { label: "Strict", value: "3" },
-];
+  const alcothreshOptions = [
+    { label: "Relaxed", value: "1" },
+    { label: "Normal", value: "2" },
+    { label: "Strict", value: "3" },
+  ];
 
-// const BrakeTypeoptions = [
-//   { label: "Cylinder", value: "Cylinder" },
-//   { label: "Internal Braking", value: "Internal Braking" },
-//   {
-//     label: "Electromagnetic",
-//     value: "Electromagnetic",
-//   },
-// ];
+  // const BrakeTypeoptions = [
+  //   { label: "Cylinder", value: "Cylinder" },
+  //   { label: "Internal Braking", value: "Internal Braking" },
+  //   {
+  //     label: "Electromagnetic",
+  //     value: "Electromagnetic",
+  //   },
+  // ];
 
-const Braking = [
-  { label: "Enable", value: "1" },
-  { label: "Disable", value: "0" },
-];
+  const Braking = [
+    { label: "Enable", value: "1" },
+    { label: "Disable", value: "0" },
+  ];
 
-const SpeedSourceoptions = [
-  { label: "Speed Wire", value: "1" },
-  { label: "OBD", value: "2" },
-  { label: "GPS", value: "3" },
-];
+  const SpeedSourceoptions = [
+    { label: "Speed Wire", value: "1" },
+    { label: "OBD", value: "2" },
+    { label: "GPS", value: "3" },
+  ];
 
-const loadOptions = [
-  { label: "Enable", value: "1" },
-  { label: "Disable", value: "0" },
-];
+  const loadOptions = [
+    { label: "Enable", value: "1" },
+    { label: "Disable", value: "0" },
+  ];
 
-const DDACCoptions = [
-  { label: "Enable", value: "1" },
-  { label: "Disable", value: "0" },
-];
+  const DDACCoptions = [
+    { label: "Enable", value: "1" },
+    { label: "Disable", value: "0" },
+  ];
 
-const FuelACCoptions = [
-  { label: "Enable", value: "1" },
-  { label: "Disable", value: "0" },
-];
+  const FuelACCoptions = [
+    { label: "Enable", value: "1" },
+    { label: "Disable", value: "0" },
+  ];
 
   //edit dialog
   return (
@@ -694,11 +693,8 @@ const FuelACCoptions = [
                   ? "border-red-600"
                   : ""
               }`}
-              placeholder={
-                featuresetData?.activationSpeed
-                  ? featuresetData?.activationSpeed
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.activationSpeed}
               name="activationSpeed"
               onChange={handleDetails}
               autoComplete="off"
@@ -719,11 +715,8 @@ const FuelACCoptions = [
                 width: "30vw",
                 borderRadius: "5px",
               }}
-              placeholder={
-                featuresetData.alarmThreshold
-                  ? featuresetData.alarmThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.alarmThreshold}
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("alarmThreshold") ? "border-red-600" : ""
               }`}
@@ -749,11 +742,8 @@ const FuelACCoptions = [
                 width: "30vw",
                 borderRadius: "5px",
               }}
-              placeholder={
-                featuresetData.brakeThreshold
-                  ? featuresetData.brakeThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.brakeThreshold}
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("brakeThreshold") ? "border-red-600" : ""
               }`}
@@ -777,11 +767,8 @@ const FuelACCoptions = [
                 width: "30vw",
                 borderRadius: "5px",
               }}
-              placeholder={
-                featuresetData.brakeSpeed
-                  ? featuresetData.brakeSpeed
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData.brakeSpeed}
               name="brakeSpeed"
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("brakeSpeed") ? "border-red-600" : ""
@@ -819,7 +806,7 @@ const FuelACCoptions = [
               name="detectStationaryObject"
               onChange={handleDetails}
               value={featuresetData.detectStationaryObject}
-              className={`md:w-14rem  mt-2 w-full border dark:bg-gray-900 ${
+              className={`md:w-14rem  h-11 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("detectStationaryObject")
                   ? "border-red-600"
                   : ""
@@ -846,7 +833,7 @@ const FuelACCoptions = [
               value={featuresetData.allowCompleteBrake}
               optionLabel="label"
               optionValue="value"
-              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
+              className={`md:w-14rem h-11 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("allowCompleteBrake")
                   ? "border-red-600"
                   : ""
@@ -877,7 +864,7 @@ const FuelACCoptions = [
               optionLabel="label"
               optionValue="value"
               onChange={handleDetails}
-              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
+              className={`md:w-14rem h-11 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("detectOncomingObstacle")
                   ? "border-red-600"
                   : ""
@@ -904,7 +891,7 @@ const FuelACCoptions = [
               onChange={handleDetails}
               optionLabel="label"
               optionValue="value"
-              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
+              className={`md:w-14rem h-11 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("safetyMode") ? "border-red-600" : ""
               }`}
               disabled={featuresetData.CASMode === "0"}
@@ -921,11 +908,8 @@ const FuelACCoptions = [
                 width: "30vw",
                 borderRadius: "5px",
               }}
-              placeholder={
-                featuresetData.ttcThreshold
-                  ? featuresetData.ttcThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.ttcThreshold}
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("ttcThreshold") ? "border-red-600" : ""
               }`}
@@ -956,11 +940,8 @@ const FuelACCoptions = [
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.brakeOnDuration
-                  ? featuresetData.brakeOnDuration
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.brakeOnDuration}
               autoComplete="off"
               disabled={featuresetData.CASMode === "0"}
             />
@@ -988,11 +969,8 @@ const FuelACCoptions = [
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.brakeOffDuration
-                  ? featuresetData.brakeOffDuration
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.brakeOffDuration}
               autoComplete="off"
               disabled={featuresetData.CASMode === "0"}
             />
@@ -1017,11 +995,8 @@ const FuelACCoptions = [
                 invalidFields.includes("start_time") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.start_time
-                  ? featuresetData.start_time
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.start_time}
               autoComplete="off"
               disabled={featuresetData.CASMode === "0"}
             />
@@ -1047,11 +1022,8 @@ const FuelACCoptions = [
                 invalidFields.includes("stop_time") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.stop_time
-                  ? featuresetData.stop_time
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.stop_time}
               autoComplete="off"
               disabled={featuresetData.CASMode === "0"}
             />
@@ -1106,11 +1078,8 @@ const FuelACCoptions = [
                 width: "30vw",
                 borderRadius: "5px",
               }}
-              placeholder={
-                featuresetData.preWarning
-                  ? featuresetData.preWarning
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.preWarning}
               className={`border py-2 pl-2 dark:bg-gray-900 ${
                 invalidFields.includes("preWarning") ? "border-red-600" : ""
               }`}
@@ -1141,11 +1110,8 @@ const FuelACCoptions = [
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.sleepAlertInterval
-                  ? featuresetData.sleepAlertInterval
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.sleepAlertInterval}
               autoComplete="off"
               disabled={featuresetData.sleepAlertMode === "0"}
             />
@@ -1173,11 +1139,8 @@ const FuelACCoptions = [
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.activationSpeed
-                  ? featuresetData.activationSpeed
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.activationSpeed}
               autoComplete="off"
               disabled={featuresetData.sleepAlertMode === "0"}
             />
@@ -1201,11 +1164,8 @@ const FuelACCoptions = [
                 invalidFields.includes("startTime") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.startTime
-                  ? featuresetData.startTime
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.startTime}
               autoComplete="off"
               disabled={featuresetData.sleepAlertMode === "0"}
             />
@@ -1231,11 +1191,8 @@ const FuelACCoptions = [
                 invalidFields.includes("stopTime") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.stopTime
-                  ? featuresetData.stopTime
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.stopTime}
               autoComplete="off"
               disabled={featuresetData.sleepAlertMode === "0"}
             />
@@ -1261,11 +1218,8 @@ const FuelACCoptions = [
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.brakeActivateTime
-                  ? featuresetData.brakeActivateTime
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.brakeActivateTime}
               autoComplete="off"
               disabled={featuresetData.sleepAlertMode === "0"}
             />
@@ -1296,7 +1250,7 @@ const FuelACCoptions = [
               }
               optionLabel="label"
               optionValue="value"
-              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
+              className={`md:w-14rem h-11 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("braking") ? "border-red-600" : ""
               }`}
               disabled={featuresetData.sleepAlertMode === "0"}
@@ -1355,11 +1309,8 @@ const FuelACCoptions = [
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.maxLaneChangeThreshold
-                  ? featuresetData.maxLaneChangeThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.maxLaneChangeThreshold}
               autoComplete="off"
               disabled={featuresetData.driverEvalMode === "0"}
             />
@@ -1388,11 +1339,8 @@ const FuelACCoptions = [
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.minLaneChangeThreshold
-                  ? featuresetData.minLaneChangeThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData.minLaneChangeThreshold}
               autoComplete="off"
               disabled={featuresetData.driverEvalMode === "0"}
             />
@@ -1423,11 +1371,8 @@ const FuelACCoptions = [
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.maxHarshAccelerationThreshold
-                  ? featuresetData.maxHarshAccelerationThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.maxHarshAccelerationThreshold}
               autoComplete="off"
               disabled={featuresetData.driverEvalMode === "0"}
             />
@@ -1456,11 +1401,8 @@ const FuelACCoptions = [
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.minHarshAccelerationThreshold
-                  ? featuresetData.minHarshAccelerationThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.minHarshAccelerationThreshold}
               autoComplete="off"
               disabled={featuresetData.driverEvalMode === "0"}
             />
@@ -1491,11 +1433,8 @@ const FuelACCoptions = [
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.suddenBrakingThreshold
-                  ? featuresetData.suddenBrakingThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.suddenBrakingThreshold}
               autoComplete="off"
               disabled={featuresetData.driverEvalMode === "0"}
             />
@@ -1524,11 +1463,8 @@ const FuelACCoptions = [
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.maxSpeedBumpThreshold
-                  ? featuresetData.maxSpeedBumpThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.maxSpeedBumpThreshold}
               autoComplete="off"
               disabled={featuresetData.driverEvalMode === "0"}
             />
@@ -1558,11 +1494,8 @@ const FuelACCoptions = [
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.minSpeedBumpThreshold
-                  ? featuresetData.minSpeedBumpThreshold
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.minSpeedBumpThreshold}
               autoComplete="off"
               disabled={featuresetData.driverEvalMode === "0"}
             />
@@ -1621,11 +1554,8 @@ const FuelACCoptions = [
                 invalidFields.includes("speedLimit") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.speedLimit
-                  ? featuresetData.speedLimit
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.speedLimit}
               autoComplete="off"
               disabled={featuresetData.GovernerMode === "0"}
             />
@@ -1685,11 +1615,8 @@ const FuelACCoptions = [
                 : ""
             }`}
             onChange={handleDetails}
-            placeholder={
-              featuresetData.cruiseactivationSpeed
-                ? featuresetData.cruiseactivationSpeed
-                : "Enter a value"
-            }
+            placeholder="Enter a value"
+            value={featuresetData?.cruiseactivationSpeed}
             autoComplete="off"
             disabled={featuresetData.cruiseMode === "0"}
           />
@@ -1719,7 +1646,7 @@ const FuelACCoptions = [
               }
               optionLabel="label"
               optionValue="value"
-              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
+              className={`md:w-14rem h-11 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("vehicleType") ? "border-red-600" : ""
               }`}
               disabled={featuresetData.cruiseMode === "0"}
@@ -1775,7 +1702,7 @@ const FuelACCoptions = [
               value={featuresetData.protocolType}
               optionLabel="label"
               optionValue="value"
-              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
+              className={`md:w-14rem h-11 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("protocolType") ? "border-red-600" : ""
               }`}
               disabled={featuresetData.obdMode === "0"}
@@ -1842,7 +1769,7 @@ const FuelACCoptions = [
               name="acceleratorType"
               onChange={handleDetails}
               options={AcceleratorTypeoptions}
-              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
+              className={`md:w-14rem h-11 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("acceleratorType")
                   ? "border-red-600"
                   : ""
@@ -1868,7 +1795,7 @@ const FuelACCoptions = [
               name="VS_brk_typ"
               onChange={handleDetails}
               options={BrakingOptions}
-              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
+              className={`md:w-14rem h-11 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("VS_brk_typ") ? "border-red-600" : ""
               }`}
             />
@@ -1893,7 +1820,7 @@ const FuelACCoptions = [
             name="VS_gyro_type"
             onChange={handleDetails}
             options={GyroOptions}
-            className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
+            className={`md:w-14rem h-11 w-full border dark:bg-gray-900 ${
               invalidFields.includes("VS_gyro_type") ? "border-red-600" : ""
             }`}
           />
@@ -1979,11 +1906,8 @@ const FuelACCoptions = [
                 invalidFields.includes("rfAngle") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.rfAngle
-                  ? featuresetData.rfAngle
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.rfAngle}
               autoComplete="off"
             />
             {invalidFields.includes("rfAngle") && (
@@ -2006,11 +1930,8 @@ const FuelACCoptions = [
                 invalidFields.includes("rdr_act_spd") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.rdr_act_spd
-                  ? featuresetData.rdr_act_spd
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.rdr_act_sp}
               autoComplete="off"
             />
             {invalidFields.includes("rdr_act_spd") && (
@@ -2040,7 +1961,7 @@ const FuelACCoptions = [
               optionLabel="label"
               optionValue="value"
               onChange={handleDetails}
-              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
+              className={`md:w-14rem h-11 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("rdr_type") ? "border-red-600" : ""
               }`}
             />
@@ -2059,11 +1980,8 @@ const FuelACCoptions = [
                 invalidFields.includes("Sensor_res1") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.Sensor_res1
-                  ? featuresetData.Sensor_res1
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.Sensor_res1}
               autoComplete="off"
             />
           </div>
@@ -2092,7 +2010,7 @@ const FuelACCoptions = [
               optionLabel="label"
               optionValue="value"
               onChange={handleDetails}
-              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
+              className={`md:w-14rem h-11 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("speedSource") ? "border-red-600" : ""
               }`}
             />
@@ -2113,9 +2031,8 @@ const FuelACCoptions = [
                 invalidFields.includes("slope") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.slope ? featuresetData.slope : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.slope}
               autoComplete="off"
             />
             {invalidFields.includes("slope") && (
@@ -2138,9 +2055,8 @@ const FuelACCoptions = [
                 invalidFields.includes("offset") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.offset ? featuresetData.offset : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.offset}
               autoComplete="off"
             />
             {invalidFields.includes("offset") && (
@@ -2166,9 +2082,8 @@ const FuelACCoptions = [
               invalidFields.includes("delay") ? "border-red-600" : ""
             }`}
             onChange={handleDetails}
-            placeholder={
-              featuresetData.delay ? featuresetData.delay : "Enter a value"
-            }
+            placeholder="Enter a value"
+            value={featuresetData?.delay}
             autoComplete="off"
           />
           {invalidFields.includes("delay") && (
@@ -2227,11 +2142,8 @@ const FuelACCoptions = [
                 invalidFields.includes("noAlarm") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.noAlarm
-                  ? featuresetData.noAlarm
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.noAlarm}
               autoComplete="off"
             />
             {invalidFields.includes("noAlarm") && (
@@ -2254,9 +2166,8 @@ const FuelACCoptions = [
                 invalidFields.includes("speed") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.speed ? featuresetData.speed : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.speed}
               autoComplete="off"
             />
             {invalidFields.includes("speed") && (
@@ -2283,11 +2194,8 @@ const FuelACCoptions = [
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.accelerationBypass
-                  ? featuresetData.accelerationBypass
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.accelerationBypass}
               autoComplete="off"
             />
             {invalidFields.includes("accelerationBypass") && (
@@ -2310,11 +2218,8 @@ const FuelACCoptions = [
                 invalidFields.includes("tim_err_tpms") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.tim_err_tpms
-                  ? featuresetData.tim_err_tpms
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.tim_err_tpms}
               autoComplete="off"
             />
             {invalidFields.includes("tim_err_tpms") && (
@@ -2341,11 +2246,8 @@ const FuelACCoptions = [
                 invalidFields.includes("rfSensorAbsent") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.rfSensorAbsent
-                  ? featuresetData.rfSensorAbsent
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.rfSensorAbsent}
               autoComplete="off"
             />
             {invalidFields.includes("rfSensorAbsent") && (
@@ -2370,11 +2272,8 @@ const FuelACCoptions = [
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.gyroscopeAbsent
-                  ? featuresetData.gyroscopeAbsent
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.gyroscopeAbsent}
               autoComplete="off"
             />
             {invalidFields.includes("gyroscopeAbsent") && (
@@ -2399,11 +2298,8 @@ const FuelACCoptions = [
                 invalidFields.includes("hmiAbsent") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.hmiAbsent
-                  ? featuresetData.hmiAbsent
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.hmiAbsent}
               autoComplete="off"
             />
             {invalidFields.includes("hmiAbsent") && (
@@ -2426,11 +2322,8 @@ const FuelACCoptions = [
                 invalidFields.includes("timeNotSet") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.timeNotSet
-                  ? featuresetData.timeNotSet
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.timeNotSet}
               autoComplete="off"
             />
             {invalidFields.includes("timeNotSet") && (
@@ -2455,11 +2348,8 @@ const FuelACCoptions = [
                 invalidFields.includes("brakeError") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.brakeError
-                  ? featuresetData.brakeError
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.brakeError}
               autoComplete="off"
             />
             {invalidFields.includes("brakeError") && (
@@ -2483,11 +2373,8 @@ const FuelACCoptions = [
                 invalidFields.includes("tpmsError") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.tpmsError
-                  ? featuresetData.tpmsError
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.tpmsError}
               autoComplete="off"
             />
             {invalidFields.includes("tpmsError") && (
@@ -2512,11 +2399,8 @@ const FuelACCoptions = [
                 invalidFields.includes("obdAbsent") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.obdAbsent
-                  ? featuresetData.obdAbsent
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.obdAbsent}
               autoComplete="off"
             />
             {invalidFields.includes("obdAbsent") && (
@@ -2539,11 +2423,8 @@ const FuelACCoptions = [
                 invalidFields.includes("noAlarmSpeed") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.noAlarmSpeed
-                  ? featuresetData.noAlarmSpeed
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.noAlarmSpeed}
               autoComplete="off"
             />
             {invalidFields.includes("noAlarmSpeed") && (
@@ -2570,11 +2451,8 @@ const FuelACCoptions = [
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.laserSensorAbsent
-                  ? featuresetData.laserSensorAbsent
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.laserSensorAbsent}
               autoComplete="off"
             />
             {invalidFields.includes("laserSensorAbsent") && (
@@ -2597,11 +2475,8 @@ const FuelACCoptions = [
                 invalidFields.includes("rfidAbsent") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.rfidAbsent
-                  ? featuresetData.rfidAbsent
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.rfidAbsent}
               autoComplete="off"
             />
             {invalidFields.includes("rfidAbsent") && (
@@ -2626,11 +2501,8 @@ const FuelACCoptions = [
                 invalidFields.includes("iotAbsent") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.iotAbsent
-                  ? featuresetData.iotAbsent
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.iotAbsent}
               autoComplete="off"
             />
             {invalidFields.includes("iotAbsent") && (
@@ -2653,11 +2525,8 @@ const FuelACCoptions = [
                 invalidFields.includes("acc_board") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.acc_board
-                  ? featuresetData.acc_board
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.acc_board}
               autoComplete="off"
             />
             {invalidFields.includes("acc_board") && (
@@ -2683,9 +2552,8 @@ const FuelACCoptions = [
                 invalidFields.includes("SBE_dd") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.SBE_dd ? featuresetData.SBE_dd : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.SBE_dd}
               autoComplete="off"
             />
             {invalidFields.includes("SBE_dd") && (
@@ -2708,11 +2576,8 @@ const FuelACCoptions = [
                 invalidFields.includes("SBE_alcohol") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.SBE_alcohol
-                  ? featuresetData.SBE_alcohol
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.SBE_alcohol}
               autoComplete="off"
             />
             {invalidFields.includes("SBE_alcohol") && (
@@ -2737,11 +2602,8 @@ const FuelACCoptions = [
                 invalidFields.includes("SBE_temp") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.SBE_temp
-                  ? featuresetData.SBE_temp
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.SBE_temp}
               autoComplete="off"
             />
             {invalidFields.includes("SBE_temp") && (
@@ -2802,11 +2664,8 @@ const FuelACCoptions = [
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.firewarereserver1
-                  ? featuresetData.firewarereserver1
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.firewarereserver1}
               autoComplete="off"
               disabled={featuresetData.firmwareOtaUpdate === "0"}
             />
@@ -2827,11 +2686,8 @@ const FuelACCoptions = [
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.firewarereserver2
-                  ? featuresetData.firewarereserver2
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.firewarereserver2}
               autoComplete="off"
               disabled={featuresetData.firmwareOtaUpdate === "0"}
             />
@@ -2887,11 +2743,8 @@ const FuelACCoptions = [
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.alcoholinterval
-                  ? featuresetData.alcoholinterval
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.alcoholinterval}
               autoComplete="off"
               disabled={featuresetData.alcoholDetectionMode === "0"}
             />
@@ -2915,11 +2768,8 @@ const FuelACCoptions = [
                 invalidFields.includes("alcoholact_spd") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.alcoholact_spd
-                  ? featuresetData.alcoholact_spd
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.alcoholact_spd}
               autoComplete="off"
               disabled={featuresetData.alcoholDetectionMode === "0"}
             />
@@ -2947,11 +2797,8 @@ const FuelACCoptions = [
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.alcoholstart_time
-                  ? featuresetData.alcoholstart_time
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.alcoholstart_time}
               autoComplete="off"
               disabled={featuresetData.alcoholDetectionMode === "0"}
             />
@@ -2977,11 +2824,8 @@ const FuelACCoptions = [
                   : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.alcoholstop_time
-                  ? featuresetData.alcoholstop_time
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.alcoholstop_time}
               autoComplete="off"
               disabled={featuresetData.alcoholDetectionMode === "0"}
             />
@@ -3012,7 +2856,7 @@ const FuelACCoptions = [
               optionLabel="label"
               optionValue="value"
               onChange={handleDetails}
-              className={`md:w-14rem mt-2 w-full border dark:bg-gray-900 ${
+              className={`md:w-14rem h-11 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("alcoholmode") ? "p-invalid" : ""
               }`}
               disabled={featuresetData.alcoholDetectionMode === "0"}
@@ -3067,11 +2911,8 @@ const FuelACCoptions = [
                 invalidFields.includes("dd_act_spd") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.dd_act_spd
-                  ? featuresetData.dd_act_spd
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.dd_act_spd}
               autoComplete="off"
               disabled={featuresetData.driverDrowsinessMode === "0"}
             />
@@ -3082,28 +2923,27 @@ const FuelACCoptions = [
             )}
           </div>
           <div className="field my-3 w-[30vw]">
-          <div className="field my-3 w-[30vw]">
-            <label htmlFor="dd_acc_cut">ACC Cut Status</label>
-            <Dropdown
-              id="dd_acc_cut"
-              style={{
-                width: "30vw",
-                borderRadius: "5px",
-              }}
-              name="dd_acc_cut"
-              value={featuresetData.dd_acc_cut || "1"}
-              placeholder="Select an option"
-              options={DDACCoptions}
-              optionLabel="label"
-              optionValue="value"
-              onChange={handleDetails}
-              disabled={featuresetData.driverDrowsinessMode === "0"}
-              className={`border dark:bg-gray-900 ${
-                invalidFields.includes("dd_acc_cut") ? "border-red-600" : ""
-              }`}
-            />
-          </div>
-     
+            <div className="field my-3 w-[30vw]">
+              <label htmlFor="dd_acc_cut">ACC Cut Status</label>
+              <Dropdown
+                id="dd_acc_cut"
+                style={{
+                  width: "30vw",
+                  borderRadius: "5px",
+                }}
+                name="dd_acc_cut"
+                value={featuresetData.dd_acc_cut || "1"}
+                placeholder="Select an option"
+                options={DDACCoptions}
+                optionLabel="label"
+                optionValue="value"
+                onChange={handleDetails}
+                disabled={featuresetData.driverDrowsinessMode === "0"}
+                className={`h-11 border dark:bg-gray-900 ${
+                  invalidFields.includes("dd_acc_cut") ? "border-red-600" : ""
+                }`}
+              />
+            </div>
           </div>
         </div>
         <div className="flex justify-between">
@@ -3121,11 +2961,8 @@ const FuelACCoptions = [
                 invalidFields.includes("dd_strt_tim") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.dd_strt_tim
-                  ? featuresetData.dd_strt_tim
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.dd_strt_tim}
               autoComplete="off"
               disabled={featuresetData.driverDrowsinessMode === "0"}
             />
@@ -3149,11 +2986,8 @@ const FuelACCoptions = [
                 invalidFields.includes("dd_stop_tim") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.dd_stop_tim
-                  ? featuresetData.dd_stop_tim
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.dd_stop_tim}
               autoComplete="off"
               disabled={featuresetData.driverDrowsinessMode === "0"}
             />
@@ -3179,11 +3013,8 @@ const FuelACCoptions = [
                 invalidFields.includes("dd_res1") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.dd_res1
-                  ? featuresetData.dd_res1
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.dd_res1}
               autoComplete="off"
               disabled={featuresetData.driverDrowsinessMode === "0"}
             />
@@ -3237,11 +3068,8 @@ const FuelACCoptions = [
                 invalidFields.includes("load_max_cap") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.load_max_cap
-                  ? featuresetData.load_max_cap
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.load_max_cap}
               autoComplete="off"
               disabled={featuresetData.load_sts === "0"}
             />
@@ -3265,7 +3093,7 @@ const FuelACCoptions = [
               optionLabel="label"
               optionValue="value"
               onChange={handleDetails}
-              className={`border py-2 pl-2 dark:bg-gray-900 ${
+              className={`h-11 border dark:bg-gray-900 ${
                 invalidFields.includes("load_acc") ? "border-red-600" : ""
               }`}
               disabled={featuresetData.load_sts === "0"}
@@ -3320,11 +3148,8 @@ const FuelACCoptions = [
                 invalidFields.includes("fuel_tnk_cap") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.fuel_tnk_cap
-                  ? featuresetData.fuel_tnk_cap
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.fuel_tnk_cap}
               autoComplete="off"
               disabled={featuresetData.fuelMode === "0"}
             />
@@ -3343,11 +3168,8 @@ const FuelACCoptions = [
                 invalidFields.includes("fuel_intvl1") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.fuel_intvl1
-                  ? featuresetData.fuel_intvl1
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.fuel_intvl1}
               autoComplete="off"
               disabled={featuresetData.fuelMode === "0"}
             />
@@ -3368,11 +3190,8 @@ const FuelACCoptions = [
                 invalidFields.includes("fuel_intvl2") ? "border-red-600" : ""
               }`}
               onChange={handleDetails}
-              placeholder={
-                featuresetData.fuel_intvl2
-                  ? featuresetData.fuel_intvl2
-                  : "Enter a value"
-              }
+              placeholder="Enter a value"
+              value={featuresetData?.fuel_intvl}
               autoComplete="off"
               disabled={featuresetData.fuelMode === "0"}
             />
@@ -3397,7 +3216,7 @@ const FuelACCoptions = [
               optionLabel="label"
               optionValue="value"
               onChange={handleDetails}
-              className={`border py-2 pl-2 dark:bg-gray-900 ${
+              className={`h-11 border dark:bg-gray-900 ${
                 invalidFields.includes("fuel_acc") ? "border-red-600" : ""
               }`}
               disabled={featuresetData.fuelMode === "0"}
@@ -3418,11 +3237,8 @@ const FuelACCoptions = [
               invalidFields.includes("fuel_thrsh") ? "border-red-600" : ""
             }`}
             onChange={handleDetails}
-            placeholder={
-              featuresetData.fuel_thrsh
-                ? featuresetData.fuel_thrsh
-                : "Enter a value"
-            }
+            placeholder="Enter a value"
+            value={featuresetData?.fuel_thrsh}
             autoComplete="off"
             disabled={featuresetData.fuelMode === "0"}
           />

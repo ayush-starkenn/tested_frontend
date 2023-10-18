@@ -404,12 +404,12 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
           value={globalFilterValue}
           onChange={onGlobalFilterChange}
           placeholder="Keyword Search"
-          className="searchbox w-[25vw] cursor-pointer rounded-full border py-3 pl-8 dark:bg-gray-950 dark:text-gray-50"
+          className="searchbox dark:stext-gray-50 w-[25vw] cursor-pointer rounded-full border py-3 pl-8 dark:bg-gray-950"
         />
         {globalFilterValue && (
           <Button
             icon="pi pi-times"
-            className="p-button-rounded p-button-text"
+            className="p-button-rounded  p-button-text dark:text-gray-50 dark:hover:text-gray-50"
             onClick={clearSearch}
           />
         )}

@@ -62,7 +62,7 @@ const AlertTriggerList = ({
             {globalFilterValue && (
               <Button
                 icon="pi pi-times"
-                className="p-button-rounded p-button-text"
+                className="p-button-rounded p-button-text dark:text-gray-50 dark:hover:text-gray-50"
                 onClick={clearSearch}
               />
             )}
@@ -456,58 +456,66 @@ const AlertTriggerList = ({
           </div>
 
           <div className="mx-auto mt-8 w-[34.5vw]">
-            <table className="w-full table-auto border-collapse border border-gray-300">
-              <thead>
-                <tr>
-                  <th className="border px-4 py-2">Contact Name</th>
-                  <th className="border px-4 py-2">Email</th>
-                  <th className="border px-4 py-2">Mobile</th>
-                </tr>
-              </thead>
-              <tbody>
-                {contactsData.map((contact) => (
-                  <tr key={contact.contact_id}>
-                    <td className="border px-4 py-2">
-                      {contact.contact_first_name +
-                        " " +
-                        contact.contact_last_name}
-                    </td>
-                    <td className="border px-4 py-2">
-                      <label>
-                        <input
-                          type="checkbox"
-                          checked={recipientsData.some(
-                            (recipient) =>
-                              recipient.recipients === contact.contact_uuid &&
-                              recipient.email
-                          )}
-                          onChange={() =>
-                            handleContactChange(contact.contact_uuid, "email")
-                          }
-                        />
-                        {contact.contact_email}
-                      </label>
-                    </td>
-                    <td className="border px-4 py-2">
-                      <label>
-                        <input
-                          type="checkbox"
-                          checked={recipientsData.some(
-                            (recipient) =>
-                              recipient.recipients === contact.contact_uuid &&
-                              recipient.mobile
-                          )}
-                          onChange={() =>
-                            handleContactChange(contact.contact_uuid, "mobile")
-                          }
-                        />
-                        {contact.contact_mobile}
-                      </label>
-                    </td>
+            <div
+              className="table-container rounded"
+              style={{ maxHeight: "70%", overflowY: "auto" }}
+            >
+              <table className="w-full table-auto border-collapse border border-gray-300">
+                <thead>
+                  <tr>
+                    <th className="border px-4 py-2">Contact Name</th>
+                    <th className="border px-4 py-2">Email</th>
+                    <th className="border px-4 py-2">Mobile</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {contactsData.map((contact) => (
+                    <tr key={contact.contact_id}>
+                      <td className="border px-4 py-2 text-sm">
+                        {contact.contact_first_name +
+                          " " +
+                          contact.contact_last_name}
+                      </td>
+                      <td className="whitespace-nowrap border px-4 py-2 text-sm">
+                        <label>
+                          <input
+                            type="checkbox"
+                            checked={recipientsData.some(
+                              (recipient) =>
+                                recipient.recipients === contact.contact_uuid &&
+                                recipient.email
+                            )}
+                            onChange={() =>
+                              handleContactChange(contact.contact_uuid, "email")
+                            }
+                          />
+                          &nbsp;{contact.contact_email}
+                        </label>
+                      </td>
+                      <td className="whitespace-nowrap border px-4 py-2 text-sm">
+                        <label>
+                          <input
+                            type="checkbox"
+                            checked={recipientsData.some(
+                              (recipient) =>
+                                recipient.recipients === contact.contact_uuid &&
+                                recipient.mobile
+                            )}
+                            onChange={() =>
+                              handleContactChange(
+                                contact.contact_uuid,
+                                "mobile"
+                              )
+                            }
+                          />
+                          &nbsp;{contact.contact_mobile}
+                        </label>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
 
           <div className="p-field p-col-12 mt-3 flex justify-center">
