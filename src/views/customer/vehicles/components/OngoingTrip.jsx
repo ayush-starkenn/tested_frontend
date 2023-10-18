@@ -116,6 +116,7 @@ const CompletedTrip = () => {
   const [actualLoad, setActualLoad] = useState(0);
   const [fuel, setFuel] = useState(0);
   const [actualFuel, setActualFuel] = useState(0);
+  const [accidentSaved,setAccidentSaved] = useState(0)
 
   // SET DMS data & Alerts
   // eslint-disable-next-line
@@ -135,7 +136,7 @@ const CompletedTrip = () => {
   // eslint-disable-next-line
   // const [rashDrive, setRashDrive] = useState(0);
   // eslint-disable-next-line
-  // const [dmsAccident, setDmsAccident] = useState(0);
+  const [dmsAccident, setDmsAccident] = useState(0);
   const [tripStartAlert, setTripStartAlert] = useState(0);
   // eslint-disable-next-line
   const [vehicleId, setVehicleId] = useState([]);
@@ -143,6 +144,12 @@ const CompletedTrip = () => {
   const [faultData, setFaultData] = useState(0);
   const [alarm1, setAlarm1] = useState(0);
   const [alarm2, setAlarm2] = useState(0);
+
+  // Alchohol data set
+  const [passAlc, setPassAlc] = useState(0);
+  const [failAlc, setFailAlc] = useState(0);
+  const [timeoutAlc, setTimeoutAlc] = useState(0);
+  const [nonZeroAlc, setNonZeroAlc] = useState(0);
 
   // Set faultcount locations and data
   const [markers, setMarkers] = useState([]);
@@ -167,6 +174,10 @@ const CompletedTrip = () => {
     DISTRACTION: false,
     OVERSPEEDING: false,
     NO_DRIVER: false,
+    ALCPass: false,
+    ALCFail: false,
+    ALCTimeout: false,
+    ALCNonZero: false
   });
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -305,8 +316,8 @@ const CompletedTrip = () => {
     // Fetch the initial data immediately
     fetchData();
     // Fetch subsequent data at the specified interval
-    // const interval = setInterval(fetchData, 5000);
-    // return () => clearInterval(interval);
+    const interval = setInterval(fetchData, 5000);
+    return () => clearInterval(interval);
   }, [trip_id, token]);
 
   // Set Address
@@ -331,6 +342,42 @@ const CompletedTrip = () => {
   // Get fault counts data
   useEffect(() => {
     const timerId = setTimeout(() => {
+      // Set CAS Count
+    let autoBrkCount = 0;
+    let harshAccCount = 0;
+    let sleepAltCount = 0;
+    let laneChngCount = 0;
+    let spdBumpCount = 0;
+    let suddenBrkCount = 0;
+    let tailgatingCount = 0;
+    let overspeedCount = 0;
+    let accSavedCount = 0;
+    let alarm1Count = 0;
+    let alarm2Count = 0;
+    let accCutTipperCount = 0;
+    let wrongCvnCount = 0;
+    let cvnCount = 0;
+    let fuelCount = 0;
+    let loadCount = 0;
+
+    let passAlcCount = 0;
+    let failAlcCount = 0;
+    let timeoutAlcCount = 0;
+    let nonZeroAlcCount = 0;
+
+    // DMS data
+    let drowsinessCount = 0;
+    let tripstartCount = 0;
+    let distractionCount = 0;
+    let overspdCount = 0;
+    // let noSeatbeltCount = 0;
+    // let usingMobCount = 0;
+    // let unknownDriverCount = 0;
+    let noDriverCount = 0;
+    // let smokingCount = 0;
+    // let rashDrivingCount = 0;
+    let accidentCount = 0;
+    
       axios
         .get(
           `${process.env.REACT_APP_API_URL}/trips/get-ongoing-fault-counts/${trip_id}/${epochStart}/${epochEnd}`,
@@ -344,58 +391,138 @@ const CompletedTrip = () => {
           let params = {};
           let myData = response.data.results;
 
-          for (let i = 0; i < myData.length; i++) {
-            let jsonDATA = myData[i].jsondata;
-            let parsejsonDATA = JSON.parse(jsonDATA);
-            // Set Alarm data
-            if (myData[i].event === "ALM") {
-              let almData = myData[i].jsondata;
-              let almparse = JSON.parse(almData);
-              if (almparse.data.alarm === 2) {
-                setAlarm1((prev) => prev + 1);
-              }
-              if (almparse.data.alarm === 3) {
-                setAlarm2((prev) => prev + 1);
+          let mediaData = []; // dms media data
+
+          myData.forEach((item) => {
+            let jsonDataa = JSON.parse(item.jsondata);
+  
+            // Braking data
+            if (item.event === "BRK") {
+              autoBrkCount++; // Set automatic braking count
+  
+              let ttcdiff = jsonDataa.data.on_ttc - jsonDataa.data.off_ttc;
+              let acd = ttcdiff / jsonDataa.data.off_ttc;
+              let accSvd = acd * 100;
+              if (accSvd > 50 && accSvd < 100) {
+                accSavedCount++; // Set accident saved count
               }
             }
-
-            // Set Notification data
-            if (myData[i].event === "NTF") {
-              let ntfData = myData[i].jsondata;
-              let ntfparse = JSON.parse(ntfData);
-
-              if (ntfparse.notification === 2) {
-                setHarshacc((prev) => prev + 1);
-              }
-              if (ntfparse.notification === 13) {
-                setSleepAlt((prev) => prev + 1);
-              }
-              if (ntfparse.notification === 5) {
-                setLaneChng((prev) => prev + 1);
-              }
-              if (ntfparse.notification === 4) {
-                setSpdBump((prev) => prev + 1);
-              }
-              if (ntfparse.notification === 3) {
-                setSuddenBrk((prev) => prev + 1);
-              }
-              if (ntfparse.notification === 6) {
-                setTailgating((prev) => prev + 1);
-              }
-              if (ntfparse.notification === 7) {
-                setOverspeed((prev) => prev + 1);
-              }
-              if (ntfparse.notification === 16) {
-                setAccCutTipper((prev) => prev + 1);
-              }
-              if (ntfparse.notification === 17) {
-                setWrongCvn((prev) => prev + 1);
-              }
+  
+            // Notification data
+            if (item.event === "NTF" && jsonDataa.notification === 2) {
+              harshAccCount++;
+            }
+            if (item.event === "NTF" && jsonDataa.notification === 13) {
+              sleepAltCount++;
+            }
+            if (item.event === "NTF" && jsonDataa.notification === 5) {
+              laneChngCount++;
+            }
+            if (item.event === "NTF" && jsonDataa.notification === 4) {
+              spdBumpCount++;
+            }
+            if (item.event === "NTF" && jsonDataa.notification === 3) {
+              suddenBrkCount++;
+            }
+            if (item.event === "NTF" && jsonDataa.notification === 6) {
+              tailgatingCount++;
+            }
+            if (item.event === "NTF" && jsonDataa.notification === 7) {
+              overspeedCount++;
+            }
+            if (item.event === "NTF" && jsonDataa.notification === 16) {
+              accCutTipperCount++;
+            }
+            if (item.event === "NTF" && jsonDataa.notification === 17) {
+              wrongCvnCount++;
+            }
+  
+            // Set Alarm data
+            if (item.event === "ALM" && jsonDataa.data.alarm === 2) {
+              alarm1Count++;
+            }
+            if (item.event === "ALM" && jsonDataa.data.alarm === 3) {
+              alarm2Count++;
+            }
+  
+            // DMS data
+            if (item.event === "DMS") {
+              let dmsTimeStamp = item.timestamp;
+              let updatedmsTimeStamp = new Date(dmsTimeStamp * 1000);
+              mediaData.push({
+                dms: jsonDataa.data.media,
+                dashcam: jsonDataa.data.dashcam,
+                alert: jsonDataa.data.alert_type,
+                timestamp: updatedmsTimeStamp.toLocaleString(),
+              });
+            }
+            if (
+              item.event === "DMS" &&
+              jsonDataa.data.alert_type === "DROWSINESS"
+            ) {
+              drowsinessCount++;
+            }
+            if (
+              item.event === "DMS" &&
+              jsonDataa.data.alert_type === "TRIP_START"
+            ) {
+              tripstartCount++;
+            }
+            if (
+              item.event === "DMS" &&
+              jsonDataa.data.alert_type === "DISTRACTION"
+            ) {
+              distractionCount++;
+            }
+            if (
+              item.event === "DMS" &&
+              jsonDataa.data.alert_type === "OVERSPEEDING"
+            ) {
+              overspdCount++;
+            }
+            // if (
+            //   item.event === "DMS" &&
+            //   jsonDataa.data.alert_type === "USING_PHONE"
+            // ) {
+            //   usingMobCount++;
+            // }
+            // if (
+            //   item.event === "DMS" &&
+            //   jsonDataa.data.alert_type === "NO_SEATBELT"
+            // ) {
+            //   noSeatbeltCount++;
+            // }
+            // if (
+            //   item.event === "DMS" &&
+            //   jsonDataa.data.alert_type === "UNKNOWN_DRIVER"
+            // ) {
+            //   unknownDriverCount++;
+            // }
+            if (
+              item.event === "DMS" &&
+              jsonDataa.data.alert_type === "NO_DRIVER"
+            ) {
+              noDriverCount++;
+            }
+            // if (item.event === "DMS" && jsonDataa.data.alert_type === "SMOKING") {
+            //   smokingCount++;
+            // }
+            // if (
+            //   item.event === "DMS" &&
+            //   jsonDataa.data.alert_type === "RASH_DRIVING"
+            // ) {
+            //   rashDrivingCount++;
+            // }
+            if (
+              item.event === "DMS" &&
+              jsonDataa.data.alert_type === "ACCIDENT"
+            ) {
+              accidentCount++;
             }
 
             // set CVN
-            if (myData[i].event === "CVN" && parsejsonDATA.data.status === 1) {
-              setCVN((prev) => prev + 1);
+            if (item.event === "CVN" && jsonDataa.data.status === 1) {
+              cvnCount++;
 
               const cvnPathArray = [];
               // Set CVN path
@@ -404,7 +531,7 @@ const CompletedTrip = () => {
               //   lng: parseFloat(parsejsonDATA.lng),
               // });
               tripData.forEach((row) => {
-                if (row.timestamp > parsejsonDATA.timestamp) {
+                if (row.timestamp > jsonDataa.timestamp) {
                   cvnPathArray.push({
                     lat: parseFloat(row.lat),
                     lng: parseFloat(row.lng),
@@ -416,16 +543,70 @@ const CompletedTrip = () => {
             }
 
             // Set LOAD
-            if (myData[i].event === "LDS") {
-              setLoad((prev) => prev + 1);
-              setActualLoad(parsejsonDATA.data.actual_load);
+            if (item.event === "LDS") {
+              loadCount++;
+              setActualLoad(jsonDataa.data.actual_load);
             }
+
             // Set Fuel
-            if (myData[i].event === "FLS") {
-              setFuel((prev) => prev + 1);
-              setActualFuel(parsejsonDATA.data.current_fuel);
+            if (item.event === "FLS") {
+              fuelCount++;
+              setActualFuel(jsonDataa.data.current_fuel);
             }
-          }
+
+            // Set Alchohol
+            if (item.event === "ALC") {
+              if (jsonDataa.data.result === 1) {
+                failAlcCount++;
+              }
+              if (jsonDataa.data.result === 2) {
+                passAlcCount++;
+              }
+              if (jsonDataa.data.result === 3) {
+                timeoutAlcCount++;
+              }
+              if (jsonDataa.data.result === 4) {
+                nonZeroAlcCount++;
+              }
+            }
+          });
+
+          // Set CAS Count
+          setAutoBrk(autoBrkCount);
+          setHarshacc(harshAccCount);
+          setSleepAlt(sleepAltCount);
+          setLaneChng(laneChngCount);
+          setSpdBump(spdBumpCount);
+          setSuddenBrk(suddenBrkCount);
+          setTailgating(tailgatingCount);
+          setOverspeed(overspeedCount);
+          setAccidentSaved(accSavedCount);
+          setAlarm1(alarm1Count);
+          setAlarm2(alarm2Count);
+          setAccCutTipper(accCutTipperCount);
+          setWrongCvn(wrongCvnCount);
+          setFuel(fuelCount);
+          setLoad(loadCount);
+          setCVN(cvnCount);
+
+          // Set DMS count
+          setMedia(mediaData);
+          setDrowsiness(drowsinessCount);
+          setDistraction(distractionCount);
+          setDmsoverSpd(overspdCount);
+          // setNotSeatBelt(noSeatbeltCount);
+          // setUsePhone(usingMobCount);
+          // setUnknownDriver(unknownDriverCount);
+          setNoDriver(noDriverCount);
+          // setSmoking(smokingCount);
+          // setRashDrive(rashDrivingCount);
+          setDmsAccident(accidentCount);
+          setTripStartAlert(tripstartCount);
+
+          setFailAlc(failAlcCount);
+          setPassAlc(passAlcCount);
+          setTimeoutAlc(timeoutAlcCount);
+          setNonZeroAlc(nonZeroAlcCount);
 
           // loop to set markers
           for (let l = 0; l < myData.length; l++) {
@@ -1077,6 +1258,10 @@ const CompletedTrip = () => {
       Load: { 34: "LDS" },
       CVN: { 36: "CVN" },
       FLS: { 35: "FLS" },
+      ALCFail: {1 : "ALC"},
+      ALCPass: {2 : "ALC"},
+      ALCTimeout: {3 : "ALC"},
+      ALCNonZero: {4 : "ALC"},
     };
 
     // Get the custom attribute based on the name and value
@@ -1723,6 +1908,23 @@ const CompletedTrip = () => {
           </td>
         </tr>
       );
+    } else if (event.event === "ALC") {
+      tableContent = (
+        <tr key={index}>
+          <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
+            {index + 1}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.event}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.result == 1 ? 'Fail': '--' || event.result == 2 ? 'Pass' : '--' || event.result == 3 ? 'Timeout' : '--' || event.result == 4 ? 'Non zero speed' : ''}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.content}
+          </td>
+        </tr>
+      );
     } else {
       tableContent = (
         <tr key={index}>
@@ -1758,37 +1960,118 @@ const CompletedTrip = () => {
     return tableContent;
   });
 
-  // useEffect(() => {
-  //   const animateCar = () => {
-  //     let index = 0;
-  //     const animationInterval = setInterval(() => {
-  //       if (index < path.length - 1) {
-  //         const currentPos = path[index];
-  //         const nextPos = path[index + 1];
-  //         const rotation = calculateRotation(currentPos, nextPos);
-  //         setCarPosition(currentPos);
-  //         document.querySelector(
-  //           ".car-marker"
-  //         ).style.transform = `rotate(${rotation}deg)`;
-  //         index += 1;
-  //       } else {
-  //         clearInterval(animationInterval);
-  //       }
-  //     }, 10000); // Adjust the interval for car speed
-  //   };
-
-  //   animateCar();
-
-  //   return () => {
-  //     // Cleanup code if needed
-  //   };
-  // }, []);
-
-  const calculateRotation = (currentPos, nextPos) => {
-    const dx = nextPos.lng - currentPos.lng;
-    const dy = nextPos.lat - currentPos.lat;
-    return (Math.atan2(dy, dx) * 180) / Math.PI;
-  };
+  // Alchohol tab
+  const ALCContent = () => (
+    <>
+      {/* alc */}
+      <div className="alc">
+        <div className="flex gap-4">
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0">
+                <Checkbox
+                  value="2"
+                  onChange={handlecheckbox}
+                  name="ALCPass"
+                  checked={checkboxes?.ALCPass}
+                  disabled={passAlc === 0}
+                />
+                <label className="ml-2 dark:text-white">Pass</label>
+              </div>
+              <div className="flex-shrink-0">
+                {passAlc === 0 ? (
+                  <Badge
+                    value={passAlc}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={passAlc} className="mx-3" />
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0">
+                <Checkbox
+                  value="1"
+                  onChange={handlecheckbox}
+                  name="ALCFail"
+                  checked={checkboxes.ALCFail}
+                  disabled={failAlc === 0}
+                />
+                <label className="ml-2 dark:text-white">Fail</label>
+              </div>
+              <div className="flex-shrink-0">
+                {failAlc === 0 ? (
+                  <Badge
+                    value={failAlc}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={failAlc} className="mx-3" />
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-4">
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0">
+                <Checkbox
+                  value="3"
+                  onChange={handlecheckbox}
+                  name="ALCTimeout"
+                  checked={checkboxes?.ALCTimeout}
+                  disabled={timeoutAlc === 0}
+                />
+                <label className="ml-2 dark:text-white">Timeout</label>
+              </div>
+              <div className="flex-shrink-0">
+                {timeoutAlc === 0 ? (
+                  <Badge
+                    value={timeoutAlc}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={timeoutAlc} className="mx-3" />
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0">
+                <Checkbox
+                  value="4"
+                  onChange={handlecheckbox}
+                  name="ALCNonZero"
+                  checked={checkboxes.ALCNonZero}
+                  disabled={nonZeroAlc === 0}
+                />
+                <label className="ml-2 dark:text-white">Non Zero Speed</label>
+              </div>
+              <div className="flex-shrink-0">
+                {nonZeroAlc === 0 ? (
+                  <Badge
+                    value={nonZeroAlc}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={nonZeroAlc} className="mx-3" />
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 
   return (
     <>
@@ -2120,13 +2403,16 @@ const CompletedTrip = () => {
               <TabPanel header="DMS" onClick={showVideo}>
                 <DMSContent />
               </TabPanel>
+              <TabPanel header="Alchohol">
+                <ALCContent />
+              </TabPanel>
             </TabView>
           </div>
         </div>
 
         <div
           className={`${
-            activeIndex === 1 || activeIndex === 2 ? "hidden" : ""
+            activeIndex === 1 || activeIndex === 2 || activeIndex === 3 ? "hidden" : ""
           } rounded-[20px] bg-white dark:bg-navy-700`}
         >
           <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-8 lg:max-w-7xl lg:px-8">
