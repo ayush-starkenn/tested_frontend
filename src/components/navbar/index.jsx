@@ -10,7 +10,7 @@ import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { HiOutlineUserCircle } from "react-icons/hi";
 import { Toast } from "primereact/toast";
-import { FaEdit, FaLock } from "react-icons/fa";
+import { FaEdit, FaEye, FaEyeSlash, FaLock } from "react-icons/fa";
 import { FiCheck, FiLoader } from "react-icons/fi";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
@@ -25,6 +25,7 @@ const Navbar = ({ onOpenSidenav }) => {
   const [editModeColor, setEditModeColor] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
   const [resetPasswordVisible, setResetPasswordVisible] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [resetPasswordData, setResetPasswordData] = useState({
     oldPassword: "",
     newPassword: "",
@@ -130,6 +131,8 @@ const Navbar = ({ onOpenSidenav }) => {
 
   const toggleResetPasswordDialog = () => {
     setResetPasswordData("");
+    setShowPassword(false);
+    setPwerr(false);
     setResetPasswordVisible(!resetPasswordVisible);
   };
   const handleResetPasswordInputChange = (fieldName, value) => {
@@ -137,6 +140,10 @@ const Navbar = ({ onOpenSidenav }) => {
       ...resetPasswordData,
       [fieldName]: value,
     });
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   const handleResetPasswordSubmit = () => {
@@ -463,7 +470,7 @@ const Navbar = ({ onOpenSidenav }) => {
         footer={
           <div>
             <button
-              className="p-button-primary rounded px-3 py-2 dark:bg-gray-150 dark:font-bold dark:text-blue-800"
+              className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
               onClick={handleResetPasswordSubmit}
             >
               Change Password
@@ -476,7 +483,7 @@ const Navbar = ({ onOpenSidenav }) => {
           <span className="p-float-label">
             <InputText
               id="currentPassword"
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="oldPassword"
               value={resetPasswordData?.oldPassword}
               onChange={(e) => {
@@ -487,7 +494,22 @@ const Navbar = ({ onOpenSidenav }) => {
             />
             <label htmlFor="currentPassword">Current Password</label>
           </span>
-          {pwerr && <p className="p-error">Old password cannot be empty.</p>}
+          <div className="absolute right-[2.8rem] top-[7.7rem]">
+            {showPassword ? (
+              <FaEyeSlash
+                className="h-5 w-5 cursor-pointer  text-gray-500"
+                onClick={togglePasswordVisibility}
+              />
+            ) : (
+              <FaEye
+                className="h-5 w-5 cursor-pointer text-gray-600"
+                onClick={togglePasswordVisibility}
+              />
+            )}
+          </div>
+          {pwerr && (
+            <small className="p-error">Old password cannot be empty.</small>
+          )}
         </div>
         <div className="p-fluid mt-8">
           <span className="p-float-label">
@@ -503,7 +525,9 @@ const Navbar = ({ onOpenSidenav }) => {
             />
             <label htmlFor="newPassword">New Password</label>
           </span>
-          {pwerr && <p className="p-error">New password cannot be empty.</p>}
+          {pwerr && (
+            <small className="p-error">New password cannot be empty.</small>
+          )}
         </div>
         <div className="p-fluid mt-8">
           <span className="p-float-label">
@@ -522,7 +546,7 @@ const Navbar = ({ onOpenSidenav }) => {
             <label htmlFor="confirmPassword">Confirm Password</label>
           </span>
           {pwerr && (
-            <p className="p-error">Confirm password cannot be empty.</p>
+            <small className="p-error">Confirm password cannot be empty.</small>
           )}
         </div>
       </Dialog>

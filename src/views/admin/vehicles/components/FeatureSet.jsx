@@ -3014,7 +3014,6 @@ const FeatureSet = ({ myData, closeDialog }) => {
               style={{
                 width: "30vw",
                 height: "50px",
-                height: "50px",
                 borderRadius: "5px",
               }}
               name="dd_acc_cut"

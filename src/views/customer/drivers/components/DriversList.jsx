@@ -129,7 +129,7 @@ const DriversList = ({ data, onEditDriver, onDeleteDriver }) => {
             {globalFilterValue && (
               <Button
                 icon="pi pi-times"
-                className="p-button-rounded p-button-text"
+                className="p-button-rounded p-button-text dark:text-gray-50 dark:hover:text-gray-50"
                 onClick={clearSearch}
               />
             )}

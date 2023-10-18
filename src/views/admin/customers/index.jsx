@@ -576,6 +576,7 @@ const Customers = () => {
               <InputText
                 id="phone"
                 type="tel"
+                keyfilter="pint"
                 name="phone"
                 className={`border py-2 pl-2 ${
                   formErrors.phone

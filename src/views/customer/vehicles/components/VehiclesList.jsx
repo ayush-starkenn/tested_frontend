@@ -80,7 +80,7 @@ export default function VehiclesList({
             {globalFilterValue && (
               <Button
                 icon="pi pi-times"
-                className="p-button-rounded p-button-text"
+                className="p-button-rounded p-button-text dark:text-gray-50 dark:hover:text-gray-50"
                 onClick={clearSearch}
               />
             )}
@@ -242,14 +242,14 @@ export default function VehiclesList({
         ></Column>
         <Column
           field="vehicle_name"
-          header="vehicle_name"
+          header="Vehicle name"
           sortable
           className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
         ></Column>
         <Column
           field="vehicle_registration"
-          header="vehicle_registration"
+          header="Vehicle registration"
           sortable
           className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "8rem" }}
@@ -304,15 +304,18 @@ export default function VehiclesList({
         modal
         className="p-fluid dark:bg-gray-900"
       >
-        <form onSubmit={handleSubmit} className="flex dark:text-gray-300 flex-wrap">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-wrap dark:text-gray-300"
+        >
           <div className="mx-auto mt-8 w-[34.5vw]">
             <span className="p-float-label">
               <InputText
                 id="vehicle_name"
                 name="vehicle_name"
-                onChange={handleChange} 
+                onChange={handleChange}
                 value={editData?.vehicle_name}
-                className="pl-2 py-2 border"
+                className="border py-2 pl-2"
               />
               <label htmlFor="vehicle_name">Vehicle Name</label>
             </span>
@@ -324,7 +327,7 @@ export default function VehiclesList({
                 name="vehicle_registration"
                 onChange={handleChange}
                 value={editData?.vehicle_registration}
-                className="pl-2 py-2 border"
+                className="border py-2 pl-2"
               />
               <label htmlFor="vehicle_registration">Vehicle Registration</label>
             </span>
@@ -336,7 +339,7 @@ export default function VehiclesList({
               name="ecu"
               onChange={handleChange}
               value={editData.ecu || ""}
-              className="mt-2 w-full dark:bg-gray-900 rounded-md border px-4 py-2 shadow-sm focus:ring focus:ring-blue-200"
+              className="mt-2 w-full rounded-md border px-4 py-2 shadow-sm focus:ring focus:ring-blue-200 dark:bg-gray-900"
             >
               <option value="">Unassign</option>
               {ecuData.map((el) => (
@@ -347,13 +350,13 @@ export default function VehiclesList({
             </select>
           </div>
           <div className="mx-auto mt-2 w-[34.5vw]">
-          <small>Select IoT</small>
+            <small>Select IoT</small>
             <select
               id="iot"
               name="iot"
               onChange={handleChange}
               value={editData.iot || ""}
-              className="mt-2 w-full dark:bg-gray-900 rounded-md border px-4 py-2 shadow-sm focus:ring focus:ring-blue-200"
+              className="mt-2 w-full rounded-md border px-4 py-2 shadow-sm focus:ring focus:ring-blue-200 dark:bg-gray-900"
             >
               <option value="">Unassign</option>
               {iotData.map((el) => (
@@ -364,13 +367,13 @@ export default function VehiclesList({
             </select>
           </div>
           <div className="mx-auto mt-2 w-[34.5vw]">
-          <small>Select DMS</small>
+            <small>Select DMS</small>
             <select
               id="dms"
               name="dms"
               onChange={handleChange}
               value={editData.dms || ""}
-              className="mt-2 w-full dark:bg-gray-900 rounded-md border  px-4 py-2 shadow-sm focus:ring focus:ring-blue-200"
+              className="mt-2 w-full rounded-md border px-4  py-2 shadow-sm focus:ring focus:ring-blue-200 dark:bg-gray-900"
             >
               <option value="">Unassign</option>
               {dmsData.map((el) => (
