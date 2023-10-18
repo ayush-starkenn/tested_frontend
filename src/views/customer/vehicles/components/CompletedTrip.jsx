@@ -141,6 +141,12 @@ const CompletedTrip = () => {
   const [alarm1, setAlarm1] = useState(0);
   const [alarm2, setAlarm2] = useState(0);
 
+  // Alchohol data set
+  const [passAlc, setPassAlc] = useState(0);
+  const [failAlc, setFailAlc] = useState(0);
+  const [timeoutAlc, setTimeoutAlc] = useState(0);
+  const [nonZeroAlc, setNonZeroAlc] = useState(0);
+
   // Set faultcount locations and data
   const [markers, setMarkers] = useState([]);
   const [selectedMarker, setSelectedMarker] = useState(null);
@@ -164,6 +170,10 @@ const CompletedTrip = () => {
     DISTRACTION: false,
     OVERSPEEDING: false,
     NO_DRIVER: false,
+    ALCPass: false,
+    ALCFail: false,
+    ALCTimeout: false,
+    ALCNonZero: false
   });
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -220,10 +230,10 @@ const CompletedTrip = () => {
     return deg * (Math.PI / 180);
   }
 
-  // useEffect(() => {
-  //   // console.log(markers);
-  //   console.log(filterMarker);
-  // }, [markers, filterMarker]);
+  useEffect(() => {
+    console.log(markers);
+    console.log(filterMarker);
+  }, [markers, filterMarker]);
 
   useEffect(() => {
     axios
@@ -310,6 +320,7 @@ const CompletedTrip = () => {
           let params = {};
           let myData = response.data.results;
 
+          // Set counts for all events
           for (let i = 0; i < myData.length; i++) {
             let jsonDATA = myData[i].jsondata;
             let parsejsonDATA = JSON.parse(jsonDATA);
@@ -390,6 +401,21 @@ const CompletedTrip = () => {
             if (myData[i].event === "FLS") {
               setFuel((prev) => prev + 1);
               setActualFuel(parsejsonDATA.data.current_fuel);
+            }
+            // Set Alchohol
+            if (myData[i].event === "ALC") {
+              if (parsejsonDATA.data.result === 1) {
+                setFailAlc((prev) => prev + 1);
+              }
+              if (parsejsonDATA.data.result === 2) {
+                setPassAlc((prev) => prev + 1);
+              }
+              if (parsejsonDATA.data.result === 3) {
+                setTimeoutAlc((prev) => prev + 1);
+              }
+              if (parsejsonDATA.data.result === 4) {
+                setNonZeroAlc((prev) => prev + 1);
+              }
             }
           }
 
@@ -613,6 +639,39 @@ const CompletedTrip = () => {
             }
 
             // Set Alchohol data
+            if (myData[l].event === "ALC") {
+              let updatedTime = new Date(myData[l].timestamp * 1000);
+              let contentTime = updatedTime.toLocaleString();
+              let alcEvent = "";
+              if(parseJson.data.result === 1) {
+                alcEvent = "ALCFail";
+              }
+              if(parseJson.data.result === 2) {
+                alcEvent = "ALCPass";
+              }
+              if(parseJson.data.result === 3) {
+                alcEvent = "ALCTimeout";
+              }
+              if(parseJson.data.result === 4) {
+                alcEvent = "ALCNonZero";
+              }
+              params = {
+                id: myData[l].id,
+                lat: parseFloat(myData[l].lat),
+                lng: parseFloat(myData[l].lng),
+                reason: myData[l].message,
+                title: parseJson.data.result,
+                speed: Math.round(myData[l].spd),
+                content: contentTime,
+                BAC: parseJson.data.bac,
+                result: parseJson.data.result,
+                img: parseJson.data.img_url,
+                vid: parseJson.data.vid_url,
+                event: myData[l].event,
+                icon: defaultIcon,
+              };
+              parameters.push(params);
+            }
           }
           setMarkers(parameters);
         })
@@ -1005,7 +1064,7 @@ const CompletedTrip = () => {
 
   const handlecheckbox = (e) => {
     const { value, name, checked } = e.target;
-
+    // console.log(e.target);
     // Create a mapping object for custom attributes
     const customAttributes = {
       AUTOMATIC_BRAKING: {
@@ -1031,22 +1090,25 @@ const CompletedTrip = () => {
       Load: { 34: "LDS" },
       CVN: { 36: "CVN" },
       FLS: { 35: "FLS" },
+      ALCFail: {1 : "ALC"},
+      ALCPass: {2 : "ALC"},
+      ALCTimeout: {3 : "ALC"},
+      ALCNonZero: {4 : "ALC"},
     };
 
     // Get the custom attribute based on the name and value
     const customAttribute = customAttributes[name]
       ? customAttributes[name][value]
       : undefined;
-
     if (checked) {
       const x = markers.filter(
-        (el) => el.title === value && el.event === customAttribute
+        (el) => el.title == value && el.event === customAttribute
       );
       setFilterMarker([...filterMarker, x]);
     } else {
       const y = []
         .concat(...filterMarker)
-        .filter((el) => !(el.title === value && el.event === customAttribute));
+        .filter((el) => !(el.title == value && el.event === customAttribute));
       setFilterMarker([y]);
     }
 
@@ -1314,7 +1376,7 @@ const CompletedTrip = () => {
                   checked={checkboxes.WRONG_CVN}
                   disabled={wrongCvn === 0}
                 />
-                <label className="ml-2 dark:text-white">Wrong CVN</label>
+                <label className="ml-2 dark:text-white">Wrong Start</label>
               </div>
               <div className="flex-shrink-0">
                 {wrongCvn === 0 ? (
@@ -1514,40 +1576,6 @@ const CompletedTrip = () => {
             </div>
           </div>
         </div>
-        <hr />
-      </div>
-
-      {/* Alcohol data */}
-      <div className="noti mt-4">
-        <h4 className="font-semibold">Alcohol data</h4>
-        <div className="flex gap-4">
-          <div className="w-[50%]">
-            <div className="my-3 flex justify-between">
-              <div className="flex-shrink-0">
-                <Checkbox name="alchohol" />
-                <label
-                  htmlFor="CAScheckboxId3"
-                  className="ml-2 dark:text-white"
-                >
-                  Alcohol
-                </label>
-              </div>
-              <div className="flex-shrink-0">
-                <Badge
-                  value="0"
-                  style={{ backgroundColor: "gray", color: "white" }}
-                  className="mx-3"
-                />
-              </div>
-            </div>
-          </div>
-          <div className="w-[50%]">
-            <div className="my-3 flex justify-between">
-              <div className="flex-shrink-0"></div>
-              <div className="flex-shrink-0"></div>
-            </div>
-          </div>
-        </div>
       </div>
     </>
   );
@@ -1677,6 +1705,23 @@ const CompletedTrip = () => {
           </td>
         </tr>
       );
+    } else if (event.event === "ALC") {
+      tableContent = (
+        <tr key={index}>
+          <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
+            {index + 1}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.event}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.result == 1 ? 'Fail': '--' || event.result == 2 ? 'Pass' : '--' || event.result == 3 ? 'Timeout' : '--' || event.result == 4 ? 'Non zero speed' : ''}
+          </td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+            {event.content}
+          </td>
+        </tr>
+      );
     } else {
       tableContent = (
         <tr key={index}>
@@ -1711,6 +1756,119 @@ const CompletedTrip = () => {
 
     return tableContent;
   });
+
+  // Alchohol tab
+  const ALCContent = () => (
+    <>
+      {/* alc */}
+      <div className="alc">
+        <div className="flex gap-4">
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0">
+                <Checkbox
+                  value="2"
+                  onChange={handlecheckbox}
+                  name="ALCPass"
+                  checked={checkboxes?.ALCPass}
+                  disabled={passAlc === 0}
+                />
+                <label className="ml-2 dark:text-white">Pass</label>
+              </div>
+              <div className="flex-shrink-0">
+                {passAlc === 0 ? (
+                  <Badge
+                    value={passAlc}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={passAlc} className="mx-3" />
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0">
+                <Checkbox
+                  value="1"
+                  onChange={handlecheckbox}
+                  name="ALCFail"
+                  checked={checkboxes.ALCFail}
+                  disabled={failAlc === 0}
+                />
+                <label className="ml-2 dark:text-white">Fail</label>
+              </div>
+              <div className="flex-shrink-0">
+                {failAlc === 0 ? (
+                  <Badge
+                    value={failAlc}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={failAlc} className="mx-3" />
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-4">
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0">
+                <Checkbox
+                  value="3"
+                  onChange={handlecheckbox}
+                  name="ALCTimeout"
+                  checked={checkboxes?.ALCTimeout}
+                  disabled={timeoutAlc === 0}
+                />
+                <label className="ml-2 dark:text-white">Timeout</label>
+              </div>
+              <div className="flex-shrink-0">
+                {timeoutAlc === 0 ? (
+                  <Badge
+                    value={timeoutAlc}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={timeoutAlc} className="mx-3" />
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="w-[50%]">
+            <div className="my-3 flex justify-between">
+              <div className="flex-shrink-0">
+                <Checkbox
+                  value="4"
+                  onChange={handlecheckbox}
+                  name="ALCNonZero"
+                  checked={checkboxes.ALCNonZero}
+                  disabled={nonZeroAlc === 0}
+                />
+                <label className="ml-2 dark:text-white">Non Zero Speed</label>
+              </div>
+              <div className="flex-shrink-0">
+                {nonZeroAlc === 0 ? (
+                  <Badge
+                    value={nonZeroAlc}
+                    style={{ backgroundColor: "gray", color: "white" }}
+                    className="mx-3"
+                  />
+                ) : (
+                  <Badge value={nonZeroAlc} className="mx-3" />
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 
   return (
     <>
@@ -1843,6 +2001,35 @@ const CompletedTrip = () => {
                           </h6>
                           <p className="mb-0">TimeStamp: {marker.content}</p>
                           <p className="mb-0">Speed: {marker.speed}Kmph</p>
+                        </div>
+                      </>
+                    ) : marker.event === "ALC" ? (
+                      <>
+                        <div>
+                          <h6>
+                            <strong>{marker.title === 1 ? "Test Fail" : ""}</strong>
+                          </h6>
+                          <p className="mb-0">TimeStamp: {marker.content}</p>
+                          <p className="mb-0">Speed: {marker.speed}Kmph</p>
+                          <p className="mb-0">BAC: {marker.bac}</p>
+                          <div className="flex justify-center">
+                            {marker.img && (
+                              <div className="w-1/2">
+                                <img src={marker.img} alt={marker.event}className="img-fluid w-full" />
+                                <h5 className="text-center text-red-500">Image</h5>
+                              </div>
+                            )}
+
+                            {marker.vid && (
+                              <div className="w-1/2">
+                                <video controls className="h-48 w-full">
+                                  <source src={marker.vid} type="video/mp4" />
+                                  Your browser does not support the video tag.
+                                </video>
+                                <h5 className="text-center text-red-500">Video</h5>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </>
                     ) : (
@@ -2033,13 +2220,19 @@ const CompletedTrip = () => {
               <TabPanel header="DMS" onClick={showVideo}>
                 <DMSContent />
               </TabPanel>
+              <TabPanel header="Alchohol">
+                <ALCContent />
+              </TabPanel>
             </TabView>
           </div>
         </div>
 
+        {/* Analytics Section */}
         <div
           className={`${
-            activeIndex === 1 || activeIndex === 2 ? "hidden" : ""
+            activeIndex === 1 || activeIndex === 2 || activeIndex === 3
+              ? "hidden"
+              : ""
           } rounded-[20px] bg-white dark:bg-navy-700`}
         >
           <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-8 lg:max-w-7xl lg:px-8">
@@ -2101,6 +2294,7 @@ const CompletedTrip = () => {
           </div>
         </div>
 
+        {/* Media Section */}
         <div
           className={`${
             activeIndex === 2 ? "" : "hidden"
@@ -2119,6 +2313,7 @@ const CompletedTrip = () => {
           </div>
         </div>
 
+        {/* Events table data */}
         <div
           className={`${
             activeIndex === 0 ? "hidden" : ""
