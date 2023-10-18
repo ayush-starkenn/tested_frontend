@@ -2206,6 +2206,35 @@ const CompletedTrip = () => {
                           <p className="mb-0">Speed: {marker.speed}Kmph</p>
                         </div>
                       </>
+                    ) : marker.event === "ALC" ? (
+                      <>
+                        <div>
+                          <h6>
+                            <strong>{marker.title === 1 ? "Test Fail" : ""}</strong>
+                          </h6>
+                          <p className="mb-0">TimeStamp: {marker.content}</p>
+                          <p className="mb-0">Speed: {marker.speed}Kmph</p>
+                          <p className="mb-0">BAC: {marker.bac}</p>
+                          <div className="flex justify-center">
+                            {marker.img && (
+                              <div className="w-1/2">
+                                <img src={marker.img} alt={marker.event}className="img-fluid w-full" />
+                                <h5 className="text-center text-red-500">Image</h5>
+                              </div>
+                            )}
+
+                            {marker.vid && (
+                              <div className="w-1/2">
+                                <video controls className="h-48 w-full">
+                                  <source src={marker.vid} type="video/mp4" />
+                                  Your browser does not support the video tag.
+                                </video>
+                                <h5 className="text-center text-red-500">Video</h5>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </>
                     ) : (
                       <div>
                         <>
