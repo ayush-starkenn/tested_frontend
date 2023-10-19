@@ -404,7 +404,20 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
           sortable
           className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
+          body={(rowData) => (
+            <Tag
+              className="my-1 mr-2 bg-gray-200 text-gray-800"
+              icon="pi pi-user"
+              style={{
+                width: "fit-content",
+                height: "25px",
+                lineHeight: "40px",
+              }}
+              value={rowData.full_name}
+            />
+          )}
         ></Column>
+
         <Column
           field="sim_number"
           header="Sim Number"
