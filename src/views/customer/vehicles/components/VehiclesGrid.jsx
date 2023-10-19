@@ -10,6 +10,28 @@ import { GiMineTruck } from "react-icons/gi";
 import { TabPanel, TabView } from "primereact/tabview";
 import FeatureSet from "./FeatureSet";
 import VehicleTrips from "./VehicleTrips";
+import { FilterMatchMode } from "primereact/api";
+
+const applyFilters = (filters, allData) => {
+  let filteredData = allData;
+
+  if (filters.global.value) {
+    filteredData = filteredData.filter((item) =>
+      Object.entries(item).some(
+        ([key, value]) =>
+          key !== "created_at" &&
+          key !== "updated_at" &&
+          key !== "vehicle_id" &&
+          key !== "user_uuid" &&
+          String(value)
+            .toLowerCase()
+            .includes(filters.global.value.toLowerCase())
+      )
+    );
+  }
+
+  return filteredData;
+};
 
 export default function VehiclesGrid({
   vehiData,
@@ -28,39 +50,49 @@ export default function VehiclesGrid({
   const [deleteId, setDeleteId] = useState("");
   const [viewDialog, setViewDialog] = useState(false);
   const [deleteVehicleName, setDeleteVehicleName] = useState("");
-  const [localEcuData, setLocalEcuData] = useState([]);
-  const [localIoTData, setLocalIoTData] = useState([]);
-  const [localDMSData, setLocalDMSData] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
   const [myData, setMyData] = useState();
+  const [allData, setAllData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [filters, setFilters] = useState({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    device_type: { value: null, matchMode: FilterMatchMode.IN },
+  });
+  const [globalFilterValue, setGlobalFilterValue] = useState("");
+  const totalItems = filteredData.length;
 
   useEffect(() => {
-    if (ecuData) {
-      setLocalEcuData(ecuData);
-    }
-    if (iotData) {
-      setLocalIoTData(iotData);
-    }
-    if (dmsData) {
-      setLocalDMSData(dmsData);
-    }
-  }, [ecuData, iotData, dmsData]);
+    setAllData(vehiData);
+    const filteredData = applyFilters(filters, vehiData);
+    setFilteredData(filteredData);
+  }, [vehiData, filters]);
+
+  const onGlobalFilterChange = (e) => {
+    const value = e.target.value;
+    setGlobalFilterValue(value);
+    const updatedFilters = {
+      ...filters,
+      global: { value, matchMode: FilterMatchMode.CONTAINS },
+    };
+    const filteredData = applyFilters(updatedFilters, allData);
+    setFilters(updatedFilters);
+    setFilteredData(filteredData);
+  };
+
+  const clearSearch = () => {
+    setGlobalFilterValue("");
+    const updatedFilters = {
+      ...filters,
+      global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    };
+    const filteredData = applyFilters(updatedFilters, allData);
+    setFilters(updatedFilters);
+    setFilteredData(filteredData);
+  };
 
   const openEditDialog = (rowData) => {
     setEditDialog(true);
     setEditData(rowData);
-    setLocalEcuData((prevData) => [
-      ...prevData,
-      { device_id: rowData.ecu, device_type: "ecu" },
-    ]);
-    setLocalIoTData((prevData) => [
-      ...prevData,
-      { device_id: rowData.iot, device_type: "iot" },
-    ]);
-    setLocalDMSData((prevData) => [
-      ...prevData,
-      { device_id: rowData.dms, device_type: "dms" },
-    ]);
+
     setEditId(rowData?.vehicle_uuid);
   };
 
@@ -219,16 +251,16 @@ export default function VehiclesGrid({
           <span className="p-input-icon-left">
             <i className="pi pi-search" />
             <InputText
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              value={globalFilterValue}
+              onChange={onGlobalFilterChange}
               placeholder="Keyword Search"
               className="searchbox w-[25vw] cursor-pointer rounded-full border py-3 pl-8 font-bold dark:bg-gray-950 dark:text-gray-50"
             />
-            {searchQuery && (
+            {globalFilterValue && (
               <Button
                 icon="pi pi-times"
                 className="p-button-rounded p-button-text"
-                onClick={() => setSearchQuery("")}
+                onClick={clearSearch}
               />
             )}
           </span>
@@ -236,16 +268,15 @@ export default function VehiclesGrid({
       </div>
       {/* GridView */}
       <DataView
-        value={vehiData.filter((item) =>
-          item.vehicle_name.toLowerCase().includes(searchQuery.toLowerCase())
-        )}
+        value={filteredData}
         layout="grid"
         itemTemplate={itemTemplate}
         paginator
         rows={6}
         emptyMessage="No vehicle found."
       />
-      {/* Edit vehicle Data */}
+      <p className="text-center text-gray-700">Total Items : {totalItems}</p>
+
       {/* Edit vehicle Data */}
       <Dialog
         visible={editDialog}

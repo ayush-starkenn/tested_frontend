@@ -68,26 +68,14 @@ export default function VehiclesGrid({ data }) {
           <div className="p-card-footer mb-2">
             <div className="flex justify-center">
               <Button
-                icon="pi pi-map-marker"
-                rounded
-                outlined
-                className="mr-2"
-                style={{
-                  width: "2rem",
-                  height: "2rem",
-                }}
-                severity="info"
-              />
-
-              <Button
-                icon="pi pi-info-circle"
+                icon="pi pi-eye"
                 rounded
                 outlined
                 style={{
                   width: "2rem",
                   height: "2rem",
                 }}
-                className="mr-2"
+                className="border border-blue-500 text-blue-500 dark:text-blue-500"
                 severity="help"
                 onClick={() => ViewDialog(item)}
               />
