@@ -33,7 +33,19 @@ const AnalyticsThreshold = () => {
     total_distance: false,
     duration: false,
   });
-
+  const [formRangeErrors, setFormRangeErrors] = useState({
+    brake: false,
+    tailgating: false,
+    rash_driving: false,
+    sleep_alert: false,
+    over_speed: false,
+    green_zone: false,
+    minimum_distance: false,
+    minimum_driver_rating: false,
+    ttc_difference_percentage: false,
+    total_distance: false,
+    duration: false,
+  });
   //Fetching all data
 
   useEffect(() => {
@@ -138,6 +150,7 @@ const AnalyticsThreshold = () => {
   const closeDialog = () => {
     setIsDialogVisible(false);
     setFormErrors(true);
+    setFormRangeErrors(false);
     setSelectedCustomer(null);
   };
 
@@ -176,37 +189,55 @@ const AnalyticsThreshold = () => {
     const formData = {
       title: event.target.elements["title"]?.value,
       customer_id: selectedCustomer,
-      brake: event.target.elements["brake-input"]?.value,
-      tailgating: event.target.elements["tailgating-input"]?.value,
-      rash_driving: event.target.elements["rash-driving-input"]?.value,
-      sleep_alert: event.target.elements["sleep-alert-input"]?.value,
-      over_speed: event.target.elements["over-speed-input"]?.value,
-      green_zone: event.target.elements["green-zone-input"]?.value,
-      minimum_distance: event.target.elements["minimum-distance-input"]?.value,
+      brake: parseInt(event.target.elements["brake-input"]?.value, 10) || null,
+      tailgating:
+        parseInt(event.target.elements["tailgating-input"]?.value, 10) || null,
+      rash_driving:
+        parseInt(event.target.elements["rash-driving-input"]?.value, 10) ||
+        null,
+      sleep_alert:
+        parseInt(event.target.elements["sleep-alert-input"]?.value, 10) || null,
+      over_speed:
+        parseInt(event.target.elements["over-speed-input"]?.value, 10) || null,
+      green_zone:
+        parseInt(event.target.elements["green-zone-input"]?.value, 10) || null,
+      minimum_distance:
+        parseInt(event.target.elements["minimum-distance-input"]?.value, 10) ||
+        null,
       minimum_driver_rating:
-        event.target.elements["minimum-driver-rating-input"]?.value,
+        parseInt(
+          event.target.elements["minimum-driver-rating-input"]?.value,
+          10
+        ) || null,
       ttc_difference_percentage:
-        event.target.elements["ttc-difference-percentage-input"]?.value,
-      total_distance: event.target.elements["total-distance-input"]?.value,
-      duration: event.target.elements["halt-duration-input"]?.value,
-      status: event.target.elements["status"]?.value,
+        parseInt(
+          event.target.elements["ttc-difference-percentage-input"]?.value,
+          10
+        ) || null,
+      total_distance:
+        parseInt(event.target.elements["total-distance-input"]?.value, 10) ||
+        null,
+      duration:
+        parseInt(event.target.elements["halt-duration-input"]?.value, 10) ||
+        null,
+      status: parseInt(event.target.elements["status"]?.value, 10),
     };
 
     const isCustomerEmpty = !selectedCustomer;
     setFormErrors({
       title: formData.title === "",
       customer_id: isCustomerEmpty,
-      brake: formData.brake === "",
-      tailgating: formData.tailgating === "",
-      rash_driving: formData.rash_driving === "",
-      sleep_alert: formData.sleep_alert === "",
-      over_speed: formData.over_speed === "",
-      green_zone: formData.green_zone === "",
-      minimum_distance: formData.minimum_distance === "",
-      minimum_driver_rating: formData.minimum_driver_rating === "",
-      ttc_difference_percentage: formData.ttc_difference_percentage === "",
-      total_distance: formData.total_distance === "",
-      duration: formData.duration === "",
+      brake: formData.brake === null,
+      tailgating: formData.tailgating === null,
+      rash_driving: formData.rash_driving === null,
+      sleep_alert: formData.sleep_alert === null,
+      over_speed: formData.over_speed === null,
+      green_zone: formData.green_zone === null,
+      minimum_distance: formData.minimum_distance === null,
+      minimum_driver_rating: formData.minimum_driver_rating === null,
+      ttc_difference_percentage: formData.ttc_difference_percentage === null,
+      total_distance: formData.total_distance === null,
+      duration: formData.duration === null,
     });
 
     const requiredFields = [
@@ -238,6 +269,39 @@ const AnalyticsThreshold = () => {
       });
       return;
     }
+    // Range validation
+    const rangeErrors = {
+      brake: formData.brake < 1 || formData.brake > 1000,
+      tailgating: formData.tailgating < 1 || formData.tailgating > 1000,
+      rash_driving: formData.rash_driving < 1 || formData.rash_driving > 1000,
+      sleep_alert: formData.sleep_alert < 1 || formData.sleep_alert > 1000,
+      over_speed: formData.over_speed < 1 || formData.over_speed > 1000,
+      green_zone: formData.green_zone < 1 || formData.green_zone > 1000,
+      minimum_distance:
+        formData.minimum_distance < 1 || formData.minimum_distance > 1000,
+      minimum_driver_rating:
+        formData.minimum_driver_rating < 0 ||
+        formData.minimum_driver_rating > 5,
+      ttc_difference_percentage:
+        formData.ttc_difference_percentage < 1 ||
+        formData.ttc_difference_percentage > 100,
+      total_distance:
+        formData.total_distance < 0 || formData.total_distance > 10000,
+      duration: formData.duration < 1 || formData.duration > 1000,
+    };
+
+    setFormRangeErrors(rangeErrors);
+
+    const hasRangeErrors = Object.values(rangeErrors).some((error) => error);
+    if (hasRangeErrors) {
+      toastRef.current.show({
+        severity: "error",
+        summary: "Value out of range",
+        detail: "Please enter values within the specified range.",
+        life: 3000,
+      });
+      return;
+    }
 
     // Send the data to the API endpoint using axios
     axios
@@ -256,8 +320,7 @@ const AnalyticsThreshold = () => {
           life: 3000,
         });
         setIsDialogVisible(false);
-        console.log("Data saved successfully:", response.data);
-        resetFormFields(); // You should implement this function
+        resetFormFields();
       })
       .catch((error) => {
         // Handle API request errors
@@ -288,7 +351,7 @@ const AnalyticsThreshold = () => {
         onClick={openDialog}
       >
         <FiPlus className="mr-2" />
-        New Analytic Threshold
+        New Analytics Threshold
       </button>
       {/* List of AT */}
       <AnalyticsList
@@ -316,8 +379,11 @@ const AnalyticsThreshold = () => {
               <InputText
                 name="title"
                 className={`border py-2 pl-2 ${
-                  formErrors.title ? "p-invalid" : ""
+                  formErrors.title ? "border-red-600" : ""
                 }`}
+                onChange={(e) => {
+                  setFormErrors({ ...formErrors, title: false });
+                }}
               />
               <label
                 htmlFor="title"
@@ -332,9 +398,12 @@ const AnalyticsThreshold = () => {
               <Dropdown
                 value={selectedCustomer}
                 options={customerOptions}
-                onChange={(e) => setSelectedCustomer(e.value)}
+                onChange={(e) => {
+                  setSelectedCustomer(e.value);
+                  setFormErrors({ ...formErrors, customer_id: false });
+                }}
                 className={`border ${
-                  formErrors.customer_id ? "p-invalid" : ""
+                  formErrors.customer_id ? "border-red-600" : ""
                 } `}
                 optionLabel="label"
               />
@@ -352,8 +421,13 @@ const AnalyticsThreshold = () => {
                     name="brake-input"
                     keyfilter="pint"
                     title="(1-1000)"
+                    onChange={(e) => {
+                      setFormErrors({ ...formErrors, brake: false });
+                    }}
                     className={`border py-2 pl-2 ${
-                      formErrors.brake ? "p-invalid p-filled" : ""
+                      formErrors.brake || formRangeErrors.brake
+                        ? "p-filled border-red-600"
+                        : ""
                     }`}
                   />
                   <label
@@ -363,7 +437,11 @@ const AnalyticsThreshold = () => {
                     Brake
                   </label>
                 </span>
-                <small className="text-gray-400 dark:text-gray-150">
+                <small
+                  className={`text-gray-400 dark:text-gray-150 ${
+                    formRangeErrors.brake && "text-red-600"
+                  }`}
+                >
                   Range: 0-1000
                 </small>
               </div>
@@ -373,8 +451,13 @@ const AnalyticsThreshold = () => {
                     name="tailgating-input"
                     keyfilter="pint"
                     title="(1-1000)"
+                    onChange={(e) => {
+                      setFormErrors({ ...formErrors, tailgating: false });
+                    }}
                     className={`border py-2 pl-2 ${
-                      formErrors.tailgating ? "p-invalid p-filled" : ""
+                      formErrors.tailgating || formRangeErrors.tailgating
+                        ? "p-filled border-red-600"
+                        : ""
                     }`}
                   />
                   <label
@@ -384,7 +467,11 @@ const AnalyticsThreshold = () => {
                     Tailgating
                   </label>
                 </span>
-                <small className="text-gray-400 dark:text-gray-150">
+                <small
+                  className={`text-gray-400 dark:text-gray-150 ${
+                    formRangeErrors.tailgating && "text-red-600"
+                  }`}
+                >
                   Range: 0-1000
                 </small>
               </div>
@@ -396,8 +483,13 @@ const AnalyticsThreshold = () => {
                     keyfilter="pint"
                     name="rash-driving-input"
                     title="(1-1000)"
+                    onChange={(e) => {
+                      setFormErrors({ ...formErrors, rash_driving: false });
+                    }}
                     className={`border py-2 pl-2 ${
-                      formErrors.rash_driving ? "p-invalid p-filled" : ""
+                      formErrors.rash_driving || formRangeErrors.rash_driving
+                        ? "p-filled border-red-600"
+                        : ""
                     }`}
                   />
                   <label
@@ -407,7 +499,11 @@ const AnalyticsThreshold = () => {
                     Rash Driving
                   </label>
                 </span>
-                <small className="text-gray-400 dark:text-gray-150">
+                <small
+                  className={`text-gray-400 dark:text-gray-150 ${
+                    formRangeErrors.rash_driving && "text-red-600"
+                  }`}
+                >
                   Range: 0-1000
                 </small>
               </div>
@@ -417,8 +513,13 @@ const AnalyticsThreshold = () => {
                     keyfilter="pint"
                     name="sleep-alert-input"
                     title="(1-1000)"
+                    onChange={(e) => {
+                      setFormErrors({ ...formErrors, sleep_alert: false });
+                    }}
                     className={`border py-2 pl-2 ${
-                      formErrors.sleep_alert ? "p-invalid p-filled" : ""
+                      formErrors.sleep_alert || formRangeErrors.sleep_alert
+                        ? "p-filled border-red-600"
+                        : ""
                     }`}
                   />
                   <label
@@ -428,7 +529,11 @@ const AnalyticsThreshold = () => {
                     Sleep Alert
                   </label>
                 </span>
-                <small className="text-gray-400 dark:text-gray-150">
+                <small
+                  className={`text-gray-400 dark:text-gray-150 ${
+                    formRangeErrors.sleep_alert && "text-red-600"
+                  }`}
+                >
                   Range: 0-1000
                 </small>
               </div>
@@ -440,8 +545,13 @@ const AnalyticsThreshold = () => {
                     keyfilter="pint"
                     name="over-speed-input"
                     title="(1-1000)"
+                    onChange={(e) => {
+                      setFormErrors({ ...formErrors, over_speed: false });
+                    }}
                     className={`border py-2 pl-2 ${
-                      formErrors.over_speed ? "p-invalid p-filled" : ""
+                      formErrors.over_speed || formRangeErrors.over_speed
+                        ? "p-filled border-red-600"
+                        : ""
                     }`}
                   />
                   <label
@@ -451,7 +561,11 @@ const AnalyticsThreshold = () => {
                     Over Speed
                   </label>
                 </span>
-                <small className="text-gray-400 dark:text-gray-150">
+                <small
+                  className={`text-gray-400 dark:text-gray-150 ${
+                    formRangeErrors.over_speed && "text-red-600"
+                  }`}
+                >
                   Range: 0-1000
                 </small>
               </div>
@@ -461,8 +575,13 @@ const AnalyticsThreshold = () => {
                     keyfilter="pint"
                     name="green-zone-input"
                     title="(1-1000)"
+                    onChange={(e) => {
+                      setFormErrors({ ...formErrors, green_zone: false });
+                    }}
                     className={`border py-2 pl-2 ${
-                      formErrors.green_zone ? "p-invalid p-filled" : ""
+                      formErrors.green_zone || formRangeErrors.green_zone
+                        ? "p-filled border-red-600"
+                        : ""
                     }`}
                   />
                   <label
@@ -472,7 +591,11 @@ const AnalyticsThreshold = () => {
                     Green Zone
                   </label>
                 </span>
-                <small className="text-gray-400 dark:text-gray-150">
+                <small
+                  className={`text-gray-400 dark:text-gray-150 ${
+                    formRangeErrors.green_zone && "text-red-600"
+                  }`}
+                >
                   Range: 0-1000
                 </small>
               </div>
@@ -489,8 +612,14 @@ const AnalyticsThreshold = () => {
                     keyfilter="pint"
                     name="minimum-distance-input"
                     title="(1-1000)"
+                    onChange={(e) => {
+                      setFormErrors({ ...formErrors, minimum_distance: false });
+                    }}
                     className={`border py-2 pl-2 ${
-                      formErrors.minimum_distance ? "p-invalid p-filled" : ""
+                      formErrors.minimum_distance ||
+                      formRangeErrors.minimum_distance
+                        ? "p-filled border-red-600"
+                        : ""
                     }`}
                   />
                   <label
@@ -500,7 +629,11 @@ const AnalyticsThreshold = () => {
                     Minimum Distance
                   </label>
                 </span>
-                <small className="text-gray-400 dark:text-gray-150">
+                <small
+                  className={`text-gray-400 dark:text-gray-150 ${
+                    formRangeErrors.minimum_distance && "text-red-600"
+                  }`}
+                >
                   Range: 0-1000
                 </small>
               </div>
@@ -510,9 +643,16 @@ const AnalyticsThreshold = () => {
                     keyfilter="num"
                     name="minimum-driver-rating-input"
                     title="(0-5)"
+                    onChange={(e) => {
+                      setFormErrors({
+                        ...formErrors,
+                        minimum_driver_rating: false,
+                      });
+                    }}
                     className={`border py-2 pl-2 ${
-                      formErrors.minimum_driver_rating
-                        ? "p-invalid p-filled"
+                      formErrors.minimum_driver_rating ||
+                      formRangeErrors.minimum_driver_rating
+                        ? "p-filled border-red-600"
                         : ""
                     }`}
                   />
@@ -523,7 +663,11 @@ const AnalyticsThreshold = () => {
                     Minimum Driver Rating
                   </label>
                 </span>
-                <small className="text-gray-400 dark:text-gray-150">
+                <small
+                  className={`text-gray-400 dark:text-gray-150 ${
+                    formRangeErrors.minimum_driver_rating && "text-red-600"
+                  }`}
+                >
                   Range: 0-5
                 </small>
               </div>
@@ -540,9 +684,16 @@ const AnalyticsThreshold = () => {
                     keyfilter="pint"
                     name="ttc-difference-percentage-input"
                     title="(0-100)"
+                    onChange={(e) => {
+                      setFormErrors({
+                        ...formErrors,
+                        ttc_difference_percentage: false,
+                      });
+                    }}
                     className={`border py-2 pl-2 ${
-                      formErrors.ttc_difference_percentage
-                        ? "p-invalid p-filled"
+                      formErrors.ttc_difference_percentage ||
+                      formRangeErrors.ttc_difference_percentage
+                        ? "p-filled border-red-600"
                         : ""
                     }`}
                   />
@@ -553,7 +704,11 @@ const AnalyticsThreshold = () => {
                     TTC Difference Percentage
                   </label>
                 </span>
-                <small className="text-gray-400 dark:text-gray-150">
+                <small
+                  className={`text-gray-400 dark:text-gray-150 ${
+                    formRangeErrors.ttc_difference_percentage && "text-red-600"
+                  }`}
+                >
                   Range: 0-100
                 </small>
               </div>
@@ -570,8 +725,14 @@ const AnalyticsThreshold = () => {
                     keyfilter="pint"
                     name="total-distance-input"
                     title="(0-10000)"
+                    onChange={(e) => {
+                      setFormErrors({ ...formErrors, total_distance: false });
+                    }}
                     className={`border py-2 pl-2 ${
-                      formErrors.total_distance ? "p-invalid p-filled" : ""
+                      formErrors.total_distance ||
+                      formRangeErrors.total_distance
+                        ? "p-filled border-red-600"
+                        : ""
                     }`}
                   />
                   <label
@@ -581,7 +742,11 @@ const AnalyticsThreshold = () => {
                     Total Distance
                   </label>
                 </span>
-                <small className="text-gray-400 dark:text-gray-150">
+                <small
+                  className={`text-gray-400 dark:text-gray-150 ${
+                    formRangeErrors.total_distance && "text-red-600"
+                  }`}
+                >
                   Range: 0-10000
                 </small>
               </div>
@@ -598,8 +763,13 @@ const AnalyticsThreshold = () => {
                     keyfilter="pint"
                     name="halt-duration-input"
                     title="(1-1000)"
+                    onChange={(e) => {
+                      setFormErrors({ ...formErrors, duration: false });
+                    }}
                     className={`border py-2 pl-2 ${
-                      formErrors.duration ? "p-invalid p-filled" : ""
+                      formErrors.duration || formRangeErrors.duration
+                        ? "p-filled border-red-600"
+                        : ""
                     }`}
                   />
                   <label
@@ -609,7 +779,11 @@ const AnalyticsThreshold = () => {
                     Duration
                   </label>
                 </span>
-                <small className="text-gray-400 dark:text-gray-150">
+                <small
+                  className={`text-gray-400 dark:text-gray-150 ${
+                    formRangeErrors.duration && "text-red-600"
+                  }`}
+                >
                   Range: 1-1000
                 </small>
               </div>
