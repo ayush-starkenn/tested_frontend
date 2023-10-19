@@ -485,7 +485,6 @@ const Navbar = ({ onOpenSidenav }) => {
               id="currentPassword"
               type={showPassword ? "text" : "password"}
               name="oldPassword"
-              value={resetPasswordData?.oldPassword}
               onChange={(e) => {
                 handleResetPasswordInputChange("oldPassword", e.target.value);
                 setPwerr(false);

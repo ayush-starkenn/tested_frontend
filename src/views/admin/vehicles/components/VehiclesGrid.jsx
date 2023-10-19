@@ -7,11 +7,18 @@ import { GiMineTruck } from "react-icons/gi";
 import { TabPanel, TabView } from "primereact/tabview";
 import FeatureSet from "./FeatureSet";
 import VehicleTrips from "./VehicleTrips";
+import { InputText } from "primereact/inputtext";
+import { FilterMatchMode } from "primereact/api";
 
 export default function VehiclesGrid({ data }) {
   const [viewDialog, setViewDialog] = useState(false);
-  const [myData, setMyData] = useState();
+  const [myData, setMyData] = useState(data);
   const totalItems = data.length;
+  const [filters, setFilters] = useState({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    device_type: { value: null, matchMode: FilterMatchMode.IN },
+  });
+  const [globalFilterValue, setGlobalFilterValue] = useState("");
 
   const ViewDialog = (rowData) => {
     setMyData(rowData);
@@ -19,6 +26,41 @@ export default function VehiclesGrid({ data }) {
   };
   const closeViewDialog = () => {
     setViewDialog(false);
+  };
+  const onGlobalFilterChange = (e) => {
+    const value = e.target.value;
+    setGlobalFilterValue(value);
+    applyFilters({
+      ...filters,
+      global: { value, matchMode: FilterMatchMode.CONTAINS },
+    });
+  };
+
+  const clearSearch = () => {
+    setGlobalFilterValue("");
+    const _filters = { ...filters };
+    _filters["global"].value = null;
+    setFilters(_filters);
+    applyFilters(_filters); // Apply filters after clearing search
+  };
+
+  const applyFilters = (filters) => {
+    let filteredData = myData;
+    if (myData) {
+      filteredData = filteredData.filter((item) =>
+        Object.values(item).some((value) =>
+          String(value)
+            .toLowerCase()
+            .includes(filters.global.value.toLowerCase())
+        )
+      );
+    }
+    if (filters.device_type.value) {
+      filteredData = filteredData.filter((item) =>
+        filters.device_type.value.includes(item.device_type)
+      );
+    }
+    setMyData(filteredData);
   };
   const itemTemplate = (item) => {
     return (
@@ -70,6 +112,7 @@ export default function VehiclesGrid({ data }) {
               <Button
                 icon="pi pi-eye"
                 rounded
+<<<<<<< HEAD
                 outlined
                 style={{
                   width: "2rem",
@@ -77,6 +120,10 @@ export default function VehiclesGrid({ data }) {
                 }}
                 className="border border-blue-500 text-blue-500 dark:text-blue-500"
                 severity="help"
+=======
+                className="border border-blue-500 text-blue-500 dark:text-blue-500"
+                style={{ width: "2rem", height: "2rem" }}
+>>>>>>> main
                 onClick={() => ViewDialog(item)}
               />
             </div>
@@ -88,6 +135,26 @@ export default function VehiclesGrid({ data }) {
 
   return (
     <div className="mt-4">
+      <div className="my-4 mr-7  flex justify-end">
+        <div className="justify-content-between align-items-center flex flex-wrap gap-2">
+          <span className="p-input-icon-left">
+            <i className="pi pi-search" />
+            <InputText
+              value={globalFilterValue}
+              onChange={onGlobalFilterChange}
+              placeholder="Keyword Search"
+              className="searchbox w-[25vw] cursor-pointer rounded-full border py-3 pl-8 dark:bg-gray-950 dark:text-gray-50"
+            />
+            {globalFilterValue && (
+              <Button
+                icon="pi pi-times"
+                className="p-button-rounded p-button-text dark:text-gray-50 dark:hover:text-gray-50"
+                onClick={clearSearch}
+              />
+            )}
+          </span>
+        </div>
+      </div>
       {/* GridView */}
       <DataView
         value={data}
