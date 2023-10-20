@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 import { Card } from "primereact/card";
 import { ScrollPanel } from "primereact/scrollpanel";
 import { useEffect, useState } from "react";
-import { BsInfoCircle } from "react-icons/bs"
+import { BsInfoCircle } from "react-icons/bs";
 
 const LogsTable = () => {
   const token = Cookies.get("token");
@@ -52,7 +52,7 @@ const LogsTable = () => {
                 <div className="ml-2 flex h-full w-full flex-col justify-center rounded-lg px-1 text-sm">
                   <p className="text-left text-base font-bold text-gray-700 dark:text-white">
                     Alert{" "}
-                    <span className="text-gray-900">
+                    <span className="text-gray-900 dark:text-navy-300">
                       {log.event === "LMP" ? (
                         <span>Limp Mode</span>
                       ) : log.event === "ACC" ? (

@@ -231,7 +231,7 @@ input:checked.defaultCheckbox::before {
   color: #fefefe;
 }
 .dark .p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {
-  background-color: #070d22;
+  /* background-color: #070d22; */
 }
 .p-column-filter-buttonbar .p-button:not(.p-button-icon-only) {
   background-color: #422afb;
@@ -239,6 +239,7 @@ input:checked.defaultCheckbox::before {
   border: none;
   color: #fefefe;
 }
+
 .dark .p-column-filter-overlay-menu .p-column-filter-constraint:last-child {
   background: #111c44;
 }
@@ -258,6 +259,9 @@ input:checked.defaultCheckbox::before {
   background: none;
   border: none;
   box-shadow: none;
+}
+.dark .p-sortable-column-icon {
+  color: #ddd;
 }
 .p-button:enabled:focus,
 .p-button:not(button):not(a):not(.p-disabled):focus {

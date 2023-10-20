@@ -423,6 +423,7 @@ const Customers = () => {
                 <InputText
                   id="f_name"
                   name="f_name"
+                  keyfilter="alpha"
                   className={`border py-2 pl-2 
                     ${
                       formErrors.f_name
@@ -443,6 +444,7 @@ const Customers = () => {
                 <InputText
                   id="l_name"
                   name="l_name"
+                  keyfilter="alpha"
                   className={`border py-2 pl-2 ${
                     formErrors.l_name
                       ? "border-red-600"
@@ -461,7 +463,7 @@ const Customers = () => {
             <span className="p-float-label">
               <InputText
                 id="email"
-                type="email"
+                keyfilter="email"
                 name="email"
                 className={`border py-2 pl-2 ${
                   formErrors.email

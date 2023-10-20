@@ -60,6 +60,8 @@ const VehicleTrips = ({ myData }) => {
           icon="pi pi-eye"
           rounded
           outlined
+          tooltip="View"
+          tooltipOptions={{ position: "mouse" }}
           className="text-red-500 dark:text-blue-500"
           style={{ width: "2rem", height: "2rem" }}
         />

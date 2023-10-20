@@ -434,20 +434,26 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
         <Button
           icon="pi pi-pencil"
           rounded
-          className="mr-2 border border-gray-700 text-gray-700"
+          className="mr-3 border border-gray-700 text-gray-700"
           style={{ width: "2rem", height: "2rem" }}
+          tooltip="Edit"
+          tooltipOptions={{ position: "mouse" }}
           onClick={handleEdit}
         />
         <Button
           icon="pi pi-trash"
           rounded
+          tooltip="Delete"
+          tooltipOptions={{ position: "mouse" }}
           style={{ width: "2rem", height: "2rem" }}
-          className="mr-2 border border-red-600 text-red-600"
+          className="mr-3 border border-red-600 text-red-600"
           onClick={handleDelete}
         />
         <Button
           rounded
-          className="mr-2 border border-blue-500 text-blue-500 dark:text-blue-500"
+          tooltip="More"
+          tooltipOptions={{ position: "mouse" }}
+          className="border border-blue-500 text-blue-500 dark:text-blue-500"
           onClick={(event) => menuRight.current.toggle(event)}
           style={{ padding: "0.4rem" }}
           aria-controls="popup_menu_right"
@@ -593,7 +599,7 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
         <Column
           key="user_uuid"
           header="Action"
-          headerStyle={{ width: "10rem", textAlign: "left" }}
+          headerStyle={{ width: "12rem", textAlign: "left" }}
           bodyStyle={{ textAlign: "left", overflow: "visible" }}
           body={actionBodyTemplate}
           className="border-b dark:bg-navy-800 "
