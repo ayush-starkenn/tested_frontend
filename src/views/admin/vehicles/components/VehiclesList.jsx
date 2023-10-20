@@ -70,6 +70,8 @@ export default function VehiclesList({ data }) {
         <Button
           icon="pi pi-eye"
           rounded
+          tooltip="View"
+          tooltipOptions={{ position: "mouse" }}
           className="border border-blue-500 text-blue-500 dark:text-blue-500"
           style={{ width: "2rem", height: "2rem" }}
           onClick={() => openDialog(rowData)}

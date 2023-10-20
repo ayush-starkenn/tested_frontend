@@ -115,15 +115,19 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
         <Button
           icon="pi pi-pencil"
           rounded
-          className="mr-2 border border-gray-700 text-gray-700"
+          tooltip="Edit"
+          tooltipOptions={{ position: "mouse" }}
+          className="mr-3 border border-gray-700 text-gray-700"
           style={{ width: "2rem", height: "2rem" }}
           onClick={() => openDialog(rowData)}
         />
         <Button
           icon="pi pi-trash"
           rounded
+          tooltip="Delete"
+          tooltipOptions={{ position: "mouse" }}
           style={{ width: "2rem", height: "2rem" }}
-          className="mr-2 border border-red-600 text-red-600"
+          className="border border-red-600 text-red-600"
           onClick={() => openDeleteDialog(rowData)}
         />
       </>

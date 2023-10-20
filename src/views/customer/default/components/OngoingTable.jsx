@@ -148,7 +148,7 @@ const OngoingTable = () => {
                                 className="mx-auto"
                               >
                                 <span className="mx-auto text-center text-xl">
-                                  <BsFillPinMapFill className="text-center text-navy-600" />
+                                  <BsFillPinMapFill className="text-center text-navy-600 dark:text-gray-400" />
                                 </span>
                               </Link>
                             </td>
