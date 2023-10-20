@@ -116,7 +116,7 @@ const CompletedTrip = () => {
   const [actualLoad, setActualLoad] = useState(0);
   const [fuel, setFuel] = useState(0);
   const [actualFuel, setActualFuel] = useState(0);
-  const [accidentSaved,setAccidentSaved] = useState(0)
+  const [accidentSaved, setAccidentSaved] = useState(0);
 
   // SET DMS data & Alerts
   // eslint-disable-next-line
@@ -177,7 +177,7 @@ const CompletedTrip = () => {
     ALCPass: false,
     ALCFail: false,
     ALCTimeout: false,
-    ALCNonZero: false
+    ALCNonZero: false,
   });
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -343,41 +343,41 @@ const CompletedTrip = () => {
   useEffect(() => {
     const timerId = setTimeout(() => {
       // Set CAS Count
-    let autoBrkCount = 0;
-    let harshAccCount = 0;
-    let sleepAltCount = 0;
-    let laneChngCount = 0;
-    let spdBumpCount = 0;
-    let suddenBrkCount = 0;
-    let tailgatingCount = 0;
-    let overspeedCount = 0;
-    let accSavedCount = 0;
-    let alarm1Count = 0;
-    let alarm2Count = 0;
-    let accCutTipperCount = 0;
-    let wrongCvnCount = 0;
-    let cvnCount = 0;
-    let fuelCount = 0;
-    let loadCount = 0;
+      let autoBrkCount = 0;
+      let harshAccCount = 0;
+      let sleepAltCount = 0;
+      let laneChngCount = 0;
+      let spdBumpCount = 0;
+      let suddenBrkCount = 0;
+      let tailgatingCount = 0;
+      let overspeedCount = 0;
+      let accSavedCount = 0;
+      let alarm1Count = 0;
+      let alarm2Count = 0;
+      let accCutTipperCount = 0;
+      let wrongCvnCount = 0;
+      let cvnCount = 0;
+      let fuelCount = 0;
+      let loadCount = 0;
 
-    let passAlcCount = 0;
-    let failAlcCount = 0;
-    let timeoutAlcCount = 0;
-    let nonZeroAlcCount = 0;
+      let passAlcCount = 0;
+      let failAlcCount = 0;
+      let timeoutAlcCount = 0;
+      let nonZeroAlcCount = 0;
 
-    // DMS data
-    let drowsinessCount = 0;
-    let tripstartCount = 0;
-    let distractionCount = 0;
-    let overspdCount = 0;
-    // let noSeatbeltCount = 0;
-    // let usingMobCount = 0;
-    // let unknownDriverCount = 0;
-    let noDriverCount = 0;
-    // let smokingCount = 0;
-    // let rashDrivingCount = 0;
-    let accidentCount = 0;
-    
+      // DMS data
+      let drowsinessCount = 0;
+      let tripstartCount = 0;
+      let distractionCount = 0;
+      let overspdCount = 0;
+      // let noSeatbeltCount = 0;
+      // let usingMobCount = 0;
+      // let unknownDriverCount = 0;
+      let noDriverCount = 0;
+      // let smokingCount = 0;
+      // let rashDrivingCount = 0;
+      let accidentCount = 0;
+
       axios
         .get(
           `${process.env.REACT_APP_API_URL}/trips/get-ongoing-fault-counts/${trip_id}/${epochStart}/${epochEnd}`,
@@ -395,11 +395,11 @@ const CompletedTrip = () => {
 
           myData.forEach((item) => {
             let jsonDataa = JSON.parse(item.jsondata);
-  
+
             // Braking data
             if (item.event === "BRK") {
               autoBrkCount++; // Set automatic braking count
-  
+
               let ttcdiff = jsonDataa.data.on_ttc - jsonDataa.data.off_ttc;
               let acd = ttcdiff / jsonDataa.data.off_ttc;
               let accSvd = acd * 100;
@@ -407,7 +407,7 @@ const CompletedTrip = () => {
                 accSavedCount++; // Set accident saved count
               }
             }
-  
+
             // Notification data
             if (item.event === "NTF" && jsonDataa.notification === 2) {
               harshAccCount++;
@@ -436,7 +436,7 @@ const CompletedTrip = () => {
             if (item.event === "NTF" && jsonDataa.notification === 17) {
               wrongCvnCount++;
             }
-  
+
             // Set Alarm data
             if (item.event === "ALM" && jsonDataa.data.alarm === 2) {
               alarm1Count++;
@@ -444,7 +444,7 @@ const CompletedTrip = () => {
             if (item.event === "ALM" && jsonDataa.data.alarm === 3) {
               alarm2Count++;
             }
-  
+
             // DMS data
             if (item.event === "DMS") {
               let dmsTimeStamp = item.timestamp;
@@ -1258,10 +1258,10 @@ const CompletedTrip = () => {
       Load: { 34: "LDS" },
       CVN: { 36: "CVN" },
       FLS: { 35: "FLS" },
-      ALCFail: {1 : "ALC"},
-      ALCPass: {2 : "ALC"},
-      ALCTimeout: {3 : "ALC"},
-      ALCNonZero: {4 : "ALC"},
+      ALCFail: { 1: "ALC" },
+      ALCPass: { 2: "ALC" },
+      ALCTimeout: { 3: "ALC" },
+      ALCNonZero: { 4: "ALC" },
     };
 
     // Get the custom attribute based on the name and value
@@ -1918,7 +1918,15 @@ const CompletedTrip = () => {
             {event.event}
           </td>
           <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
-            {event.result == 1 ? 'Fail': '--' || event.result == 2 ? 'Pass' : '--' || event.result == 3 ? 'Timeout' : '--' || event.result == 4 ? 'Non zero speed' : ''}
+            {event.result === 1
+              ? "Fail"
+              : "--" || event.result === 2
+              ? "Pass"
+              : "--" || event.result === 3
+              ? "Timeout"
+              : "--" || event.result === 4
+              ? "Non zero speed"
+              : ""}
           </td>
           <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
             {event.content}
@@ -2210,7 +2218,9 @@ const CompletedTrip = () => {
                       <>
                         <div>
                           <h6>
-                            <strong>{marker.title === 1 ? "Test Fail" : ""}</strong>
+                            <strong>
+                              {marker.title === 1 ? "Test Fail" : ""}
+                            </strong>
                           </h6>
                           <p className="mb-0">TimeStamp: {marker.content}</p>
                           <p className="mb-0">Speed: {marker.speed}Kmph</p>
@@ -2218,8 +2228,14 @@ const CompletedTrip = () => {
                           <div className="flex justify-center">
                             {marker.img && (
                               <div className="w-1/2">
-                                <img src={marker.img} alt={marker.event}className="img-fluid w-full" />
-                                <h5 className="text-center text-red-500">Image</h5>
+                                <img
+                                  src={marker.img}
+                                  alt={marker.event}
+                                  className="img-fluid w-full"
+                                />
+                                <h5 className="text-center text-red-500">
+                                  Image
+                                </h5>
                               </div>
                             )}
 
@@ -2229,7 +2245,9 @@ const CompletedTrip = () => {
                                   <source src={marker.vid} type="video/mp4" />
                                   Your browser does not support the video tag.
                                 </video>
-                                <h5 className="text-center text-red-500">Video</h5>
+                                <h5 className="text-center text-red-500">
+                                  Video
+                                </h5>
                               </div>
                             )}
                           </div>
@@ -2441,7 +2459,9 @@ const CompletedTrip = () => {
 
         <div
           className={`${
-            activeIndex === 1 || activeIndex === 2 || activeIndex === 3 ? "hidden" : ""
+            activeIndex === 1 || activeIndex === 2 || activeIndex === 3
+              ? "hidden"
+              : ""
           } rounded-[20px] bg-white dark:bg-navy-700`}
         >
           <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-8 lg:max-w-7xl lg:px-8">

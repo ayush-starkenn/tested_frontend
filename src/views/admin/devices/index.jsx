@@ -286,11 +286,14 @@ const DevicesAdmin = () => {
                   name="device_id"
                   onChange={handleChange}
                   className={`border py-2 pl-2 ${
-                    validationErrors.device_id ? "p-invalid" : ""
+                    validationErrors.device_id ? "border-red-600" : ""
                   }`}
                 />
                 <label htmlFor="device_id">Device ID</label>
               </span>
+              {validationErrors.device_id && (
+                <small className="text-red-600">Device ID is required</small>
+              )}
             </div>
             <div
               className={`mx-auto mt-8 w-[34.5vw] ${
@@ -305,13 +308,16 @@ const DevicesAdmin = () => {
                   optionLabel="label"
                   optionValue="value"
                   className={`p-dropdown border ${
-                    validationErrors.device_type ? "p-invalid" : ""
+                    validationErrors.device_type ? "border-red-600" : ""
                   }`}
                   onChange={handleChange}
                   value={addData.device_type}
                 />
                 <label htmlFor="device_type">Device Type</label>
               </span>
+              {validationErrors.device_type && (
+                <small className="text-red-600">Device Type is required</small>
+              )}
             </div>
 
             <div
@@ -327,13 +333,16 @@ const DevicesAdmin = () => {
                   optionLabel="label"
                   optionValue="value"
                   className={`p-dropdown border ${
-                    validationErrors.user_uuid ? "p-invalid" : ""
+                    validationErrors.user_uuid ? "border-red-600" : ""
                   }`}
                   onChange={handleChange}
                   value={addData.user_uuid}
                 />
                 <label htmlFor="user_uuid">Select Customer</label>
               </span>
+              {validationErrors.user_uuid && (
+                <small className="text-red-600">Customer is required</small>
+              )}
             </div>
             <div
               className={`mx-auto mt-8 w-[34.5vw] ${
@@ -348,13 +357,16 @@ const DevicesAdmin = () => {
                   optionLabel="label"
                   optionValue="value"
                   className={`p-dropdown border ${
-                    validationErrors.status ? "p-invalid" : ""
+                    validationErrors.status ? "border-red-600" : ""
                   }`}
                   onChange={handleChange}
                   value={addData.status}
                 />
                 <label htmlFor="status">Status</label>
               </span>
+              {validationErrors.status && (
+                <small className="text-red-600">Status is required</small>
+              )}
             </div>
             <div
               className={`mx-auto mt-8 w-[34.5vw] ${
@@ -368,11 +380,14 @@ const DevicesAdmin = () => {
                   keyfilter="pint"
                   onChange={handleChange}
                   className={`border py-2 pl-2 ${
-                    validationErrors.sim_number ? "p-invalid" : ""
+                    validationErrors.sim_number ? "border-red-600" : ""
                   }`}
                 />
                 <label htmlFor="device_id">Sim Number</label>
               </span>
+              {validationErrors.sim_number && (
+                <small className="text-red-600">Sim number is required</small>
+              )}
             </div>
             <div className="mt-6 flex justify-center">
               <button

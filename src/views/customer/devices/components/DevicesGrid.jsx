@@ -71,7 +71,7 @@ export default function DevicesGrid({ data }) {
   const itemTemplate = (item) => {
     const tagSeverity = item?.device_status === 1 ? "success" : "danger";
     return (
-      <div className="p-col-12 mb-6 rounded bg-gray-50 dark:bg-gray-900 dark:text-gray-150">
+      <div className="p-col-12 mb-6 rounded-lg bg-gray-50 transition duration-300 ease-in-out hover:shadow-lg dark:bg-gray-900 dark:text-gray-150">
         <div className="card">
           <div className="card-body px-6 py-3">
             <div className="flex items-center justify-between">

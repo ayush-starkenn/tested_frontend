@@ -155,7 +155,6 @@ const AlertTriggerList = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(selectedContacts);
 
     const updateData = {
       trigger_name: editData.trigger_name,
@@ -184,38 +183,44 @@ const AlertTriggerList = ({
   };
 
   const handleContactChange = (contactId, type) => {
-    setRecipientsData((prevRecipientsData) => {
-      // Clone the previous recipients data
-      const updatedRecipientsData = [...prevRecipientsData];
+    let updatedRecipientsData = [...recipientsData];
+    const recipientIndex = updatedRecipientsData.findIndex(
+      (recipient) => recipient.recipients === contactId
+    );
 
-      // Find the recipient data for the specific contact
-      const recipientIndex = updatedRecipientsData.findIndex(
-        (recipient) => recipient.recipients === contactId
-      );
+    if (recipientIndex !== -1) {
+      // If the recipient exists in the list, toggle the type
+      updatedRecipientsData[recipientIndex][type] =
+        !updatedRecipientsData[recipientIndex][type];
 
-      if (recipientIndex !== -1) {
-        // If the recipient exists in the list, toggle the type
-        updatedRecipientsData[recipientIndex][type] =
-          !updatedRecipientsData[recipientIndex][type];
-      } else {
-        // If the recipient doesn't exist, add it to the list
-        updatedRecipientsData.push({
-          recipients: contactId,
-          [type]: true,
-          [type === "email" ? "mobile" : "email"]: false,
-        });
+      // Check if both email and mobile are unchecked, then remove the recipient
+      if (
+        !updatedRecipientsData[recipientIndex].email &&
+        !updatedRecipientsData[recipientIndex].mobile
+      ) {
+        updatedRecipientsData.splice(recipientIndex, 1);
       }
-      return updatedRecipientsData;
-    });
+    } else {
+      // If the recipient doesn't exist, add it to the list
+      updatedRecipientsData.push({
+        recipients: contactId,
+        [type]: true,
+        [type === "email" ? "mobile" : "email"]: false,
+      });
+    }
+
+    setRecipientsData(updatedRecipientsData);
+
+    // Update the state with the new updatedRecipientsData
 
     // Collect selected contacts, excluding those with empty values and recipients key
     const selectedContacts = contactsData
       .map((contact) => {
-        const email = recipientsData.some(
+        const email = updatedRecipientsData.some(
           (recipient) =>
             recipient.recipients === contact.contact_uuid && recipient.email
         );
-        const mobile = recipientsData.some(
+        const mobile = updatedRecipientsData.some(
           (recipient) =>
             recipient.recipients === contact.contact_uuid && recipient.mobile
         );
@@ -310,7 +315,7 @@ const AlertTriggerList = ({
           header="Recipient"
           sortable
           className="border-b dark:bg-navy-800 dark:text-gray-200"
-          style={{ minWidth: "8rem" }}
+          style={{ minWidth: "8rem", maxWidth: "14rem" }}
           body={(rowData) => {
             // Parse the recipients string into an array of objects
             const recipientsArray = JSON.parse(rowData.recipients);
