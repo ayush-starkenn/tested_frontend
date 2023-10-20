@@ -684,18 +684,18 @@ const CompletedTrip = () => {
     return () => clearTimeout(timerId);
   }, [token, trip_id, tripData]);
 
+  // Set the stroke color based on whether it's a special route
   const polylineOptions = {
     strokeWeight: 4,
   };
   const [cvnRoute, setCvnRoute] = useState(false);
-  // Set the stroke color based on whether it's a special route
   if (cvnRoute) {
     polylineOptions.strokeColor = "#FF5733"; // Change the color for the special route
   } else {
     polylineOptions.strokeColor = "#4252E0"; // Default color
   }
 
-  // Set DMS media
+  // Set DMS media and event counts
   useEffect(() => {
     if (faultData.length > 0) {
       let mediaData = [];
@@ -787,6 +787,7 @@ const CompletedTrip = () => {
     setPath(filteredCoordinates);
   }, [tripData]);
 
+  // Summary tab
   const SummaryContent = () => (
     <div className="">
       <dl className="mt-4 grid grid-cols-1 gap-x-6 gap-y-7 sm:grid-cols-2 sm:gap-y-12 lg:gap-x-8">
@@ -813,6 +814,7 @@ const CompletedTrip = () => {
     </div>
   );
 
+  // DMS tab
   const DMSContent = () => (
     <>
       <div className="flex gap-4 text-center">
@@ -966,7 +968,7 @@ const CompletedTrip = () => {
     </>
   );
 
-  // Set Iframe for DMS
+  // Set videos for DMS
   const dmsIframes = [].concat(...filterMarker).map((data, index) => {
     // console.log("marker pahu", filterMarker);
     // const checkDriveUrl = "drive.google.com";
@@ -1021,6 +1023,7 @@ const CompletedTrip = () => {
     }
   });
 
+  // DMS pop-up marker data
   const [visible, setVisible] = useState(false);
   const [videoUrl, setVideoUrl] = useState("");
   const [dashCamVideo, setDashCamVideo] = useState("");
@@ -1030,6 +1033,7 @@ const CompletedTrip = () => {
   const [videoAlert, setVideoAlert] = useState("");
   const [videoSeverity, setVideoSeverity] = useState("");
 
+  // DMS pop-up marker video data
   function handleDMSVideoShow(
     url,
     dashcamVid,
@@ -1062,6 +1066,7 @@ const CompletedTrip = () => {
     setVisible(true);
   }
 
+  // Handle event checkbox
   const handlecheckbox = (e) => {
     const { value, name, checked } = e.target;
     // console.log(e.target);
@@ -1128,6 +1133,7 @@ const CompletedTrip = () => {
     setSelectedMarker(marker);
   };
 
+  // CAS tab
   const CASContent = () => (
     <>
       {/* CAS */}
@@ -1580,6 +1586,7 @@ const CompletedTrip = () => {
     </>
   );
 
+  // Get vehicle data
   const [vehicleData, setVehicleData] = useState([]);
   const getVehicleData = async () => {
     await axios
@@ -1602,95 +1609,89 @@ const CompletedTrip = () => {
     getVehicleData();
   }, [vehicleId]);
 
-  // Set the data table when event is selected
+  // Set table data when the event checkbox is selected
   const eventTableData = [].concat(...filterMarker)?.map((event, index) => {
-    let tableContent = null;
-
-    if (event.event === "DMS") {
-      tableContent = (
-        <tr key={index}>
-          <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
-            {index + 1}
-          </td>
-          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
-            {event.event}
-          </td>
-          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
-            {event?.alert_type === "DROWSINESS" ? "DROWSINESS" : ""}
-            {event?.alert_type === "DISTRACTION" ? "DISTRACTION" : ""}
-            {event?.alert_type === "TRIP_START" ? "TRIP_START" : ""}
-            {event?.alert_type === "OVERSPEED" ? "OVERSPEED" : ""}
-            {event?.alert_type === "NO_DRIVER" ? "NO_DRIVER" : ""}
-          </td>
-          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
-            {event.content}
-          </td>
-        </tr>
-      );
-    } else if (event.event === "BRK") {
-      tableContent = (
-        <tr key={index}>
-          <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
-            {index + 1}
-          </td>
-          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
-            {event.event === "BRK" ? "Automatic Braking" : "BRK"}
-          </td>
-          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
-            {
-              (event.reason = 0
-                ? `${event.title} Due to Collosion Avoidance System Brake Duration: ${event.brake_duration} Sec`
-                : event.title + "Due to Sleep Alert Missed")
-            }
-          </td>
-          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
-            {event.content}
-          </td>
-        </tr>
-      );
-    } else if (event.event === "LDS") {
-      tableContent = (
-        <tr key={index}>
-          <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
-            {index + 1}
-          </td>
-          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
-            {event.event === "LDS" ? "Load" : "LDS"}
-          </td>
-          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
-            <span>Max Capacity: {event.max_cap}</span>
-            <br />
-            <span>Percentage: {event.percent}</span>
-            <br />
-            <span>Actual: {event.actual_load}</span>
-          </td>
-          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
-            {event.content}
-          </td>
-        </tr>
-      );
-    } else if (event.event === "FLS") {
-      tableContent = (
-        <tr key={index}>
-          <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
-            {index + 1}
-          </td>
-          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
-            {event.event === "FLS" ? "Fuel" : "FLS"}
-          </td>
-          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
-            <span>Current Fuel: {event.current_fuel}</span>
-            <br />
-            <span>Percentage: {event.percent}</span>
-          </td>
-          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
-            {event.content}
-          </td>
-        </tr>
-      );
-    } else if (event.event === "CVN") {
-      tableContent = (
-        <tr key={index}>
+    // let tableContent = null;
+    switch (event.event) {
+      case "DMS":
+        return (
+          <tr key={index}>
+            <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
+              {index + 1}
+            </td>
+            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+              {event.event}
+            </td>
+            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+              {event.alert_type}
+            </td>
+            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+              {event.content}
+            </td>
+          </tr>
+        );
+      case "BRK":
+        return (
+          <tr key={index}>
+            <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
+              {index + 1}
+            </td>
+            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+              {event.event === "BRK" ? "Automatic Braking" : "BRK"}
+            </td>
+            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+              {event.reason === 0
+                ? `${event.title} Due to Collision Avoidance System Brake Duration: ${event.brake_duration} Sec`
+                : `${event.title} Due to Sleep Alert Missed`}
+            </td>
+            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+              {event.content}
+            </td>
+          </tr>
+        );
+      case "LDS":
+        return (
+          <tr key={index}>
+            <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
+              {index + 1}
+            </td>
+            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+              {event.event === "LDS" ? "Load" : "LDS"}
+            </td>
+            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+              <span>Max Capacity: {event.max_cap}</span>
+              <br />
+              <span>Percentage: {event.percent}</span>
+              <br />
+              <span>Actual: {event.actual_load}</span>
+            </td>
+            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+              {event.content}
+            </td>
+          </tr>
+        );
+      case "FLS":
+        return (
+          <tr key={index}>
+            <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
+              {index + 1}
+            </td>
+            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+              {event.event === "FLS" ? "Fuel" : "FLS"}
+            </td>
+            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+              <span>Current Fuel: {event.current_fuel}</span>
+              <br />
+              <span>Percentage: {event.percent}</span>
+            </td>
+            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+              {event.content}
+            </td>
+          </tr>
+        );
+      case "CVN":
+        return (
+          <tr key={index}>
           <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
             {index + 1}
           </td>
@@ -1704,27 +1705,27 @@ const CompletedTrip = () => {
             {event.content}
           </td>
         </tr>
-      );
-    } else if (event.event === "ALC") {
-      tableContent = (
-        <tr key={index}>
-          <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
-            {index + 1}
-          </td>
-          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
-            {event.event}
-          </td>
-          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
-            {event.result == 1 ? 'Fail': '--' || event.result == 2 ? 'Pass' : '--' || event.result == 3 ? 'Timeout' : '--' || event.result == 4 ? 'Non zero speed' : ''}
-          </td>
-          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
-            {event.content}
-          </td>
-        </tr>
-      );
-    } else {
-      tableContent = (
-        <tr key={index}>
+        );
+      case "ALC":
+        return (
+          <tr key={index}>
+            <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
+              {index + 1}
+            </td>
+            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+              {event.event}
+            </td>
+            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+              {event.result === 1 ? 'Fail' : event.result === 2 ? 'Pass' : event.result === 3 ? 'Timeout' : event.result === 4 ? 'Non zero speed' : ''}
+            </td>
+            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
+              {event.content}
+            </td>
+          </tr>
+        );
+      case "NTF":
+        return (
+          <tr key={index}>
           <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
             {index + 1}
           </td>
@@ -1751,10 +1752,8 @@ const CompletedTrip = () => {
             {event.content}
           </td>
         </tr>
-      );
+        );
     }
-
-    return tableContent;
   });
 
   // Alchohol tab
