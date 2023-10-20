@@ -173,7 +173,7 @@ const CompletedTrip = () => {
     ALCPass: false,
     ALCFail: false,
     ALCTimeout: false,
-    ALCNonZero: false
+    ALCNonZero: false,
   });
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -643,16 +643,16 @@ const CompletedTrip = () => {
               let updatedTime = new Date(myData[l].timestamp * 1000);
               let contentTime = updatedTime.toLocaleString();
               let alcEvent = "";
-              if(parseJson.data.result === 1) {
+              if (parseJson.data.result === 1) {
                 alcEvent = "ALCFail";
               }
-              if(parseJson.data.result === 2) {
+              if (parseJson.data.result === 2) {
                 alcEvent = "ALCPass";
               }
-              if(parseJson.data.result === 3) {
+              if (parseJson.data.result === 3) {
                 alcEvent = "ALCTimeout";
               }
-              if(parseJson.data.result === 4) {
+              if (parseJson.data.result === 4) {
                 alcEvent = "ALCNonZero";
               }
               params = {
@@ -1090,10 +1090,10 @@ const CompletedTrip = () => {
       Load: { 34: "LDS" },
       CVN: { 36: "CVN" },
       FLS: { 35: "FLS" },
-      ALCFail: {1 : "ALC"},
-      ALCPass: {2 : "ALC"},
-      ALCTimeout: {3 : "ALC"},
-      ALCNonZero: {4 : "ALC"},
+      ALCFail: { 1: "ALC" },
+      ALCPass: { 2: "ALC" },
+      ALCTimeout: { 3: "ALC" },
+      ALCNonZero: { 4: "ALC" },
     };
 
     // Get the custom attribute based on the name and value
@@ -1102,13 +1102,13 @@ const CompletedTrip = () => {
       : undefined;
     if (checked) {
       const x = markers.filter(
-        (el) => el.title == value && el.event === customAttribute
+        (el) => el.title === value && el.event === customAttribute
       );
       setFilterMarker([...filterMarker, x]);
     } else {
       const y = []
         .concat(...filterMarker)
-        .filter((el) => !(el.title == value && el.event === customAttribute));
+        .filter((el) => !(el.title === value && el.event === customAttribute));
       setFilterMarker([y]);
     }
 
@@ -1715,7 +1715,15 @@ const CompletedTrip = () => {
             {event.event}
           </td>
           <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
-            {event.result == 1 ? 'Fail': '--' || event.result == 2 ? 'Pass' : '--' || event.result == 3 ? 'Timeout' : '--' || event.result == 4 ? 'Non zero speed' : ''}
+            {event.result === 1
+              ? "Fail"
+              : "--" || event.result === 2
+              ? "Pass"
+              : "--" || event.result === 3
+              ? "Timeout"
+              : "--" || event.result === 4
+              ? "Non zero speed"
+              : ""}
           </td>
           <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
             {event.content}
@@ -2007,7 +2015,9 @@ const CompletedTrip = () => {
                       <>
                         <div>
                           <h6>
-                            <strong>{marker.title === 1 ? "Test Fail" : ""}</strong>
+                            <strong>
+                              {marker.title === 1 ? "Test Fail" : ""}
+                            </strong>
                           </h6>
                           <p className="mb-0">TimeStamp: {marker.content}</p>
                           <p className="mb-0">Speed: {marker.speed}Kmph</p>
@@ -2015,8 +2025,14 @@ const CompletedTrip = () => {
                           <div className="flex justify-center">
                             {marker.img && (
                               <div className="w-1/2">
-                                <img src={marker.img} alt={marker.event}className="img-fluid w-full" />
-                                <h5 className="text-center text-red-500">Image</h5>
+                                <img
+                                  src={marker.img}
+                                  alt={marker.event}
+                                  className="img-fluid w-full"
+                                />
+                                <h5 className="text-center text-red-500">
+                                  Image
+                                </h5>
                               </div>
                             )}
 
@@ -2026,7 +2042,9 @@ const CompletedTrip = () => {
                                   <source src={marker.vid} type="video/mp4" />
                                   Your browser does not support the video tag.
                                 </video>
-                                <h5 className="text-center text-red-500">Video</h5>
+                                <h5 className="text-center text-red-500">
+                                  Video
+                                </h5>
                               </div>
                             )}
                           </div>
