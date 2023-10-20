@@ -141,6 +141,7 @@ export default function VehiclesList({
     setEditDialog(false);
     setEditData({});
     setEditId("");
+    setDevices({});
   };
 
   const DeleteDialog = (rowData) => {
@@ -250,10 +251,6 @@ export default function VehiclesList({
     const { name, value } = e.target;
     setDevices({ ...devices, [name]: value });
   };
-
-  useEffect(() => {
-    console.log(devices.ecu);
-  }, [devices]);
 
   return (
     <div>
