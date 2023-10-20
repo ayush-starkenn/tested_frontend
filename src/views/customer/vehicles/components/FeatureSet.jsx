@@ -545,6 +545,11 @@ const FeatureSet = ({ myData, closeDialog }) => {
     },
   ];
 
+  const FuelACCoptions = [
+    { label: "Enable", value: "1" },
+    { label: "Disable", value: "0" },
+  ];
+
   const BrakingOptions = [
     {
       label: "Internal Braking",
@@ -3321,7 +3326,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
           </div>
         </div>
         <div className="flex justify-between">
-          <div className="field my-3 w-[30vw]">
+          {/* <div className="field my-3 w-[30vw]">
             <label htmlFor="fuel_acc">Acc Cut</label>
             <InputText
               type="number"
@@ -3338,6 +3343,32 @@ const FeatureSet = ({ myData, closeDialog }) => {
               placeholder="Enter a value"
               value={featuresetData?.fuel_acc}
               autoComplete="off"
+            />
+          </div> */}
+          <div className="field my-3 w-[30vw]">
+            <label htmlFor="fuel_acc">Acc Cut</label>
+            <Dropdown
+              id="fuel_acc"
+              style={{
+                width: "30vw",
+                height: "50px",
+                borderRadius: "5px",
+              }}
+              name="fuel_acc"
+              value={featuresetData.fuel_acc}
+              placeholder={
+                featuresetData.fuel_acc
+                  ? featuresetData.fuel_acc
+                  : "Enter a value"
+              }
+              options={FuelACCoptions}
+              optionLabel="label"
+              optionValue="value"
+              onChange={handleDetails}
+              className={`border py-2 pl-2 dark:bg-gray-900 ${
+                invalidFields.includes("fuel_acc") ? "border-red-600" : ""
+              }`}
+              disabled={featuresetData.fuelMode === "0"}
             />
           </div>
           <div className="field my-3 w-[60vw]">

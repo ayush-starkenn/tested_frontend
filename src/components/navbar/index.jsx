@@ -325,7 +325,7 @@ const Navbar = ({ onOpenSidenav }) => {
                   }
                   disabled={!editMode}
                   className="border py-2 pl-2"
-                  // className={!editedCustomerData.first_name ? "p-invalid" : ""}
+                  // className={!editedCustomerData.first_name ? "border-red-600" : ""}
                 />
                 <label htmlFor="first_name">First Name</label>
               </span>
@@ -341,7 +341,7 @@ const Navbar = ({ onOpenSidenav }) => {
                   }
                   disabled={!editMode}
                   className="border py-2 pl-2"
-                  // className={!editedCustomerData.last_name ? "p-invalid" : ""}
+                  // className={!editedCustomerData.last_name ? "border-red-600" : ""}
                 />
                 <label htmlFor="last_name">Last Name</label>
               </span>
@@ -357,7 +357,7 @@ const Navbar = ({ onOpenSidenav }) => {
                 onChange={(e) => handleInputChange("email", e.target.value)}
                 disabled={!editMode}
                 className="border py-2 pl-2"
-                // className={!editedCustomerData.email ? "p-invalid" : ""}
+                // className={!editedCustomerData.email ? "border-red-600" : ""}
               />
               <label htmlFor="email">Email</label>
             </span>
@@ -373,7 +373,7 @@ const Navbar = ({ onOpenSidenav }) => {
                 }
                 disabled={!editMode}
                 className="border py-2 pl-2"
-                // className={!editedCustomerData.company_name ? "p-invalid" : ""}
+                // className={!editedCustomerData.company_name ? "border-red-600" : ""}
               />
               <label htmlFor="company_name">Company Name</label>
             </span>
@@ -391,7 +391,7 @@ const Navbar = ({ onOpenSidenav }) => {
                 // className={
                 //   isValidPhoneNumber(editedCustomerData?.phone || "")
                 //     ? ""
-                //     : "p-invalid"
+                //     : "border-red-600"
                 // }
               />
               <label htmlFor="phone">Contact Number</label>
@@ -410,7 +410,7 @@ const Navbar = ({ onOpenSidenav }) => {
                 onChange={(e) => handleInputChange("address", e.target.value)}
                 disabled={!editMode}
                 className="border py-2 pl-2"
-                // className={!editedCustomerData.address ? "p-invalid" : ""}
+                // className={!editedCustomerData.address ? "border-red-600" : ""}
               />
               <label htmlFor="address">Flat No./ Plot No., Area/Society</label>
             </span>
@@ -425,7 +425,7 @@ const Navbar = ({ onOpenSidenav }) => {
                 onChange={(e) => handleInputChange("city", e.target.value)}
                 disabled={!editMode}
                 className="border py-2 pl-2"
-                // className={!editedCustomerData.city ? "p-invalid" : ""}
+                // className={!editedCustomerData.city ? "border-red-600" : ""}
               />
               <label htmlFor="city">City</label>
             </span>
@@ -439,7 +439,7 @@ const Navbar = ({ onOpenSidenav }) => {
                 onChange={(e) => handleInputChange("state", e.target.value)}
                 disabled={!editMode}
                 className="border py-2 pl-2"
-                // className={!editedCustomerData.state ? "p-invalid" : ""}
+                // className={!editedCustomerData.state ? "border-red-600" : ""}
               />
               <label htmlFor="state">State</label>
             </span>
@@ -454,7 +454,7 @@ const Navbar = ({ onOpenSidenav }) => {
                 onChange={(e) => handleInputChange("pincode", e.target.value)}
                 disabled={!editMode}
                 className="border py-2 pl-2"
-                // className={!editedCustomerData.pincode ? "p-invalid" : ""}
+                // className={!editedCustomerData.pincode ? "border-red-600" : ""}
               />
               <label htmlFor="pincode">Pincode</label>
             </span>
@@ -485,12 +485,11 @@ const Navbar = ({ onOpenSidenav }) => {
               id="currentPassword"
               type={showPassword ? "text" : "password"}
               name="oldPassword"
-              value={resetPasswordData?.oldPassword}
               onChange={(e) => {
                 handleResetPasswordInputChange("oldPassword", e.target.value);
                 setPwerr(false);
               }}
-              className={`border py-2 pl-2 ${pwerr ? "p-invalid" : ""}`}
+              className={`border py-2 pl-2 ${pwerr ? "border-red-600" : ""}`}
             />
             <label htmlFor="currentPassword">Current Password</label>
           </span>
@@ -521,7 +520,7 @@ const Navbar = ({ onOpenSidenav }) => {
                 handleResetPasswordInputChange("newPassword", e.target.value);
                 setPwerr(false);
               }}
-              className={`border py-2 pl-2 ${pwerr ? "p-invalid" : ""}`}
+              className={`border py-2 pl-2 ${pwerr ? "border-red-600" : ""}`}
             />
             <label htmlFor="newPassword">New Password</label>
           </span>
@@ -541,7 +540,7 @@ const Navbar = ({ onOpenSidenav }) => {
                 );
                 setPwerr(false);
               }}
-              className={`border py-2 pl-2 ${pwerr ? "p-invalid" : ""}`}
+              className={`border py-2 pl-2 ${pwerr ? "border-red-600" : ""}`}
             />
             <label htmlFor="confirmPassword">Confirm Password</label>
           </span>

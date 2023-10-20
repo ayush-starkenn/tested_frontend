@@ -34,6 +34,7 @@ export default function VehiclesList({
   const [deleteId, setDeleteId] = useState("");
   const [deleteVehicleName, setDeleteVehicleName] = useState("");
   const [myData, setMyData] = useState();
+  const [devices, setDevices] = useState({});
 
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
@@ -140,6 +141,7 @@ export default function VehiclesList({
     setEditDialog(false);
     setEditData({});
     setEditId("");
+    setDevices({});
   };
 
   const DeleteDialog = (rowData) => {
@@ -210,6 +212,44 @@ export default function VehiclesList({
 
   const renderCellWithNA = (data) => {
     return data ? data : "--";
+  };
+
+  const ecuOptions = () => {
+    const options =
+      ecuData?.map((el) => ({
+        label: el.device_id,
+        value: el.device_id,
+      })) || [];
+
+    options.unshift({ label: "Unassign", value: "null" });
+    return options;
+  };
+
+  const iotOptions = () => {
+    const options =
+      iotData?.map((el) => ({
+        label: el.device_id,
+        value: el.device_id,
+      })) || [];
+
+    options.unshift({ label: "Unassign", value: null });
+    return options;
+  };
+
+  const dmsOptions = () => {
+    const options =
+      dmsData?.map((el) => ({
+        label: el.device_id,
+        value: el.device_id,
+      })) || [];
+
+    options.unshift({ label: "Unassign", value: null });
+    return options;
+  };
+
+  const handleDevices = (e) => {
+    const { name, value } = e.target;
+    setDevices({ ...devices, [name]: value });
   };
 
   return (
@@ -332,56 +372,68 @@ export default function VehiclesList({
               <label htmlFor="vehicle_registration">Vehicle Registration</label>
             </span>
           </div>
-          <div className="mx-auto mt-2 w-[34.5vw]">
-            <small>Select ECU</small>
-            <select
-              id="ecu"
-              name="ecu"
-              onChange={handleChange}
-              value={editData.ecu || ""}
-              className="mt-2 w-full rounded-md border px-4 py-2 shadow-sm focus:ring focus:ring-blue-200 dark:bg-gray-900"
-            >
-              <option value="">Unassign</option>
-              {ecuData.map((el) => (
-                <option key={el.device_id} value={el.device_id}>
-                  {el.device_id}
-                </option>
-              ))}
-            </select>
+          <div className="mx-auto mt-4 w-[34.5vw]">
+            <small>Selected ECU</small>
+            <p className="rounded-lg bg-gray-200 px-4 py-2">{editData.ecu}</p>
           </div>
-          <div className="mx-auto mt-2 w-[34.5vw]">
-            <small>Select IoT</small>
-            <select
-              id="iot"
-              name="iot"
-              onChange={handleChange}
-              value={editData.iot || ""}
-              className="mt-2 w-full rounded-md border px-4 py-2 shadow-sm focus:ring focus:ring-blue-200 dark:bg-gray-900"
-            >
-              <option value="">Unassign</option>
-              {iotData.map((el) => (
-                <option key={el.device_id} value={el.device_id}>
-                  {el.device_id}
-                </option>
-              ))}
-            </select>
+          <div className="mx-auto mt-7 w-[34.5vw]">
+            <span className="p-float-label">
+              <Dropdown
+                id="ecu"
+                name="ecu"
+                options={ecuOptions()}
+                optionLabel="label"
+                optionValue="value"
+                onChange={handleDevices}
+                value={devices?.ecu === null ? "Unassign" : devices?.ecu}
+                className={`border dark:bg-gray-800 `}
+              />
+              <label htmlFor="status" className="dark:text-gray-300">
+                Select New ECU
+              </label>
+            </span>
           </div>
-          <div className="mx-auto mt-2 w-[34.5vw]">
-            <small>Select DMS</small>
-            <select
-              id="dms"
-              name="dms"
-              onChange={handleChange}
-              value={editData.dms || ""}
-              className="mt-2 w-full rounded-md border px-4  py-2 shadow-sm focus:ring focus:ring-blue-200 dark:bg-gray-900"
-            >
-              <option value="">Unassign</option>
-              {dmsData.map((el) => (
-                <option key={el.device_id} value={el.device_id}>
-                  {el.device_id}
-                </option>
-              ))}
-            </select>
+          <div className="mx-auto mt-4 w-[34.5vw]">
+            <small>Selected IoT</small>
+            <p className="rounded-lg bg-gray-200 px-4 py-2">{editData.iot}</p>
+          </div>
+          <div className="mx-auto mt-7 w-[34.5vw]">
+            <span className="p-float-label">
+              <Dropdown
+                id="iot"
+                name="iot"
+                options={iotOptions()}
+                optionLabel="label"
+                optionValue="value"
+                onChange={handleDevices}
+                value={devices?.iot === null ? "Unassign" : devices?.ecu}
+                className={`border dark:bg-gray-800 `}
+              />
+              <label htmlFor="status" className="dark:text-gray-300">
+                Select New IoT
+              </label>
+            </span>
+          </div>
+          <div className="mx-auto mt-4 w-[34.5vw]">
+            <small>Selected IoT</small>
+            <p className="rounded-lg bg-gray-200 px-4 py-2">{editData.dms}</p>
+          </div>
+          <div className="mx-auto mt-7 w-[34.5vw]">
+            <span className="p-float-label">
+              <Dropdown
+                id="dms"
+                name="dms"
+                options={dmsOptions()}
+                optionLabel="label"
+                optionValue="value"
+                onChange={handleDevices}
+                value={devices?.dms === null ? "Unassign" : devices?.ecu}
+                className={`border dark:bg-gray-800 `}
+              />
+              <label htmlFor="status" className="dark:text-gray-300">
+                Select New DMS
+              </label>
+            </span>
           </div>
 
           <div className="mx-auto mt-8 w-[34.5vw]">

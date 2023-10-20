@@ -77,6 +77,7 @@ export default function VehiclesList({ data }) {
       </React.Fragment>
     );
   };
+  //
 
   const getSeverity = (data) => {
     switch (data.vehicle_status) {

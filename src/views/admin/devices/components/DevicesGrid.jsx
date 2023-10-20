@@ -38,7 +38,6 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     device_type: { value: null, matchMode: FilterMatchMode.IN },
   });
-  const [isFormValid, setIsFormValid] = useState(true);
   const [globalFilterValue, setGlobalFilterValue] = useState("");
   const [editedDevice, setEditedDevice] = useState(null);
   const [selectedDevice, setSelectedDevice] = useState(null);
@@ -236,7 +235,10 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
 
   const EditDeviceDialog = ({ visible, onHide, device }) => {
     const [editedDeviceData, setEditedDeviceData] = useState(device || {});
-
+    const isFormValid = Object.values(editedDeviceData).every((val) => {
+      // Check if val is a string and is not an empty string
+      return typeof val === "string" && val.trim() !== "";
+    });
     const onSave = async () => {
       if (!isFormValid) {
         toastRef.current.show({
@@ -261,11 +263,6 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
         setFilteredData(filteredData);
         setEditedDevice(null);
         setIsEditDialogVisible(false);
-        toastRef.current.show({
-          severity: "success",
-          summary: "Customer Updated",
-          detail: "Customer information has been updated successfully.",
-        });
       } catch (error) {
         console.error("Save error:", error);
         toastRef.current.show({
@@ -279,15 +276,8 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
 
     const handleInputChange = (e, name) => {
       const value = e.target.value;
-      setEditedDeviceData((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
-      setIsFormValid(
-        Object.values({ ...editedDeviceData, [name]: value }).every(
-          (val) => val !== ""
-        )
-      );
+      const updatedEditedDeviceData = { ...editedDeviceData, [name]: value };
+      setEditedDeviceData(updatedEditedDeviceData);
     };
 
     return (
@@ -441,20 +431,20 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
           <div>
             <Button
               label="Delete"
-              icon="pi pi-times"
-              className="p-button-danger"
+              icon="pi pi-check"
+              className="mr-2 bg-red-500 px-3 py-2 text-white"
               onClick={confirmDelete}
             />
             <Button
               label="Cancel"
-              icon="pi pi-check"
-              className="p-button-secondary"
+              icon="pi pi-times"
+              className="bg-gray-600 px-3 py-2 text-white dark:text-gray-850 "
               onClick={() => setIsDeleteDialogVisible(false)}
             />
           </div>
         }
       >
-        <div>Are you sure you want to delete ${selectedDevice?.device_id}?</div>
+        <div>Are you sure you want to delete {selectedDevice?.device_id}?</div>
       </Dialog>
       <EditDeviceDialog
         visible={isEditDialogVisible}

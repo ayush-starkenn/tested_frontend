@@ -1,17 +1,47 @@
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { Tag } from "primereact/tag";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DataView } from "primereact/dataview";
 import { GiMineTruck } from "react-icons/gi";
 import { TabPanel, TabView } from "primereact/tabview";
 import FeatureSet from "./FeatureSet";
 import VehicleTrips from "./VehicleTrips";
+import { InputText } from "primereact/inputtext";
+import { FilterMatchMode } from "primereact/api";
+
+const applyFilters = (filters, allData) => {
+  let filteredData = allData;
+
+  if (filters.global.value) {
+    filteredData = filteredData.filter((item) =>
+      Object.entries(item).some(
+        ([key, value]) =>
+          key !== "created_at" &&
+          key !== "updated_at" &&
+          key !== "vehicle_id" &&
+          key !== "user_uuid" &&
+          String(value)
+            .toLowerCase()
+            .includes(filters.global.value.toLowerCase())
+      )
+    );
+  }
+
+  return filteredData;
+};
 
 export default function VehiclesGrid({ data }) {
   const [viewDialog, setViewDialog] = useState(false);
-  const [myData, setMyData] = useState();
+  const [myData, setMyData] = useState(data);
   const totalItems = data.length;
+  const [allData, setAllData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [filters, setFilters] = useState({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    device_type: { value: null, matchMode: FilterMatchMode.IN },
+  });
+  const [globalFilterValue, setGlobalFilterValue] = useState("");
 
   const ViewDialog = (rowData) => {
     setMyData(rowData);
@@ -20,6 +50,35 @@ export default function VehiclesGrid({ data }) {
   const closeViewDialog = () => {
     setViewDialog(false);
   };
+  useEffect(() => {
+    setAllData(data);
+    const filteredData = applyFilters(filters, data);
+    setFilteredData(filteredData);
+  }, [data, filters]);
+
+  const onGlobalFilterChange = (e) => {
+    const value = e.target.value;
+    setGlobalFilterValue(value);
+    const updatedFilters = {
+      ...filters,
+      global: { value, matchMode: FilterMatchMode.CONTAINS },
+    };
+    const filteredData = applyFilters(updatedFilters, allData);
+    setFilters(updatedFilters);
+    setFilteredData(filteredData);
+  };
+
+  const clearSearch = () => {
+    setGlobalFilterValue("");
+    const updatedFilters = {
+      ...filters,
+      global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    };
+    const filteredData = applyFilters(updatedFilters, allData);
+    setFilters(updatedFilters);
+    setFilteredData(filteredData);
+  };
+
   const itemTemplate = (item) => {
     return (
       <div className="p-col-12 vehicle-card mb-6 rounded bg-gray-50 dark:bg-gray-900 dark:text-gray-150">
@@ -68,26 +127,14 @@ export default function VehiclesGrid({ data }) {
           <div className="p-card-footer mb-2">
             <div className="flex justify-center">
               <Button
-                icon="pi pi-map-marker"
-                rounded
-                outlined
-                className="mr-2"
-                style={{
-                  width: "2rem",
-                  height: "2rem",
-                }}
-                severity="info"
-              />
-
-              <Button
-                icon="pi pi-info-circle"
+                icon="pi pi-eye"
                 rounded
                 outlined
                 style={{
                   width: "2rem",
                   height: "2rem",
                 }}
-                className="mr-2"
+                className="border border-blue-500 text-blue-500 dark:text-blue-500"
                 severity="help"
                 onClick={() => ViewDialog(item)}
               />
@@ -100,9 +147,29 @@ export default function VehiclesGrid({ data }) {
 
   return (
     <div className="mt-4">
+      <div className="my-4 flex justify-end">
+        <div className="justify-content-between align-items-center flex flex-wrap gap-2">
+          <span className="p-input-icon-left">
+            <i className="pi pi-search" />
+            <InputText
+              value={globalFilterValue}
+              onChange={onGlobalFilterChange}
+              placeholder="Keyword Search"
+              className="searchbox w-[25vw] cursor-pointer rounded-full border py-3 pl-8 font-bold dark:bg-gray-950 dark:text-gray-50"
+            />
+            {globalFilterValue && (
+              <Button
+                icon="pi pi-times"
+                className="p-button-rounded p-button-text"
+                onClick={clearSearch}
+              />
+            )}
+          </span>
+        </div>
+      </div>
       {/* GridView */}
       <DataView
-        value={data}
+        value={filteredData}
         layout="grid"
         itemTemplate={itemTemplate}
         paginator

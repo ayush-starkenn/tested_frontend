@@ -10,6 +10,28 @@ import { GiMineTruck } from "react-icons/gi";
 import { TabPanel, TabView } from "primereact/tabview";
 import FeatureSet from "./FeatureSet";
 import VehicleTrips from "./VehicleTrips";
+import { FilterMatchMode } from "primereact/api";
+
+const applyFilters = (filters, allData) => {
+  let filteredData = allData;
+
+  if (filters.global.value) {
+    filteredData = filteredData.filter((item) =>
+      Object.entries(item).some(
+        ([key, value]) =>
+          key !== "created_at" &&
+          key !== "updated_at" &&
+          key !== "vehicle_id" &&
+          key !== "user_uuid" &&
+          String(value)
+            .toLowerCase()
+            .includes(filters.global.value.toLowerCase())
+      )
+    );
+  }
+
+  return filteredData;
+};
 
 export default function VehiclesGrid({
   vehiData,
@@ -28,39 +50,50 @@ export default function VehiclesGrid({
   const [deleteId, setDeleteId] = useState("");
   const [viewDialog, setViewDialog] = useState(false);
   const [deleteVehicleName, setDeleteVehicleName] = useState("");
-  const [localEcuData, setLocalEcuData] = useState([]);
-  const [localIoTData, setLocalIoTData] = useState([]);
-  const [localDMSData, setLocalDMSData] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
   const [myData, setMyData] = useState();
+  const [allData, setAllData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [filters, setFilters] = useState({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    device_type: { value: null, matchMode: FilterMatchMode.IN },
+  });
+  const [devices, setDevices] = useState({});
+  const [globalFilterValue, setGlobalFilterValue] = useState("");
+  const totalItems = filteredData.length;
 
   useEffect(() => {
-    if (ecuData) {
-      setLocalEcuData(ecuData);
-    }
-    if (iotData) {
-      setLocalIoTData(iotData);
-    }
-    if (dmsData) {
-      setLocalDMSData(dmsData);
-    }
-  }, [ecuData, iotData, dmsData]);
+    setAllData(vehiData);
+    const filteredData = applyFilters(filters, vehiData);
+    setFilteredData(filteredData);
+  }, [vehiData, filters]);
+
+  const onGlobalFilterChange = (e) => {
+    const value = e.target.value;
+    setGlobalFilterValue(value);
+    const updatedFilters = {
+      ...filters,
+      global: { value, matchMode: FilterMatchMode.CONTAINS },
+    };
+    const filteredData = applyFilters(updatedFilters, allData);
+    setFilters(updatedFilters);
+    setFilteredData(filteredData);
+  };
+
+  const clearSearch = () => {
+    setGlobalFilterValue("");
+    const updatedFilters = {
+      ...filters,
+      global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    };
+    const filteredData = applyFilters(updatedFilters, allData);
+    setFilters(updatedFilters);
+    setFilteredData(filteredData);
+  };
 
   const openEditDialog = (rowData) => {
     setEditDialog(true);
     setEditData(rowData);
-    setLocalEcuData((prevData) => [
-      ...prevData,
-      { device_id: rowData.ecu, device_type: "ecu" },
-    ]);
-    setLocalIoTData((prevData) => [
-      ...prevData,
-      { device_id: rowData.iot, device_type: "iot" },
-    ]);
-    setLocalDMSData((prevData) => [
-      ...prevData,
-      { device_id: rowData.dms, device_type: "dms" },
-    ]);
+
     setEditId(rowData?.vehicle_uuid);
   };
 
@@ -68,6 +101,7 @@ export default function VehiclesGrid({
     setEditDialog(false);
     setEditData({});
     setEditId("");
+    setDevices({});
   };
 
   const DeleteDialog = (item) => {
@@ -125,6 +159,44 @@ export default function VehiclesGrid({
       value: 2,
     },
   ];
+
+  const ecuOptions = () => {
+    const options =
+      ecuData?.map((el) => ({
+        label: el.device_id,
+        value: el.device_id,
+      })) || [];
+
+    options.unshift({ label: "Unassign", value: "null" });
+    return options;
+  };
+
+  const iotOptions = () => {
+    const options =
+      iotData?.map((el) => ({
+        label: el.device_id,
+        value: el.device_id,
+      })) || [];
+
+    options.unshift({ label: "Unassign", value: "null" });
+    return options;
+  };
+
+  const dmsOptions = () => {
+    const options =
+      dmsData?.map((el) => ({
+        label: el.device_id,
+        value: el.device_id,
+      })) || [];
+
+    options.unshift({ label: "Unassign", value: "null" });
+    return options;
+  };
+
+  const handleDevices = (e) => {
+    const { name, value } = e.target;
+    setDevices({ ...devices, [name]: value });
+  };
 
   const itemTemplate = (item) => {
     return (
@@ -219,16 +291,16 @@ export default function VehiclesGrid({
           <span className="p-input-icon-left">
             <i className="pi pi-search" />
             <InputText
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              value={globalFilterValue}
+              onChange={onGlobalFilterChange}
               placeholder="Keyword Search"
               className="searchbox w-[25vw] cursor-pointer rounded-full border py-3 pl-8 font-bold dark:bg-gray-950 dark:text-gray-50"
             />
-            {searchQuery && (
+            {globalFilterValue && (
               <Button
                 icon="pi pi-times"
                 className="p-button-rounded p-button-text"
-                onClick={() => setSearchQuery("")}
+                onClick={clearSearch}
               />
             )}
           </span>
@@ -236,16 +308,15 @@ export default function VehiclesGrid({
       </div>
       {/* GridView */}
       <DataView
-        value={vehiData.filter((item) =>
-          item.vehicle_name.toLowerCase().includes(searchQuery.toLowerCase())
-        )}
+        value={filteredData}
         layout="grid"
         itemTemplate={itemTemplate}
         paginator
         rows={6}
         emptyMessage="No vehicle found."
       />
-      {/* Edit vehicle Data */}
+      <p className="text-center text-gray-700">Total Items : {totalItems}</p>
+
       {/* Edit vehicle Data */}
       <Dialog
         visible={editDialog}
@@ -279,106 +350,68 @@ export default function VehiclesGrid({
               <label htmlFor="vehicle_registration">Vehicle Registration</label>
             </span>
           </div>
-          <div className="mx-auto mt-2 flex w-[34.5vw]">
-            <div className="flex-1">
-              <label
-                htmlFor="ecu"
-                style={{ color: "#808080", fontSize: "13px" }}
-                className=""
-              >
-                Select an ECU
+          <div className="mx-auto mt-4 w-[34.5vw]">
+            <small>Selected ECU</small>
+            <p className="rounded-lg bg-gray-200 px-4 py-2">{editData.ecu}</p>
+          </div>
+          <div className="mx-auto mt-7 w-[34.5vw]">
+            <span className="p-float-label">
+              <Dropdown
+                id="ecu"
+                name="ecu"
+                options={ecuOptions()}
+                optionLabel="label"
+                optionValue="value"
+                onChange={handleDevices}
+                value={devices?.ecu === null ? "Unassign" : devices?.ecu}
+                className={`border dark:bg-gray-800 `}
+              />
+              <label htmlFor="status" className="dark:text-gray-300">
+                Select New ECU
               </label>
-              <span className="p-float-label">
-                <select
-                  name="ecu"
-                  onChange={handleChange}
-                  style={{
-                    border: "1px solid #ccc",
-                    padding: "5px 28px",
-                    borderRadius: "5px",
-                    fontSize: "16px",
-                    outline: "none",
-                  }}
-                >
-                  <option>{editData?.ecu || ""}</option>
-                  <option value={null}>Unassign</option>
-                  {ecuData?.map((el) => {
-                    return (
-                      <option key={el.id} value={`${el.device_id}`}>
-                        {el.device_id}
-                      </option>
-                    );
-                  })}
-                </select>
-              </span>
-            </div>
-
-            <div className="flex-1">
-              <label
-                htmlFor="iot"
-                style={{ color: "#808080", fontSize: "13px" }}
-              >
-                Select an IoT
+            </span>
+          </div>
+          <div className="mx-auto mt-4 w-[34.5vw]">
+            <small>Selected IoT</small>
+            <p className="rounded-lg bg-gray-200 px-4 py-2">{editData.iot}</p>
+          </div>
+          <div className="mx-auto mt-7 w-[34.5vw]">
+            <span className="p-float-label">
+              <Dropdown
+                id="iot"
+                name="iot"
+                options={iotOptions()}
+                optionLabel="label"
+                optionValue="value"
+                onChange={handleDevices}
+                value={devices?.iot === null ? "Unassign" : devices?.ecu}
+                className={`border dark:bg-gray-800 `}
+              />
+              <label htmlFor="status" className="dark:text-gray-300">
+                Select New IoT
               </label>
-              <span className="p-float-label">
-                <select
-                  name="iot"
-                  onChange={handleChange}
-                  style={{
-                    border: "1px solid #ccc",
-                    padding: "5px 28px",
-                    borderRadius: "5px",
-                    fontSize: "16px",
-                    outline: "none",
-                  }}
-                >
-                  <option>{editData?.iot || ""}</option>
-                  <option value={null}>Unassign</option>
-                  {iotData?.map((el) => {
-                    return (
-                      <option key={el.id} value={`${el.device_id}`}>
-                        {el.device_id}
-                      </option>
-                    );
-                  })}
-                </select>
-              </span>
-            </div>
-
-            <div className="flex-1">
-              <label
-                htmlFor="dms"
-                style={{
-                  color: "#808080",
-                  fontSize: "13px",
-                }}
-              >
-                Select a DMS
+            </span>
+          </div>
+          <div className="mx-auto mt-4 w-[34.5vw]">
+            <small>Selected IoT</small>
+            <p className="rounded-lg bg-gray-200 px-4 py-2">{editData.dms}</p>
+          </div>
+          <div className="mx-auto mt-7 w-[34.5vw]">
+            <span className="p-float-label">
+              <Dropdown
+                id="dms"
+                name="dms"
+                options={dmsOptions()}
+                optionLabel="label"
+                optionValue="value"
+                onChange={handleDevices}
+                value={devices?.dms === null ? "Unassign" : devices?.ecu}
+                className={`border dark:bg-gray-800 `}
+              />
+              <label htmlFor="status" className="dark:text-gray-300">
+                Select New DMS
               </label>
-              <span className="p-float-label">
-                <select
-                  name="dms"
-                  onChange={handleChange}
-                  style={{
-                    border: "1px solid #ccc",
-                    padding: "5px 28px",
-                    borderRadius: "5px",
-                    fontSize: "16px",
-                    outline: "none",
-                  }}
-                >
-                  <option>{editData?.dms || ""}</option>
-                  <option value={null}>Unassign</option>
-                  {dmsData?.map((el) => {
-                    return (
-                      <option key={el.id} value={`${el.device_id}`}>
-                        {el.device_id}
-                      </option>
-                    );
-                  })}
-                </select>
-              </span>
-            </div>
+            </span>
           </div>
 
           <div className="mx-auto mt-8 w-[34.5vw]">

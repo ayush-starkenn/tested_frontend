@@ -433,7 +433,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                 Range: 0-1000
               </small>
             </div>
-            <div className="flex-auto">
+            <div className="mt-3 flex-auto">
               <span className="p-float-label">
                 <InputText
                   keyfilter="pint"
@@ -767,6 +767,18 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
           field="customer_name"
           header="Customer"
           sortable
+          body={(rowData) => (
+            <Tag
+              className="my-1 mr-2 bg-gray-200 text-gray-800"
+              icon="pi pi-user"
+              style={{
+                width: "fit-content",
+                height: "25px",
+                lineHeight: "40px",
+              }}
+              value={rowData.customer_name}
+            />
+          )}
           className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "14rem" }}
         ></Column>
