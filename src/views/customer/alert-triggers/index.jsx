@@ -391,7 +391,7 @@ const Triggers = () => {
               <p className="mb-2 pl-2">Select Contacts</p>
               <div
                 className="table-container rounded"
-                style={{ maxHeight: "70%", overflowY: "auto" }}
+                style={{ maxHeight: "70%" }}
               >
                 <table className="table w-full table-auto border-collapse border border-gray-300">
                   <thead>

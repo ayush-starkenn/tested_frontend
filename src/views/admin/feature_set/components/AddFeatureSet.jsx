@@ -68,7 +68,7 @@ const AddFeatureSet = ({ onSuccess }) => {
     rdr_type: "1",
     Sensor_res1: "1",
     //speed settings
-    speedSource: "Speed Wire",
+    speedSource: "1",
     slope: "4.5",
     offset: "0.5",
     //shutdown delay
@@ -1312,7 +1312,8 @@ const AddFeatureSet = ({ onSuccess }) => {
             />
             {invalidFields.includes("sa_activationSpeed") && (
               <small className="text-red-600">
-                Sleep alert interval should be greater than 0 and less than 150
+                Activation speed interval should be greater than 0 and less than
+                150
               </small>
             )}
           </div>
@@ -2137,7 +2138,7 @@ const AddFeatureSet = ({ onSuccess }) => {
                 borderRadius: "5px",
               }}
               name="speedSource"
-              value={values.speedSource || "Speed Wire"}
+              value={values.speedSource || "1"}
               placeholder="Select an option"
               options={SpeedSourceoptions}
               optionLabel="label"
@@ -2194,7 +2195,7 @@ const AddFeatureSet = ({ onSuccess }) => {
             />
             {invalidFields.includes("offset") && (
               <small className="text-red-600">
-                Slope should be greater than -200 and less than 200
+                Offset should be greater than -200 and less than 200
               </small>
             )}
           </div>

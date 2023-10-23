@@ -537,93 +537,117 @@ const FeatureSet = ({ myData, closeDialog }) => {
   ];
 
   const SafetyModeoptions = [
-    { label: "Normal", value: "Normal" },
-    { label: "Relaxed", value: "Relaxed" },
+    { label: "Normal", value: "1" },
     {
       label: "Strict",
-      value: "Strict",
+      value: "2",
     },
   ];
 
-  const FuelACCoptions = [
-    { label: "Enable", value: "1" },
-    { label: "Disable", value: "0" },
+  const VehicleTypeoptions = [
+    { label: "12V Pedal", value: "1" },
+    { label: "24V Pedal", value: "2" },
+    { label: "Truck", value: "3" },
+    { label: "Car", value: "4" },
   ];
-
-  const BrakingOptions = [
-    {
-      label: "Internal Braking",
-      value: 1,
-    },
-    {
-      label: "PWN Braking",
-      value: 2,
-    },
-    {
-      label: "Actuator Braking",
-      value: 3,
-    },
-  ];
-
-  const VehicleTypeoptions = [{ label: "12V Pedal", value: "12V Pedal" }];
 
   const AcceleratorTypeoptions = [
     {
       label: "Sensor",
-      value: "Sensor",
+      value: "1",
     },
     {
       label: "Cylinder",
-      value: "Cylinder",
+      value: "2",
     },
     {
       label: "Solenoid",
-      value: "Solenoid",
+      value: "3",
     },
-  ];
-
-  const ProtocolTypeoptions = [
-    { label: "SAEJ1939", value: "SAEJ1939" },
-    {
-      label: "CAN",
-      value: "CAN",
-    },
-  ];
-
-  const SpeedSourceoptions = [
-    { label: "Speed Wire", value: "Speed Wire" },
-    { label: "OBD", value: "OBD" },
-    { label: "GPS", value: "GPS" },
   ];
 
   const GyroOptions = [
     {
       label: "External Gyro",
-      value: 1,
+      value: "1",
     },
     {
       label: "inbuild Gyro",
-      value: 2,
+      value: "2",
     },
     {
       label: "Steering Gyro",
-      value: 3,
+      value: "3",
+    },
+  ];
+
+  const BrakingOptions = [
+    {
+      label: "Non PWM Braking",
+      value: "1",
+    },
+    {
+      label: "PWM Braking",
+      value: "2",
+    },
+    {
+      label: "Actuator Braking",
+      value: "3",
+    },
+  ];
+
+  const ProtocolTypeoptions = [
+    { label: "SAEJ1939", value: "0" },
+    {
+      label: "ISO_15765_4",
+      value: "1",
     },
   ];
   const radarOptions = [
-    { label: "Radar 1", value: 1 },
-    { label: "Radar 2", value: 2 },
-    { label: "Radar 3", value: 3 },
-  ];
-  const alcothreshOptions = [
-    { label: "Relaxed", value: 1 },
-    { label: "Normal", value: 2 },
-    { label: "Strict", value: 3 },
+    { label: "Radar 1", value: "1" },
+    { label: "Radar 2", value: "2" },
+    { label: "Radar 3", value: "3" },
   ];
 
+  const alcothreshOptions = [
+    { label: "Relaxed", value: "1" },
+    { label: "Normal", value: "2" },
+    { label: "Strict", value: "3" },
+  ];
+
+  // const BrakeTypeoptions = [
+  //   { label: "Cylinder", value: "Cylinder" },
+  //   { label: "Internal Braking", value: "Internal Braking" },
+  //   {
+  //     label: "Electromagnetic",
+  //     value: "Electromagnetic",
+  //   },
+  // ];
+
   const Braking = [
-    { label: "Yes", value: "1" },
-    { label: "No", value: "0" },
+    { label: "Enable", value: "1" },
+    { label: "Disable", value: "0" },
+  ];
+
+  const SpeedSourceoptions = [
+    { label: "Speed Wire", value: "1" },
+    { label: "OBD", value: "2" },
+    { label: "GPS", value: "3" },
+  ];
+
+  const loadOptions = [
+    { label: "Enable", value: "1" },
+    { label: "Disable", value: "0" },
+  ];
+
+  const DDACCoptions = [
+    { label: "Enable", value: "1" },
+    { label: "Disable", value: "0" },
+  ];
+
+  const FuelACCoptions = [
+    { label: "Enable", value: "1" },
+    { label: "Disable", value: "0" },
   ];
 
   //edit dialog
@@ -3326,25 +3350,6 @@ const FeatureSet = ({ myData, closeDialog }) => {
           </div>
         </div>
         <div className="flex justify-between">
-          {/* <div className="field my-3 w-[30vw]">
-            <label htmlFor="fuel_acc">Acc Cut</label>
-            <InputText
-              type="number"
-              id="fuel_acc"
-              style={{
-                width: "24vw",
-                borderRadius: "5px",
-              }}
-              name="fuel_acc"
-              className={`border py-2 pl-2 dark:bg-gray-900 ${
-                invalidFields.includes("fuel_acc") ? "border-red-600" : ""
-              }`}
-              onChange={handleDetails}
-              placeholder="Enter a value"
-              value={featuresetData?.fuel_acc}
-              autoComplete="off"
-            />
-          </div> */}
           <div className="field my-3 w-[30vw]">
             <label htmlFor="fuel_acc">Acc Cut</label>
             <Dropdown
@@ -3400,7 +3405,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
             type="submit"
             className="rounded bg-blue-600 px-3 py-2 text-white dark:bg-gray-150 dark:font-bold dark:text-blue-800"
           >
-            Edit Feature Set
+            Update Feature Set
           </button>
         </div>
       </form>
