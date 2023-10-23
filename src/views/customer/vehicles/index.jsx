@@ -82,7 +82,7 @@ const Marketplace = () => {
   useEffect(() => {
     axios
       .get(
-        `http://localhost:8080/api/vehicles/get-user-vehiclelist/${user_uuid}`,
+        `${process.env.REACT_APP_API_URL}/vehicles/get-user-vehiclelist/${user_uuid}`,
         { headers: { authorization: `bearer ${token}` } }
       )
       .then((res) => {
@@ -100,9 +100,12 @@ const Marketplace = () => {
   // get ECUData
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/devices/get-user-ecu/${user_uuid}`, {
-        headers: { authorization: `bearer ${token}` },
-      })
+      .get(
+        `${process.env.REACT_APP_API_URL}/devices/get-user-ecu/${user_uuid}`,
+        {
+          headers: { authorization: `bearer ${token}` },
+        }
+      )
       .then((res) => {
         setEcuData(res.data.results);
       })
@@ -114,9 +117,12 @@ const Marketplace = () => {
   //get IoTData
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/devices/get-user-iot/${user_uuid}`, {
-        headers: { authorization: `bearer ${token}` },
-      })
+      .get(
+        `${process.env.REACT_APP_API_URL}/devices/get-user-iot/${user_uuid}`,
+        {
+          headers: { authorization: `bearer ${token}` },
+        }
+      )
       .then((res) => {
         setIotData(res.data.results);
       })
@@ -128,9 +134,12 @@ const Marketplace = () => {
   //get dmsData
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/devices/get-user-dms/${user_uuid}`, {
-        headers: { authorization: `bearer ${token}` },
-      })
+      .get(
+        `${process.env.REACT_APP_API_URL}/devices/get-user-dms/${user_uuid}`,
+        {
+          headers: { authorization: `bearer ${token}` },
+        }
+      )
       .then((res) => {
         setDmsData(res.data.results);
       })
@@ -143,7 +152,7 @@ const Marketplace = () => {
   useEffect(() => {
     axios
       .get(
-        `http://localhost:8080/api/featuresets/get-user-featureset/${user_uuid}`,
+        `${process.env.REACT_APP_API_URL}/featuresets/get-user-featureset/${user_uuid}`,
         {
           headers: { authorization: `bearer ${token}` },
         }
@@ -161,7 +170,7 @@ const Marketplace = () => {
   const editvehicle = (vehicle_uuid, data) => {
     axios
       .put(
-        `http://localhost:8080/api/vehicles/edit-vehicle/${vehicle_uuid}`,
+        `${process.env.REACT_APP_API_URL}/vehicles/edit-vehicle/${vehicle_uuid}`,
         data,
         {
           headers: { authorization: `bearer ${token}` },
@@ -201,7 +210,7 @@ const Marketplace = () => {
   const deleteVehicle = (vehicle_uuid, token) => {
     axios
       .put(
-        `http://localhost:8080/api/vehicles/delete-vehicle/${vehicle_uuid}`,
+        `${process.env.REACT_APP_API_URL}/vehicles/delete-vehicle/${vehicle_uuid}`,
         { user_uuid },
         {
           headers: { authorization: `bearer ${token}` },
@@ -248,7 +257,7 @@ const Marketplace = () => {
     if (Object.keys(errors).length === 0) {
       axios
         .post(
-          "http://localhost:8080/api/vehicles/add-vehicle",
+          `${process.env.REACT_APP_API_URL}/vehicles/add-vehicle`,
           { ...addData, user_uuid },
           {
             headers: { authorization: `bearer ${token}` },

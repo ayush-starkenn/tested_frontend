@@ -260,12 +260,13 @@ const Report = () => {
                       <td className="px-6 py-4">
                         {" "}
                         <a
-                          href={`http://localhost:3000/customer/vehicles/completed-trip/${tripItem.trip_id}`}
+                          href={`${process.env.REACT_APP_BASE_URL}/customer/vehicles/completed-trip/${tripItem.trip_id}`}
                           target="_blank"
                           className="text-blue-600 underline"
                           rel="noopener noreferrer"
                         >
-                          http://localhost:3000/customer/vehicles/completed-trip/
+                          `{process.env.REACT_APP_BASE_URL}
+                          /customer/vehicles/completed-trip/`
                           {tripItem.trip_id}
                         </a>
                       </td>

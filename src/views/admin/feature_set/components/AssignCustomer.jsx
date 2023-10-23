@@ -21,7 +21,7 @@ const AssignCustomer = ({ parameters, onSuccess }) => {
   useEffect(() => {
     axios
       .get(
-        `http://localhost:8080/api/featuresets/get-list-assign-users/${parameters.propValue.featureset_uuid}`,
+        `${process.env.REACT_APP_API_URL}/featuresets/get-list-assign-users/${parameters.propValue.featureset_uuid}`,
         {
           headers: { authorization: `bearer ${token}` },
         }
@@ -36,7 +36,7 @@ const AssignCustomer = ({ parameters, onSuccess }) => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/customers/get-all-customer", {
+      .get(`${process.env.REACT_APP_API_URL}customers/get-all-customer`, {
         headers: { authorization: `bearer ${token}` },
       })
       .then((res) => {
@@ -67,7 +67,7 @@ const AssignCustomer = ({ parameters, onSuccess }) => {
     }
     axios
       .put(
-        `http://localhost:8080/api/featuresets/assign-user/${parameters.propValue.featureset_uuid}`,
+        `${process.env.REACT_APP_API_URL}/featuresets/assign-user/${parameters.propValue.featureset_uuid}`,
         newUser,
         {
           headers: { authorization: `bearer ${token}` },

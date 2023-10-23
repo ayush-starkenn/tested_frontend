@@ -235,6 +235,7 @@ const CompletedTrip = () => {
     console.log(filterMarker);
   }, [markers, filterMarker]);
 
+  // Get all complete trip data
   useEffect(() => {
     axios
       .get(
@@ -273,18 +274,13 @@ const CompletedTrip = () => {
           lat: parseFloat(res.data.tripdata[dataLength].lat),
           lng: parseFloat(res.data.tripdata[dataLength].lng),
         });
-
-        // Set Start time
-        let sttime = res.data.tripdata[0].timestamp;
-        let updateStTime = new Date(sttime * 1000);
-        setStartTime(updateStTime.toLocaleString());
       })
       .catch((error) => {
         console.log(error);
       });
   }, [trip_id, token]);
 
-  // Set Address
+  // Set Address using google map api
   useEffect(() => {
     if (tripData.length > 0 && startPoint !== "" && endPoint !== "") {
       const getAddress = async (lat, lng, setAddress) => {
@@ -295,7 +291,11 @@ const CompletedTrip = () => {
           // setIsLoading(false);
         }
         const data = await response.json();
-        setAddress(data.results[0].formatted_address);
+        if (data.results.length > 0) {
+          setAddress(data.results[0].formatted_address);
+        } else {
+          setAddress("Loading address...");
+        }
       };
 
       getAddress(startPoint.lat, startPoint.lng, setStartAddress);
@@ -642,19 +642,19 @@ const CompletedTrip = () => {
             if (myData[l].event === "ALC") {
               let updatedTime = new Date(myData[l].timestamp * 1000);
               let contentTime = updatedTime.toLocaleString();
-              let alcEvent = "";
-              if (parseJson.data.result === 1) {
-                alcEvent = "ALCFail";
-              }
-              if (parseJson.data.result === 2) {
-                alcEvent = "ALCPass";
-              }
-              if (parseJson.data.result === 3) {
-                alcEvent = "ALCTimeout";
-              }
-              if (parseJson.data.result === 4) {
-                alcEvent = "ALCNonZero";
-              }
+              // let alcEvent = "";
+              // if (parseJson.data.result === 1) {
+              //   alcEvent = "ALCFail";
+              // }
+              // if (parseJson.data.result === 2) {
+              //   alcEvent = "ALCPass";
+              // }
+              // if (parseJson.data.result === 3) {
+              //   alcEvent = "ALCTimeout";
+              // }
+              // if (parseJson.data.result === 4) {
+              //   alcEvent = "ALCNonZero";
+              // }
               params = {
                 id: myData[l].id,
                 lat: parseFloat(myData[l].lat),
@@ -773,6 +773,7 @@ const CompletedTrip = () => {
     for (let i = 1; i < simplifiedCoordinates.length; i++) {
       const prevCoord = simplifiedCoordinates[i - 1];
       const currCoord = simplifiedCoordinates[i];
+
       const distance = getDistance(
         prevCoord.lat,
         prevCoord.lng,
@@ -785,7 +786,7 @@ const CompletedTrip = () => {
     }
 
     setPath(filteredCoordinates);
-  }, [tripData]);
+  }, [tripData, coordinates]);
 
   // Summary tab
   const SummaryContent = () => (
@@ -973,6 +974,10 @@ const CompletedTrip = () => {
     // console.log("marker pahu", filterMarker);
     // const checkDriveUrl = "drive.google.com";
     // const isDriveUrl = data.dms.includes(checkDriveUrl);
+    const dashLink = data.dashcam;
+    const dashCamVid = dashLink.startsWith("/var/www/html/media/")
+      ? dashLink.substring(20)
+      : dashLink;
     if (data.event === "DMS") {
       return (
         <div className="group relative" key={index}>
@@ -1010,7 +1015,7 @@ const CompletedTrip = () => {
                   controls
                 >
                   <source
-                    src={`${process.env.REACT_APP_S3_URL}/${data.dashcam}`}
+                    src={`${process.env.REACT_APP_S3_URL}/${dashCamVid}`}
                     type="video/mp4"
                   ></source>
                   Your browser does not support the video tag.
@@ -1050,11 +1055,14 @@ const CompletedTrip = () => {
       setVideoUrl(`${process.env.REACT_APP_S3_URL}/${url}`);
     }
 
-    if (dashcamVid) {
-      if (dashcamVid.includes(checkDriveUrl)) {
-        setDashCamVideo(dashcamVid);
+    if (dashCamVideo) {
+      const dashCamVideo = dashcamVid.startsWith("/var/www/html/media/")
+        ? dashcamVid.substring(20)
+        : dashcamVid;
+      if (dashCamVideo.includes(checkDriveUrl)) {
+        setDashCamVideo(dashCamVideo);
       } else {
-        setDashCamVideo(`${process.env.REACT_APP_S3_URL}/${dashcamVid}`);
+        setDashCamVideo(`${process.env.REACT_APP_S3_URL}/${dashCamVideo}`);
       }
     }
 

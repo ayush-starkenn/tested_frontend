@@ -57,7 +57,7 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/customers/get-all-customer", {
+      .get(`${process.env.REACT_APP_API_URL}/customers/get-all-customer"=`, {
         headers: { authorization: `bearer ${token}` },
       })
       .then((res) => {
@@ -503,7 +503,7 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
 
     axios
       .put(
-        `http://localhost:8080/api/featuresets/edit-featureset/${featuresetDetails.featureset_uuid}`,
+        `${process.env.REACT_APP_API_URL}/featuresets/edit-featureset/${featuresetDetails.featureset_uuid}`,
         editData,
         {
           headers: { authorization: `bearer ${token}` },

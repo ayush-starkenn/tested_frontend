@@ -61,7 +61,7 @@ const Triggers = () => {
   useEffect(() => {
     axios
       .get(
-        `http://localhost:8080/api/vehicles/get-user-vehiclelist/${user_uuid}`,
+        `${process.env.REACT_APP_API_URL}/vehicles/get-user-vehiclelist/${user_uuid}`,
         { headers: { authorization: `bearer ${token}` } }
       )
       .then((res) => {
@@ -75,9 +75,12 @@ const Triggers = () => {
   //get contacts list
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/contacts/getContacts-all/${user_uuid}`, {
-        headers: { authorization: `bearer ${token}` },
-      })
+      .get(
+        `${process.env.REACT_APP_API_URL}/contacts/getContacts-all/${user_uuid}`,
+        {
+          headers: { authorization: `bearer ${token}` },
+        }
+      )
       .then((res) => {
         const updatedContacts = res.data.contacts.map((contact) => ({
           ...contact,
@@ -96,7 +99,7 @@ const Triggers = () => {
   useEffect(() => {
     axios
       .get(
-        `http://localhost:8080/api/alert-triggers/getall-alert-trigger/${user_uuid}`,
+        `${process.env.REACT_APP_API_URL}/alert-triggers/getall-alert-trigger/${user_uuid}`,
         {
           headers: { authorization: `bearer ${token}` },
         }
@@ -130,7 +133,7 @@ const Triggers = () => {
     if (Object.keys(errors).length === 0) {
       axios
         .post(
-          `http://localhost:8080/api/alert-triggers/save-alert-trigger/${user_uuid}`,
+          `${process.env.REACT_APP_API_URL}/alert-triggers/save-alert-trigger/${user_uuid}`,
           { ...addData, selectedContacts },
           {
             headers: { authorization: `bearer ${token}` },
@@ -162,7 +165,7 @@ const Triggers = () => {
   const editTrigger = (trigger_id, editData) => {
     axios
       .put(
-        `http://localhost:8080/api/alert-triggers/update-alert-trigger/${trigger_id}`,
+        `${process.env.REACT_APP_API_URL}/alert-triggers/update-alert-trigger/${trigger_id}`,
         editData,
         {
           headers: { authorization: `bearer ${token}` },
@@ -192,7 +195,7 @@ const Triggers = () => {
   const deleteTrigger = (trigger_id, token) => {
     axios
       .put(
-        `http://localhost:8080/api/alert-triggers/delete-alert-trigger/${trigger_id}`,
+        `${process.env.REACT_APP_API_URL}/alert-triggers/delete-alert-trigger/${trigger_id}`,
         {},
         { headers: { authorization: `bearer ${token}` } }
       )

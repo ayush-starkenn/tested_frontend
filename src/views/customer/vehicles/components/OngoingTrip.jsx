@@ -331,7 +331,11 @@ const OngoingTrip = () => {
           // setIsLoading(false);
         }
         const data = await response.json();
-        setAddress(data.results[0].formatted_address);
+        if (data.results.length > 0) {
+          setAddress(data.results[0].formatted_address);
+        } else {
+          setAddress("Loading address...");
+        }
       };
 
       getAddress(startPoint.lat, startPoint.lng, setStartAddress);
@@ -852,7 +856,7 @@ const OngoingTrip = () => {
   }
   //  ---------------------------
 
-  // Set DMS media and event counts
+  // Set DMS media
   useEffect(() => {
     if (faultData.length > 0) {
       let mediaData = [];
@@ -867,39 +871,6 @@ const OngoingTrip = () => {
             alert: dmsData.data.alert_type,
             timestamp: updatedmsTimeStamp.toLocaleString(),
           });
-          if (dmsData.data.alert_type === "DROWSINESS") {
-            setDrowsiness((prev) => prev + 1);
-          }
-          if (dmsData.data.alert_type === "TRIP_START") {
-            setTripStartAlert((prev) => prev + 1);
-          }
-          if (dmsData.data.alert_type === "DISTRACTION") {
-            setDistraction((prev) => prev + 1);
-          }
-          if (dmsData.data.alert_type === "OVERSPEEDING") {
-            setDmsoverSpd((prev) => prev + 1);
-          }
-          // if (dmsData.data.alert_type === "NO_SEATBELT") {
-          //   setNotSeatBelt((prev) => prev + 1);
-          // }
-          // if (dmsData.data.alert_type === "USING_PHONE") {
-          //   setUsePhone((prev) => prev + 1);
-          // }
-          // if (dmsData.data.alert_type === "UNKNOWN_DRIVER") {
-          //   setUnknownDriver((prev) => prev + 1);
-          // }
-          if (dmsData.data.alert_type === "NO_DRIVER") {
-            setNoDriver((prev) => prev + 1);
-          }
-          // if (dmsData.data.alert_type === "SMOKING") {
-          //   setSmoking((prev) => prev + 1);
-          // }
-          // if (dmsData.data.alert_type === "RASH_DRIVING") {
-          //   setRashDrive((prev) => prev + 1);
-          // }
-          // if (dmsData.data.alert_type === "ACCIDENT") {
-          //   setDmsAccident((prev) => prev + 1);
-          // }
         }
       });
 

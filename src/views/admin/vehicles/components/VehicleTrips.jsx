@@ -72,7 +72,7 @@ const VehicleTrips = ({ myData }) => {
   useEffect(() => {
     axios
       .get(
-        `http://localhost:8080/api/trips/get-vehicle-trips/${myData.vehicle_uuid}`,
+        `${process.env.REACT_APP_API_URL}/trips/get-vehicle-trips/${myData.vehicle_uuid}`,
         {
           headers: { authorization: `bearer ${token}` },
         }
