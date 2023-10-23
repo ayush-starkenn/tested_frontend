@@ -463,7 +463,7 @@ const AlertTriggerList = ({
           <div className="mx-auto mt-8 w-[34.5vw]">
             <div
               className="table-container rounded"
-              style={{ maxHeight: "70%", overflowY: "auto" }}
+              style={{ maxHeight: "70%" }}
             >
               <table className="w-full table-auto border-collapse border border-gray-300">
                 <thead>

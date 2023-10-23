@@ -652,8 +652,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
   ];
 
   const activeOption = [
-    { label: "Active", value: "1" },
-    { label: "Deactive", value: "0" },
+    { label: "Active", value: 1 },
+    { label: "Deactive", value: 0 },
   ];
 
   //fetching customers
@@ -785,9 +785,8 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
               onChange={handleChange}
               options={activeOption}
               optionLabel="label"
-              optionValue="value"
               className="md:w-14rem mt-2 w-full border"
-              value={featuresetDetails.featureset_status || "1"}
+              value={featuresetDetails.featureset_status || 1}
             />
           </div>
           <p className="mt-4 font-bold ">System Type</p>
@@ -1314,13 +1313,14 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
               }`}
               onChange={handleDetails}
               placeholder="Enter a value"
-              value={featuresetData?.activationSpeed}
+              value={featuresetData?.sa_activationSpeed}
               autoComplete="off"
               disabled={featuresetData.sleepAlertMode === "0"}
             />
             {invalidFields.includes("sa_activationSpeed") && (
               <small className="text-red-600">
-                Sleep alert interval should be greater than 0 and less than 150
+                Activation speed interval should be greater than 0 and less than
+                150
               </small>
             )}
           </div>
@@ -3065,7 +3065,7 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
               checked={featuresetData?.driverDrowsinessMode === "0"}
               onChange={handleDetails}
             />
-            <label htmlFor="drowsi_off" className="ml-2">
+            <label htmlFor="driverDrowsinessMode" className="ml-2">
               Disable
             </label>
           </div>
@@ -3249,6 +3249,11 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
               autoComplete="off"
               disabled={featuresetData.load_sts === "0"}
             />
+            {invalidFields.includes("load_max_cap") && (
+              <small className="text-red-600">
+                Maximum capacity should be greater than 0 and less than 100
+              </small>
+            )}
           </div>
           <div className="field my-3 w-[30vw]">
             <label htmlFor="load_acc">Accelerator</label>
@@ -3329,6 +3334,11 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
               autoComplete="off"
               disabled={featuresetData.fuelMode === "0"}
             />
+            {invalidFields.includes("fuel_tnk_cap") && (
+              <small className="text-red-600">
+                Fuel tank should be greater than 0 and less than 500
+              </small>
+            )}
           </div>
           <div className="field my-3 w-[30vw]">
             <label htmlFor="fuel_intvl1">Interval 1</label>
@@ -3417,6 +3427,11 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
             autoComplete="off"
             disabled={featuresetData.fuelMode === "0"}
           />
+          {invalidFields.includes("fuel_thrsh") && (
+            <small className="text-red-600">
+              Threshold should be greater than 0 and less than 100
+            </small>
+          )}
         </div>
 
         <div className="text-right">

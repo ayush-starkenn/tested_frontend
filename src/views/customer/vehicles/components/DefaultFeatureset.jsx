@@ -3191,7 +3191,7 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
               }`}
               onChange={handleDetails}
               placeholder="Enter a value"
-              value={featuresetData?.fuel_intvl}
+              value={featuresetData?.fuel_intvl2}
               autoComplete="off"
               disabled={featuresetData.fuelMode === "0"}
             />
@@ -3249,7 +3249,7 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
             type="submit"
             className="rounded bg-blue-600 px-3 py-2 text-white dark:bg-gray-150 dark:font-bold dark:text-blue-800"
           >
-            Edit Feature Set
+            Update Feature Set
           </button>
         </div>
       </form>

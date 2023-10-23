@@ -1214,7 +1214,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               }`}
               onChange={handleDetails}
               placeholder="Enter a value"
-              value={featuresetData?.activationSpeed}
+              value={featuresetData?.sa_activationSpeed}
               autoComplete="off"
               disabled={featuresetData.sleepAlertMode === "0"}
             />
@@ -3161,6 +3161,11 @@ const FeatureSet = ({ myData, closeDialog }) => {
               autoComplete="off"
               disabled={featuresetData.load_sts === "0"}
             />
+            {invalidFields.includes("load_max_cap") && (
+              <small className="text-red-600">
+                Maximum capacity should be greater than 0 and less than 100
+              </small>
+            )}
           </div>
           <div className="field my-3 w-[30vw]">
             <label htmlFor="load_acc">Accelerator</label>
@@ -3241,6 +3246,11 @@ const FeatureSet = ({ myData, closeDialog }) => {
               autoComplete="off"
               disabled={featuresetData.fuelMode === "0"}
             />
+            {invalidFields.includes("fuel_tnk_cap") && (
+              <small className="text-red-600">
+                Fuel tank should be greater than 0 and less than 500
+              </small>
+            )}
           </div>
           <div className="field my-3 w-[30vw]">
             <label htmlFor="fuel_intvl1">Interval 1</label>
@@ -3330,6 +3340,11 @@ const FeatureSet = ({ myData, closeDialog }) => {
             autoComplete="off"
             disabled={featuresetData.fuelMode === "0"}
           />
+          {invalidFields.includes("fuel_thrsh") && (
+            <small className="text-red-600">
+              Threshold should be greater than 0 and less than 100
+            </small>
+          )}
         </div>
 
         <div className="text-right">
