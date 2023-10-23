@@ -71,7 +71,7 @@ const FeatureList = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/customers/get-all-customer", {
+      .get(`${process.env.REACT_APP_API_URL}/customers/get-all-customer`, {
         headers: { authorization: `bearer ${token}` },
       })
       .then((res) => {

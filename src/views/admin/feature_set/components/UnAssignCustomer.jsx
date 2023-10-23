@@ -22,7 +22,7 @@ const UnAssignCustomer = ({ parameters, onSuccess }) => {
   useEffect(() => {
     axios
       .get(
-        `http://localhost:8080/api/featuresets/get-list-unassign-users/${parameters.propValue.featureset_uuid}`,
+        `${process.env.REACT_APP_API_URL}/featuresets/get-list-unassign-users/${parameters.propValue.featureset_uuid}`,
         {
           headers: { authorization: `bearer ${token}` },
         }
@@ -37,7 +37,7 @@ const UnAssignCustomer = ({ parameters, onSuccess }) => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/customers/get-all-customer", {
+      .get(`${process.env.REACT_APP_API_URL}/customers/get-all-customer`, {
         headers: { authorization: `bearer ${token}` },
       })
       .then((res) => {
@@ -68,7 +68,7 @@ const UnAssignCustomer = ({ parameters, onSuccess }) => {
     }
     axios
       .put(
-        `http://localhost:8080/api/featuresets/unassign-user/${parameters.propValue.featureset_uuid}`,
+        `${process.env.REACT_APP_API_URL}/featuresets/unassign-user/${parameters.propValue.featureset_uuid}`,
         user,
         { headers: { authorization: `bearer ${token}` } }
       )

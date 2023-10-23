@@ -18,7 +18,7 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
   useEffect(() => {
     axios
       .get(
-        `http://localhost:8080/api/featuresets/get-user-featureset/${user_uuid}`,
+        `${process.env.REACT_APP_API_URL}/featuresets/get-user-featureset/${user_uuid}`,
         {
           headers: { authorization: `bearer ${token}` },
         }
@@ -433,7 +433,7 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
 
     axios
       .put(
-        `http://localhost:8080/api/featuresets/edit-client-featureset/${featuresetUUID}`,
+        `${process.env.REACT_APP_API_URL}/featuresets/edit-client-featureset/${featuresetUUID}`,
         postData,
         {
           headers: { authorization: `bearer ${token}` },

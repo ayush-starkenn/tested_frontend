@@ -18,7 +18,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
   useEffect(() => {
     axios
       .get(
-        `http://localhost:8080/api/vehicle-featureset/get-vehiclefeatureset-vehicle/${myData.vehicle_uuid}`,
+        `${process.env.REACT_APP_API_URL}/vehicle-featureset/get-vehiclefeatureset-vehicle/${myData.vehicle_uuid}`,
         {
           headers: { authorization: `bearer ${token}` },
         }
@@ -33,7 +33,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
         } else {
           axios
             .get(
-              `http://localhost:8080/api/featuresets/get-featureset/${myData.featureset_uuid}`,
+              `${process.env.REACT_APP_API_URL}/featuresets/get-featureset/${myData.featureset_uuid}`,
               {
                 headers: { authorization: `bearer ${token}` },
               }
@@ -462,7 +462,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
 
       axios
         .post(
-          "http://localhost:8080/api/vehicle-featureset/add-vehiclefeatureset",
+          `${process.env.REACT_APP_API_URL}/vehicle-featureset/add-vehiclefeatureset`,
           editData,
           {
             headers: { authorization: `bearer ${token}` },
@@ -507,7 +507,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
       };
       axios
         .put(
-          `http://localhost:8080/api/vehicle-featureset/edit-vehiclefeatureset/${vehicleFeaturesetuuid}`,
+          `${process.env.REACT_APP_API_URL}/vehicle-featureset/edit-vehiclefeatureset/${vehicleFeaturesetuuid}`,
           editData,
           {
             headers: { authorization: `bearer ${token}` },
