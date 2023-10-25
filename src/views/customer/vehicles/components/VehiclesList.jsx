@@ -360,7 +360,7 @@ export default function VehiclesList({
                 id="vehicle_name"
                 name="vehicle_name"
                 onChange={handleChange}
-                value={editData?.vehicle_name}
+                value={editData?.vehicle_name || ""}
                 className="border py-2 pl-2"
               />
               <label htmlFor="vehicle_name" className="dark:text-gray-300">
@@ -374,7 +374,7 @@ export default function VehiclesList({
                 id="vehicle_registration"
                 name="vehicle_registration"
                 onChange={handleChange}
-                value={editData?.vehicle_registration}
+                value={editData?.vehicle_registration || ""}
                 className="border py-2 pl-2"
               />
               <label

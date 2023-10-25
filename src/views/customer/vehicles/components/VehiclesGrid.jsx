@@ -488,7 +488,7 @@ export default function VehiclesGrid({
         visible={viewDialog}
         onHide={closeViewDialog}
         header="View Page"
-        style={{ width: "70vw" }}
+        style={{ width: "85vw" }}
       >
         <TabView>
           <TabPanel header="Vehicle's Trips" leftIcon="pi pi-truck mr-2">

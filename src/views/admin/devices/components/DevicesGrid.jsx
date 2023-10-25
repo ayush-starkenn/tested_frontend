@@ -9,6 +9,7 @@ import { Dropdown } from "primereact/dropdown";
 import { MdOnDeviceTraining } from "react-icons/md";
 import { Toast } from "primereact/toast";
 import Cookies from "js-cookie";
+import { Tag } from "primereact/tag";
 
 const applyFilters = (filters, allData) => {
   let filteredData = allData;
@@ -154,60 +155,52 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
 
   //card
   const itemTemplate = (item) => {
+    const tagSeverity = item?.device_status === 1 ? "success" : "danger";
     return (
-      <div className="p-col-11 mb-6 rounded bg-gray-50 dark:bg-gray-900 dark:text-gray-150">
+      <div className="p-col-12 mb-6 rounded-lg bg-gray-50 transition duration-300 ease-in-out hover:shadow-lg dark:bg-gray-900 dark:text-gray-150">
         <div className="card">
-          <div className="card-body px-6 py-3">
+          <div className="card-header flex justify-between">
+            <div className="p-text-bold">{item.device_id}</div>
+            <div className="p-text-bold">
+              <Tag
+                value={item.device_status === 1 ? "Active" : "Deactive"}
+                severity={tagSeverity}
+              />
+            </div>
+          </div>
+          <div className="card-body py-3">
             <div className="flex items-center justify-between">
-              <div>
-                <div className="mt-4 flex justify-between font-semibold">
-                  <div className="mr-16">
-                    <span>Device ID</span>
-                  </div>
-                  <div>
-                    <span>{item.device_id}</span>
-                  </div>
-                </div>
-                <div className="flex justify-between font-semibold ">
-                  <div className="mr-16">
+              <div style={{ width: "-webkit-fill-available" }}>
+                <div className="flex justify-between pb-1 font-semibold ">
+                  <div className="whitespace-nowrap">
                     <span>Device Type</span>
                   </div>
                   <div>
                     <span>{item.device_type}</span>
                   </div>
                 </div>
-                <div className="flex justify-between font-semibold ">
-                  <div className="mr-6">
+                <div className="flex justify-between py-1 font-semibold ">
+                  <div className="mr-6 whitespace-nowrap">
                     <span>Customer</span>
                   </div>
                   <div>
                     <span>{item.full_name}</span>
                   </div>
                 </div>
-                <div className="text-bold flex justify-between font-semibold ">
-                  <div className="mr-16">
+                <div className="text-bold flex justify-between py-1 font-semibold ">
+                  <div className=" whitespace-nowrap">
                     <span>Sim Number</span>
                   </div>
                   <div>
                     <span>{item.sim_number}</span>
                   </div>
                 </div>
-                <div className="text-bold flex justify-between font-semibold ">
-                  <div className="mr-16">
-                    <span>Status</span>
-                  </div>
-                  <div>
-                    <span>
-                      {item.device_status === 1 ? "Active" : "Deactive"}
-                    </span>
-                  </div>
-                </div>
               </div>
-              <div>
+              <div className="pl-3">
                 <MdOnDeviceTraining className="text-6xl text-gray-500" />
               </div>
             </div>
-            <div className="mt-4 flex justify-end rounded">
+            <div className="mt-4 flex justify-center rounded">
               <div>
                 <Button
                   icon="pi pi-pencil"

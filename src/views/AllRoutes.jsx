@@ -6,6 +6,7 @@ import CustomerLayout from "layouts/customer";
 import AdminLayout from "layouts/admin";
 import Report from "./customer/reports/components/Report";
 import CustomerProtected from "authorization/CustomerProtected";
+import ScheduledReport from "./customer/reports/components/ScheduledReport";
 
 const AllRoutes = () => {
   return (
@@ -21,6 +22,14 @@ const AllRoutes = () => {
         element={
           <CustomerProtected>
             <Report />
+          </CustomerProtected>
+        }
+      />
+      <Route
+        path="customer/scheduled_report/:report_uuid"
+        element={
+          <CustomerProtected>
+            <ScheduledReport />
           </CustomerProtected>
         }
       />

@@ -301,7 +301,7 @@ const SignIn = () => {
               <div className="divide-y">
                 <div className="space-y-8 py-8 text-base leading-6 text-gray-700 sm:text-lg sm:leading-7">
                   <form onSubmit={handleSubmit}>
-                    <div className="relative my-4">
+                    <div className="relative mt-4">
                       <span className="p-float-label">
                         <InputText
                           id="email"
@@ -311,11 +311,13 @@ const SignIn = () => {
                           className="peer block w-full appearance-none rounded-t-lg border-0 border-b-2 border-gray-300 bg-gray-50 px-2.5 py-2.5 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:!bg-gray-800 dark:!text-white dark:focus:border-blue-500"
                         />
                         <label htmlFor="email">
-                          <p className="text-[1rem]">Username</p>
+                          <p className="text-[1rem] dark:text-gray-300">
+                            Username
+                          </p>
                         </label>
                       </span>
                     </div>
-                    <div className="relative my-8">
+                    <div className="relative my-12">
                       <span className="p-float-label">
                         <InputText
                           autoComplete="off"
@@ -326,7 +328,9 @@ const SignIn = () => {
                           className="peer block w-full appearance-none rounded-t-lg border-0 border-b-2 border-gray-300 bg-gray-50 px-2.5 py-2.5 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:!bg-gray-800 dark:!text-white dark:focus:border-blue-500"
                         />
                         <label htmlFor="password">
-                          <p className="text-[1rem]">Password</p>
+                          <p className="text-[1rem] dark:text-gray-300">
+                            Password
+                          </p>
                         </label>
                       </span>
 
