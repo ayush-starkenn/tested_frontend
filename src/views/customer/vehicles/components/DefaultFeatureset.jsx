@@ -12,6 +12,7 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
   const [featuresetData, setFeaturesetData] = useState({});
   const [featuresetUUID, setFeaturesetUUID] = useState();
   const [invalidFields, setInvalidFields] = useState([]);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const toastErr = useRef(null);
   const toastRef = useRef(null);
 
@@ -24,16 +25,12 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
         }
       )
       .then((res) => {
-        let featuresetAllData = JSON.parse(
-          res.data.results[0].featureset_data[0].featureset_data
-        );
+        console.log(res.data.results[0].featureset_data);
+        let featuresetAllData = JSON.parse(res.data.results[0].featureset_data);
         setFeaturesetData(featuresetAllData);
-        let FeaturesetName =
-          res.data.results[0].featureset_data[0].featureset_name;
+        let FeaturesetName = res.data.results[0].featureset_name;
         setFeaturesetName(FeaturesetName);
-        setFeaturesetUUID(
-          res.data.results[0].featureset_data[0].featureset_uuid
-        );
+        setFeaturesetUUID(res.data.results[0].featureset_uuid);
       })
       .catch((err) => {
         console.log(err);
@@ -412,7 +409,7 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const invalidFieldsArray = validateForm(featuresetData);
-
+    setIsButtonDisabled(true);
     setInvalidFields(invalidFieldsArray);
 
     // If there are invalid fields, show a toast and return
@@ -3247,6 +3244,7 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
         <div className="text-right">
           <button
             type="submit"
+            disabled={isButtonDisabled}
             className="rounded bg-blue-600 px-3 py-2 text-white dark:bg-gray-150 dark:font-bold dark:text-blue-800"
           >
             Update Feature Set

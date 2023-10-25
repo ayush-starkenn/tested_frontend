@@ -22,6 +22,7 @@ export default function VehiclesList({
   feauresetData,
 }) {
   const token = Cookies.get("token");
+  const user_uuid = Cookies.get("user_uuid");
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
@@ -34,7 +35,9 @@ export default function VehiclesList({
   const [deleteId, setDeleteId] = useState("");
   const [deleteVehicleName, setDeleteVehicleName] = useState("");
   const [myData, setMyData] = useState();
-  const [devices, setDevices] = useState({});
+  const [vehiecu, setVehiecu] = useState();
+  const [vehiiot, setVehiiot] = useState();
+  const [vehidms, setVehidms] = useState();
 
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
@@ -147,7 +150,9 @@ export default function VehiclesList({
     setEditDialog(false);
     setEditData({});
     setEditId("");
-    setDevices({});
+    setVehidms();
+    setVehiecu();
+    setVehiiot();
   };
 
   const DeleteDialog = (rowData) => {
@@ -183,8 +188,20 @@ export default function VehiclesList({
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    const updatedData = {
+      user_uuid,
+      vehicle_name: editData.vehicle_name,
+      vehicle_registration: editData.vehicle_registration,
+      ecu: vehiecu == null ? editData.ecu : vehiecu,
+      iot: vehiiot == null ? editData.iot : vehiiot,
+      dms: vehidms == null ? editData.dms : vehidms,
+      featureset_uuid: editData.featureset_uuid,
+      vehicle_status: editData.vehicle_status,
+    };
+
+    console.log(updatedData, "updatedData");
     if (editId && editData) {
-      editvehicle(editId, editData);
+      editvehicle(editId, updatedData);
       closeEditDialog();
     }
   };
@@ -238,7 +255,7 @@ export default function VehiclesList({
         value: el.device_id,
       })) || [];
 
-    options.unshift({ label: "Unassign", value: null });
+    options.unshift({ label: "Unassign", value: "null" });
     return options;
   };
 
@@ -249,13 +266,21 @@ export default function VehiclesList({
         value: el.device_id,
       })) || [];
 
-    options.unshift({ label: "Unassign", value: null });
+    options.unshift({ label: "Unassign", value: "null" });
     return options;
   };
 
   const handleDevices = (e) => {
     const { name, value } = e.target;
-    setDevices({ ...devices, [name]: value });
+    if (name === "ecu") {
+      setVehiecu(value);
+    }
+    if (name === "iot") {
+      setVehiiot(value);
+    }
+    if (name === "dms") {
+      setVehidms(value);
+    }
   };
 
   return (
@@ -401,7 +426,7 @@ export default function VehiclesList({
                 optionLabel="label"
                 optionValue="value"
                 onChange={handleDevices}
-                value={devices?.ecu === null ? "Unassign" : devices?.ecu}
+                value={vehiecu === null ? "Unassign" : vehiecu}
                 className={`border dark:bg-gray-800 `}
               />
               <label htmlFor="status" className="dark:text-gray-300">
@@ -424,7 +449,7 @@ export default function VehiclesList({
                 optionLabel="label"
                 optionValue="value"
                 onChange={handleDevices}
-                value={devices?.iot === null ? "Unassign" : devices?.ecu}
+                value={vehiiot === null ? "Unassign" : vehiiot}
                 className={`border dark:bg-gray-800 `}
               />
               <label htmlFor="status" className="dark:text-gray-300">
@@ -448,7 +473,7 @@ export default function VehiclesList({
                 optionLabel="label"
                 optionValue="value"
                 onChange={handleDevices}
-                value={devices?.dms === null ? "Unassign" : devices?.ecu}
+                value={vehidms === null ? "Unassign" : vehidms}
                 className={`border dark:bg-gray-800 `}
               />
               <label htmlFor="status" className="dark:text-gray-300">

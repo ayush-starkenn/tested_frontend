@@ -10,6 +10,8 @@ import Cookies from "js-cookie";
 const AddFeatureSet = ({ onSuccess }) => {
   //this is add featureset component
   const [data, setData] = useState({});
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
   const [values, setvalues] = useState({
     mode: "1",
     CASMode: "1",
@@ -540,7 +542,7 @@ const AddFeatureSet = ({ onSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const invalidFieldsArray = validateForm(data, values);
-    console.log(invalidFieldsArray);
+    setIsButtonDisabled(true);
     setInvalidFields(invalidFieldsArray);
 
     if (invalidFieldsArray.length > 0) {
@@ -3379,6 +3381,7 @@ const AddFeatureSet = ({ onSuccess }) => {
         <div className="text-right">
           <button
             type="submit"
+            disabled={isButtonDisabled}
             className="rounded bg-blue-600 px-3 py-2 text-white dark:bg-gray-150 dark:font-bold dark:text-blue-800"
           >
             Add Feature Set

@@ -13,6 +13,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
   const [invalidFields, setInvalidFields] = useState([]);
   const [checkFeatureset, setCheckFeatureset] = useState(false);
   const [vehicleFeaturesetuuid, setVehicleFeaturesetuuid] = useState("");
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const toastErr = useRef(null);
   const toastRef = useRef(null);
 
@@ -415,7 +416,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const invalidFieldsArray = validateForm(featuresetDetails, featuresetData);
-
+    setIsButtonDisabled(true);
     setInvalidFields(invalidFieldsArray);
 
     // If there are invalid fields, show a toast and return
@@ -3082,22 +3083,29 @@ const FeatureSet = ({ myData, closeDialog }) => {
             )}
           </div>
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="dd_acc_cut">ACC Cut Status</label>
-            <InputText
-              type="number"
+            <label htmlFor="dd_acc_cut" className="dark:text-gray-300">
+              ACC Cut Status
+            </label>
+            <Dropdown
               id="dd_acc_cut"
               style={{
-                width: "24vw",
+                width: "30vw",
                 borderRadius: "5px",
               }}
               name="dd_acc_cut"
-              className={`border py-2 pl-2 dark:bg-gray-900 ${
+              value={featuresetData.dd_acc_cut}
+              placeholder={
+                featuresetData.dd_acc_cut
+                  ? featuresetData.dd_acc_cut
+                  : "Enter a value"
+              }
+              options={DDACCoptions}
+              optionLabel="label"
+              optionValue="value"
+              onChange={handleDetails}
+              className={`h-11 border dark:bg-gray-900 dark:text-gray-300 ${
                 invalidFields.includes("dd_acc_cut") ? "border-red-600" : ""
               }`}
-              onChange={handleDetails}
-              placeholder="Enter a value"
-              value={featuresetData?.dd_acc_cut}
-              autoComplete="off"
               disabled={featuresetData.driverDrowsinessMode === "0"}
             />
           </div>
@@ -3230,25 +3238,30 @@ const FeatureSet = ({ myData, closeDialog }) => {
               disabled={featuresetData.load_sts === "0"}
             />
           </div>
-          <div className="field my-3 w-[60vw]">
-            <label htmlFor="load_acc" className="mr-[31rem]">
+          <div className="field my-3 w-[30vw]">
+            <label htmlFor="load_acc" className="dark:text-gray-300">
               Accelerator
             </label>
-            <InputText
-              type="number"
+            <Dropdown
               id="load_acc"
               style={{
-                width: "24vw",
+                width: "30vw",
                 borderRadius: "5px",
               }}
               name="load_acc"
-              className={`border py-2 pl-2 dark:bg-gray-900 ${
+              value={featuresetData.load_acc}
+              placeholder={
+                featuresetData.load_acc
+                  ? featuresetData.load_acc
+                  : "Enter a value"
+              }
+              options={loadOptions}
+              optionLabel="label"
+              optionValue="value"
+              onChange={handleDetails}
+              className={`h-11 border dark:bg-gray-900 dark:text-gray-300 ${
                 invalidFields.includes("load_acc") ? "border-red-600" : ""
               }`}
-              onChange={handleDetails}
-              placeholder="Enter a value"
-              value={featuresetData?.load_acc}
-              autoComplete="off"
               disabled={featuresetData.load_sts === "0"}
             />
           </div>
@@ -3402,6 +3415,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
         <div className="text-right">
           <button
             type="submit"
+            disabled={isButtonDisabled}
             className="rounded bg-blue-600 px-3 py-2 text-white dark:bg-gray-150 dark:font-bold dark:text-blue-800"
           >
             Update Feature Set

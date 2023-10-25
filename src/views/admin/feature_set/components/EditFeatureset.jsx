@@ -22,6 +22,7 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
   const [selectedValue, setSelectedValue] = useState("");
   const [customers, setCustomers] = useState([]);
   const [listCustomers, setListCustomers] = useState([]);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const toastErr = useRef(null);
   const toastRef = useRef(null);
 
@@ -479,7 +480,7 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
     e.preventDefault();
 
     const invalidFieldsArray = validateForm(featuresetDetails, featuresetData);
-
+    setIsButtonDisabled(true);
     setInvalidFields(invalidFieldsArray);
 
     // If there are invalid fields, show a toast and return
@@ -3437,6 +3438,7 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
         <div className="text-right">
           <button
             type="submit"
+            disabled={isButtonDisabled}
             className="rounded bg-blue-600 px-3 py-2 text-white dark:bg-gray-150 dark:font-bold dark:text-blue-800"
           >
             Edit Feature Set
