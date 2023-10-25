@@ -406,7 +406,9 @@ const AlertTriggerList = ({
                 value={editData?.trigger_type}
                 className="border py-2 pl-2"
               />
-              <label htmlFor="trigger_type">Trigger Type</label>
+              <label htmlFor="trigger_type" className="dark:text-gray-300">
+                Trigger Type
+              </label>
             </span>
           </div>
           <div className="mx-auto mt-8 w-[34.5vw]">
@@ -418,7 +420,9 @@ const AlertTriggerList = ({
                 value={editData?.trigger_name}
                 className="border py-2 pl-2"
               />
-              <label htmlFor="trigger_name">Trigger Name</label>
+              <label htmlFor="trigger_name" className="dark:text-gray-300">
+                Trigger Name
+              </label>
             </span>
           </div>
           <div className="mx-auto mt-8 w-[34.5vw]">
@@ -433,7 +437,9 @@ const AlertTriggerList = ({
                 value={editData?.vehicle_uuid}
                 className="border"
               />
-              <label htmlFor="vehicle_uuid">Select Vehicle</label>
+              <label htmlFor="vehicle_uuid" className="dark:text-gray-300">
+                Select Vehicle
+              </label>
             </span>
           </div>
           <div className="mx-auto mt-8 w-[34.5vw]">
@@ -445,7 +451,12 @@ const AlertTriggerList = ({
                 value={editData?.trigger_description}
                 className="border py-2 pl-2"
               />
-              <label htmlFor="trigger_description">Trigger Description</label>
+              <label
+                htmlFor="trigger_description"
+                className="dark:text-gray-300"
+              >
+                Trigger Description
+              </label>
             </span>
           </div>
           <div className="mx-auto mt-8 w-[34.5vw]">
@@ -460,11 +471,14 @@ const AlertTriggerList = ({
                 value={editData?.trigger_status}
                 className="border"
               />
-              <label htmlFor="trigger_status">Select Status</label>
+              <label htmlFor="trigger_status" className="dark:text-gray-300">
+                Select Status
+              </label>
             </span>
           </div>
 
           <div className="mx-auto mt-8 w-[34.5vw]">
+            <p className="mb-2 pl-2">Select Contacts</p>
             <div
               className="table-container rounded"
               style={{ maxHeight: "70%" }}
@@ -547,13 +561,13 @@ const AlertTriggerList = ({
             <Button
               label="Delete"
               icon="pi pi-check"
-              className="mr-2 bg-red-500 px-3 py-2 text-white"
+              className="mr-2 bg-red-500 px-3 py-2 text-white dark:hover:bg-red-500 dark:hover:text-white"
               onClick={handleDelete}
             />
             <Button
               label="Cancel"
               icon="pi pi-times"
-              className="bg-gray-600 px-3 py-2 text-white dark:text-gray-850 "
+              className="bg-gray-600 px-3 py-2 text-white dark:text-gray-850 dark:hover:bg-gray-600 dark:hover:text-gray-850"
               onClick={closeDeleteDialog}
             />
           </div>

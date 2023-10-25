@@ -275,8 +275,8 @@ const Generate = ({ close }) => {
     <>
       <Toast ref={toastRef} className="toast-custom" position="top-right" />
       <div>
-        <p className="text-right text-sm text-red-400">
-          All Fields Are Required<span className="text-red-500">**</span>
+        <p className="text-right text-sm text-red-500">
+          All Fields Are Required<span> **</span>
         </p>
         <form onSubmit={handleSubmit}>
           <div className="mb-6">

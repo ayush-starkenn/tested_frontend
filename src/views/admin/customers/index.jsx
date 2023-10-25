@@ -436,7 +436,9 @@ const Customers = () => {
                   }
                   autoComplete="off"
                 />
-                <label htmlFor="f_name">First Name</label>
+                <label htmlFor="f_name" className="dark:text-gray-300">
+                  First Name
+                </label>
               </span>
             </div>
             <div className="card justify-content-center ml-1 mt-5 flex-auto">
@@ -455,7 +457,9 @@ const Customers = () => {
                   }
                   autoComplete="off"
                 />
-                <label htmlFor="l_name">Last Name</label>
+                <label htmlFor="l_name" className="dark:text-gray-300">
+                  Last Name
+                </label>
               </span>
             </div>
           </div>
@@ -475,7 +479,9 @@ const Customers = () => {
                 }
                 autoComplete="off"
               />
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email" className="dark:text-gray-300">
+                Email
+              </label>
             </span>
           </div>
           <div className="mx-auto mt-8">
@@ -496,7 +502,9 @@ const Customers = () => {
                 }
                 autoComplete="off"
               />
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password" className="dark:text-gray-300">
+                Password
+              </label>
               <div className="absolute right-2.5 top-[0.7rem]">
                 {showPassword ? (
                   <FaEyeSlash
@@ -530,7 +538,9 @@ const Customers = () => {
                 }
                 autoComplete="off"
               />
-              <label htmlFor="confirmPassword">Confirm Password</label>
+              <label htmlFor="confirmPassword" className="dark:text-gray-300">
+                Confirm Password
+              </label>
             </span>
           </div>
           <div className="mx-auto mt-8">
@@ -551,7 +561,9 @@ const Customers = () => {
                   formErrors.user_type ? "border-red-600" : ""
                 }`}
               />
-              <label htmlFor="user_type">User Type</label>
+              <label htmlFor="user_type" className="dark:text-gray-300">
+                User Type
+              </label>
             </span>
           </div>
           <div className="mx-auto mt-8">
@@ -570,7 +582,9 @@ const Customers = () => {
                 }
                 autoComplete="off"
               />
-              <label htmlFor="company_name">Company Name</label>
+              <label htmlFor="company_name" className="dark:text-gray-300">
+                Company Name
+              </label>
             </span>
           </div>
           <div className="mx-auto mb-3 mt-8">
@@ -590,7 +604,9 @@ const Customers = () => {
                 }
                 autoComplete="off"
               />
-              <label htmlFor="phone">Contact Number</label>
+              <label htmlFor="phone" className="dark:text-gray-300">
+                Contact Number
+              </label>
             </span>
           </div>
           <div className="mx-auto my-6">
@@ -612,7 +628,9 @@ const Customers = () => {
                 }
                 autoComplete="off"
               />
-              <label htmlFor="address">Flat No./ Plot No., Area/Society</label>
+              <label htmlFor="address" className="dark:text-gray-300">
+                Flat No./ Plot No., Area/Society
+              </label>
             </span>
           </div>
           <div className="mx-auto mt-8">
@@ -631,7 +649,9 @@ const Customers = () => {
                 }
                 autoComplete="off"
               />
-              <label htmlFor="city">City</label>
+              <label htmlFor="city" className="dark:text-gray-300">
+                City
+              </label>
             </span>
           </div>
           <div className="mx-auto mt-8">
@@ -650,7 +670,9 @@ const Customers = () => {
                 }
                 autoComplete="off"
               />
-              <label htmlFor="state">State</label>
+              <label htmlFor="state" className="dark:text-gray-300">
+                State
+              </label>
             </span>
           </div>
           <div className="mx-auto mt-8">
@@ -673,7 +695,9 @@ const Customers = () => {
                 }}
                 autoComplete="off"
               />
-              <label htmlFor="pincode">Pincode (Format: xxxxxx)</label>
+              <label htmlFor="pincode" className="dark:text-gray-300">
+                Pincode (Format: xxxxxx)
+              </label>
             </span>
           </div>
 
@@ -728,7 +752,7 @@ const Customers = () => {
             ) : (
               <button
                 type="submit"
-                className="rounded bg-blue-600 px-3 py-2 text-white dark:bg-gray-150 dark:font-bold dark:text-blue-800"
+                className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
               >
                 Add Customer
               </button>

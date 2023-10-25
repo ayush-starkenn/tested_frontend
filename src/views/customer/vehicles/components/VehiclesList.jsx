@@ -363,7 +363,9 @@ export default function VehiclesList({
                 value={editData?.vehicle_name}
                 className="border py-2 pl-2"
               />
-              <label htmlFor="vehicle_name">Vehicle Name</label>
+              <label htmlFor="vehicle_name" className="dark:text-gray-300">
+                Vehicle Name
+              </label>
             </span>
           </div>
           <div className="mx-auto mt-8 w-[34.5vw]">
@@ -375,13 +377,21 @@ export default function VehiclesList({
                 value={editData?.vehicle_registration}
                 className="border py-2 pl-2"
               />
-              <label htmlFor="vehicle_registration">Vehicle Registration</label>
+              <label
+                htmlFor="vehicle_registration"
+                className="dark:text-gray-300"
+              >
+                Vehicle Registration
+              </label>
             </span>
           </div>
           <div className="mx-auto mt-4 w-[34.5vw]">
             <small>Selected ECU</small>
-            <p className="rounded-lg bg-gray-200 px-4 py-2">{editData.ecu}</p>
+            <p className="rounded-lg bg-gray-200 px-4 py-2 dark:bg-gray-800">
+              {editData.ecu ? editData.ecu : "No ECU selected"}
+            </p>
           </div>
+
           <div className="mx-auto mt-7 w-[34.5vw]">
             <span className="p-float-label">
               <Dropdown
@@ -401,7 +411,9 @@ export default function VehiclesList({
           </div>
           <div className="mx-auto mt-4 w-[34.5vw]">
             <small>Selected IoT</small>
-            <p className="rounded-lg bg-gray-200 px-4 py-2">{editData.iot}</p>
+            <p className="rounded-lg bg-gray-200 px-4 py-2 dark:bg-gray-800">
+              {editData.iot ? editData.iot : "No IoT selected"}
+            </p>
           </div>
           <div className="mx-auto mt-7 w-[34.5vw]">
             <span className="p-float-label">
@@ -420,9 +432,12 @@ export default function VehiclesList({
               </label>
             </span>
           </div>
+
           <div className="mx-auto mt-4 w-[34.5vw]">
-            <small>Selected IoT</small>
-            <p className="rounded-lg bg-gray-200 px-4 py-2">{editData.dms}</p>
+            <small>Selected DMS</small>
+            <p className="rounded-lg bg-gray-200 px-4 py-2 dark:bg-gray-800">
+              {editData.dms ? editData.dms : "No DMS selected"}
+            </p>
           </div>
           <div className="mx-auto mt-7 w-[34.5vw]">
             <span className="p-float-label">
@@ -454,7 +469,9 @@ export default function VehiclesList({
                 value={editData?.featureset_uuid}
                 className="border"
               />
-              <label htmlFor="status">Select Featureset</label>
+              <label htmlFor="status" className="dark:text-gray-300">
+                Select Featureset
+              </label>
             </span>
           </div>
           <div className="mx-auto mt-8 w-[34.5vw]">
@@ -469,7 +486,9 @@ export default function VehiclesList({
                 value={editData?.vehicle_status}
                 className="border"
               />
-              <label htmlFor="status">Select Status</label>
+              <label htmlFor="status" className="dark:text-gray-300">
+                Select Status
+              </label>
             </span>
           </div>
           <div className="p-field p-col-12 mt-7 flex justify-center">
@@ -492,13 +511,13 @@ export default function VehiclesList({
             <Button
               label="Delete"
               icon="pi pi-check"
-              className="mr-2 bg-red-500 px-3 py-2 text-white"
+              className="mr-2 bg-red-500 px-3 py-2 text-white dark:hover:bg-red-500 dark:hover:text-white"
               onClick={handleDelete}
             />
             <Button
               label="Cancel"
               icon="pi pi-times"
-              className="bg-gray-600 px-3 py-2 text-white dark:text-gray-850 "
+              className="bg-gray-600 px-3 py-2 text-white dark:text-gray-850 dark:hover:bg-gray-600 dark:hover:text-gray-850"
               onClick={DeleteDialog}
             />
           </div>

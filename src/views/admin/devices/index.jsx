@@ -289,7 +289,9 @@ const DevicesAdmin = () => {
                     validationErrors.device_id ? "border-red-600" : ""
                   }`}
                 />
-                <label htmlFor="device_id">Device ID</label>
+                <label htmlFor="device_id" className="dark:text-gray-300">
+                  Device ID
+                </label>
               </span>
               {validationErrors.device_id && (
                 <small className="text-red-600">Device ID is required</small>
@@ -313,7 +315,9 @@ const DevicesAdmin = () => {
                   onChange={handleChange}
                   value={addData.device_type}
                 />
-                <label htmlFor="device_type">Device Type</label>
+                <label htmlFor="device_type" className="dark:text-gray-300">
+                  Device Type
+                </label>
               </span>
               {validationErrors.device_type && (
                 <small className="text-red-600">Device Type is required</small>
@@ -338,7 +342,9 @@ const DevicesAdmin = () => {
                   onChange={handleChange}
                   value={addData.user_uuid}
                 />
-                <label htmlFor="user_uuid">Select Customer</label>
+                <label htmlFor="user_uuid" className="dark:text-gray-300">
+                  Select Customer
+                </label>
               </span>
               {validationErrors.user_uuid && (
                 <small className="text-red-600">Customer is required</small>
@@ -362,7 +368,9 @@ const DevicesAdmin = () => {
                   onChange={handleChange}
                   value={addData.status}
                 />
-                <label htmlFor="status">Status</label>
+                <label htmlFor="status" className="dark:text-gray-300">
+                  Status
+                </label>
               </span>
               {validationErrors.status && (
                 <small className="text-red-600">Status is required</small>
@@ -383,7 +391,9 @@ const DevicesAdmin = () => {
                     validationErrors.sim_number ? "border-red-600" : ""
                   }`}
                 />
-                <label htmlFor="device_id">Sim Number</label>
+                <label htmlFor="device_id" className="dark:text-gray-300">
+                  Sim Number
+                </label>
               </span>
               {validationErrors.sim_number && (
                 <small className="text-red-600">Sim number is required</small>
@@ -392,7 +402,7 @@ const DevicesAdmin = () => {
             <div className="mt-6 flex justify-center">
               <button
                 type="submit"
-                className="rounded bg-blue-600 px-3 py-2 text-white dark:bg-gray-150 dark:font-bold dark:text-blue-800"
+                className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
               >
                 Add Device
               </button>
