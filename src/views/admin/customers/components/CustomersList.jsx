@@ -153,7 +153,9 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
                     !editedCustomerData.first_name ? "border-red-600" : ""
                   }`}
                 />
-                <label htmlFor="first_name">First Name</label>
+                <label htmlFor="first_name" className="dark:text-gray-300">
+                  First Name
+                </label>
               </span>
             </div>
             <div className="card justify-content-center ml-1 mt-5 flex-auto">
@@ -167,7 +169,9 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
                     !editedCustomerData.last_name ? "border-red-600" : ""
                   }`}
                 />
-                <label htmlFor="last_name">Last Name</label>
+                <label htmlFor="last_name" className="dark:text-gray-300">
+                  Last Name
+                </label>
               </span>
             </div>
           </div>
@@ -183,7 +187,9 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
                   !editedCustomerData.email ? "border-red-600" : ""
                 }`}
               />
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email" className="dark:text-gray-300">
+                Email
+              </label>
             </span>
           </div>
           <div className="mx-auto mt-8 w-[50.1vw]">
@@ -198,7 +204,9 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
                   !editedCustomerData.company_name ? "border-red-600" : ""
                 }`}
               />
-              <label htmlFor="company_name">Company Name</label>
+              <label htmlFor="company_name" className="dark:text-gray-300">
+                Company Name
+              </label>
             </span>
           </div>
           <div className="mx-auto mb-3 mt-8 w-[50.1vw]">
@@ -216,7 +224,9 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
                     : "border-red-600"
                 }`}
               />
-              <label htmlFor="phone">Contact Number</label>
+              <label htmlFor="phone" className="dark:text-gray-300">
+                Contact Number
+              </label>
             </span>
             {!isValidPhoneNumber(editedCustomerData.phone) && (
               <p className="p-error">Contact number must contain 10 digits.</p>
@@ -237,7 +247,9 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
                   !editedCustomerData.address ? "border-red-600" : ""
                 }`}
               />
-              <label htmlFor="address">Flat No./ Plot No., Area/Society</label>
+              <label htmlFor="address" className="dark:text-gray-300">
+                Flat No./ Plot No., Area/Society
+              </label>
             </span>
           </div>
           <div className="mx-auto mt-6 w-[50.1vw]">
@@ -252,7 +264,9 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
                   !editedCustomerData.city ? "border-red-600" : ""
                 }`}
               />
-              <label htmlFor="city">City</label>
+              <label htmlFor="city" className="dark:text-gray-300">
+                City
+              </label>
             </span>
           </div>
           <div className="mx-auto mt-6 w-[50.1vw]">
@@ -267,7 +281,9 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
                   !editedCustomerData.state ? "border-red-600" : ""
                 }`}
               />
-              <label htmlFor="state">State</label>
+              <label htmlFor="state" className="dark:text-gray-300">
+                State
+              </label>
             </span>
           </div>
           <div className="mx-auto mt-6 w-[50.1vw]">
@@ -282,7 +298,9 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
                   !editedCustomerData.pincode ? "border-red-600" : ""
                 }`}
               />
-              <label htmlFor="pincode">Pincode</label>
+              <label htmlFor="pincode" className="dark:text-gray-300">
+                Pincode
+              </label>
             </span>
           </div>
 
@@ -361,13 +379,13 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
             <Button
               label="Delete"
               icon="pi pi-check"
-              className="mr-2 bg-red-500 px-3 py-2 text-white"
+              className="mr-2 bg-red-500 px-3 py-2 text-white dark:hover:bg-red-500 dark:hover:text-white"
               onClick={handleConfirmDelete}
             />
             <Button
               label="Cancel"
               icon="pi pi-times"
-              className="bg-gray-600 px-3 py-2 text-white dark:text-gray-850 "
+              className="bg-gray-600 px-3 py-2 text-white dark:text-gray-850 dark:hover:bg-gray-600 dark:hover:text-gray-850"
               onClick={onHide}
             />
           </div>

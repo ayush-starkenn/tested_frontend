@@ -327,7 +327,9 @@ const Triggers = () => {
                   }`}
                   value={addData.trigger_type}
                 />
-                <label htmlFor="trigger_type">Trigger Type</label>
+                <label htmlFor="trigger_type" className="dark:text-gray-300">
+                  Trigger Type
+                </label>
               </span>
               {formErrors.trigger_type && (
                 <small className="p-error">{formErrors.trigger_type}</small>
@@ -343,7 +345,9 @@ const Triggers = () => {
                     formErrors.trigger_name ? "border-red-600" : ""
                   }`}
                 />
-                <label htmlFor="trigger_name">Trigger Name</label>
+                <label htmlFor="trigger_name" className="dark:text-gray-300">
+                  Trigger Name
+                </label>
               </span>
               {formErrors.trigger_name && (
                 <small className="p-error">{formErrors.trigger_name}</small>
@@ -363,7 +367,9 @@ const Triggers = () => {
                   }`}
                   value={addData.vehicle_uuid}
                 />
-                <label htmlFor="vehicle_uuid">Select Vehicle</label>
+                <label htmlFor="vehicle_uuid" className="dark:text-gray-300">
+                  Select Vehicle
+                </label>
               </span>
               {formErrors.vehicle_uuid && (
                 <small className="p-error">{formErrors.vehicle_uuid}</small>
@@ -379,7 +385,12 @@ const Triggers = () => {
                     formErrors.trigger_description ? "border-red-600" : ""
                   }`}
                 />
-                <label htmlFor="trigger_description">Trigger Description</label>
+                <label
+                  htmlFor="trigger_description"
+                  className="dark:text-gray-300"
+                >
+                  Trigger Description
+                </label>
               </span>
               {formErrors.trigger_description && (
                 <small className="p-error">

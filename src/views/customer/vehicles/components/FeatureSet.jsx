@@ -3350,8 +3350,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
             <Dropdown
               id="fuel_acc"
               style={{
-                width: "30vw",
-                height: "50px",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="fuel_acc"
@@ -3365,7 +3364,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
               optionLabel="label"
               optionValue="value"
               onChange={handleDetails}
-              className={`border py-2 pl-2 dark:bg-gray-900 ${
+              className={`md:w-14rem h-11 w-full border dark:bg-gray-900 ${
                 invalidFields.includes("fuel_acc") ? "border-red-600" : ""
               }`}
               disabled={featuresetData.fuelMode === "0"}

@@ -127,13 +127,13 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
             <Button
               label="Delete"
               icon="pi pi-check"
-              className="mr-2 bg-red-500 px-3 py-2 text-white"
+              className="mr-2 bg-red-500 px-3 py-2 text-white dark:hover:bg-red-500 dark:hover:text-white"
               onClick={handleConfirmDelete}
             />
             <Button
               label="Cancel"
               icon="pi pi-times"
-              className="bg-gray-600 px-3 py-2 text-white dark:text-gray-850 "
+              className="bg-gray-600 px-3 py-2 text-white dark:text-gray-850 dark:hover:bg-gray-600 dark:hover:text-gray-850"
               onClick={onHide}
             />
           </div>
@@ -282,7 +282,9 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
                   !editData?.device_id ? "p-invalid" : ""
                 }`}
               />
-              <label htmlFor="device_id">Device ID</label>
+              <label htmlFor="device_id" className="dark:text-gray-300">
+                Device ID
+              </label>
             </span>
           </div>
           <div className="mx-auto mt-8 w-[34.5vw]">
@@ -297,7 +299,9 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
                 className="p-dropdown border"
                 onChange={(e) => handleChange(e, "device_type")}
               />
-              <label htmlFor="device_type">Device_type</label>
+              <label htmlFor="device_type" className="dark:text-gray-300">
+                Device_type
+              </label>
             </span>
           </div>
 
@@ -314,7 +318,9 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
                 onChange={(e) => handleChange(e, "user_uuid")}
               />
 
-              <label htmlFor="user_uuid">Customer List</label>
+              <label htmlFor="user_uuid" className="dark:text-gray-300">
+                Customer List
+              </label>
             </span>
           </div>
           <div className="mx-auto mt-8 w-[34.5vw]">
@@ -331,7 +337,9 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
                 placeholder={deviceData?.device_status}
                 onChange={(e) => handleChange(e, "device_status")}
               />
-              <label htmlFor="status">Status</label>
+              <label htmlFor="status" className="dark:text-gray-300">
+                Status
+              </label>
             </span>
           </div>
           <div className="mx-auto mt-8 w-[34.5vw]">
@@ -347,7 +355,9 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
                   !editData?.sim_number ? "p-invalid" : ""
                 }`}
               />
-              <label htmlFor="sim_number">Sim Number</label>
+              <label htmlFor="sim_number" className="dark:text-gray-300">
+                Sim Number
+              </label>
             </span>
           </div>
           <div className="mt-6 flex justify-center">

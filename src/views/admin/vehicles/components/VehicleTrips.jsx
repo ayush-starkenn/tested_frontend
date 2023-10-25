@@ -62,7 +62,7 @@ const VehicleTrips = ({ myData }) => {
           outlined
           tooltip="View"
           tooltipOptions={{ position: "mouse" }}
-          className="text-red-500 dark:text-blue-500"
+          className="border border-blue-500 text-blue-500 dark:text-blue-500"
           style={{ width: "2rem", height: "2rem" }}
         />
       </React.Fragment>
@@ -124,14 +124,14 @@ const VehicleTrips = ({ myData }) => {
         <Column
           field="serialNo"
           header="Sr.No."
-          className="border-b  bg-[#F2F2F2] dark:bg-gray-800 dark:text-gray-200"
+          className="border-b  bg-[#F2F2F2] dark:bg-navy-700 dark:text-gray-200"
           style={{ minWidth: "4rem", textAlign: "center" }}
         ></Column>
         <Column
           field="trip_id"
           header="Trip ID"
           sortable
-          className="border-b bg-[#F2F2F2] dark:bg-gray-800 dark:text-gray-200"
+          className="border-b bg-[#F2F2F2] dark:bg-navy-700 dark:text-gray-200"
           style={{ minWidth: "8rem", border: "none !important" }}
           body={(rowData) => (
             <span
@@ -149,7 +149,7 @@ const VehicleTrips = ({ myData }) => {
           field="trip_start_time"
           header="Trip Start"
           sortable
-          className="border-b bg-[#F2F2F2] dark:bg-navy-800 dark:text-gray-200"
+          className="border-b bg-[#F2F2F2] dark:bg-navy-700 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
           body={(rowData) => convertEpochToIST(rowData.trip_start_time)}
         ></Column>
@@ -157,7 +157,7 @@ const VehicleTrips = ({ myData }) => {
           field="trip_end_time"
           header="Trip End"
           sortable
-          className="border-b bg-[#F2F2F2] dark:bg-navy-800 dark:text-gray-200"
+          className="border-b bg-[#F2F2F2] dark:bg-navy-700 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
           body={(rowData) => convertEpochToIST(rowData.trip_end_time)}
         ></Column>
@@ -165,7 +165,7 @@ const VehicleTrips = ({ myData }) => {
           field="total_distance"
           header="Distance Travelled"
           sortable
-          className="border-b bg-[#F2F2F2] dark:bg-navy-800 dark:text-gray-200"
+          className="border-b bg-[#F2F2F2] dark:bg-navy-700 dark:text-gray-200"
           style={{ minWidth: "9rem" }}
           body={(rowData) => {
             const distance = parseFloat(rowData.total_distance);
@@ -178,7 +178,7 @@ const VehicleTrips = ({ myData }) => {
           field="duration"
           header="Duration"
           sortable
-          className="border-b bg-[#F2F2F2] dark:bg-navy-800 dark:text-gray-200"
+          className="border-b bg-[#F2F2F2] dark:bg-navy-700 dark:text-gray-200"
           style={{ minWidth: "9rem" }}
         ></Column>
         <Column
@@ -186,7 +186,7 @@ const VehicleTrips = ({ myData }) => {
           body={actionBodyTemplate}
           header="Action"
           exportable={false}
-          className="border-b bg-[#F2F2F2] dark:bg-navy-800"
+          className="border-b bg-[#F2F2F2] dark:bg-navy-700"
           style={{ minWidth: "6rem" }}
         ></Column>
       </DataTable>

@@ -309,7 +309,9 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
                 }
               `}
             />
-            <label htmlFor="device_id">DeviceId</label>
+            <label htmlFor="device_id" className="dark:text-gray-300">
+              DeviceId
+            </label>
           </span>
         </div>
         <div className="mx-auto mt-8 w-[34.5vw]">
@@ -325,7 +327,9 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
               className="p-dropdown border"
               onChange={(e) => handleInputChange(e, "device_type")}
             />
-            <label htmlFor="device_type">Device_type</label>
+            <label htmlFor="device_type" className="dark:text-gray-300">
+              Device_type
+            </label>
           </span>
         </div>
 
@@ -342,7 +346,9 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
               onChange={(e) => handleInputChange(e, "user_uuid")}
             />
 
-            <label htmlFor="customer_id">Customer List</label>
+            <label htmlFor="customer_id" className="dark:text-gray-300">
+              Customer List
+            </label>
           </span>
         </div>
         <div className="mx-auto mt-8 w-[34.5vw]">
@@ -358,7 +364,9 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
               placeholder={selectedDevice?.device_status}
               onChange={(e) => handleInputChange(e, "device_status")}
             />
-            <label htmlFor="status">Status</label>
+            <label htmlFor="status" className="dark:text-gray-300">
+              Status
+            </label>
           </span>
         </div>
         <div className="mx-auto mt-8 w-[34.5vw]">
@@ -376,7 +384,9 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
                   : ""
               }`}
             />
-            <label htmlFor="sim_number">Sim Number</label>
+            <label htmlFor="sim_number" className="dark:text-gray-300">
+              Sim Number
+            </label>
           </span>
         </div>
         <div className="mt-6 flex justify-center">
@@ -436,13 +446,13 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
             <Button
               label="Delete"
               icon="pi pi-check"
-              className="mr-2 bg-red-500 px-3 py-2 text-white"
+              className="mr-2 bg-red-500 px-3 py-2 text-white dark:hover:bg-red-500 dark:hover:text-white"
               onClick={confirmDelete}
             />
             <Button
               label="Cancel"
               icon="pi pi-times"
-              className="bg-gray-600 px-3 py-2 text-white dark:text-gray-850 "
+              className="bg-gray-600 px-3 py-2 text-white dark:text-gray-850 dark:hover:bg-gray-600 dark:hover:text-gray-850"
               onClick={() => setIsDeleteDialogVisible(false)}
             />
           </div>

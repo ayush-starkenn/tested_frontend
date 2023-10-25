@@ -374,13 +374,13 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
               <Button
                 label="Delete"
                 icon="pi pi-check"
-                className="mr-2 bg-red-500 px-3 py-2 text-white"
+                className="mr-2 bg-red-500 px-3 py-2 text-white dark:hover:bg-red-500 dark:hover:text-white"
                 onClick={handleDelete}
               />
               <Button
                 label="Cancel"
                 icon="pi pi-times"
-                className="bg-gray-600 px-3 py-2 text-white dark:text-gray-850 "
+                className="bg-gray-600 px-3 py-2 text-white dark:text-gray-850 dark:hover:bg-gray-600 dark:hover:text-gray-850"
                 onClick={closeDeleteDialog}
               />
             </div>
