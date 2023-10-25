@@ -3,10 +3,11 @@ import { FilterMatchMode } from "primereact/api";
 import { DataView } from "primereact/dataview";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { CiMenuKebab } from "react-icons/ci";
-import { Menu } from "primereact/menu";
+// import { CiMenuKebab } from "react-icons/ci";
+// import { Menu } from "primereact/menu";
 import { Toast } from "primereact/toast";
 import { Dialog } from "primereact/dialog";
+import { Tag } from "primereact/tag";
 
 const applyFilters = (filters, allData) => {
   let filteredData = allData;
@@ -42,7 +43,7 @@ export default function CustomersGrid({ data, onDelete, onUpdate }) {
     device_type: { value: null, matchMode: FilterMatchMode.IN },
   });
   const [globalFilterValue, setGlobalFilterValue] = useState("");
-  const menuLeft = useRef(null);
+  // const menuLeft = useRef(null);
   const [isEditDialogVisible, setIsEditDialogVisible] = useState(false);
   const [editedCustomer, setEditedCustomer] = useState(null);
   const [isDeleteDialogVisible, setIsDeleteDialogVisible] = useState(false);
@@ -119,50 +120,53 @@ export default function CustomersGrid({ data, onDelete, onUpdate }) {
 
   //card
   const itemTemplate = (item) => {
+    const tagSeverity = item?.user_status === 1 ? "success" : "danger";
     return (
-      <div className="p-col-11 w-95 mb-6 rounded bg-gray-50 dark:bg-gray-900 dark:text-gray-150">
+      <div className="p-col-12 mb-6 rounded-lg bg-gray-50 transition duration-300 ease-in-out hover:shadow-lg dark:bg-gray-900 dark:text-gray-150">
         <div className="card flex h-full flex-col">
-          <div className="card-body px-6 py-3">
-            <div className="mt-4 flex justify-between font-normal">
-              <div className="mr-16 flex-shrink-0">
-                <span>Full Name</span>
-              </div>
-              <div>
-                <span>
-                  {item.first_name.charAt(0).toUpperCase() +
-                    item.first_name.slice(1)}{" "}
-                  {item.last_name.charAt(0).toUpperCase() +
-                    item.last_name.slice(1)}
-                </span>
-              </div>
+          <div className="card-header flex justify-between">
+            <div className="p-text-bold">
+              <span>
+                {item.first_name.charAt(0).toUpperCase() +
+                  item.first_name.slice(1)}{" "}
+                {item.last_name.charAt(0).toUpperCase() +
+                  item.last_name.slice(1)}
+              </span>
             </div>
-
-            <div className="mt-4 flex justify-between font-normal">
-              <div className="mr-16 flex-shrink-0">
+            <div className="p-text-bold">
+              <Tag
+                value={item.user_status === 1 ? "Active" : "Deactive"}
+                severity={tagSeverity}
+              />
+            </div>
+          </div>
+          <div className="card-body px-6">
+            <div className="flex justify-between pb-1">
+              <div className="mr-16  flex-shrink-0 font-semibold">
                 <span>Email</span>
               </div>
               <div>
                 <span>{item.email}</span>
               </div>
             </div>
-            <div className="flex justify-between font-normal">
-              <div className="mr-16 flex-shrink-0">
+            <div className="flex justify-between py-1">
+              <div className="mr-16 flex-shrink-0 font-semibold">
                 <span>Address</span>
               </div>
               <div className="text-end">
                 <span>{item.full_address}</span>
               </div>
             </div>
-            <div className="flex justify-between font-normal">
-              <div className="mr-16 flex-shrink-0">
+            <div className="flex  justify-between py-1">
+              <div className="mr-16  flex-shrink-0 font-semibold">
                 <span>Company Name</span>
               </div>
               <div>
                 <span>{item.company_name}</span>
               </div>
             </div>
-            <div className="text-bold flex justify-between font-normal">
-              <div className="mr-16 flex-shrink-0">
+            <div className="text-bold flex justify-between py-1">
+              <div className="mr-16 flex-shrink-0 font-semibold">
                 <span>Contact No.</span>
               </div>
               <div>
@@ -170,7 +174,7 @@ export default function CustomersGrid({ data, onDelete, onUpdate }) {
               </div>
             </div>
           </div>
-          <div className="mt-auto px-6 py-3">
+          <div className="mx-auto mt-auto px-6 py-3">
             <Button
               icon="pi pi-pencil"
               rounded
@@ -189,7 +193,7 @@ export default function CustomersGrid({ data, onDelete, onUpdate }) {
               className="mr-3 border border-red-600 text-red-600"
               onClick={() => handleDelete(item)}
             />
-            <Button
+            {/* <Button
               rounded
               tooltip="More"
               tooltipOptions={{ position: "mouse" }}
@@ -220,7 +224,7 @@ export default function CustomersGrid({ data, onDelete, onUpdate }) {
               ref={menuLeft}
               id="popup_menu_left"
               popupAlignment="left"
-            />
+            /> */}
           </div>
         </div>
       </div>
@@ -588,7 +592,6 @@ export default function CustomersGrid({ data, onDelete, onUpdate }) {
         }
       >
         <div>
-          {" "}
           Are you sure you want to delete {selectedCustomer?.full_name}?
         </div>
       </Dialog>

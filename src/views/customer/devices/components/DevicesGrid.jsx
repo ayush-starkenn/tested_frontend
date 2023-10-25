@@ -73,17 +73,18 @@ export default function DevicesGrid({ data }) {
     return (
       <div className="p-col-12 mb-6 rounded-lg bg-gray-50 transition duration-300 ease-in-out hover:shadow-lg dark:bg-gray-900 dark:text-gray-150">
         <div className="card">
+          <div className="card-header flex justify-between">
+            <div className="p-text-bold">{item.device_id}</div>
+            <div className="p-text-bold">
+              <Tag
+                value={item.device_status === 1 ? "Active" : "Deactive"}
+                severity={tagSeverity}
+              />
+            </div>
+          </div>
           <div className="card-body px-6 py-3">
             <div className="flex items-center justify-between">
               <div>
-                <div className="mt-4 flex justify-between font-semibold">
-                  <div className="mr-16">
-                    <span>Device ID</span>
-                  </div>
-                  <div>
-                    <span>{item.device_id}</span>
-                  </div>
-                </div>
                 <div className="flex justify-between font-semibold ">
                   <div className="mr-16">
                     <span>Device Type</span>
@@ -98,17 +99,6 @@ export default function DevicesGrid({ data }) {
                   </div>
                   <div>
                     <span>{item.sim_number}</span>
-                  </div>
-                </div>
-                <div className="text-bold flex justify-between font-semibold ">
-                  <div className="mr-16">
-                    <span>Status</span>
-                  </div>
-                  <div>
-                    <Tag
-                      value={item.device_status === 1 ? "Active" : "Deactive"}
-                      severity={tagSeverity}
-                    />
                   </div>
                 </div>
               </div>
