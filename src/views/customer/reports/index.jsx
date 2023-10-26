@@ -66,7 +66,7 @@ const Reports = () => {
         modal
         className="p-fluid dark:bg-gray-900"
       >
-        <Schedule />
+        <Schedule close={closeDialog2} />
       </Dialog>
     </div>
   );

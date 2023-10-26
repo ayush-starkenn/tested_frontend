@@ -45,8 +45,8 @@ const LogsTable = () => {
             className="custombar1 dark:bg-navy-800"
           >
             {logs.map((log, index) => (
-              <div className="mb-5 flex w-full items-center " key={index}>
-                <div className="flex items-center justify-center rounded-xl bg-yellow-500  text-2xl text-white ">
+              <div className="mb-5 flex w-full items-start " key={index}>
+                <div className="mt-1 flex justify-center rounded-xl bg-yellow-500 text-2xl text-white ">
                   <BsInfoCircle />
                 </div>
                 <div className="ml-2 flex h-full w-full flex-col justify-center rounded-lg px-1 text-sm">

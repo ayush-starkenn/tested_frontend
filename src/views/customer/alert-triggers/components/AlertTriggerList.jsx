@@ -6,6 +6,7 @@ import { DataTable } from "primereact/datatable";
 import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
+import { ScrollPanel } from "primereact/scrollpanel";
 import { Tag } from "primereact/tag";
 import React, { useState } from "react";
 
@@ -480,27 +481,30 @@ const AlertTriggerList = ({
 
           <div className="mx-auto mt-8 w-[34.5vw]">
             <p className="mb-2 pl-2">Select Contacts</p>
-            <div
-              className="table-container rounded"
-              style={{ maxHeight: "70%" }}
-            >
-              <table className="w-full table-auto border-collapse border border-gray-300">
+            <ScrollPanel style={{ width: "100%", height: "150px" }}>
+              <table className="w-full table-auto border-collapse border border-gray-300 dark:border-gray-700">
                 <thead>
                   <tr>
-                    <th className="border px-4 py-2">Contact Name</th>
-                    <th className="border px-4 py-2">Email</th>
-                    <th className="border px-4 py-2">Mobile</th>
+                    <th className="border px-4 py-2 dark:border-gray-700">
+                      Contact Name
+                    </th>
+                    <th className="border px-4 py-2 dark:border-gray-700">
+                      Email
+                    </th>
+                    <th className="border px-4 py-2 dark:border-gray-700">
+                      Mobile
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {contactsData.map((contact) => (
                     <tr key={contact.contact_id}>
-                      <td className="border px-4 py-2 text-sm">
+                      <td className="border px-4 py-2 text-sm dark:border-gray-700">
                         {contact.contact_first_name +
                           " " +
                           contact.contact_last_name}
                       </td>
-                      <td className="whitespace-nowrap border px-4 py-2 text-sm">
+                      <td className="whitespace-nowrap border px-4 py-2 text-sm dark:border-gray-700">
                         <label>
                           <input
                             type="checkbox"
@@ -516,7 +520,7 @@ const AlertTriggerList = ({
                           &nbsp;{contact.contact_email}
                         </label>
                       </td>
-                      <td className="whitespace-nowrap border px-4 py-2 text-sm">
+                      <td className="whitespace-nowrap border px-4 py-2 text-sm dark:border-gray-700">
                         <label>
                           <input
                             type="checkbox"
@@ -539,7 +543,7 @@ const AlertTriggerList = ({
                   ))}
                 </tbody>
               </table>
-            </div>
+            </ScrollPanel>
           </div>
 
           <div className="p-field p-col-12 mt-3 flex justify-center">

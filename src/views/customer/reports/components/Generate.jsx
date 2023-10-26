@@ -318,7 +318,7 @@ const Generate = ({ close }) => {
                       setSelectedStartDate(formattedDate);
                       setStartDateValid(formattedDate !== null);
                     }}
-                    className={`rounded-lg border ${
+                    className={`rounded-lg border border-gray-300 ${
                       !startDateValid ? "border-red-600" : ""
                     }`}
                   />
@@ -347,7 +347,7 @@ const Generate = ({ close }) => {
                       setSelectedEndDate(formattedDate);
                       setEndDateValid(formattedDate !== null);
                     }}
-                    className={`rounded-lg border ${
+                    className={`rounded-lg border border-gray-300 ${
                       !endDateValid ? "border-red-600" : ""
                     }`}
                   />

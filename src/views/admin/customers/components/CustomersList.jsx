@@ -6,7 +6,7 @@ import { InputText } from "primereact/inputtext";
 import { FilterMatchMode } from "primereact/api";
 import { Menu } from "primereact/menu";
 import { Dialog } from "primereact/dialog";
-import { CiMenuKebab } from "react-icons/ci";
+// import { CiMenuKebab } from "react-icons/ci";
 import { Toast } from "primereact/toast";
 import { Tag } from "primereact/tag";
 
@@ -467,7 +467,7 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
           className="mr-3 border border-red-600 text-red-600"
           onClick={handleDelete}
         />
-        <Button
+        {/* <Button
           rounded
           tooltip="More"
           tooltipOptions={{ position: "mouse" }}
@@ -478,7 +478,7 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
           aria-haspopup
         >
           <CiMenuKebab />
-        </Button>
+        </Button> */}
         <Menu
           model={[
             {
@@ -568,7 +568,7 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
           field="serialNo"
           header="Sr. no."
           className="border-b dark:bg-navy-800 dark:text-gray-200"
-          style={{ minWidth: "4rem" }}
+          style={{ minWidth: "3rem" }}
         />
         <Column
           key="user_uuid"
@@ -589,7 +589,7 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
           key="user_uuid"
           field="email"
           header="Email"
-          style={{ minWidth: "8rem" }}
+          style={{ minWidth: "10rem" }}
           className="border-b dark:bg-navy-800 dark:text-gray-200"
         />
         <Column
@@ -597,7 +597,7 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
           field="company_name"
           header="Company Name"
           className="border-b dark:bg-navy-800 dark:text-gray-200"
-          style={{ minWidth: "6rem" }}
+          style={{ minWidth: "8rem" }}
         />
         <Column
           key="user_uuid"
@@ -617,7 +617,7 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
         <Column
           key="user_uuid"
           header="Action"
-          headerStyle={{ width: "12rem", textAlign: "left" }}
+          headerStyle={{ width: "9rem", textAlign: "left" }}
           bodyStyle={{ textAlign: "left", overflow: "visible" }}
           body={actionBodyTemplate}
           className="border-b dark:bg-navy-800 "
