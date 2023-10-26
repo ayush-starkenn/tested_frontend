@@ -1,25 +1,53 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ReportsList from "./components/ReportsList";
 import { Dialog } from "primereact/dialog";
 import Schedule from "./components/Schedule";
 import Generate from "./components/Generate";
 import { FaCalendarPlus, FaChartLine } from "react-icons/fa";
+import Cookies from "js-cookie";
+import axios from "axios";
 
 const Reports = () => {
   const [isGenerateDialogVisible, setIsGenerateDialogVisible] = useState(false);
   const [isScheduleDialogVisible, setIsScheduleDialogVisible] = useState(false);
+  const [data, setData] = useState([]);
+  const user_uuid = Cookies.get("user_uuid");
+  const token = Cookies.get("token");
 
+  const fetchData = useCallback(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_API_URL}/reports/get_Reports-all/${user_uuid}`,
+        { headers: { authorization: `bearer ${token}` } }
+      )
+      .then((res) => {
+        const formattedData = res.data.reportResult.map((item, index) => ({
+          ...item,
+          serialNo: index + 1,
+        }));
+        setData(formattedData);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [user_uuid, token]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
   const openDialog1 = () => {
     setIsGenerateDialogVisible(true);
   };
   const closeDialog1 = () => {
     setIsGenerateDialogVisible(false);
+    fetchData();
   };
   const openDialog2 = () => {
     setIsScheduleDialogVisible(true);
   };
   const closeDialog2 = () => {
     setIsScheduleDialogVisible(false);
+    fetchData();
   };
 
   return (
@@ -45,7 +73,7 @@ const Reports = () => {
         </button>
       </div>
 
-      <ReportsList />
+      <ReportsList data={data} />
       <Dialog
         visible={isGenerateDialogVisible}
         onHide={closeDialog1}
