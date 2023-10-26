@@ -2121,7 +2121,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
         </div>
         <div className="flex justify-between">
           <div className="field my-3 w-[30vw]">
-            <label htmlFor="Sensor_res1" className="mr-80">
+            <label htmlFor="Sensor_res1" className="mr-72">
               Reserved 1
             </label>
             <InputText
@@ -3089,7 +3089,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
             <Dropdown
               id="dd_acc_cut"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="dd_acc_cut"
@@ -3238,14 +3238,14 @@ const FeatureSet = ({ myData, closeDialog }) => {
               disabled={featuresetData.load_sts === "0"}
             />
           </div>
-          <div className="field my-3 w-[30vw]">
-            <label htmlFor="load_acc" className="dark:text-gray-300">
+          <div className="field my-3 w-[60vw]">
+            <label htmlFor="load_acc" className="mr-[31rem] dark:text-gray-300">
               Accelerator
             </label>
             <Dropdown
               id="load_acc"
               style={{
-                width: "30vw",
+                width: "24vw",
                 borderRadius: "5px",
               }}
               name="load_acc"
