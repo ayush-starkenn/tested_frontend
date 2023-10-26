@@ -31,7 +31,8 @@ const Schedule = ({ close }) => {
     { label: "Monthly", value: "monthly" },
   ];
 
-  const [repeatType, setRepeatType] = useState("");
+  const [repeatType, setRepeatType] = useState(null);
+  const [repeatTypeValid, setRepeatTypeValid] = useState(true);
   const events = [
     { name: "Alarm", code: "ALM" },
     { name: "Break Data", code: "BRK" },
@@ -61,7 +62,7 @@ const Schedule = ({ close }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setSubmitted(true);
+
     if (title.trim() === "") {
       setTitleValid(false);
     } else {
@@ -89,8 +90,20 @@ const Schedule = ({ close }) => {
       setContactValid(true);
     }
 
+    if (!repeatType || repeatType.length === 0) {
+      setRepeatTypeValid(false);
+    } else {
+      setRepeatTypeValid(true);
+    }
+
     // Check if any field is invalid
-    if (!titleValid || !vehicleValid || !eventValid || !contactValid) {
+    if (
+      !titleValid ||
+      !vehicleValid ||
+      !eventValid ||
+      !contactValid ||
+      !repeatTypeValid
+    ) {
       toastRef.current.show({
         severity: "warn",
         summary: "Fill Required Fields",
@@ -118,27 +131,29 @@ const Schedule = ({ close }) => {
       )
       .then((res) => {
         console.log(res.data.report_uuid);
+        console.log("res", res);
+        setSubmitted(true);
         const url = `/customer/scheduled_report/${res.data.report_uuid}`;
-        // window.open(url);
+
         console.log("Generated URL:", url);
         setTimeout(() => {
           toastRef.current.show({
-            severity: "warn",
-            summary: "Fill Required Fields",
+            severity: "success",
+            summary: "Success",
             detail: "Report scheduled successfully",
             life: 1000,
           });
         }, 2000);
         setTimeout(() => {
-          // close();
+          close();
         }, 3000);
       })
       .catch((error) => {
-        console.log(error);
+        console.log("err", error.response.data.message);
         toastRef.current.show({
           severity: "warn",
           summary: "Fill Required Fields",
-          detail: error,
+          detail: error.response.data.message,
           life: 3000,
         });
       });
@@ -308,17 +323,28 @@ const Schedule = ({ close }) => {
                   <Dropdown
                     value={repeatType}
                     options={repeat_types}
-                    onChange={(e) => setRepeatType(e.value)}
+                    optionLabel="label"
+                    onChange={(e) => {
+                      setRepeatType(e.target.value);
+                      setRepeatTypeValid(e.target.value);
+                    }}
                     placeholder="Select Repeat Type"
-                    className={`rounded-lg border border-gray-300 shadow-sm dark:bg-gray-900 dark:placeholder-gray-50`}
+                    className={`rounded-lg border border-gray-300 shadow-sm dark:bg-gray-900 dark:placeholder-gray-50 ${
+                      !repeatTypeValid && "border-red-600"
+                    }`}
                   />
                   <label
-                    htmlFor="repeat_type"
+                    htmlFor="repeat_type" // This should match the id of the Dropdown
                     className="text-gray-600 dark:text-gray-150"
                   >
                     Repeat Type
                   </label>
                 </span>
+                {!repeatTypeValid && (
+                  <small className="text-red-500">
+                    Repeat Type is required.
+                  </small>
+                )}
               </div>
             </div>
           </div>

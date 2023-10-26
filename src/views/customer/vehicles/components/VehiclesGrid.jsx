@@ -221,22 +221,22 @@ export default function VehiclesGrid({
                 <div></div>
                 <div className="p-grid">
                   <div className="p-col">
-                    {item.ecu && <h1 className="p-text-bold">ECU:</h1>}
-                    {item.iot && <h1 className="p-text-bold">IoT:</h1>}
-                    {item.dms && <h1 className="p-text-bold">DMS:</h1>}
-                    <h1 className="p-text-bold">Status:</h1>
+                    {item.ecu && <h1 className="p-text-bold pb-1">ECU:</h1>}
+                    {item.iot && <h1 className="p-text-bold py-1">IoT:</h1>}
+                    {item.dms && <h1 className="p-text-bold py-1">DMS:</h1>}
+                    <h1 className="p-text-bold py-1">Status:</h1>
                   </div>
 
                   <div className="p-col">
-                    {item.ecu && <p>{item.ecu}</p>}
-                    {item.iot && <p>{item.iot}</p>}
-                    {item.dms && <p>{item.dms}</p>}
+                    {item.ecu && <p className=" pb-1">{item.ecu}</p>}
+                    {item.iot && <p className=" py-1">{item.iot}</p>}
+                    {item.dms && <p className=" py-1">{item.dms}</p>}
                     <Tag
                       value={item?.vehicle_status === 1 ? "Active" : "Deactive"}
                       severity={
                         item?.vehicle_status === 1 ? "success" : "danger"
                       }
-                      rounded
+                      className="my-1"
                     />
                   </div>
                 </div>

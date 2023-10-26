@@ -19,47 +19,44 @@ const ScheduledReport = () => {
   const [tableData, setTableData] = useState([]);
   const tableRef = useRef(null);
   const currentDateTime = new Date();
+  const [fromdate, setFromDate] = useState();
+  const [todate, setToDate] = useState();
   const currentDate = currentDateTime.toLocaleDateString(); // Format: MM/DD/YYYY (or based on your system's locale)
   const currentTime = currentDateTime.toLocaleTimeString();
   useEffect(() => {
     axios
-      .put(
+      .get(
         `${process.env.REACT_APP_API_URL}/schedule_reports/get_Reports_schedule/${report_uuid}`,
         {
           headers: { authorization: `bearer ${token}` },
         }
       )
       .then((res) => {
-        console.log(res);
-        console.log(res.data.vehicleResults);
+        console.log(res.data.report.from_date);
+        console.log(res.data.report.vehicleResults);
         setTitle(res.data.report.title);
+        setFromDate(res.data.report.from_date);
+        setToDate(res.data.report.to_date);
         setDate(currentDate);
-        setVehicles(JSON.parse(res.data.report.vehicles) || {});
-        setTableData(res.data.vehicleResults);
+        setVehicles(res.data.report.vehicleResults);
+        console.log(vehicles);
+        setTableData(res.data.report.vehicleResults);
+        const chartData = res.data.report.vehicleResults.map((vehicle) => {
+          return {
+            name: vehicle.vehicle_name,
+            reg: vehicle.vehicle_registration,
+            eventTypes: vehicle.tripdata.map((trip) => trip.eventType),
+            eventCounts: vehicle.tripdata.map((trip) => trip.eventCount),
+          };
+        });
+
+        setChartData(chartData);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [token, report_uuid, currentDate]);
+  }, [token, report_uuid, currentDate, vehicles]);
 
-  // const vehicleList = JSON.parse(vehicles);
-  console.log(vehicles, "sapna");
-
-  useEffect(() => {
-    // Parse the vehicles data and create chart data
-    const parsedChartData = Object.values(vehicles).map((vehicle) => {
-      const { vehicle_name, events, vehicle_registration } = vehicle;
-      const eventTypes = events.map((event) => event.eventType);
-      const eventCounts = events.map((event) => event.eventCount);
-      return {
-        name: vehicle_name,
-        eventTypes,
-        eventCounts,
-        reg: vehicle_registration,
-      };
-    });
-    setChartData(parsedChartData);
-  }, [vehicles]);
   const formatTimestamp = (timestamp) => {
     const date = new Date(timestamp);
 
@@ -101,6 +98,12 @@ const ScheduledReport = () => {
             >
               {title}
             </p>
+            <i>
+              <p className="py-2  font-normal">
+                {formatTimestamp(fromdate).formattedDate} to{" "}
+                {formatTimestamp(todate).formattedDate}
+              </p>
+            </i>
           </div>
 
           <div>
@@ -116,70 +119,30 @@ const ScheduledReport = () => {
               <div className="flex justify-around">
                 {chartData.map((vehicleData, index) => (
                   <div className="card p-8" key={index}>
-                    <div>
-                      <p className="flex items-center">
-                        <BiLogoSlackOld className="text-blue-600" />
-                        &nbsp;&nbsp;Analytical Graph for {vehicleData.name} (
-                        {vehicleData.reg})
-                      </p>
-                      <ReactApexChart
-                        options={{
-                          chart: {
-                            type: "bar",
-                            animations: {
-                              enabled: true,
-                              easing: "easeinout",
-                              speed: 800,
-                              animateGradually: {
-                                enabled: true,
-                                delay: 150,
-                              },
-                              dynamicAnimation: {
-                                enabled: true,
-                                speed: 350,
-                              },
-                            },
-                          },
-                          dropShadow: {
-                            enabled: false,
-                            enabledOnSeries: undefined,
-                            top: 0,
-                            left: 0,
-                            blur: 3,
-                            color: "#000",
-                            opacity: 0.35,
-                          },
-                          xaxis: {
-                            categories: vehicleData.eventTypes,
-                            title: {
-                              text: "Event",
-                              style: {
-                                fontSize: "14px",
-                                fontWeight: 600,
-                              },
-                            },
-                          },
-                          yaxis: {
-                            title: {
-                              text: "Count",
-                              style: {
-                                fontSize: "14px",
-                                fontWeight: 600,
-                              },
-                            },
-                          },
-                        }}
-                        series={[
-                          {
-                            name: "Event Count",
-                            data: vehicleData.eventCounts,
-                          },
-                        ]}
-                        type="bar"
-                        height={350}
-                        width={550}
-                      />
-                    </div>
+                    <p className="flex items-center">
+                      <BiLogoSlackOld className="text-blue-600" />
+                      &nbsp;&nbsp;Analytical Graph for {vehicleData.name} (
+                      {vehicleData.reg})
+                    </p>
+                    <ReactApexChart
+                      options={{
+                        chart: {
+                          type: "bar",
+                        },
+                        xaxis: {
+                          categories: vehicleData.eventTypes,
+                        },
+                      }}
+                      series={[
+                        {
+                          name: "Event Count",
+                          data: vehicleData.eventCounts,
+                        },
+                      ]}
+                      type="bar"
+                      height={350}
+                      width={550}
+                    />
                   </div>
                 ))}
               </div>
@@ -241,14 +204,17 @@ const ScheduledReport = () => {
                         {tripItem.trip_id}
                       </td>
                       <td className="whitespace-nowrap border px-6 py-4">
-                        {tripItem.event}
+                        {tripItem.eventType}
                       </td>
                       <td className="whitespace-nowrap border px-6 py-4">
                         {tripItem.eventCount}
                       </td>
                       <td className="whitespace-nowrap border px-6 py-4">
                         {" "}
-                        {formatTimestamp(tripItem.date).formattedDate}
+                        {
+                          formatTimestamp(tripItem.event_created_at)
+                            .formattedDate
+                        }
                       </td>
                       <td className="px-6 py-4">
                         {" "}
