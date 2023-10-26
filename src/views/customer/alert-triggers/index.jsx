@@ -41,7 +41,7 @@ const Triggers = () => {
       errors.vehicle_uuid = "Vehicle Name is required";
     }
 
-    if (!addData.recipients) {
+    if (!addData.recipients == 0) {
       errors.recipients = "Recipients is required";
     }
 
@@ -404,8 +404,14 @@ const Triggers = () => {
             </div>
             <div className="mx-auto mt-6 w-[34.5vw]">
               <p className="mb-2 pl-2">Select Contacts</p>
-              <ScrollPanel style={{ width: "100%", height: "150px" }}>
-                <table className="table w-full table-auto border-collapse rounded-lg border border-gray-300 dark:border-gray-700">
+              {formErrors.recipients && (
+                <small className="p-error">{formErrors.recipients}</small>
+              )}
+              <div
+                className="table-container rounded"
+                style={{ maxHeight: "70%" }}
+              >
+                <table className="table w-full table-auto border-collapse border border-gray-300">
                   <thead>
                     <tr>
                       <th className="border py-1 text-[0.95rem] font-semibold dark:border-gray-700">
@@ -467,7 +473,7 @@ const Triggers = () => {
                     ))}
                   </tbody>
                 </table>
-              </ScrollPanel>
+              </div>
             </div>
 
             <div className="p-field p-col-12 mt-3 flex justify-center">
