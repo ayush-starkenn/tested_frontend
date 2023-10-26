@@ -1,37 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { FilterMatchMode } from "primereact/api";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-
-import axios from "axios";
 import { Dialog } from "primereact/dialog";
 
-const ReportList = () => {
+const ReportList = ({ data }) => {
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
-  const [data, setData] = useState([]);
+
   const [globalFilterValue, setGlobalFilterValue] = useState("");
   const [selectedReport, setSelectedReport] = useState(null);
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
 
-  useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_API_URL}/Vehicles/getAllVehicle`)
-      .then((res) => {
-        const formattedData = res.data.data.map((item, index) => ({
-          ...item,
-          serialNo: index + 1,
-        }));
-        setData(formattedData);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-
+  const renderCellWithNA = (data) => {
+    return data ? data : "--";
+  };
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
     let _filters = { ...filters };
@@ -81,11 +67,27 @@ const ReportList = () => {
         <Button
           icon="pi pi-trash"
           rounded
-          outlined
+          tooltip="Delete"
+          tooltipOptions={{ position: "mouse" }}
           style={{ width: "2rem", height: "2rem" }}
-          severity="danger"
+          className="mr-3 border border-red-600 text-red-600"
           onClick={() => openDeleteDialog(rowData)}
         />
+        {rowData.reports_type === "1" && (
+          <Button
+            icon="pi pi-eye"
+            rounded
+            tooltip="View"
+            tooltipOptions={{ position: "mouse" }}
+            className="border border-blue-500 text-blue-500 dark:text-blue-500"
+            style={{ width: "2rem", height: "2rem" }}
+            onClick={(e) =>
+              window.open(
+                `http://localhost:3000/customer/report/${rowData.report_uuid}`
+              )
+            }
+          />
+        )}
       </React.Fragment>
     );
   };
@@ -110,14 +112,14 @@ const ReportList = () => {
           <div>
             <Button
               label="Delete"
-              icon="pi pi-times"
-              className="p-button-danger px-3 py-2 hover:bg-none dark:hover:bg-gray-50"
+              icon="pi pi-check"
+              className="mr-2 bg-red-500 px-3 py-2 text-white dark:hover:bg-red-500 dark:hover:text-white"
               onClick={handleConfirmDelete}
             />
             <Button
               label="Cancel"
-              icon="pi pi-check"
-              className="p-button-secondary px-3 py-2 hover:bg-none dark:hover:bg-gray-50"
+              icon="pi pi-times"
+              className="bg-gray-600 px-3 py-2 text-white dark:text-gray-850 dark:hover:bg-gray-600 dark:hover:text-gray-850"
               onClick={onHide}
             />
           </div>
@@ -132,7 +134,7 @@ const ReportList = () => {
       <DataTable
         removableSort
         value={data}
-        dataKey="id"
+        dataKey="report_uuid"
         paginator
         rows={5}
         rowsPerPageOptions={[5, 10, 25]}
@@ -151,36 +153,80 @@ const ReportList = () => {
         header={header}
       >
         <Column
+          header="Sr. No."
           field="serialNo"
-          className="border-none dark:bg-navy-800 dark:text-gray-200"
-          style={{ minWidth: "4rem", textAlign: "center" }}
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
+          style={{ minWidth: "4rem" }}
         ></Column>
-        <Column
-          field="vehicle_name"
+        {/* <Column
+          field="r_id"
           header="Report ID"
           sortable
-          className="border-none dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "10rem", border: "none !important" }}
-        ></Column>
+        ></Column> */}
 
         <Column
-          field="vehicle_registration"
+          field="title"
           header="Report Title"
           sortable
-          className="border-none dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "12rem" }}
         ></Column>
         <Column
-          field="dms"
+          field="report_created_at"
           header="Created On"
           sortable
-          className="border-none dark:bg-navy-800 dark:text-gray-200"
+          body={(rowData) => {
+            if (rowData.report_created_at) {
+              const date = new Date(rowData.report_created_at);
+              const formattedDate = `${String(date.getDate()).padStart(
+                2,
+                "0"
+              )}-${String(date.getMonth() + 1).padStart(
+                2,
+                "0"
+              )}-${date.getFullYear()}`;
+              return formattedDate;
+            } else {
+              return "--";
+            }
+          }}
+          className="dark-bg-navy-800 dark-text-gray-200 border-b"
+          style={{ minWidth: "12rem" }}
+        ></Column>
+        <Column
+          field="reports_type"
+          header="Report Type"
+          body={(rowData) =>
+            rowData.reports_type === "1" ? "Generated" : "Scheduled"
+          }
+          sortable
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "9rem" }}
         ></Column>
         <Column
+          field="reports_schedule_type"
+          header="Report Type"
+          sortable
+          body={(rowData) => {
+            if (rowData.reports_schedule_type) {
+              return renderCellWithNA(
+                rowData.reports_schedule_type.charAt(0).toUpperCase() +
+                  rowData.reports_schedule_type.slice(1)
+              );
+            } else {
+              return renderCellWithNA(rowData.reports_schedule_type);
+            }
+          }}
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
+          style={{ minWidth: "9rem" }}
+        ></Column>
+
+        <Column
           body={actionBodyTemplate}
           header="Action"
-          className="dark:bg-navy-800 dark:text-gray-200"
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "6rem" }}
         ></Column>
       </DataTable>
