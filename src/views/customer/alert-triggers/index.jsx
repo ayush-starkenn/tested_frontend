@@ -40,7 +40,7 @@ const Triggers = () => {
       errors.vehicle_uuid = "Vehicle Name is required";
     }
 
-    if (!addData.recipients) {
+    if (!addData.recipients == 0) {
       errors.recipients = "Recipients is required";
     }
 
@@ -403,6 +403,9 @@ const Triggers = () => {
             </div>
             <div className="mx-auto mt-6 w-[34.5vw]">
               <p className="mb-2 pl-2">Select Contacts</p>
+              {formErrors.recipients && (
+                <small className="p-error">{formErrors.recipients}</small>
+              )}
               <div
                 className="table-container rounded"
                 style={{ maxHeight: "70%" }}

@@ -404,6 +404,7 @@ const AlertTriggerList = ({
                 id="trigger_type"
                 name="trigger_type"
                 value={editData?.trigger_type}
+                disabled
                 className="border py-2 pl-2"
               />
               <label htmlFor="trigger_type" className="dark:text-gray-300">
