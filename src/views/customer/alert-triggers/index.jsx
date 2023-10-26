@@ -7,7 +7,6 @@ import React, { useEffect, useRef, useState } from "react";
 import AlertTriggerList from "./components/AlertTriggerList";
 import { Toast } from "primereact/toast";
 import { FiPlus } from "react-icons/fi";
-import { ScrollPanel } from "primereact/scrollpanel";
 
 const Triggers = () => {
   const token = Cookies.get("token");
@@ -41,8 +40,13 @@ const Triggers = () => {
       errors.vehicle_uuid = "Vehicle Name is required";
     }
 
-    if (!addData.recipients == 0) {
+    if (!addData.recipients) {
       errors.recipients = "Recipients is required";
+    }
+
+    if (selectedContacts.length === 0) {
+      errors.recipients =
+        "Recipients are required. Please select at least one contact.";
     }
 
     return errors;
@@ -414,13 +418,13 @@ const Triggers = () => {
                 <table className="table w-full table-auto border-collapse border border-gray-300">
                   <thead>
                     <tr>
-                      <th className="border py-1 text-[0.95rem] font-semibold dark:border-gray-700">
-                        Contact Namez
+                      <th className="border py-1 text-[0.95rem] font-semibold">
+                        Contact Name
                       </th>
-                      <th className="border py-1 text-[0.95rem] font-semibold dark:border-gray-700">
+                      <th className="border py-1 text-[0.95rem] font-semibold">
                         Email
                       </th>
-                      <th className="border py-1 text-[0.95rem] font-semibold dark:border-gray-700">
+                      <th className="border py-1 text-[0.95rem] font-semibold">
                         Mobile
                       </th>
                     </tr>
@@ -428,12 +432,12 @@ const Triggers = () => {
                   <tbody>
                     {contactsData.map((contact) => (
                       <tr key={contact.contact_id}>
-                        <td className="border px-4 py-2 text-sm dark:border-gray-700">
+                        <td className="border px-4 py-2 text-sm">
                           {contact.contact_first_name +
                             " " +
                             contact.contact_last_name}
                         </td>
-                        <td className="whitespace-nowrap border px-4 py-2 text-sm dark:border-gray-700 ">
+                        <td className="whitespace-nowrap border px-4 py-2 text-sm ">
                           {contact.contact_email && (
                             <>
                               <label>
@@ -451,7 +455,7 @@ const Triggers = () => {
                             </>
                           )}
                         </td>
-                        <td className="whitespace-nowrap border px-4 py-2 text-sm dark:border-gray-700">
+                        <td className="whitespace-nowrap border px-4 py-2 text-sm">
                           {contact.contact_mobile && (
                             <>
                               <label>
