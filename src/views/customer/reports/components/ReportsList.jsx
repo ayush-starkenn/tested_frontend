@@ -1,20 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { FilterMatchMode } from "primereact/api";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Dialog } from "primereact/dialog";
+import axios from "axios";
+import Cookies from "js-cookie";
+import { Toast } from "primereact/toast";
 
-const ReportList = ({ data }) => {
+const ReportList = ({ data, updateData }) => {
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
-
+  const token = Cookies.get("token");
+  const user_uuid = Cookies.get("user_uuid");
   const [globalFilterValue, setGlobalFilterValue] = useState("");
   const [selectedReport, setSelectedReport] = useState(null);
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
-
+  const toastRef = useRef(null);
   const renderCellWithNA = (data) => {
     return data ? data : "--";
   };
@@ -92,14 +96,42 @@ const ReportList = ({ data }) => {
     );
   };
 
-  const DeleteDeviceDialog = ({ visible, onHide }) => {
+  const DeleteDeviceDialog = ({ visible, onHide, report_uuid }) => {
     const handleConfirmDelete = async () => {
       try {
-        // await onDeleteDevice(selectedDevice?.device_id);
-        onHide();
-      } catch (error) {
-        console.error(error);
-        onHide();
+        const res = await axios.put(
+          `${process.env.REACT_APP_API_URL}/reports/delete-report/${report_uuid}`,
+          { user_uuid },
+          {
+            headers: { authorization: `Bearer ${token}` }, // Make sure the authorization header is correctly formatted
+          }
+        );
+
+        if (res.status === 201) {
+          // Report deleted successfully
+          toastRef.current.show({
+            severity: "success",
+            summary: "Success",
+            detail: `Report ${selectedReport.title} deleted successfully!`,
+            life: 3000,
+          });
+          updateData(
+            data.filter(
+              (report) => report.report_uuid !== selectedReport.report_uuid
+            )
+          );
+          onHide(); // Close the dialog or take any other required action
+        } else {
+          // Handle other response status codes if needed
+          console.error("Delete failed with status:", res.status);
+        }
+      } catch (err) {
+        toastRef.current.show({
+          severity: "error",
+          summary: "Error",
+          detail: "Failed to delete report. Please try again.",
+          life: 3000,
+        });
       }
     };
 
@@ -131,6 +163,7 @@ const ReportList = ({ data }) => {
   };
   return (
     <>
+      <Toast ref={toastRef} />
       <DataTable
         removableSort
         value={data}
@@ -177,6 +210,7 @@ const ReportList = ({ data }) => {
           field="report_created_at"
           header="Created On"
           sortable
+          className="border-b dark:bg-navy-800 dark:text-gray-200"
           body={(rowData) => {
             if (rowData.report_created_at) {
               const date = new Date(rowData.report_created_at);
@@ -192,7 +226,6 @@ const ReportList = ({ data }) => {
               return "--";
             }
           }}
-          className="dark-bg-navy-800 dark-text-gray-200 border-b"
           style={{ minWidth: "12rem" }}
         ></Column>
         <Column
@@ -233,6 +266,7 @@ const ReportList = ({ data }) => {
       <DeleteDeviceDialog
         visible={deleteDialogVisible}
         onHide={() => setDeleteDialogVisible(false)}
+        report_uuid={selectedReport ? selectedReport.report_uuid : null}
       />
     </>
   );

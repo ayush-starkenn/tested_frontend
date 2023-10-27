@@ -21,6 +21,7 @@ const Reports = () => {
         { headers: { authorization: `bearer ${token}` } }
       )
       .then((res) => {
+        console.log(res);
         const formattedData = res.data.reportResult.map((item, index) => ({
           ...item,
           serialNo: index + 1,
@@ -35,6 +36,11 @@ const Reports = () => {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  const updateData = (newData) => {
+    setData(newData);
+  };
+
   const openDialog1 = () => {
     setIsGenerateDialogVisible(true);
   };
@@ -73,7 +79,7 @@ const Reports = () => {
         </button>
       </div>
 
-      <ReportsList data={data} />
+      <ReportsList data={data} updateData={updateData} />
       <Dialog
         visible={isGenerateDialogVisible}
         onHide={closeDialog1}

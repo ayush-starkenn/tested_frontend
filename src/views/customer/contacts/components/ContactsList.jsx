@@ -77,7 +77,7 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
 
   const handleDelete = () => {
     if (deleteId !== "") {
-      deleteContact(deleteId);
+      deleteContact(deleteId, deleteName);
       closeDeleteDialog();
     }
   };
@@ -85,7 +85,11 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const isValid = Object.values(editData).every((value) => value !== "");
-
+    const isValidPhoneNumber = (phoneNumber) => {
+      // Regular expression to check for exactly 10 digits
+      const phonePattern = /^\d{10}$/;
+      return phonePattern.test(phoneNumber);
+    };
     // Update field validities based on the check
     const newFieldValidities = {};
     for (const key in editData) {
@@ -94,12 +98,23 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
       }
     }
     setFieldValidities(newFieldValidities);
-    toastRef.current.show({
-      severity: "warn",
-      summary: "Fill Required Fields",
-      detail: "Please fill in all the required details.",
-      life: 3000,
-    });
+    if (!isValid) {
+      toastRef.current.show({
+        severity: "warn",
+        summary: "Fill Required Fields",
+        detail: "Please fill in all the required details.",
+        life: 3000,
+      });
+    }
+    if (!isValidPhoneNumber(editData.contact_mobile)) {
+      toastRef.current.show({
+        severity: "warn",
+        summary: "Invalid Phone Number",
+        detail: "Please enter a 10-digit valid phone number.",
+        life: 3000,
+      });
+      return;
+    }
     if (isValid) {
       editContacts(editId, editData);
       closeDialog();
