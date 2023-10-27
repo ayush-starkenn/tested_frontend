@@ -16,6 +16,11 @@ const Contacts = () => {
   const [formErrors, setFormErrors] = useState({});
   const [refresh, setRefresh] = useState(false);
   const toastRef = useRef(null);
+  const isValidPhoneNumber = (phoneNumber) => {
+    // Regular expression to check for exactly 10 digits
+    const phonePattern = /^\d{10}$/;
+    return phonePattern.test(phoneNumber);
+  };
 
   const validateForm = () => {
     let errors = {};
@@ -83,9 +88,18 @@ const Contacts = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     const errors = validateForm();
     setFormErrors(errors);
-
+    if (!isValidPhoneNumber(addData.contact_mobile)) {
+      toastRef.current.show({
+        severity: "warn",
+        summary: "Invalid Phone Number",
+        detail: "Please enter a 10-digit valid phone number.",
+        life: 3000,
+      });
+      return;
+    }
     if (Object.keys(errors).length === 0) {
       axios
         .post(
@@ -172,7 +186,7 @@ const Contacts = () => {
       });
   };
 
-  const deleteContact = (contact_uuid) => {
+  const deleteContact = (contact_uuid, contact_first_name) => {
     axios
       .put(
         `${process.env.REACT_APP_API_URL}/contacts/deletecontact/${contact_uuid}`,
@@ -187,7 +201,7 @@ const Contacts = () => {
         toastRef.current.show({
           severity: "success",
           summary: "Success",
-          detail: "Contact added successfully!",
+          detail: `Contact ${contact_first_name} deleted successfully!`,
           life: 3000,
         });
       })
@@ -239,7 +253,12 @@ const Contacts = () => {
                     formErrors.contact_first_name ? "border-red-600" : ""
                   }`}
                 />
-                <label htmlFor="contact_first_name" className="dark:text-gray-300">First Name</label>
+                <label
+                  htmlFor="contact_first_name"
+                  className="dark:text-gray-300"
+                >
+                  First Name
+                </label>
               </span>
               {formErrors.contact_first_name && (
                 <small className="text-red-600">
@@ -257,7 +276,12 @@ const Contacts = () => {
                     formErrors.contact_last_name ? "border-red-600" : ""
                   }`}
                 />
-                <label htmlFor="contact_last_name" className="dark:text-gray-300">Last Name</label>
+                <label
+                  htmlFor="contact_last_name"
+                  className="dark:text-gray-300"
+                >
+                  Last Name
+                </label>
               </span>
               {formErrors.contact_last_name && (
                 <small className="text-red-600">
@@ -276,7 +300,9 @@ const Contacts = () => {
                     formErrors.contact_email ? "border-red-600" : ""
                   }`}
                 />
-                <label htmlFor="contact_email" className="dark:text-gray-300">Email</label>
+                <label htmlFor="contact_email" className="dark:text-gray-300">
+                  Email
+                </label>
               </span>
               {formErrors.contact_email && (
                 <small className="text-red-600">
@@ -295,8 +321,11 @@ const Contacts = () => {
                     formErrors.contact_mobile ? "border-red-600" : ""
                   }`}
                 />
-                <label htmlFor="contact_mobile" className="dark:text-gray-300">Mobile Number</label>
+                <label htmlFor="contact_mobile" className="dark:text-gray-300">
+                  Mobile Number
+                </label>
               </span>
+
               {formErrors.contact_mobile && (
                 <small className="text-red-600">
                   {formErrors.contact_mobile}

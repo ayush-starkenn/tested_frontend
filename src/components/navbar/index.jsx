@@ -26,6 +26,9 @@ const Navbar = ({ onOpenSidenav }) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [resetPasswordVisible, setResetPasswordVisible] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [isnotiDialogVisible, setIsNotiDialogVisible] = useState(false);
+  const [read, setRead] = useState(false);
   const [resetPasswordData, setResetPasswordData] = useState({
     oldPassword: "",
     newPassword: "",
@@ -65,6 +68,72 @@ const Navbar = ({ onOpenSidenav }) => {
   }, []);
 
   useEffect(() => {
+    // Function to fetch notifications
+    const fetchNotifications = () => {
+      axios
+        .get(
+          `${process.env.REACT_APP_API_URL}/notification/get-all-notification/${user_uuid}`,
+          {
+            headers: { authorization: `bearer ${token}` },
+          }
+        )
+        .then((res) => {
+          console.log(res.data);
+          setNotifications(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+
+    // Initial fetch
+    fetchNotifications();
+
+    // Poll for notifications every minute (adjust the interval as needed)
+    const notificationPollingInterval = setInterval(fetchNotifications, 50000);
+
+    // Clean up the interval when the component unmounts
+    return () => {
+      clearInterval(notificationPollingInterval);
+    };
+  }, [token, user_uuid]);
+
+  const update = () => {
+    axios
+      .put(
+        `${process.env.REACT_APP_API_URL}/notification/update-all-notification/${user_uuid}`,
+        null,
+        {
+          headers: { authorization: `bearer ${token}` },
+        }
+      )
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const formatTimestamp = (timestamp) => {
+    const date = new Date(timestamp);
+
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+
+    const hours = String(date.getHours() % 12 || 12).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+    const ampm = date.getHours() >= 12 ? "PM" : "AM";
+
+    const formattedDate = `${day}-${month}-${year}`;
+    const formattedTime = `${hours}:${minutes}:${seconds} ${ampm}`;
+
+    return { formattedDate, formattedTime };
+  };
+
+  useEffect(() => {
     if (dialogVisible) {
       axios
         .get(
@@ -95,6 +164,10 @@ const Navbar = ({ onOpenSidenav }) => {
     }
   }, [dialogVisible, user_uuid, token]);
 
+  const openDialog = () => {
+    setIsNotiDialogVisible(true);
+    update();
+  };
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -239,7 +312,9 @@ const Navbar = ({ onOpenSidenav }) => {
         setIsUpdating(false);
       });
   };
-
+  const newNotifications = notifications.filter(
+    (notification) => notification.notification_status === 0
+  );
   return (
     <>
       <Dialog
@@ -570,55 +645,124 @@ const Navbar = ({ onOpenSidenav }) => {
             </span>
           )}
           {/* start Notification */}
+
           <Dropdown
             button={
-              <p className="cursor-pointer">
-                <IoMdNotificationsOutline className="h-6 w-6 text-gray-600 dark:text-white" />
-              </p>
+              // <p className="cursor-pointer">
+              //   <IoMdNotificationsOutline className="h-6 w-6 text-gray-600 dark:text-white" />
+              // </p>
+              <div className="relative">
+                <IoMdNotificationsOutline className="h-6 w-6 cursor-pointer text-gray-600 dark:text-white" />
+                {newNotifications.length > 0 && !read && (
+                  <span
+                    className="absolute -right-1 -top-1 h-4 w-4 rounded-full bg-red-500 text-center text-[0.58rem] text-white"
+                    style={{ lineHeight: "2" }}
+                  >
+                    {newNotifications.length}
+                  </span>
+                )}
+              </div>
             }
             animation="origin-[65%_0%] md:origin-top-right transition-all duration-300 ease-in-out"
             children={
-              <div className="flex w-[360px] flex-col gap-3 rounded-[20px] bg-white p-4 shadow-xl shadow-shadow-500 dark:!bg-navy-700 dark:text-white dark:shadow-none sm:w-[460px]">
-                <div className="flex items-center justify-between">
-                  <p className="text-base font-bold text-navy-700 dark:text-white">
-                    Notification
+              <div className="flex w-[360px] flex-col gap-3 rounded-[20px] bg-gray-100 p-4 shadow-xl shadow-shadow-500 dark:!bg-navy-700 dark:text-white dark:shadow-none sm:w-[460px]">
+                {newNotifications.length > 0 ? (
+                  <div className="flex items-center justify-between">
+                    <p className="text-base font-bold text-navy-700 dark:text-white">
+                      Notification
+                    </p>
+                    <p
+                      className="cursor-pointer text-sm font-bold text-navy-700 dark:text-white"
+                      onClick={(e) => {
+                        update();
+                        setRead(true);
+                      }}
+                    >
+                      Mark all read
+                    </p>
+                  </div>
+                ) : (
+                  <p className="text-center text-gray-500">
+                    No new notifications
                   </p>
-                  <p className="text-sm font-bold text-navy-700 dark:text-white">
-                    Mark all read
-                  </p>
-                </div>
-
-                <button className="flex w-full items-center">
-                  <div className="flex h-full w-[85px] items-center justify-center rounded-xl bg-gradient-to-b from-brandLinear to-brand-500 py-4 text-2xl text-white">
-                    <BsArrowBarUp />
-                  </div>
-                  <div className="ml-2 flex h-full w-full flex-col justify-center rounded-lg px-1 text-sm">
-                    <p className="mb-1 text-left text-base font-bold text-gray-900 dark:text-white">
-                      New Alert: Drowsiness detected
-                    </p>
-                    <p className="font-base text-left text-xs text-gray-900 dark:text-white">
-                      New Alert: Drowsiness detected
-                    </p>
-                  </div>
-                </button>
-
-                <button className="flex w-full items-center">
-                  <div className="flex h-full w-[85px] items-center justify-center rounded-xl bg-gradient-to-b from-brandLinear to-brand-500 py-4 text-2xl text-white">
-                    <BsArrowBarUp />
-                  </div>
-                  <div className="ml-2 flex h-full w-full flex-col justify-center rounded-lg px-1 text-sm">
-                    <p className="mb-1 text-left text-base font-bold text-gray-900 dark:text-white">
-                      New Alert: Drowsiness detected
-                    </p>
-                    <p className="font-base text-left text-xs text-gray-900 dark:text-white">
-                      New Alert: Drowsiness detected
-                    </p>
-                  </div>
+                )}
+                {newNotifications.slice(0, 2).map((notification, index) => (
+                  <button className="flex w-full items-center" key={index}>
+                    {newNotifications.length > 0 ? (
+                      <>
+                        <div className="flex h-full w-[85px] items-center justify-center rounded-xl bg-gradient-to-b from-brandLinear to-brand-500 py-4 text-2xl text-white">
+                          <BsArrowBarUp />
+                        </div>
+                        <div className="ml-2 flex h-full w-full flex-col justify-center rounded-lg px-1 text-sm">
+                          <div>
+                            <p
+                              className={`mb-1 text-left text-base font-bold text-gray-900 dark:text-white ${
+                                read && "font-normal "
+                              }`}
+                            >
+                              {notification.content}
+                            </p>
+                            <p className="font-base text-left text-xs text-gray-900 dark:text-white">
+                              {formatTimestamp(
+                                notification.notification_created_at
+                              ).formattedDate +
+                                " at " +
+                                formatTimestamp(
+                                  notification.notification_created_at
+                                ).formattedTime}
+                            </p>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <p className="text-center text-gray-500">
+                        No new notifications
+                      </p>
+                    )}
+                  </button>
+                ))}
+                <button
+                  className="text-normal ml-auto w-fit cursor-pointer rounded bg-gray-150 px-2 text-right font-semibold text-navy-700 dark:bg-gray-600 dark:text-gray-50"
+                  onClick={(e) => {
+                    update();
+                    openDialog();
+                    setRead(true);
+                  }}
+                >
+                  View All
                 </button>
               </div>
             }
             classNames={"py-2 top-4 -left-[230px] md:-left-[440px] w-max"}
           />
+
+          <Dialog
+            visible={isnotiDialogVisible}
+            onHide={(e) => {
+              setIsNotiDialogVisible(false);
+            }}
+            style={{ width: "45rem" }}
+            breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+            header="Notifications"
+            modal
+            className="p-fluid dark:bg-gray-900"
+          >
+            {notifications.map((notification, index) => (
+              <button className="flex w-full items-center" key={index}>
+                <div className="ml-2 flex h-full w-full flex-col justify-center rounded-lg py-2 pl-8 text-sm">
+                  <div key={index}>
+                    <p className="mb-1 text-left text-base font-semibold text-gray-900 dark:text-white">
+                      {notification.content}
+                    </p>
+                    <p className="font-base pb-1 text-left text-xs text-gray-900 dark:text-white">
+                      {notification.notification_created_at}
+                    </p>
+                    <hr />
+                  </div>
+                </div>
+              </button>
+            ))}
+          </Dialog>
           <div
             className="cursor-pointer text-gray-600"
             onClick={() => {

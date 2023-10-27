@@ -155,11 +155,11 @@ const Triggers = () => {
           setRefresh(!refresh);
         })
         .catch((err) => {
-          console.log(err);
+          console.log(err.response.data.message);
           toastRef.current.show({
             severity: "error",
             summary: "Error",
-            detail: "Failed to add trigger. Please try again.",
+            detail: err.response.data.message,
             life: 3000,
           });
         });
@@ -186,11 +186,11 @@ const Triggers = () => {
         setRefresh(!refresh);
       })
       .catch((err) => {
-        console.log(err, "sapna");
+        console.log(err.response.message, "sapna");
         toastRef.current.show({
           severity: "error",
           summary: "Error",
-          detail: "Failed to edit trigger. Please try again.",
+          detail: err.response.data.message,
           life: 3000,
         });
       });
@@ -201,7 +201,7 @@ const Triggers = () => {
     axios
       .put(
         `${process.env.REACT_APP_API_URL}/alert-triggers/delete-alert-trigger/${trigger_id}`,
-        {},
+        { user_uuid },
         { headers: { authorization: `bearer ${token}` } }
       )
       .then((res) => {

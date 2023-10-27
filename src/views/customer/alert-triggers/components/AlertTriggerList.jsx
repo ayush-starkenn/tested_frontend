@@ -285,7 +285,7 @@ const AlertTriggerList = ({
           "recipients",
           "vehicle_uuid",
         ]}
-        emptyMessage="No devices found."
+        emptyMessage="No alert triggers found."
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
       >
         <Column

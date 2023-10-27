@@ -222,7 +222,7 @@ const Marketplace = () => {
         toastRef.current.show({
           severity: "success",
           summary: "Success",
-          detail: "Vehicle added successfully!",
+          detail: "Vehicle deleted successfully!",
           life: 3000,
         });
       })
