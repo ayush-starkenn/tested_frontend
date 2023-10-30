@@ -41,9 +41,9 @@ const AlertTriggerList = ({
   };
 
   const clearSearch = () => {
-    setGlobalFilterValue(""); // Clear the search input value
+    setGlobalFilterValue("");
     const _filters = { ...filters };
-    _filters["global"].value = null; // Clear the global filter value
+    _filters["global"].value = null;
     setFilters(_filters);
   };
 
@@ -160,15 +160,29 @@ const AlertTriggerList = ({
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const updateData = {
-      trigger_name: editData.trigger_name,
-      trigger_description: editData.trigger_description,
-      vehicle_uuid: editData.vehicle_uuid,
-      trigger_type: editData.trigger_type,
-      recipients: JSON.stringify(selectedContacts),
-      trigger_status: editData.trigger_status,
-      user_uuid: user_uuid,
-    };
+    let updateData = {};
+
+    if (selectedContacts.length > 0) {
+      updateData = {
+        trigger_name: editData.trigger_name,
+        trigger_description: editData.trigger_description,
+        vehicle_uuid: editData.vehicle_uuid,
+        trigger_type: editData.trigger_type,
+        recipients: JSON.stringify(selectedContacts),
+        trigger_status: editData.trigger_status,
+        user_uuid: user_uuid,
+      };
+    } else {
+      updateData = {
+        trigger_name: editData.trigger_name,
+        trigger_description: editData.trigger_description,
+        vehicle_uuid: editData.vehicle_uuid,
+        trigger_type: editData.trigger_type,
+        recipients: editData.recipients,
+        trigger_status: editData.trigger_status,
+        user_uuid: user_uuid,
+      };
+    }
 
     editTrigger(editData?.trigger_id, updateData);
     setTimeout(() => {
