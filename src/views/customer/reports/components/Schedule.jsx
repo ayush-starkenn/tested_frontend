@@ -53,7 +53,6 @@ const Schedule = ({ close }) => {
       )
       .then((res) => {
         setVehicles(res.data.results);
-        // console.log(res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -119,7 +118,6 @@ const Schedule = ({ close }) => {
       selected_events: selectedEvents,
       contact_uuid: selectedContacts,
     };
-    console.log(requestData, "sapna");
     axios
       .post(
         `${process.env.REACT_APP_API_URL}/schedule_reports/create_Reports_schedule/${user_uuid}`,
@@ -130,12 +128,9 @@ const Schedule = ({ close }) => {
         }
       )
       .then((res) => {
-        console.log(res.data.report_uuid);
-        console.log("res", res);
         setSubmitted(true);
-        const url = `/customer/scheduled_report/${res.data.report_uuid}`;
+        // const url = `/customer/scheduled_report/${res.data.report_uuid}`;
 
-        console.log("Generated URL:", url);
         setTimeout(() => {
           toastRef.current.show({
             severity: "success",
@@ -149,7 +144,6 @@ const Schedule = ({ close }) => {
         }, 3000);
       })
       .catch((error) => {
-        console.log("err", error.response.data.message);
         toastRef.current.show({
           severity: "error",
           summary: "Error",

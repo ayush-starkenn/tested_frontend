@@ -123,9 +123,7 @@ const AnalyticsThreshold = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
         if (error.response && error.response.status === 404) {
-          console.log(error.response.data.error);
           toastRef.current.show({
             severity: "warn",
             summary: "Warning",
@@ -161,7 +159,6 @@ const AnalyticsThreshold = () => {
         headers: { authorization: `bearer ${token}` },
       })
       .then((response) => {
-        console.log(response);
         setCustomers(response.data.customerData);
       })
       .catch((error) => {

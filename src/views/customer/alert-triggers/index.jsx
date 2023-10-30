@@ -155,7 +155,6 @@ const Triggers = () => {
           setRefresh(!refresh);
         })
         .catch((err) => {
-          console.log(err.response.data.message);
           toastRef.current.show({
             severity: "error",
             summary: "Error",
@@ -186,7 +185,6 @@ const Triggers = () => {
         setRefresh(!refresh);
       })
       .catch((err) => {
-        console.log(err.response.message, "sapna");
         toastRef.current.show({
           severity: "error",
           summary: "Error",
@@ -227,11 +225,11 @@ const Triggers = () => {
   const triggerOptions = [
     {
       label: "Limp Mode Trigger",
-      value: "Limp Mode Trigger",
+      value: "LMP",
     },
     {
       label: "Accident Trigger",
-      value: "Accident Trigger",
+      value: "ACD",
     },
     {
       label: "Sleep Alert Trigger",

@@ -110,7 +110,6 @@ const Contacts = () => {
           }
         )
         .then((res) => {
-          console.log(res);
           setRefresh(!refresh);
           toastRef.current.show({
             severity: "success",
@@ -150,7 +149,6 @@ const Contacts = () => {
 
   //edit contacts api
   const editContacts = (contact_uuid, editData) => {
-    console.log(editData);
     axios
       .put(
         `${process.env.REACT_APP_API_URL}/contacts/editcontact/${contact_uuid}`,
@@ -198,7 +196,6 @@ const Contacts = () => {
         }
       )
       .then((res) => {
-        console.log(res);
         setRefresh(!refresh);
         toastRef.current.show({
           severity: "success",
@@ -208,7 +205,6 @@ const Contacts = () => {
         });
       })
       .catch((err) => {
-        console.log(err);
         toastRef.current.show({
           severity: "error",
           summary: "Error",

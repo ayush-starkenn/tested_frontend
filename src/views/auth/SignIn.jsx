@@ -75,7 +75,6 @@ const SignIn = () => {
       axios
         .post(`${process.env.REACT_APP_API_URL}/login`, data)
         .then((res) => {
-          console.log(res.data);
           const token = res.data.token;
           const user_type = res.data.user.user_type;
           const user_uuid = res.data.user.user_uuid;

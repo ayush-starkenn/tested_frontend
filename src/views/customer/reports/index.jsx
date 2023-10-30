@@ -21,7 +21,6 @@ const Reports = () => {
         { headers: { authorization: `bearer ${token}` } }
       )
       .then((res) => {
-        console.log(res);
         const formattedData = res.data.reportResult.map((item, index) => ({
           ...item,
           serialNo: index + 1,

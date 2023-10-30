@@ -63,7 +63,6 @@ const Drivers = () => {
         }
       )
       .then((res) => {
-        console.log(res.data.results.length);
         const formattedData = res.data.results.map((item, index) => ({
           ...item,
           serialNo: index + 1,
@@ -157,7 +156,6 @@ const Drivers = () => {
           closeDialog();
         })
         .catch((err) => {
-          console.log(err);
           toastRef.current.show({
             severity: "error",
             summary: "Error",
@@ -230,7 +228,6 @@ const Drivers = () => {
         { headers: { authorization: `bearer ${token}` } }
       )
       .then((res) => {
-        // console.log(res);
         setDrivers(editedDriver);
         toastRef.current.show({
           severity: "success",
@@ -240,7 +237,6 @@ const Drivers = () => {
         });
       })
       .catch((err) => {
-        console.log(err.response.data.message);
         toastRef.current.show({
           severity: "error",
           summary: "Error",

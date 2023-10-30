@@ -106,7 +106,6 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
 
   const handleDetails = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
     setFeaturesetData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
@@ -702,10 +701,6 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
       invalidFields.filter((field) => field !== "featureset_users")
     );
   };
-
-  useEffect(() => {
-    console.log(featuresetDetails);
-  }, [featuresetDetails]);
 
   //edit dialog
   return (

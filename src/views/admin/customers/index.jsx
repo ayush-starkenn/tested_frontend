@@ -126,7 +126,6 @@ const Customers = () => {
         const { status } = error.response;
 
         if (status === 401) {
-          console.log("Unauthorized: Please authenticate.");
           toastRef.current.show({
             severity: "warn",
             summary: "Unauthorized",
@@ -134,7 +133,6 @@ const Customers = () => {
             life: 3000,
           });
         } else {
-          console.log("Error:", error.response.data.message);
           toastRef.current.show({
             severity: "error",
             summary: "Error",
@@ -277,8 +275,6 @@ const Customers = () => {
       );
 
       if (response.status === 201) {
-        const responseData = response.data;
-        console.log("Data posted successfully:", responseData);
         setIsDialogVisible(false);
         toastRef.current.show({
           severity: "success",
@@ -290,7 +286,6 @@ const Customers = () => {
         });
         setCust(data);
       } else {
-        console.log(response.data.message);
         toastRef.current.show({
           severity: "error",
           summary: "Error",
@@ -304,7 +299,6 @@ const Customers = () => {
         const { status, data } = error.response;
 
         if (status === 401) {
-          console.log("Unauthorized: Please authenticate.");
           toastRef.current.show({
             severity: "warn",
             summary: "Unauthorized",
@@ -321,7 +315,6 @@ const Customers = () => {
           });
           setIsSubmitting(false);
         } else if (status === 402) {
-          console.log("Passwords MisMatched.");
           toastRef.current.show({
             severity: "error",
             summary: "Password Mismatch",
@@ -330,7 +323,6 @@ const Customers = () => {
           });
           setIsSubmitting(false);
         } else {
-          console.log("Error:", error.response.data.message);
           toastRef.current.show({
             severity: "error",
             summary: "Error",

@@ -53,7 +53,6 @@ const MainDashboard = () => {
         { headers: { authorization: `bearer ${token}` } }
       )
       .then((res) => {
-        console.log(res);
         setDriversCount(res.data.contacts.length);
       })
       .catch((err) => {

@@ -74,7 +74,6 @@ const AssignCustomer = ({ parameters, onSuccess }) => {
         }
       )
       .then((res) => {
-        console.log(res);
         updateFunc();
 
         if (onSuccess) {
