@@ -86,7 +86,6 @@ const CompletedTrip = () => {
   const [endAddress, setEndAddress] = useState("");
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState();
-
   const [distance, setDistance] = useState("");
   const [maxSpd, setMaxSpd] = useState("");
   const [avgSpd, setAvgSpd] = useState();
@@ -95,6 +94,12 @@ const CompletedTrip = () => {
   const [epochStart, setEpochStart] = useState();
   // eslint-disable-next-line
   const [epochEnd, setEpochEnd] = useState();
+  // Set braking freq
+  const [brakingFreq, setBrakingFreq] = useState();
+  const [haltTime, setHaltTime] = useState("");
+  const [tripDurationInMins, settripDurationInMins] = useState(0);
+  // for calculating the braking frequency
+  const [haltTimeInMin, setHaltTimeInMin] = useState(0);
 
   // CAS faults
   const [accident, setAccident] = useState(0);
@@ -203,6 +208,11 @@ const CompletedTrip = () => {
         setEpochStart(resTripdata[0].trip_start_time);
         setEpochEnd(resTripdata[0].trip_end_time);
         setVehicleId(resTripdata[0].vehicle_uuid);
+
+        const tripDurationInSec =
+          resTripdata[0].trip_end_time - resTripdata[0].trip_start_time;
+        const tripDurationInMins = tripDurationInSec / 60;
+        settripDurationInMins(Math.round(tripDurationInMins));
       })
       .catch((err) => {
         console.log(err);
@@ -274,6 +284,37 @@ const CompletedTrip = () => {
           lat: parseFloat(res.data.tripdata[dataLength].lat),
           lng: parseFloat(res.data.tripdata[dataLength].lng),
         });
+
+        // Halt calculation
+        const allTripData = res.data.tripdata;
+        let startHalt = 0;
+        let endHalt = 0;
+        let totalHalt = 0;
+        allTripData.forEach((tdata) => {
+          if (tdata.spd == 0 && startHalt == 0) {
+            startHalt = tdata.timestamp;
+          } else if (tdata.spd == 0) {
+            endHalt = tdata.timestamp;
+          } else {
+            startHalt = 0;
+            endHalt = 0;
+          }
+
+          let timeDiff = endHalt - startHalt;
+
+          if (timeDiff > 60) {
+            totalHalt = totalHalt + timeDiff;
+          }
+        });
+        const haltHr = Math.floor(totalHalt / 3600);
+        const remainingSeconds = totalHalt % 3600;
+        const haltMin = Math.floor(remainingSeconds / 60);
+        const haltSec = remainingSeconds % 60;
+        setHaltTime(`${haltHr} Hr : ${haltMin} Min : ${haltSec} Sec`);
+
+        // set halt time in minutes for calculating braking freq
+        const haltInMins = Math.floor(totalHalt / 60);
+        setHaltTimeInMin(haltInMins);
       })
       .catch((error) => {
         console.log(error);
@@ -684,6 +725,18 @@ const CompletedTrip = () => {
     return () => clearTimeout(timerId);
   }, [token, trip_id, tripData]);
 
+  // Set braking frequency
+  useEffect(() => {
+    // Removing halt time from total trip duration
+    const tripDurTime = tripDurationInMins - haltTimeInMin;
+    if (autoBrk === 0) {
+      setBrakingFreq(0);
+    } else {
+      const xTime = tripDurTime / autoBrk;
+      setBrakingFreq(xTime.toFixed(2));
+    }
+  }, [autoBrk, tripDurationInMins, haltTimeInMin]);
+
   // Set the stroke color based on whether it's a special route
   const polylineOptions = {
     strokeWeight: 4,
@@ -1054,8 +1107,9 @@ const CompletedTrip = () => {
     } else {
       setVideoUrl(`${process.env.REACT_APP_S3_URL}/${url}`);
     }
+    console.log("dashu video..", dashcamVid);
 
-    if (dashCamVideo) {
+    if (dashcamVid) {
       const dashCamVideo = dashcamVid.startsWith("/var/www/html/media/")
         ? dashcamVid.substring(20)
         : dashcamVid;
@@ -2266,8 +2320,12 @@ const CompletedTrip = () => {
             </h2>
 
             <dl className="mb-4 mt-10 grid grid-cols-1 gap-x-6 gap-y-7 sm:grid-cols-2 sm:gap-y-12 lg:gap-x-8">
-              <TripInfoItem title="Braking Frequency" value="--" />
-              <div className="border-t border-gray-200 pt-4 dark:border-cyan-800">
+              <TripInfoItem
+                title="Braking Frequency"
+                value={brakingFreq === 0 ? "--" : `Once in ${brakingFreq} Mins`}
+              />
+              <TripInfoItem title="Halt" value={haltTime} />
+              {/* <div className="border-t border-gray-200 pt-4 dark:border-cyan-800">
                 <dt className="font-medium text-gray-900 dark:text-white">
                   Feature Set
                 </dt>
@@ -2276,7 +2334,7 @@ const CompletedTrip = () => {
                     View
                   </button>
                 </dd>
-              </div>
+              </div> */}
             </dl>
 
             <hr />
@@ -2380,9 +2438,15 @@ const CompletedTrip = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {eventTableData.length > 0
-                    ? eventTableData
-                    : "No data found!"}
+                  {eventTableData.length > 0 ? (
+                    eventTableData
+                  ) : (
+                    <>
+                      <tr>
+                        <td colSpan={4}>No data found!</td>
+                      </tr>
+                    </>
+                  )}
                 </tbody>
               </table>
             </ScrollPanel>
