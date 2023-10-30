@@ -792,6 +792,7 @@ const AnalyticsThreshold = () => {
               className="inlinemx-2 mx-2"
               name="status"
               id="userActive"
+              defaultChecked
               value={1}
             />
             <label htmlFor="userActive">Active</label>

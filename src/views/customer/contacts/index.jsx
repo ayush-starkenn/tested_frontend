@@ -150,10 +150,12 @@ const Contacts = () => {
 
   //edit contacts api
   const editContacts = (contact_uuid, editData) => {
+    console.log(editData);
     axios
       .put(
         `${process.env.REACT_APP_API_URL}/contacts/editcontact/${contact_uuid}`,
         editData,
+
         {
           headers: { authorization: `bearer ${token}` },
         }
