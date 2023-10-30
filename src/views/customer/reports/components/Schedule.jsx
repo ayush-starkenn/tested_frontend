@@ -119,7 +119,7 @@ const Schedule = ({ close }) => {
       selected_events: selectedEvents,
       contact_uuid: selectedContacts,
     };
-    console.log(requestData);
+    console.log(requestData, "sapna");
     axios
       .post(
         `${process.env.REACT_APP_API_URL}/schedule_reports/create_Reports_schedule/${user_uuid}`,
@@ -151,8 +151,8 @@ const Schedule = ({ close }) => {
       .catch((error) => {
         console.log("err", error.response.data.message);
         toastRef.current.show({
-          severity: "warn",
-          summary: "Fill Required Fields",
+          severity: "error",
+          summary: "Error",
           detail: error.response.data.message,
           life: 3000,
         });

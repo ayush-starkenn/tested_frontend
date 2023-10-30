@@ -458,7 +458,7 @@ const FeatureSet = ({ myData, closeDialog }) => {
           toastRef.current.show({
             severity: "success",
             summary: "Success",
-            detail: `Vehicle Feature Set  added successfully`,
+            detail: `Vehicle Feature Set updated successfully`,
             life: 2000,
           });
           setTimeout(() => {

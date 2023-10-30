@@ -244,7 +244,6 @@ const Navbar = ({ onOpenSidenav }) => {
       return;
     }
 
-    setIsUpdating(true);
     axios
       .put(
         `${process.env.REACT_APP_API_URL}/profile/change-profile-password/${user_uuid}`,
@@ -590,7 +589,6 @@ const Navbar = ({ onOpenSidenav }) => {
             <InputText
               id="newPassword"
               name="newPassword"
-              value={resetPasswordData?.newPassword}
               onChange={(e) => {
                 handleResetPasswordInputChange("newPassword", e.target.value);
                 setPwerr(false);
