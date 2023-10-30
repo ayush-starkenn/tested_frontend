@@ -98,6 +98,7 @@ const OngoingTrip = () => {
   const [epochStart, setEpochStart] = useState();
   // eslint-disable-next-line
   const [epochEnd, setEpochEnd] = useState();
+  const [haltTime, setHaltTime] = useState("");
 
   // CAS faults
   const [accident, setAccident] = useState(0);
@@ -291,6 +292,33 @@ const OngoingTrip = () => {
               lat: parseFloat(res.data.tripdata[dataLength].lat),
               lng: parseFloat(res.data.tripdata[dataLength].lng),
             });
+
+            // Halt calculation
+            const allTripData = res.data.tripdata;
+            let startHalt = 0;
+            let endHalt = 0;
+            let totalHalt = 0;
+            allTripData.forEach((tdata) => {
+              if (tdata.spd == 0 && startHalt == 0) {
+                startHalt = tdata.timestamp;
+              } else if (tdata.spd == 0) {
+                endHalt = tdata.timestamp;
+              } else {
+                startHalt = 0;
+                endHalt = 0;
+              }
+
+              let timeDiff = endHalt - startHalt;
+
+              if (timeDiff > 60) {
+                totalHalt = totalHalt + timeDiff;
+              }
+            });
+            const haltHr = Math.floor(totalHalt / 3600);
+            const remainingSeconds = totalHalt % 3600;
+            const haltMin = Math.floor(remainingSeconds / 60);
+            const haltSec = remainingSeconds % 60;
+            setHaltTime(`${haltHr} Hr : ${haltMin} Min : ${haltSec} Sec`);
 
             // Set Start time
             let sttime = res.data.tripdata[0].timestamp;
@@ -1191,10 +1219,13 @@ const OngoingTrip = () => {
     }
 
     if (dashcamVid) {
-      if (dashcamVid.includes(checkDriveUrl)) {
-        setDashCamVideo(dashcamVid);
+      const dashCamVideo = dashcamVid.startsWith("/var/www/html/media/")
+        ? dashcamVid.substring(20)
+        : dashcamVid;
+      if (dashCamVideo.includes(checkDriveUrl)) {
+        setDashCamVideo(dashCamVideo);
       } else {
-        setDashCamVideo(`${process.env.REACT_APP_S3_URL}/${dashcamVid}`);
+        setDashCamVideo(`${process.env.REACT_APP_S3_URL}/${dashCamVideo}`);
       }
     }
 
@@ -2442,7 +2473,8 @@ const OngoingTrip = () => {
 
             <dl className="mb-4 mt-10 grid grid-cols-1 gap-x-6 gap-y-7 sm:grid-cols-2 sm:gap-y-12 lg:gap-x-8">
               <TripInfoItem title="Braking Frequency" value="--" />
-              <div className="border-t border-gray-200 pt-4 dark:border-cyan-800">
+              <TripInfoItem title="Halt" value={haltTime} />
+              {/* <div className="border-t border-gray-200 pt-4 dark:border-cyan-800">
                 <dt className="font-medium text-gray-900 dark:text-white">
                   Feature Set
                 </dt>
@@ -2451,7 +2483,7 @@ const OngoingTrip = () => {
                     View
                   </button>
                 </dd>
-              </div>
+              </div> */}
             </dl>
 
             <hr />
@@ -2553,9 +2585,15 @@ const OngoingTrip = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {eventTableData.length > 0
-                    ? eventTableData
-                    : "No data found!"}
+                  {eventTableData.length > 0 ? (
+                    eventTableData
+                  ) : (
+                    <>
+                      <tr>
+                        <td colSpan={4}>No data found!</td>
+                      </tr>
+                    </>
+                  )}
                 </tbody>
               </table>
             </ScrollPanel>
