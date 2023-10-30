@@ -22,6 +22,7 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
   const [selectedValue, setSelectedValue] = useState("");
   const [customers, setCustomers] = useState([]);
   const [listCustomers, setListCustomers] = useState([]);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const toastErr = useRef(null);
   const toastRef = useRef(null);
 
@@ -57,11 +58,11 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}/customers/get-all-customer`, {
+      .get(`${process.env.REACT_APP_API_URL}/customers/get-all-customer"=`, {
         headers: { authorization: `bearer ${token}` },
       })
       .then((res) => {
-        setListCustomers(res.data.customerData);
+        setListCustomers(res.data.customers);
       })
       .catch((err) => {
         console.log(err);
@@ -105,6 +106,7 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
 
   const handleDetails = (e) => {
     const { name, value } = e.target;
+    console.log(name, value);
     setFeaturesetData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
@@ -478,6 +480,7 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
     e.preventDefault();
 
     const invalidFieldsArray = validateForm(featuresetDetails, featuresetData);
+    setIsButtonDisabled(true);
     setInvalidFields(invalidFieldsArray);
 
     // If there are invalid fields, show a toast and return
@@ -494,12 +497,10 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
       user_uuid,
       featureset_name: featuresetDetails.featureset_name,
       featureset_users: customers,
-      featuerset_version: featuresetDetails.featuerset_version || "1",
+      featuerset_version: featuresetDetails.featuerset_version || 1,
       featureset_data: featuresetData,
       featureset_status: featuresetDetails.featureset_status,
     };
-
-    console.log(editData);
 
     axios
       .put(
@@ -653,7 +654,7 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
 
   const activeOption = [
     { label: "Active", value: 1 },
-    { label: "Deactive", value: 2 },
+    { label: "Deactive", value: 0 },
   ];
 
   //fetching customers
@@ -702,6 +703,10 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
     );
   };
 
+  useEffect(() => {
+    console.log(featuresetDetails);
+  }, [featuresetDetails]);
+
   //edit dialog
   return (
     <>
@@ -738,7 +743,6 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
               style={{
                 borderRadius: "5px",
               }}
-              disabled
               name="featuerset_version"
               onChange={handleChange}
               placeholder="Featureset Version"
@@ -783,11 +787,7 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
               options={activeOption}
               optionLabel="label"
               className="md:w-14rem mt-2 w-full border"
-              placeholder={
-                featuresetDetails.featureset_status === 1
-                  ? "Active"
-                  : "Deactive"
-              }
+              value={featuresetDetails.featureset_status || 1}
             />
           </div>
           <p className="mt-4 font-bold ">System Type</p>
@@ -3438,6 +3438,7 @@ const EditFeatureset = ({ parameters, onSuccess }) => {
         <div className="text-right">
           <button
             type="submit"
+            disabled={isButtonDisabled}
             className="rounded bg-blue-600 px-3 py-2 text-white dark:bg-gray-150 dark:font-bold dark:text-blue-800"
           >
             Edit Feature Set

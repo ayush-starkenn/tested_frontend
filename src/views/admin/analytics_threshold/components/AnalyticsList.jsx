@@ -360,7 +360,9 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                 }`}
               />
 
-              <label htmlFor="title">Title</label>
+              <label htmlFor="title" className="dark:text-gray-150">
+                Title
+              </label>
             </span>
           </div>
 
@@ -378,7 +380,9 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                 onChange={(e) => handleChange(e, "user_uuid")}
               />
 
-              <label htmlFor="user_uuid">Customer List</label>
+              <label htmlFor="user_uuid" className="dark:text-gray-150">
+                Customer List
+              </label>
             </span>
           </div>
 
@@ -401,10 +405,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                       : ""
                   }`}
                 />
-                <label
-                  htmlFor="brake-input"
-                  className="text-gray-150 dark:text-gray-150"
-                >
+                <label htmlFor="brake-input" className="dark:text-gray-300">
                   Brake
                 </label>
               </span>
@@ -428,7 +429,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                 />
                 <label
                   htmlFor="tailgating-input"
-                  className="text-gray-150 dark:text-gray-150"
+                  className="dark:text-gray-150"
                 >
                   Tailgating
                 </label>
@@ -454,7 +455,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                 />
                 <label
                   htmlFor="rash-driving-input"
-                  className="text-gray-150 dark:text-gray-150"
+                  className="dark:text-gray-150"
                 >
                   Rash Driving
                 </label>
@@ -480,7 +481,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                 />
                 <label
                   htmlFor="sleep-alert-input"
-                  className="text-gray-150 dark:text-gray-150"
+                  className="dark:text-gray-150"
                 >
                   Sleep Alert
                 </label>
@@ -505,7 +506,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                 />
                 <label
                   htmlFor="over-speed-input"
-                  className="text-gray-150 dark:text-gray-150"
+                  className="dark:text-gray-150"
                 >
                   Over Speed
                 </label>
@@ -530,7 +531,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                 />
                 <label
                   htmlFor="green-zone-input"
-                  className="text-gray-150 dark:text-gray-150"
+                  className="dark:text-gray-150"
                 >
                   Green Zone
                 </label>
@@ -564,7 +565,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                   />
                   <label
                     htmlFor="minimum-distance-input"
-                    className="text-gray-150 dark:text-gray-150"
+                    className="dark:text-gray-150"
                   >
                     Minimum Distance
                   </label>
@@ -592,7 +593,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                   />
                   <label
                     htmlFor="minimum-driver-rating-input"
-                    className="text-gray-150 dark:text-gray-150"
+                    className="dark:text-gray-150"
                   >
                     Minimum Driver Rating
                   </label>
@@ -627,7 +628,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                   />
                   <label
                     htmlFor="ttc-difference-percentage-input"
-                    className="text-gray-150 dark:text-gray-150"
+                    className=" dark:text-gray-150"
                   >
                     TTC Difference Percentage
                   </label>
@@ -661,7 +662,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                 />
                 <label
                   htmlFor="total-distance-input"
-                  className="text-gray-150 dark:text-gray-150"
+                  className="dark:text-gray-150"
                 >
                   Total Distance
                 </label>
@@ -691,7 +692,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                 />
                 <label
                   htmlFor="halt-duration-input"
-                  className="text-gray-150 dark:text-gray-150"
+                  className="dark:text-gray-150"
                 >
                   Duration
                 </label>

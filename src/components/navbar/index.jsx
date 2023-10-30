@@ -24,6 +24,7 @@ const Navbar = ({ onOpenSidenav }) => {
   const [editMode, setEditMode] = useState(false);
   const [editModeColor, setEditModeColor] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isChanging, setIsChanging] = useState(false);
   const [resetPasswordVisible, setResetPasswordVisible] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [notifications, setNotifications] = useState([]);
@@ -220,6 +221,7 @@ const Navbar = ({ onOpenSidenav }) => {
   };
 
   const handleResetPasswordSubmit = () => {
+    setIsChanging(true);
     if (
       !resetPasswordData.oldPassword ||
       !resetPasswordData.newPassword ||
@@ -232,6 +234,7 @@ const Navbar = ({ onOpenSidenav }) => {
         detail: "Please fill in all password fields",
         life: 3000,
       });
+      setIsChanging(false);
       return;
     }
     if (resetPasswordData.confirmPassword !== resetPasswordData.newPassword) {
@@ -241,6 +244,7 @@ const Navbar = ({ onOpenSidenav }) => {
         detail: "Passwords do not match",
         life: 3000,
       });
+      setIsChanging(false);
       return;
     }
 
@@ -268,7 +272,7 @@ const Navbar = ({ onOpenSidenav }) => {
           detail: err.response.data.message || "Error in changing password",
           life: 3000,
         });
-        setIsUpdating(false);
+        setIsChanging(false);
       });
   };
 
@@ -544,10 +548,24 @@ const Navbar = ({ onOpenSidenav }) => {
         footer={
           <div>
             <button
-              className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
+              className={`p-button-primary rounded px-3 py-2 dark:bg-gray-150 dark:font-bold dark:text-blue-800 ${
+                isChanging
+                  ? "cursor-not-allowed bg-blue-200 text-blue-500"
+                  : "bg-blue-500 text-white hover:bg-blue-600"
+              } `}
+              disabled={isChanging}
               onClick={handleResetPasswordSubmit}
             >
-              Change Password
+              {isChanging ? (
+                <>
+                  Changing Password...{" "}
+                  <FiLoader className="inline-block animate-spin" />
+                </>
+              ) : (
+                <>
+                  Change Password <FiCheck className="inline-block" />
+                </>
+              )}
             </button>
           </div>
         }
@@ -749,11 +767,15 @@ const Navbar = ({ onOpenSidenav }) => {
               <button className="flex w-full items-center" key={index}>
                 <div className="ml-2 flex h-full w-full flex-col justify-center rounded-lg py-2 pl-8 text-sm">
                   <div key={index}>
-                    <p className="mb-1 text-left text-base font-semibold text-gray-900 dark:text-white">
+                    <p className="mb-1 text-left text-base font-normal text-gray-900 dark:text-white">
                       {notification.content}
                     </p>
-                    <p className="font-base pb-1 text-left text-xs text-gray-900 dark:text-white">
-                      {notification.notification_created_at}
+                    <p className="font-base text-left text-xs text-gray-900 dark:text-white">
+                      {formatTimestamp(notification.notification_created_at)
+                        .formattedDate +
+                        " at " +
+                        formatTimestamp(notification.notification_created_at)
+                          .formattedTime}
                     </p>
                     <hr />
                   </div>

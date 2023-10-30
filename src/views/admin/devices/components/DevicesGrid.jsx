@@ -136,11 +136,6 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
       setFilteredData(filteredData);
       setSelectedDevice(null);
       setIsDeleteDialogVisible(false);
-      toastRef.current.show({
-        severity: "success",
-        summary: "Device Deleted",
-        detail: "Customer has been deleted successfully.",
-      });
     } catch (error) {
       console.error("Delete error:", error);
       setIsDeleteDialogVisible(false);
@@ -234,9 +229,16 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
     const [editedDeviceData, setEditedDeviceData] = useState(device || {});
     const isFormValid = Object.values(editedDeviceData).every((val) => {
       // Check if val is a string and is not an empty string
-      return typeof val === "string" && val.trim() !== "";
+      return (
+        (typeof val === "string" && val.trim() !== "") ||
+        typeof val === "number"
+      );
     });
     const onSave = async () => {
+      for (const key in editedDeviceData) {
+        console.log(`${key}:`, typeof editedDeviceData[key]);
+      }
+
       if (!isFormValid) {
         toastRef.current.show({
           severity: "warn",
@@ -246,6 +248,7 @@ export default function DevicesGrid({ data, onDeleteDevice, onEditDevice }) {
         });
         return;
       }
+
       try {
         await onEditDevice(device?.device_id, editedDeviceData);
 
