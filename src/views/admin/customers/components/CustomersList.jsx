@@ -93,7 +93,6 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
         onHide();
       } catch (error) {
         setIsUpdating(false);
-        console.log(error);
       }
     };
 
@@ -346,7 +345,6 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
             key: customer.user_uuid,
           }));
 
-        console.log(updatedData);
         setCustomerData(updatedData);
 
         onHide();

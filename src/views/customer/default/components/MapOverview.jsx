@@ -37,14 +37,12 @@ const MapOverview = () => {
         { headers: { authorization: `bearer ${token}` } }
       )
       .then((res) => {
-        console.log(res.data.Trip_data);
         setMarkerInfo(res.data.Trip_data);
         let x = res.data.Trip_data;
         let y = [];
         x.forEach((e) => {
           const lat_ = parseFloat(parseFloat(e.lat).toFixed(4));
           const lng_ = parseFloat(parseFloat(e.lng).toFixed(4));
-          // console.log("lat lng while converting : ", lat_, ":", lng_);
           y.push({
             lat: lat_,
             lng: lng_,
@@ -87,8 +85,6 @@ const MapOverview = () => {
     let formatDta = formattedDate.toLocaleString();
     return formatDta;
   };
-
-  console.log(markerInfo);
 
   return (
     <div>

@@ -73,7 +73,6 @@ const UnAssignCustomer = ({ parameters, onSuccess }) => {
         { headers: { authorization: `bearer ${token}` } }
       )
       .then((res) => {
-        console.log(res);
         updateFunc();
 
         if (onSuccess) {

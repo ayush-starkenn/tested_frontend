@@ -70,7 +70,6 @@ const Generate = ({ close }) => {
       )
       .then((res) => {
         setVehicles(res.data.results);
-        // console.log(res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -205,7 +204,6 @@ const Generate = ({ close }) => {
       selected_events: selectedEvents,
       contact_uuid: selectedContacts,
     };
-    console.log(requestData);
     axios
       .post(
         `${process.env.REACT_APP_API_URL}/reports/createReports-all/${user_uuid}`,
@@ -216,13 +214,11 @@ const Generate = ({ close }) => {
         }
       )
       .then((res) => {
-        console.log(res.data.report_uuid);
         close();
 
         window.open(`/customer/report/${res.data.report_uuid}`, "_blank");
       })
       .catch((error) => {
-        console.log(error.response.data.message);
         toastRef.current.show({
           severity: "warn",
           summary: "Fill Required Fields",

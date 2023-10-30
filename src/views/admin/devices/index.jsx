@@ -72,7 +72,6 @@ const DevicesAdmin = () => {
         { headers: { authorization: `bearer ${token}` } }
       )
       .then((res) => {
-        // console.log(res);
         setDevices(editedDevice);
         toastRef.current.show({
           severity: "success",
@@ -178,7 +177,6 @@ const DevicesAdmin = () => {
       })
       .then((res) => {
         setListCustomers(res.data.users);
-        // console.log(res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -216,7 +214,6 @@ const DevicesAdmin = () => {
           closeDialog();
         })
         .catch((err) => {
-          console.log(err);
           toastRef.current.show({
             severity: "error",
             summary: "Error",

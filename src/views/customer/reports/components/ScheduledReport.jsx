@@ -32,14 +32,11 @@ const ScheduledReport = () => {
         }
       )
       .then((res) => {
-        console.log(res.data.report.from_date);
-        console.log(res.data.report.vehicleResults);
         setTitle(res.data.report.title);
         setFromDate(res.data.report.from_date);
         setToDate(res.data.report.to_date);
         setDate(currentDate);
         setVehicles(res.data.report.vehicleResults);
-        console.log(vehicles);
         setTableData(res.data.report.vehicleResults);
         const chartData = res.data.report.vehicleResults.map((vehicle) => {
           return {

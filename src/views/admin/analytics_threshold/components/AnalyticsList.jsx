@@ -192,8 +192,6 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
     };
     setEditData(analyticData);
 
-    console.log(editData);
-
     const emptyEditData = {
       title: "",
       user_uuid: "",

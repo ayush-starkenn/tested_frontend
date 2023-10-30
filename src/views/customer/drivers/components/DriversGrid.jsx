@@ -300,7 +300,6 @@ const DriversGrid = ({ data, onDeleteDriver, onEditDriver }) => {
   const handleDriverStatusChange = (event) => {
     const newValue = parseInt(event.target.value);
     setEditData({ ...editData, driver_status: newValue });
-    console.log(newValue);
   };
 
   return (

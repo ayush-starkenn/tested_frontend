@@ -30,7 +30,6 @@ const Report = () => {
         }
       )
       .then((res) => {
-        console.log(res.data.vehicleResults);
         setFromDate(res.data.report.from_date);
         setToDate(res.data.report.to_date);
         setTitle(res.data.report.title);
@@ -42,9 +41,6 @@ const Report = () => {
         console.log(err);
       });
   }, [token, report_uuid]);
-
-  // const vehicleList = JSON.parse(vehicles);
-  console.log(vehicles, "sapna");
 
   useEffect(() => {
     // Parse the vehicles data and create chart data
