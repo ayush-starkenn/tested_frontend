@@ -199,7 +199,6 @@ export default function VehiclesList({
       vehicle_status: editData.vehicle_status,
     };
 
-    console.log(updatedData, "updatedData");
     if (editId && editData) {
       editvehicle(editId, updatedData);
       closeEditDialog();
