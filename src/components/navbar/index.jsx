@@ -79,7 +79,6 @@ const Navbar = ({ onOpenSidenav }) => {
           }
         )
         .then((res) => {
-          console.log(res.data);
           setNotifications(res.data);
         })
         .catch((err) => {
