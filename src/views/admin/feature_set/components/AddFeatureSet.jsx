@@ -558,7 +558,7 @@ const AddFeatureSet = ({ onSuccess }) => {
       user_uuid,
       featureset_name: data.featureset_name,
       featureset_users: customers,
-      featuerset_version: 1,
+      featuerset_version: "1",
       featureset_data: values,
     };
 

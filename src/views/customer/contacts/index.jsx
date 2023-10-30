@@ -239,7 +239,12 @@ const Contacts = () => {
                     formErrors.contact_first_name ? "border-red-600" : ""
                   }`}
                 />
-                <label htmlFor="contact_first_name" className="dark:text-gray-300">First Name</label>
+                <label
+                  htmlFor="contact_first_name"
+                  className="dark:text-gray-300"
+                >
+                  First Name
+                </label>
               </span>
               {formErrors.contact_first_name && (
                 <small className="text-red-600">
@@ -257,7 +262,12 @@ const Contacts = () => {
                     formErrors.contact_last_name ? "border-red-600" : ""
                   }`}
                 />
-                <label htmlFor="contact_last_name" className="dark:text-gray-300">Last Name</label>
+                <label
+                  htmlFor="contact_last_name"
+                  className="dark:text-gray-300"
+                >
+                  Last Name
+                </label>
               </span>
               {formErrors.contact_last_name && (
                 <small className="text-red-600">
@@ -276,7 +286,9 @@ const Contacts = () => {
                     formErrors.contact_email ? "border-red-600" : ""
                   }`}
                 />
-                <label htmlFor="contact_email" className="dark:text-gray-300">Email</label>
+                <label htmlFor="contact_email" className="dark:text-gray-300">
+                  Email
+                </label>
               </span>
               {formErrors.contact_email && (
                 <small className="text-red-600">
@@ -295,7 +307,9 @@ const Contacts = () => {
                     formErrors.contact_mobile ? "border-red-600" : ""
                   }`}
                 />
-                <label htmlFor="contact_mobile" className="dark:text-gray-300">Mobile Number</label>
+                <label htmlFor="contact_mobile" className="dark:text-gray-300">
+                  Mobile Number
+                </label>
               </span>
               {formErrors.contact_mobile && (
                 <small className="text-red-600">
