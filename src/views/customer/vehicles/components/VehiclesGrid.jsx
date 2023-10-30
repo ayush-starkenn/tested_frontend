@@ -43,6 +43,7 @@ export default function VehiclesGrid({
   feauresetData,
 }) {
   const token = Cookies.get("token");
+  const user_uuid = Cookies.get("user_uuid");
   const [editDialog, setEditDialog] = useState(false);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [editData, setEditData] = useState({});
@@ -53,11 +54,13 @@ export default function VehiclesGrid({
   const [myData, setMyData] = useState();
   const [allData, setAllData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
+  const [vehiecu, setVehiecu] = useState();
+  const [vehiiot, setVehiiot] = useState();
+  const [vehidms, setVehidms] = useState();
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     device_type: { value: null, matchMode: FilterMatchMode.IN },
   });
-  const [devices, setDevices] = useState({});
   const [globalFilterValue, setGlobalFilterValue] = useState("");
   const totalItems = filteredData.length;
 
@@ -101,7 +104,9 @@ export default function VehiclesGrid({
     setEditDialog(false);
     setEditData({});
     setEditId("");
-    setDevices({});
+    setVehidms();
+    setVehiecu();
+    setVehiiot();
   };
 
   const DeleteDialog = (item) => {
@@ -133,9 +138,19 @@ export default function VehiclesGrid({
   //onSubmit function
   const handleSubmit = (e) => {
     e.preventDefault();
+    const updatedData = {
+      user_uuid,
+      vehicle_name: editData.vehicle_name,
+      vehicle_registration: editData.vehicle_registration,
+      ecu: vehiecu == null ? editData.ecu : vehiecu,
+      iot: vehiiot == null ? editData.iot : vehiiot,
+      dms: vehidms == null ? editData.dms : vehidms,
+      featureset_uuid: editData.featureset_uuid,
+      vehicle_status: editData.vehicle_status,
+    };
 
     if (editId && editData) {
-      editvehicle(editId, editData);
+      editvehicle(editId, updatedData);
       closeEditDialog();
     }
   };
@@ -195,7 +210,15 @@ export default function VehiclesGrid({
 
   const handleDevices = (e) => {
     const { name, value } = e.target;
-    setDevices({ ...devices, [name]: value });
+    if (name === "ecu") {
+      setVehiecu(value);
+    }
+    if (name === "iot") {
+      setVehiiot(value);
+    }
+    if (name === "dms") {
+      setVehidms(value);
+    }
   };
 
   const itemTemplate = (item) => {
@@ -358,7 +381,9 @@ export default function VehiclesGrid({
           </div>
           <div className="mx-auto mt-4 w-[34.5vw]">
             <small>Selected ECU</small>
-            <p className="rounded-lg bg-gray-200 px-4 py-2">{editData.ecu}</p>
+            <p className="rounded-lg bg-gray-200 px-4 py-2 dark:bg-gray-800">
+              {editData.ecu ? editData.ecu : "No ECU selected"}
+            </p>{" "}
           </div>
           <div className="mx-auto mt-7 w-[34.5vw]">
             <span className="p-float-label">
@@ -369,7 +394,7 @@ export default function VehiclesGrid({
                 optionLabel="label"
                 optionValue="value"
                 onChange={handleDevices}
-                value={devices?.ecu === null ? "Unassign" : devices?.ecu}
+                value={vehiecu === null ? "Unassign" : vehiecu}
                 className={`border dark:bg-gray-800 `}
               />
               <label htmlFor="status" className="dark:text-gray-300">
@@ -379,7 +404,9 @@ export default function VehiclesGrid({
           </div>
           <div className="mx-auto mt-4 w-[34.5vw]">
             <small>Selected IoT</small>
-            <p className="rounded-lg bg-gray-200 px-4 py-2">{editData.iot}</p>
+            <p className="rounded-lg bg-gray-200 px-4 py-2 dark:bg-gray-800">
+              {editData.iot ? editData.iot : "No IoT selected"}
+            </p>{" "}
           </div>
           <div className="mx-auto mt-7 w-[34.5vw]">
             <span className="p-float-label">
@@ -390,7 +417,7 @@ export default function VehiclesGrid({
                 optionLabel="label"
                 optionValue="value"
                 onChange={handleDevices}
-                value={devices?.iot === null ? "Unassign" : devices?.ecu}
+                value={vehiiot === null ? "Unassign" : vehiiot}
                 className={`border dark:bg-gray-800 `}
               />
               <label htmlFor="status" className="dark:text-gray-300">
@@ -400,7 +427,9 @@ export default function VehiclesGrid({
           </div>
           <div className="mx-auto mt-4 w-[34.5vw]">
             <small>Selected IoT</small>
-            <p className="rounded-lg bg-gray-200 px-4 py-2">{editData.dms}</p>
+            <p className="rounded-lg bg-gray-200 px-4 py-2 dark:bg-gray-800">
+              {editData.dms ? editData.dms : "No DMS selected"}
+            </p>{" "}
           </div>
           <div className="mx-auto mt-7 w-[34.5vw]">
             <span className="p-float-label">
@@ -411,7 +440,7 @@ export default function VehiclesGrid({
                 optionLabel="label"
                 optionValue="value"
                 onChange={handleDevices}
-                value={devices?.dms === null ? "Unassign" : devices?.ecu}
+                value={vehidms === null ? "Unassign" : vehidms}
                 className={`border dark:bg-gray-800 `}
               />
               <label htmlFor="status" className="dark:text-gray-300">
