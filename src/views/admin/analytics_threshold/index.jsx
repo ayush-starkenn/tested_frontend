@@ -385,10 +385,7 @@ const AnalyticsThreshold = () => {
                   setFormErrors({ ...formErrors, title: false });
                 }}
               />
-              <label
-                htmlFor="title"
-                className="text-gray-150 dark:text-gray-150"
-              >
+              <label htmlFor="title" className="dark:text-gray-300">
                 Title
               </label>
             </span>
@@ -407,7 +404,9 @@ const AnalyticsThreshold = () => {
                 } `}
                 optionLabel="label"
               />
-              <label htmlFor="dd-city">Select a customer</label>
+              <label htmlFor="dd-city" className="dark:text-gray-300">
+                Select a customer
+              </label>
             </span>
           </div>
           <div className="mb-6">
@@ -430,10 +429,7 @@ const AnalyticsThreshold = () => {
                         : ""
                     }`}
                   />
-                  <label
-                    htmlFor="brake-input"
-                    className="text-gray-150 dark:text-gray-150"
-                  >
+                  <label htmlFor="brake-input" className="dark:text-gray-300">
                     Brake
                   </label>
                 </span>
@@ -462,7 +458,7 @@ const AnalyticsThreshold = () => {
                   />
                   <label
                     htmlFor="tailgating-input"
-                    className="text-gray-150 dark:text-gray-150"
+                    className="dark:text-gray-300"
                   >
                     Tailgating
                   </label>
@@ -494,7 +490,7 @@ const AnalyticsThreshold = () => {
                   />
                   <label
                     htmlFor="rash-driving-input"
-                    className="text-gray-150 dark:text-gray-150"
+                    className="dark:text-gray-300"
                   >
                     Rash Driving
                   </label>
@@ -524,7 +520,7 @@ const AnalyticsThreshold = () => {
                   />
                   <label
                     htmlFor="sleep-alert-input"
-                    className="text-gray-150 dark:text-gray-150"
+                    className="dark:text-gray-300"
                   >
                     Sleep Alert
                   </label>
@@ -556,7 +552,7 @@ const AnalyticsThreshold = () => {
                   />
                   <label
                     htmlFor="over-speed-input"
-                    className="text-gray-150 dark:text-gray-150"
+                    className="dark:text-gray-300"
                   >
                     Over Speed
                   </label>
@@ -586,7 +582,7 @@ const AnalyticsThreshold = () => {
                   />
                   <label
                     htmlFor="green-zone-input"
-                    className="text-gray-150 dark:text-gray-150"
+                    className="dark:text-gray-300"
                   >
                     Green Zone
                   </label>
@@ -624,7 +620,7 @@ const AnalyticsThreshold = () => {
                   />
                   <label
                     htmlFor="minimum-distance-input"
-                    className="text-gray-150 dark:text-gray-150"
+                    className="dark:text-gray-300"
                   >
                     Minimum Distance
                   </label>
@@ -658,7 +654,7 @@ const AnalyticsThreshold = () => {
                   />
                   <label
                     htmlFor="minimum-driver-rating-input"
-                    className="text-gray-150 dark:text-gray-150"
+                    className="dark:text-gray-300"
                   >
                     Minimum Driver Rating
                   </label>
@@ -699,7 +695,7 @@ const AnalyticsThreshold = () => {
                   />
                   <label
                     htmlFor="ttc-difference-percentage-input"
-                    className="text-gray-150 dark:text-gray-150"
+                    className="dark:text-gray-300"
                   >
                     TTC Difference Percentage
                   </label>
@@ -737,7 +733,7 @@ const AnalyticsThreshold = () => {
                   />
                   <label
                     htmlFor="total-distance-input"
-                    className="text-gray-150 dark:text-gray-150"
+                    className="dark:text-gray-300"
                   >
                     Total Distance
                   </label>
@@ -774,7 +770,7 @@ const AnalyticsThreshold = () => {
                   />
                   <label
                     htmlFor="halt-duration-input"
-                    className="text-gray-150 dark:text-gray-150"
+                    className="dark:text-gray-300"
                   >
                     Duration
                   </label>

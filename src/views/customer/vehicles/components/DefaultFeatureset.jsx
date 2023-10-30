@@ -25,7 +25,6 @@ const DefaultFeatureset = ({ closeFeatureset }) => {
         }
       )
       .then((res) => {
-        console.log(res.data.results[0].featureset_data);
         let featuresetAllData = JSON.parse(res.data.results[0].featureset_data);
         setFeaturesetData(featuresetAllData);
         let FeaturesetName = res.data.results[0].featureset_name;
