@@ -31,7 +31,7 @@ const OngoingTable = () => {
 
   useEffect(() => {
     OngoingTripsHere();
-  }, [OngoingTripsHere]);
+  }, []);
 
   const getTimeStamp = (time) => {
     let formattedDate = new Date(time * 1000);
