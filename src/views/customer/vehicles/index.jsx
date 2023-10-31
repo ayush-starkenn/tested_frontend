@@ -41,8 +41,10 @@ const Marketplace = () => {
       errors.vehicle_registration = "Vehicle Registration is required";
     }
 
-    if (!addData.featureset_uuid) {
-      errors.featureset_uuid = "Vehicle Featureset is required";
+    if (addData.ecu) {
+      if (!addData.featureset_uuid) {
+        errors.featureset_uuid = "Vehicle Featureset is required";
+      }
     }
 
     if (addData.dms) {
