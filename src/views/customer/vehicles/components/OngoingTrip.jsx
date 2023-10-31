@@ -87,7 +87,7 @@ const OngoingTrip = () => {
   const [endAddress, setEndAddress] = useState("");
   const [startTime, setStartTime] = useState();
   const [currentTime, setCurrentTime] = useState();
-  const [endTime, setEndTime] = useState();
+  // const [endTime, setEndTime] = useState();
   const [carPosition, setCarPosition] = useState([]);
 
   const [distance, setDistance] = useState("");
@@ -101,7 +101,7 @@ const OngoingTrip = () => {
   const [haltTime, setHaltTime] = useState("");
 
   // CAS faults
-  const [accident, setAccident] = useState(0);
+  // const [accident, setAccident] = useState(0);
   const [harshacc, setHarshacc] = useState(0);
   // eslint-disable-next-line
   const [sleeptAlt, setSleepAlt] = useState(0);
@@ -202,9 +202,9 @@ const OngoingTrip = () => {
         setMaxSpd(resTripdata[0].max_spd);
         setDuration(resTripdata[0].duration);
         const tripStartTime = new Date(resTripdata[0].trip_start_time * 1000);
-        const tripEndTime = new Date(resTripdata[0].trip_end_time * 1000);
+        // const tripEndTime = new Date(resTripdata[0].trip_end_time * 1000);
         setStartTime(tripStartTime.toLocaleString());
-        setEndTime(tripEndTime.toLocaleString());
+        // setEndTime(tripEndTime.toLocaleString());
         setEpochStart(resTripdata[0].trip_start_time);
         setEpochEnd(resTripdata[0].trip_end_time);
         setVehicleId(resTripdata[0].vehicle_uuid);
@@ -213,22 +213,6 @@ const OngoingTrip = () => {
         console.log(err);
       });
   }, [trip_id, token]);
-
-  // Calculate distance between two coordinates using Haversine formula
-  function getDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371; // Radius of the Earth in kilometers
-    const dLat = deg2rad(lat2 - lat1);
-    const dLon = deg2rad(lon2 - lon1);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(deg2rad(lat1)) *
-        Math.cos(deg2rad(lat2)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c;
-    return distance;
-  }
 
   // Convert degrees to radians
   function deg2rad(deg) {
@@ -299,9 +283,9 @@ const OngoingTrip = () => {
             let endHalt = 0;
             let totalHalt = 0;
             allTripData.forEach((tdata) => {
-              if (tdata.spd == 0 && startHalt == 0) {
+              if (tdata.spd === 0 && startHalt === 0) {
                 startHalt = tdata.timestamp;
-              } else if (tdata.spd == 0) {
+              } else if (tdata.spd === 0) {
                 endHalt = tdata.timestamp;
               } else {
                 startHalt = 0;
@@ -352,17 +336,21 @@ const OngoingTrip = () => {
   useEffect(() => {
     if (tripData.length > 0 && startPoint !== "" && endPoint !== "") {
       const getAddress = async (lat, lng, setAddress) => {
-        const response = await fetch(
-          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyCk6RovwH7aF8gjy1svTPJvITZsWGA_roU`
-        );
-        if (response) {
-          // setIsLoading(false);
-        }
-        const data = await response.json();
-        if (data.results.length > 0) {
-          setAddress(data.results[0].formatted_address);
-        } else {
-          setAddress("Loading address...");
+        try {
+          const response = await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyCk6RovwH7aF8gjy1svTPJvITZsWGA_roU`
+          );
+          if (response) {
+            // setIsLoading(false);
+          }
+          const data = await response.json();
+          if (data.results.length > 0) {
+            setAddress(data.results[0].formatted_address);
+          } else {
+            setAddress("Loading address...");
+          }
+        } catch (error) {
+          console.log(error);
         }
       };
 
@@ -558,10 +546,6 @@ const OngoingTrip = () => {
 
               const cvnPathArray = [];
               // Set CVN path
-              // setCVNPath({
-              //   lat: parseFloat(parsejsonDATA.lat),
-              //   lng: parseFloat(parsejsonDATA.lng),
-              // });
               tripData.forEach((row) => {
                 if (row.timestamp > jsonDataa.timestamp) {
                   cvnPathArray.push({
@@ -654,7 +638,7 @@ const OngoingTrip = () => {
 
               // Set Accident save
               if (accSvd > 50 && accSvd < 100) {
-                setAccident((prevCount) => prevCount + 1);
+                // setAccident((prevCount) => prevCount + 1);
                 params = {
                   id: myData[l].id,
                   lat: parseFloat(myData[l].lat),
@@ -858,8 +842,6 @@ const OngoingTrip = () => {
               };
               parameters.push(params);
             }
-
-            // Set Alchohol data
           }
           setMarkers(parameters);
         })
@@ -870,7 +852,7 @@ const OngoingTrip = () => {
 
     // Clear the timer if the component unmounts before 2 seconds
     return () => clearTimeout(timerId);
-  }, [token, trip_id, tripData]);
+  }, [token, trip_id, tripData, epochStart, epochEnd]);
 
   // Set the stroke color based on whether it's a special route --------------
   const polylineOptions = {
@@ -908,6 +890,22 @@ const OngoingTrip = () => {
 
   // Set optimized path that will eliminate jumping
   useEffect(() => {
+    // Calculate distance between two coordinates using Haversine formula
+    function getDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371; // Radius of the Earth in kilometers
+      const dLat = deg2rad(lat2 - lat1);
+      const dLon = deg2rad(lon2 - lon1);
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(deg2rad(lat1)) *
+          Math.cos(deg2rad(lat2)) *
+          Math.sin(dLon / 2) *
+          Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      const distance = R * c;
+      return distance;
+    }
+
     // Specify the maximum distance threshold in kilometers
     const maxDistanceThreshold = 1; // Adjust as needed
 
@@ -941,7 +939,7 @@ const OngoingTrip = () => {
     }
 
     setPath(filteredCoordinates);
-  }, [tripData]);
+  }, [tripData, coordinates]);
 
   // Summary tab
   const SummaryContent = () => (
@@ -1141,8 +1139,9 @@ const OngoingTrip = () => {
     // console.log("marker pahu", filterMarker);
     // const checkDriveUrl = "drive.google.com";
     // const isDriveUrl = data.dms.includes(checkDriveUrl);
+    let dmsContentData = null;
     if (data.event === "DMS") {
-      return (
+      dmsContentData = (
         <div className="group relative" key={index}>
           <div>
             <div className="flex">
@@ -1189,6 +1188,7 @@ const OngoingTrip = () => {
         </div>
       );
     }
+    return dmsContentData;
   });
 
   // Pop-up marker data DMS
@@ -1346,19 +1346,21 @@ const OngoingTrip = () => {
                   onChange={handlecheckbox}
                   name="ACCIDENT_SAVED"
                   checked={checkboxes.ACCIDENT_SAVED}
-                  disabled={accident === 0}
+                  disabled={accidentSaved === 0}
                 />
-                <label className="ml-2 dark:text-white">Accident Saved</label>
+                <label className="ml-2 dark:text-white">
+                  accidentSaved Saved
+                </label>
               </div>
               <div className="flex-shrink-0">
-                {accident === 0 ? (
+                {accidentSaved === 0 ? (
                   <Badge
-                    value={accident}
+                    value={accidentSaved}
                     style={{ backgroundColor: "gray", color: "white" }}
                     className="mx-3"
                   />
                 ) : (
-                  <Badge value={accident} className="mx-3" />
+                  <Badge value={accidentSaved} className="mx-3" />
                 )}
               </div>
             </div>
@@ -1792,35 +1794,35 @@ const OngoingTrip = () => {
   );
 
   const [vehicleData, setVehicleData] = useState([]);
-  // Get vehicle data
-  const getVehicleData = async () => {
-    await axios
-      .get(
-        `${process.env.REACT_APP_API_URL}/vehicles/get-vehicle-by-id/${vehicleId}`,
-        {
-          headers: { authorization: `bearer ${token}` },
-        }
-      )
-      .then((res) => {
-        setVehicleData(res.data.vehicleData[0]);
-        console.log(res.data.vehicleData[0]);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
 
+  // Get vehicle data
   useEffect(() => {
+    const getVehicleData = async () => {
+      await axios
+        .get(
+          `${process.env.REACT_APP_API_URL}/vehicles/get-vehicle-by-id/${vehicleId}`,
+          {
+            headers: { authorization: `bearer ${token}` },
+          }
+        )
+        .then((res) => {
+          setVehicleData(res.data.vehicleData[0]);
+          console.log(res.data.vehicleData[0]);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
     getVehicleData();
-  }, [vehicleId]);
+  }, [vehicleId, token]);
 
   // Set the data table when event is selected [optimized]
   const eventTableData = [].concat(...filterMarker)?.map((event, index) => {
-    // let tableContent = null;
+    let tableContent = null;
 
     switch (event.event) {
       case "DMS":
-        return (
+        tableContent = (
           <tr key={index}>
             <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
               {index + 1}
@@ -1836,8 +1838,9 @@ const OngoingTrip = () => {
             </td>
           </tr>
         );
+        break;
       case "BRK":
-        return (
+        tableContent = (
           <tr key={index}>
             <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
               {index + 1}
@@ -1855,8 +1858,9 @@ const OngoingTrip = () => {
             </td>
           </tr>
         );
+        break;
       case "LDS":
-        return (
+        tableContent = (
           <tr key={index}>
             <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
               {index + 1}
@@ -1876,8 +1880,9 @@ const OngoingTrip = () => {
             </td>
           </tr>
         );
+        break;
       case "FLS":
-        return (
+        tableContent = (
           <tr key={index}>
             <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
               {index + 1}
@@ -1895,8 +1900,9 @@ const OngoingTrip = () => {
             </td>
           </tr>
         );
+        break;
       case "CVN":
-        return (
+        tableContent = (
           <tr key={index}>
             <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
               {index + 1}
@@ -1912,8 +1918,9 @@ const OngoingTrip = () => {
             </td>
           </tr>
         );
+        break;
       case "ALC":
-        return (
+        tableContent = (
           <tr key={index}>
             <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
               {index + 1}
@@ -1937,8 +1944,9 @@ const OngoingTrip = () => {
             </td>
           </tr>
         );
+        break;
       case "NTF":
-        return (
+        tableContent = (
           <tr key={index}>
             <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
               {index + 1}
@@ -1967,7 +1975,14 @@ const OngoingTrip = () => {
             </td>
           </tr>
         );
+        break;
+      default:
+        // Handle the default case (when event.event doesn't match any of the specified cases)
+        tableContent = (
+          <tr key={index}>{/* ... your default JSX content ... */}</tr>
+        );
     }
+    return tableContent;
   });
 
   // Alchohol tab

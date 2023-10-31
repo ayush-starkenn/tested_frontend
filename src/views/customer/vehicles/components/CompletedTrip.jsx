@@ -219,22 +219,6 @@ const CompletedTrip = () => {
       });
   }, [trip_id, token]);
 
-  // Calculate distance between two coordinates using Haversine formula
-  function getDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371; // Radius of the Earth in kilometers
-    const dLat = deg2rad(lat2 - lat1);
-    const dLon = deg2rad(lon2 - lon1);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(deg2rad(lat1)) *
-        Math.cos(deg2rad(lat2)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c;
-    return distance;
-  }
-
   // Convert degrees to radians
   function deg2rad(deg) {
     return deg * (Math.PI / 180);
@@ -291,9 +275,9 @@ const CompletedTrip = () => {
         let endHalt = 0;
         let totalHalt = 0;
         allTripData.forEach((tdata) => {
-          if (tdata.spd == 0 && startHalt == 0) {
+          if (tdata.spd === 0 && startHalt === 0) {
             startHalt = tdata.timestamp;
-          } else if (tdata.spd == 0) {
+          } else if (tdata.spd === 0) {
             endHalt = tdata.timestamp;
           } else {
             startHalt = 0;
@@ -325,17 +309,21 @@ const CompletedTrip = () => {
   useEffect(() => {
     if (tripData.length > 0 && startPoint !== "" && endPoint !== "") {
       const getAddress = async (lat, lng, setAddress) => {
-        const response = await fetch(
-          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyCk6RovwH7aF8gjy1svTPJvITZsWGA_roU`
-        );
-        if (response) {
-          // setIsLoading(false);
-        }
-        const data = await response.json();
-        if (data.results.length > 0) {
-          setAddress(data.results[0].formatted_address);
-        } else {
-          setAddress("Loading address...");
+        try {
+          const response = await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyCk6RovwH7aF8gjy1svTPJvITZsWGA_roU`
+          );
+          if (response) {
+            // setIsLoading(false);
+          }
+          const data = await response.json();
+          if (data.results.length > 0) {
+            setAddress(data.results[0].formatted_address);
+          } else {
+            setAddress("Loading address...");
+          }
+        } catch (error) {
+          console.log(error);
         }
       };
 
@@ -805,6 +793,22 @@ const CompletedTrip = () => {
 
   // Set optimized path that will eliminate jumping
   useEffect(() => {
+    // Calculate distance between two coordinates using Haversine formula
+    function getDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371; // Radius of the Earth in kilometers
+      const dLat = deg2rad(lat2 - lat1);
+      const dLon = deg2rad(lon2 - lon1);
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(deg2rad(lat1)) *
+          Math.cos(deg2rad(lat2)) *
+          Math.sin(dLon / 2) *
+          Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      const distance = R * c;
+      return distance;
+    }
+
     // Specify the maximum distance threshold in kilometers
     const maxDistanceThreshold = 1; // Adjust as needed
 
@@ -1031,8 +1035,9 @@ const CompletedTrip = () => {
     const dashCamVid = dashLink.startsWith("/var/www/html/media/")
       ? dashLink.substring(20)
       : dashLink;
+    let dmsContentData = null;
     if (data.event === "DMS") {
-      return (
+      dmsContentData = (
         <div className="group relative" key={index}>
           <div>
             <div className="flex">
@@ -1079,6 +1084,7 @@ const CompletedTrip = () => {
         </div>
       );
     }
+    return dmsContentData;
   });
 
   // DMS pop-up marker data
@@ -1650,33 +1656,33 @@ const CompletedTrip = () => {
 
   // Get vehicle data
   const [vehicleData, setVehicleData] = useState([]);
-  const getVehicleData = async () => {
-    await axios
-      .get(
-        `${process.env.REACT_APP_API_URL}/vehicles/get-vehicle-by-id/${vehicleId}`,
-        {
-          headers: { authorization: `bearer ${token}` },
-        }
-      )
-      .then((res) => {
-        setVehicleData(res.data.vehicleData[0]);
-        console.log(res.data.vehicleData[0]);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
 
   useEffect(() => {
+    const getVehicleData = async () => {
+      await axios
+        .get(
+          `${process.env.REACT_APP_API_URL}/vehicles/get-vehicle-by-id/${vehicleId}`,
+          {
+            headers: { authorization: `bearer ${token}` },
+          }
+        )
+        .then((res) => {
+          setVehicleData(res.data.vehicleData[0]);
+          console.log(res.data.vehicleData[0]);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
     getVehicleData();
-  }, [vehicleId]);
+  }, [vehicleId, token]);
 
   // Set table data when the event checkbox is selected
   const eventTableData = [].concat(...filterMarker)?.map((event, index) => {
-    // let tableContent = null;
+    let tableContent = null;
     switch (event.event) {
       case "DMS":
-        return (
+        tableContent = (
           <tr key={index}>
             <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
               {index + 1}
@@ -1692,8 +1698,9 @@ const CompletedTrip = () => {
             </td>
           </tr>
         );
+        break;
       case "BRK":
-        return (
+        tableContent = (
           <tr key={index}>
             <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
               {index + 1}
@@ -1711,8 +1718,9 @@ const CompletedTrip = () => {
             </td>
           </tr>
         );
+        break;
       case "LDS":
-        return (
+        tableContent = (
           <tr key={index}>
             <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
               {index + 1}
@@ -1732,8 +1740,9 @@ const CompletedTrip = () => {
             </td>
           </tr>
         );
+        break;
       case "FLS":
-        return (
+        tableContent = (
           <tr key={index}>
             <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
               {index + 1}
@@ -1751,8 +1760,9 @@ const CompletedTrip = () => {
             </td>
           </tr>
         );
+        break;
       case "CVN":
-        return (
+        tableContent = (
           <tr key={index}>
             <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
               {index + 1}
@@ -1768,8 +1778,9 @@ const CompletedTrip = () => {
             </td>
           </tr>
         );
+        break;
       case "ALC":
-        return (
+        tableContent = (
           <tr key={index}>
             <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
               {index + 1}
@@ -1793,8 +1804,9 @@ const CompletedTrip = () => {
             </td>
           </tr>
         );
+        break;
       case "NTF":
-        return (
+        tableContent = (
           <tr key={index}>
             <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
               {index + 1}
@@ -1823,7 +1835,16 @@ const CompletedTrip = () => {
             </td>
           </tr>
         );
+        break;
+      default:
+        // Handle the default case (when event.event doesn't match any of the specified cases)
+        tableContent = (
+          <tr key={index}>
+            <td>No data</td>
+          </tr>
+        );
     }
+    return tableContent;
   });
 
   // Alchohol tab
