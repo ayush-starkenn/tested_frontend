@@ -270,7 +270,7 @@ const DevicesAdmin = () => {
           onHide={closeDialog}
           style={{ width: "45rem" }}
           breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-          header="Add Device"
+          header="Fill the details"
           modal
           className="p-fluid dark:bg-gray-900"
         >

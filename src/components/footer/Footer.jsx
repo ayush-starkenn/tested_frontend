@@ -40,7 +40,7 @@ const Footer = () => {
       </h5>
       <div>
         <ul className="footer-content flex flex-wrap items-center gap-3 sm:flex-wrap md:gap-10">
-          <li>
+          {/* <li>
             <a
               target="blank"
               href="https://www.starkenn.com/contact-us"
@@ -48,7 +48,7 @@ const Footer = () => {
             >
               Support
             </a>
-          </li>
+          </li> */}
           <li>
             <button
               onClick={openTermsDialog}

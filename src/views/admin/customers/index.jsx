@@ -500,6 +500,7 @@ const Customers = () => {
                 onChange={(e) =>
                   setFormErrors({ ...formErrors, [e.target.name]: false })
                 }
+                minLength={6}
                 autoComplete="off"
               />
               <label htmlFor="password" className="dark:text-gray-300">

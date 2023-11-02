@@ -51,7 +51,7 @@ const AnalyticsThreshold = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_API_URL}/analytics-threshold/get-analytics-threshold`,
+        `${process.env.REACT_APP_API_URL}/analytics-threshold/get-analytics-threshold/`,
         { headers: { authorization: `bearer ${token}` } }
       )
       .then((res) => {
@@ -73,7 +73,7 @@ const AnalyticsThreshold = () => {
     axios
       .put(
         `${process.env.REACT_APP_API_URL}/analytics-threshold/delete-analytic-threshold/${threshold_uuid}`,
-        { userUUID },
+        { user_uuid: userUUID },
         { headers: { authorization: `bearer ${token}` } }
       )
       .then((res) => {
@@ -101,7 +101,7 @@ const AnalyticsThreshold = () => {
     axios
       .put(
         `${process.env.REACT_APP_API_URL}/analytics-threshold/update-analytic-threshold/${threshold_uuid}`,
-        { ...editedData, userUUID },
+        { ...editedData, user_uuid: userUUID },
         { headers: { authorization: `bearer ${token}` } }
       )
       .then((response) => {
@@ -306,8 +306,8 @@ const AnalyticsThreshold = () => {
     // Send the data to the API endpoint using axios
     axios
       .post(
-        `${process.env.REACT_APP_API_URL}/analytics-threshold/add-analytics`,
-        { ...formData, userUUID },
+        `${process.env.REACT_APP_API_URL}/analytics-threshold/add-analytics/${userUUID}`,
+        { ...formData },
         { headers: { authorization: `bearer ${token}` } }
       )
       .then((response) => {

@@ -24,7 +24,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
 
   const [editData, setEditData] = useState({
     title: "",
-    user_uuid: "",
+    customer_id: "",
     score: {
       brake: "",
       tailgating: "",
@@ -181,7 +181,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
 
     const analyticData = {
       threshold_uuid: rowData.threshold_uuid,
-      user_uuid: rowData.user_uuid,
+      customer_id: rowData.user_uuid,
       title: rowData.title,
       score: JSON.parse(rowData.score),
       incentive: JSON.parse(rowData.incentive),
@@ -192,11 +192,9 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
     };
     setEditData(analyticData);
 
-    console.log(editData);
-
     const emptyEditData = {
       title: "",
-      user_uuid: "",
+      customer_id: "",
       score: {
         brake: "",
         tailgating: "",
@@ -376,8 +374,8 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
                 optionLabel="label"
                 optionValue="value"
                 className="p-dropdown border"
-                value={editData?.user_uuid || ""}
-                onChange={(e) => handleChange(e, "user_uuid")}
+                value={editData?.customer_id || ""}
+                onChange={(e) => handleChange(e, "customer_id")}
               />
 
               <label htmlFor="user_uuid" className="dark:text-gray-150">
@@ -731,7 +729,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
               type="submit"
               className="rounded bg-blue-600 px-4 py-2 font-semibold text-white  hover:bg-blue-600"
             >
-              Edit Device
+              Update
             </button>
           </div>
         </form>

@@ -227,7 +227,6 @@ const Marketplace = () => {
         });
       })
       .catch((err) => {
-        console.log(err);
         toastRef.current.show({
           severity: "error",
           summary: "Error",
