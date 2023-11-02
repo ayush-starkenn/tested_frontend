@@ -236,6 +236,10 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
       });
   };
 
+  const renderCellWithNA = (data) => {
+    return data ? data : "--";
+  };
+
   // Status body
   const getStatusSeverity = (option) => {
     switch (option) {
@@ -436,6 +440,7 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
           field="sim_number"
           header="Sim Number"
           sortable
+          body={(rowData) => renderCellWithNA(rowData.sim_number)}
           className="border-b dark:bg-navy-800 dark:text-gray-200"
           style={{ minWidth: "14rem" }}
         ></Column>

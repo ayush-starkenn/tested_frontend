@@ -26,13 +26,7 @@ const DevicesAdmin = () => {
     status: false,
     sim_number: false,
   });
-  const requiredFields = [
-    "device_id",
-    "device_type",
-    "user_uuid",
-    "status",
-    "sim_number",
-  ];
+  const requiredFields = ["device_id", "device_type", "user_uuid", "status"];
   const [addData, setAddData] = useState({
     device_id: "",
     device_type: "",
@@ -245,7 +239,17 @@ const DevicesAdmin = () => {
 
   // Check if all fields are valid
   const isFormValid = () => {
-    return requiredFields.every((field) => !!addData[field].trim());
+    // Check if all required fields are filled
+    const requiredFieldsFilled = requiredFields.every(
+      (field) => !!addData[field].trim()
+    );
+
+    // If device type is "DMS" or "IoT," also check if "sim_number" is filled
+    const isSimNumberRequired =
+      addData.device_type === "DMS" || addData.device_type === "IoT";
+    const simNumberFilled = !isSimNumberRequired || !!addData.sim_number.trim();
+
+    return requiredFieldsFilled && simNumberFilled;
   };
 
   const handleChange = (e) => {
@@ -373,29 +377,31 @@ const DevicesAdmin = () => {
                 <small className="text-red-600">Status is required</small>
               )}
             </div>
-            <div
-              className={`mx-auto mt-8 w-[34.5vw] ${
-                validationErrors.sim_number ? "p-error" : ""
-              }`}
-            >
-              <span className="p-float-label">
-                <InputText
-                  id="sim_number"
-                  name="sim_number"
-                  keyfilter="pint"
-                  onChange={handleChange}
-                  className={`border py-2 pl-2 ${
-                    validationErrors.sim_number ? "border-red-600" : ""
-                  }`}
-                />
-                <label htmlFor="device_id" className="dark:text-gray-300">
-                  Sim Number
-                </label>
-              </span>
-              {validationErrors.sim_number && (
-                <small className="text-red-600">Sim number is required</small>
-              )}
-            </div>
+            {addData.device_type !== "ECU" && (
+              <div
+                className={`mx-auto mt-8 w-[34.5vw] ${
+                  validationErrors.sim_number ? "p-error" : ""
+                }`}
+              >
+                <span className="p-float-label">
+                  <InputText
+                    id="sim_number"
+                    name="sim_number"
+                    keyfilter="pint"
+                    onChange={handleChange}
+                    className={`border py-2 pl-2 ${
+                      validationErrors.sim_number ? "border-red-600" : ""
+                    }`}
+                  />
+                  <label htmlFor="device_id" className="dark:text-gray-300">
+                    Sim Number
+                  </label>
+                </span>
+                {validationErrors.sim_number && (
+                  <small className="text-red-600">Sim number is required</small>
+                )}
+              </div>
+            )}
             <div className="mt-6 flex justify-center">
               <button
                 type="submit"
