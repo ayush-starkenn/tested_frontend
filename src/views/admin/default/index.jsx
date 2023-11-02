@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-// import WeeklyRevenue from "views/admin/default/components/WeeklyRevenue";
-// import TotalSpent from "views/admin/default/components/TotalSpent";
 import { HiOutlineUsers } from "react-icons/hi";
 import { BsTruck, BsFillCpuFill } from "react-icons/bs";
 import Widget from "components/widget/Widget";

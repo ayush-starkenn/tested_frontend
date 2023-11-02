@@ -53,22 +53,6 @@ const VehicleTrips = ({ myData }) => {
     </div>
   );
 
-  const actionBodyTemplate = (rowData) => {
-    return (
-      <React.Fragment>
-        <Button
-          icon="pi pi-eye"
-          rounded
-          outlined
-          tooltip="View"
-          tooltipOptions={{ position: "mouse" }}
-          className="border border-blue-500 text-blue-500 dark:text-blue-500"
-          style={{ width: "2rem", height: "2rem" }}
-        />
-      </React.Fragment>
-    );
-  };
-
   //vehicle trip data
 
   useEffect(() => {
@@ -180,14 +164,6 @@ const VehicleTrips = ({ myData }) => {
           sortable
           className="border-b bg-[#F2F2F2] dark:bg-navy-700 dark:text-gray-200"
           style={{ minWidth: "9rem" }}
-        ></Column>
-        <Column
-          key="action"
-          body={actionBodyTemplate}
-          header="Action"
-          exportable={false}
-          className="border-b bg-[#F2F2F2] dark:bg-navy-700"
-          style={{ minWidth: "6rem" }}
         ></Column>
       </DataTable>
     </>

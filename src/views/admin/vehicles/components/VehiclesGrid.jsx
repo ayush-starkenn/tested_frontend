@@ -188,9 +188,11 @@ export default function VehiclesGrid({ data }) {
           <TabPanel header="Vehicle's Trips" leftIcon="pi pi-truck mr-2">
             <VehicleTrips myData={myData} />
           </TabPanel>
-          <TabPanel header="Feature Set" leftIcon="pi pi-cog mr-2">
-            <FeatureSet myData={myData} closeDialog={closeViewDialog} />
-          </TabPanel>
+          {myData?.dms === null && (
+            <TabPanel header="Feature Set" leftIcon="pi pi-cog mr-2">
+              <FeatureSet myData={myData} closeDialog={closeViewDialog} />
+            </TabPanel>
+          )}
         </TabView>
       </Dialog>
     </div>

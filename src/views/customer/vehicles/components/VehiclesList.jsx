@@ -301,6 +301,7 @@ export default function VehiclesList({
           "iot",
           "dms",
         ]}
+        removableSort
         emptyMessage="No vehicles found."
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
       >
@@ -561,9 +562,11 @@ export default function VehiclesList({
           <TabPanel header="Completed Trips" leftIcon="pi pi-truck mr-2">
             <VehicleTrips myData={myData} />
           </TabPanel>
-          <TabPanel header="Feature Set" leftIcon="pi pi-cog mr-2">
-            <FeatureSet myData={myData} closeDialog={closeViewDialog} />
-          </TabPanel>
+          {myData?.dms === null && (
+            <TabPanel header="Feature Set" leftIcon="pi pi-cog mr-2">
+              <FeatureSet myData={myData} closeDialog={closeViewDialog} />
+            </TabPanel>
+          )}
         </TabView>
       </Dialog>
     </div>

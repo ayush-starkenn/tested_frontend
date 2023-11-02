@@ -227,9 +227,11 @@ export default function VehiclesList({ data }) {
           <TabPanel header="Completed Trips" leftIcon="pi pi-truck mr-2">
             <VehicleTrips myData={myData} />
           </TabPanel>
-          <TabPanel header="Feature Set" leftIcon="pi pi-cog mr-2">
-            <FeatureSet myData={myData} closeDialog={closeDialog} />
-          </TabPanel>
+          {myData?.dms === null && (
+            <TabPanel header="Feature Set" leftIcon="pi pi-cog mr-2">
+              <FeatureSet myData={myData} closeDialog={closeDialog} />
+            </TabPanel>
+          )}
         </TabView>
       </Dialog>
     </div>

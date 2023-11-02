@@ -610,6 +610,7 @@ const Navbar = ({ onOpenSidenav }) => {
                 handleResetPasswordInputChange("newPassword", e.target.value);
                 setPwerr(false);
               }}
+              minLength={6}
               className={`border py-2 pl-2 ${pwerr ? "border-red-600" : ""}`}
             />
             <label htmlFor="newPassword">New Password</label>
