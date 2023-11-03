@@ -335,7 +335,6 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
                 options={stateOptions}
                 optionLabel="label"
                 optionValue="value"
-                editData
                 className="p-dropdown border"
                 value={editData?.device_status || ""}
                 placeholder={deviceData?.device_status}
