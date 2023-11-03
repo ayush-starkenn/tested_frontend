@@ -113,7 +113,7 @@ const ScheduledReport = () => {
               </p>
             </div>
             <div className="relative overflow-x-auto">
-              <div className="flex justify-around">
+              <div className="flex flex-wrap justify-around">
                 {chartData.map((vehicleData, index) => (
                   <div className="card p-8" key={index}>
                     <p className="flex items-center">
