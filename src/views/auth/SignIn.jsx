@@ -352,10 +352,10 @@ const SignIn = () => {
                     <div className="relative">
                       <button
                         type="submit"
-                        className="rounded-md bg-blueSecondary py-1 pl-4 pr-8 text-white dark:!bg-gray-100 dark:!text-gray-850"
+                        className="flex items-center rounded-md bg-blueSecondary px-4 py-1 text-white dark:!bg-gray-100 dark:!text-gray-850"
                       >
                         Sign In
-                        <BsArrowRightCircleFill className="absolute left-[4.6rem] top-[0.6rem] " />
+                        <BsArrowRightCircleFill className="ml-1" />
                       </button>
                     </div>
                   </form>

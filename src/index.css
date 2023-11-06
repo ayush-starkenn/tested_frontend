@@ -478,6 +478,17 @@ body
   .footer-content {
     gap: 0.7rem;
   }
+  #root
+    > div
+    > div
+    > div.h-full.w-full.bg-Primary.dark\:\!bg-navy-900
+    > nav
+    > div.relative.mt-\[3px\].flex.h-\[61px\].w-\[355px\].flex-grow.items-center.justify-around.gap-2.rounded-full.bg-white.px-2.py-2.dark\:\!bg-navy-800.dark\:shadow-none.md\:w-\[365px\].md\:flex-grow-0.md\:gap-1.xl\:w-\[165px\].xl\:gap-2
+    > div:nth-child(2)
+    > div.py-2.top-4.-left-\[230px\].md\:-left-\[440px\].w-max.absolute.z-10.origin-\[65\%_0\%\].md\:origin-top-right.transition-all.duration-300.ease-in-out.scale-100 {
+    left: -123px;
+  }
+
   .text-base {
     font-size: 0.8rem;
   }
