@@ -13,25 +13,24 @@ const OngoingTable = () => {
   const [tripData, setTripData] = useState([]);
   const [dataLoaded, setDataLoaded] = useState(false);
 
-  const OngoingTripsHere = async () => {
-    try {
-      const res = await axios.get(
-        `${process.env.REACT_APP_API_URL}/dashboardCustomers/get-ongoing-trip-data/${user_uuid}`,
-        { headers: { authorization: `bearer ${token}` } }
-      );
-      console.log(res.data);
-      if (res.data.length > 0) {
-        setTripData(res.data.result);
-        setDataLoaded(true);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   useEffect(() => {
+    const OngoingTripsHere = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/dashboardCustomers/get-ongoing-trip-data/${user_uuid}`,
+          { headers: { authorization: `bearer ${token}` } }
+        );
+        // console.log(res.data);
+        if (res.data.result && res.data.result.length > 0) {
+          setTripData(res.data.result);
+          setDataLoaded(true);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
     OngoingTripsHere();
-  }, []);
+  }, [token, user_uuid]);
 
   const getTimeStamp = (time) => {
     let formattedDate = new Date(time * 1000);
