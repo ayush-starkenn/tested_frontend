@@ -22,6 +22,7 @@ export function SidebarLinks(props) {
             key={index}
             to={route.layout + "/" + route.path}
             className={`${"route" + index}`}
+            id= {route.id}
           >
             <div className="relative mb-5 flex">
               <li

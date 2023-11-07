@@ -223,6 +223,7 @@ const Contacts = () => {
         </h4>
         <div>
           <button
+            id='contact_add'
             className="mt-2 flex h-10 items-center rounded-lg bg-blue-500 px-3 py-2 text-left font-semibold text-white hover:bg-blue-600"
             onClick={openDialog}
           >
@@ -332,6 +333,7 @@ const Contacts = () => {
             </div>
             <div className="p-field p-col-12 my-2 flex justify-center">
               <button
+                id='add_contact_button'
                 type="submit"
                 className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
               >

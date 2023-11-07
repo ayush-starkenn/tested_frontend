@@ -82,6 +82,7 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
     return (
       <>
         <Button
+          id='edit-devices'
           icon="pi pi-pencil"
           rounded
           tooltip="Edit"
@@ -365,6 +366,7 @@ export default function DevicesList({ data, onEditDevice, onDeleteDevice }) {
           </div>
           <div className="mt-6 flex justify-center">
             <button
+              id='edit_device'
               type="submit"
               className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
             >

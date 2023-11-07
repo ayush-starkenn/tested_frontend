@@ -113,6 +113,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
     return (
       <>
         <Button
+          id='edit_at'
           icon="pi pi-pencil"
           rounded
           tooltip="Edit"
@@ -465,6 +466,7 @@ export default function AnalyticsList({ data, onEdit, onDelete }) {
             <div className="mt-3 flex-auto">
               <span className="p-float-label">
                 <InputText
+                id='sleep-alert-input'
                   keyfilter="pint"
                   name="sleep-alert-input"
                   title="(1-1000)"

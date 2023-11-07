@@ -77,6 +77,7 @@ const AlertTriggerList = ({
     return (
       <React.Fragment>
         <Button
+          id='edit_trigger'
           icon="pi pi-pencil"
           rounded
           tooltip="Edit"
@@ -556,6 +557,7 @@ const AlertTriggerList = ({
 
           <div className="p-field p-col-12 mt-3 flex justify-center">
             <button
+              id='edit_trigger_button'
               type="submit"
               className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
             >

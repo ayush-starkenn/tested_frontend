@@ -110,6 +110,7 @@ export default function VehiclesList({
           />
         </Link> */}
         <Button
+          id='edit_c_vehicle'
           icon="pi pi-pencil"
           rounded
           tooltip="Edit"
@@ -518,6 +519,7 @@ export default function VehiclesList({
           </div>
           <div className="p-field p-col-12 mt-7 flex justify-center">
             <button
+              id='update_c_b'
               type="submit"
               className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
             >

@@ -302,6 +302,7 @@ const Triggers = () => {
         </h4>
         {/* button to add vehicle */}
         <button
+          id='new_at'
           className="mt-2 flex h-10 items-center rounded-lg bg-blue-500 px-3 py-2 text-left font-semibold text-white hover:bg-blue-600"
           onClick={openDialog}
         >
@@ -440,6 +441,7 @@ const Triggers = () => {
                             <>
                               <label>
                                 <input
+                                  id='checkbox-e'
                                   type="checkbox"
                                   onChange={() =>
                                     handleContactChange(
@@ -458,6 +460,7 @@ const Triggers = () => {
                             <>
                               <label>
                                 <input
+                                  id='checkbox-p'
                                   type="checkbox"
                                   onChange={() =>
                                     handleContactChange(
@@ -480,6 +483,7 @@ const Triggers = () => {
 
             <div className="p-field p-col-12 mt-3 flex justify-center">
               <button
+                id='add_trigger'
                 type="submit"
                 className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
               >

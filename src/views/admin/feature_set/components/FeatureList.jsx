@@ -264,6 +264,7 @@ const FeatureList = () => {
     return (
       <React.Fragment>
         <Button
+          id='edit_fs'
           icon="pi pi-pencil"
           rounded
           tooltip="Edit"

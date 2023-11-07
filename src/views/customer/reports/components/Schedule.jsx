@@ -231,6 +231,7 @@ const Schedule = ({ close }) => {
               <div className="mt-8 flex-auto">
                 <span className="p-float-label">
                   <MultiSelect
+                    id='vehicles-schedule'
                     value={selectedVehicleNames}
                     options={vehicleOptions()}
                     onChange={(e) => {
@@ -261,6 +262,7 @@ const Schedule = ({ close }) => {
               <div className="mt-8">
                 <span className="p-float-label">
                   <MultiSelect
+                    id='events_schedule'
                     value={selectedEventNames}
                     options={events}
                     onChange={(e) => {
@@ -289,6 +291,7 @@ const Schedule = ({ close }) => {
               <div className="mt-8">
                 <span className="p-float-label">
                   <Dropdown
+                    id='contact_schedule'
                     value={selectedContacts}
                     options={contactOptions()}
                     onChange={(e) => {
@@ -315,6 +318,7 @@ const Schedule = ({ close }) => {
               <div className="mt-8">
                 <span className="p-float-label">
                   <Dropdown
+                    id='repeat_schedule'
                     value={repeatType}
                     options={repeat_types}
                     optionLabel="label"
@@ -371,7 +375,7 @@ const Schedule = ({ close }) => {
                 Scheduling...
               </div>
             ) : (
-              <button className="rounded-lg bg-blue-700 px-4 py-1.5 text-lg font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+              <button id='schedule_btn' className="rounded-lg bg-blue-700 px-4 py-1.5 text-lg font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 Schedule
               </button>
             )}

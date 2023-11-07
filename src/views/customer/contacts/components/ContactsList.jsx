@@ -180,6 +180,7 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
     return (
       <React.Fragment>
         <Button
+          id='edit_contact'
           icon="pi pi-pencil"
           rounded
           tooltip="Edit"
@@ -371,6 +372,7 @@ const ContactsList = ({ contactsData, editContacts, deleteContact }) => {
             </div>
             <div className="p-field p-col-12 mt-7 flex justify-center">
               <button
+                id='edit_con_btn'
                 type="submit"
                 className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
               >

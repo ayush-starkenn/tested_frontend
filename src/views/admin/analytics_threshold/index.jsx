@@ -374,6 +374,7 @@ const AnalyticsThreshold = () => {
           <div className="my-6">
             <span className="p-float-label">
               <InputText
+                id='title'
                 name="title"
                 className={`border py-2 pl-2 ${
                   formErrors.title ? "border-red-600" : ""
@@ -390,6 +391,7 @@ const AnalyticsThreshold = () => {
           <div className="mb-6">
             <span className="p-float-label">
               <Dropdown
+                id='at_cust'
                 value={selectedCustomer}
                 options={customerOptions}
                 onChange={(e) => {
@@ -414,6 +416,7 @@ const AnalyticsThreshold = () => {
               <div className="flex-1">
                 <span className="p-float-label">
                   <InputText
+                    id='brake-input'
                     name="brake-input"
                     keyfilter="pint"
                     title="(1-1000)"
@@ -441,6 +444,7 @@ const AnalyticsThreshold = () => {
               <div className="flex-1">
                 <span className="p-float-label">
                   <InputText
+                    id='tailgating-input'
                     name="tailgating-input"
                     keyfilter="pint"
                     title="(1-1000)"
@@ -473,6 +477,7 @@ const AnalyticsThreshold = () => {
               <div className="mt-3 flex-1">
                 <span className="p-float-label">
                   <InputText
+                    id='rash-driving-input'
                     keyfilter="pint"
                     name="rash-driving-input"
                     title="(1-1000)"
@@ -503,6 +508,7 @@ const AnalyticsThreshold = () => {
               <div className="mt-3 flex-1">
                 <span className="p-float-label">
                   <InputText
+                    id='sleep-alert-input'
                     keyfilter="pint"
                     name="sleep-alert-input"
                     title="(1-1000)"
@@ -535,6 +541,7 @@ const AnalyticsThreshold = () => {
               <div className="mt-3 flex-1">
                 <span className="p-float-label">
                   <InputText
+                    id='over-speed-input'
                     keyfilter="pint"
                     name="over-speed-input"
                     title="(1-1000)"
@@ -565,6 +572,7 @@ const AnalyticsThreshold = () => {
               <div className="mt-3 flex-1">
                 <span className="p-float-label">
                   <InputText
+                    id='green-zone-input'
                     keyfilter="pint"
                     name="green-zone-input"
                     title="(1-1000)"
@@ -602,6 +610,7 @@ const AnalyticsThreshold = () => {
               <div className="flex-auto">
                 <span className="p-float-label">
                   <InputText
+                    id='minimum-distance-input'
                     keyfilter="pint"
                     name="minimum-distance-input"
                     title="(1-1000)"
@@ -633,6 +642,7 @@ const AnalyticsThreshold = () => {
               <div className="flex-auto">
                 <span className="p-float-label">
                   <InputText
+                    id='minimum-driver-rating-input'
                     keyfilter="num"
                     name="minimum-driver-rating-input"
                     title="(0-5)"
@@ -674,6 +684,7 @@ const AnalyticsThreshold = () => {
               <div className="w-1/2">
                 <span className="p-float-label">
                   <InputText
+                    id='ttc-difference-percentage-input'
                     keyfilter="pint"
                     name="ttc-difference-percentage-input"
                     title="(0-100)"
@@ -715,6 +726,7 @@ const AnalyticsThreshold = () => {
               <div className="w-1/2">
                 <span className="p-float-label">
                   <InputText
+                    id='total-distance-input'
                     keyfilter="pint"
                     name="total-distance-input"
                     title="(0-10000)"
@@ -753,6 +765,7 @@ const AnalyticsThreshold = () => {
               <div className="w-1/2">
                 <span className="p-float-label">
                   <InputText
+                    id='halt-duration-input'
                     keyfilter="pint"
                     name="halt-duration-input"
                     title="(1-1000)"

@@ -347,6 +347,7 @@ const Marketplace = () => {
         </h4>
         <div className="pt-3">
           <button
+            id='vehicle_list_icon'
             className={`${
               isListView === true
                 ? "list-btn bg-gray-150 px-3 py-2  dark:bg-gray-700  "
@@ -357,6 +358,7 @@ const Marketplace = () => {
             <BsListUl />
           </button>
           <button
+            id='vehicle_grid'
             className={`${
               isListView === false
                 ? "grid-btn bg-gray-150 px-3 py-2  dark:bg-gray-700  "
@@ -382,6 +384,7 @@ const Marketplace = () => {
         <button
           className="mt-2 flex h-10 items-center rounded-lg bg-blue-500 px-3 py-2 text-left font-semibold text-white hover:bg-blue-600"
           onClick={openFeatureset}
+          id='fs_default'
         >
           <MdOutlineFeaturedPlayList className="mr-2" />
           Featureset

@@ -267,6 +267,7 @@ const Generate = ({ close }) => {
     });
     return optionsArray;
   };
+  console.log(selectedStartDate);
   return (
     <>
       <Toast ref={toastRef} className="toast-custom" position="top-right" />
@@ -305,6 +306,7 @@ const Generate = ({ close }) => {
               <div className="flex-auto">
                 <span className="p-float-label">
                   <Calendar
+                    id='from_date'
                     inputId="start_date"
                     value={
                       selectedStartDate ? new Date(selectedStartDate) : null
@@ -336,6 +338,7 @@ const Generate = ({ close }) => {
               <div className="flex-auto">
                 <span className="p-float-label">
                   <Calendar
+                    id="to_date"
                     inputId="end_date"
                     value={selectedEndDate ? new Date(selectedEndDate) : null}
                     onChange={(e) => {
@@ -398,6 +401,7 @@ const Generate = ({ close }) => {
               <div className="mt-8 flex-auto">
                 <span className="p-float-label">
                   <MultiSelect
+                    id='select_vehicle'
                     value={selectedVehicleNames}
                     options={vehicleOptions()}
                     onChange={(e) => {
@@ -444,6 +448,7 @@ const Generate = ({ close }) => {
               <div className="mt-8">
                 <span className="p-float-label">
                   <MultiSelect
+                    id='select-event'
                     value={selectedEventNames}
                     options={events}
                     onChange={(e) => {
@@ -488,6 +493,7 @@ const Generate = ({ close }) => {
               <div className="mt-8">
                 <span className="p-float-label">
                   <Dropdown
+                    id="select_contacts"
                     value={selectedContacts}
                     options={contactOptions()}
                     onChange={(e) => {
@@ -565,6 +571,7 @@ const Generate = ({ close }) => {
           </div>
           <div className="text-center">
             <button
+              id='generate_report_btn'
               type="submit"
               className="rounded-lg bg-blue-700 px-4 py-1.5 text-lg font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >

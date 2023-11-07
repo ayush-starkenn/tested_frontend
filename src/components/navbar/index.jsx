@@ -668,7 +668,7 @@ const Navbar = ({ onOpenSidenav }) => {
               //   <IoMdNotificationsOutline className="h-6 w-6 text-gray-600 dark:text-white" />
               // </p>
               <div className="relative">
-                <IoMdNotificationsOutline className="h-6 w-6 cursor-pointer text-gray-600 dark:text-white" />
+                <IoMdNotificationsOutline id='notifications' className="h-6 w-6 cursor-pointer text-gray-600 dark:text-white" />
                 {newNotifications.length > 0 && !read && (
                   <span
                     className="absolute -right-1 -top-1 h-4 w-4 rounded-full bg-red-500 text-center text-[0.58rem] text-white"
@@ -809,7 +809,7 @@ const Navbar = ({ onOpenSidenav }) => {
           {user_type !== "1" ? (
             <Dropdown
               button={
-                <HiOutlineUserCircle className="pi pi-user h-6 w-6 cursor-pointer text-gray-400 dark:text-white" />
+                <HiOutlineUserCircle id='log' className="pi pi-user h-6 w-6 cursor-pointer text-gray-400 dark:text-white" />
               }
               children={
                 <div className="flex w-56 flex-col justify-start rounded-[20px] bg-white bg-cover bg-no-repeat shadow-xl shadow-shadow-500 dark:!bg-navy-700 dark:text-white dark:shadow-none">
@@ -830,6 +830,7 @@ const Navbar = ({ onOpenSidenav }) => {
                       Profile Settings
                     </p>
                     <button
+                      id='logout'
                       onClick={handleLogout}
                       className="mt-3 text-start text-sm font-medium text-red-500 hover:text-red-500"
                     >
@@ -843,7 +844,7 @@ const Navbar = ({ onOpenSidenav }) => {
           ) : (
             <Dropdown
               button={
-                <HiOutlineUserCircle className="pi pi-user h-6 w-6 cursor-pointer text-gray-400 dark:text-white" />
+                <HiOutlineUserCircle id='log' className="pi pi-user h-6 w-6 cursor-pointer text-gray-400 dark:text-white" />
               }
               children={
                 <div className="flex w-56 flex-col justify-start rounded-[20px] bg-white bg-cover bg-no-repeat shadow-xl shadow-shadow-500 dark:!bg-navy-700 dark:text-white dark:shadow-none">
@@ -858,6 +859,7 @@ const Navbar = ({ onOpenSidenav }) => {
 
                   <div className="flex flex-col p-4">
                     <button
+                      id='logout'
                       onClick={handleLogout}
                       className="text-start text-sm font-medium text-red-500 hover:text-red-500"
                     >

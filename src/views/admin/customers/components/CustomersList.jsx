@@ -135,6 +135,7 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
               className="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600"
               disabled={isUpdating}
               onClick={onSave}
+              id='update_customer'
             />
           </div>
         }
@@ -448,6 +449,7 @@ const CustomersList = ({ data, onDelete, onUpdate }) => {
     return (
       <React.Fragment>
         <Button
+          id='edit_customer'
           icon="pi pi-pencil"
           rounded
           className="mr-3 border border-gray-700 text-gray-700"
